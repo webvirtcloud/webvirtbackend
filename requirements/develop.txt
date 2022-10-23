@@ -1,0 +1,3 @@
+-r production.txt
+bpython
+django-debug-toolbar
