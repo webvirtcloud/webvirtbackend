@@ -1,5 +1,5 @@
 """
-ASGI config for webvirtcloud project.
+ASGI config for WebVirtCloud project.
 """
 
 import os

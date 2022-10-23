@@ -1,5 +1,5 @@
 """
-WSGI config for webvirtcloud project.
+WSGI config for WebVirtCloud project.
 """
 
 import os

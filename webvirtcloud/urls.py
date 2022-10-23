@@ -1,11 +1,11 @@
-"""webvirtcloud URL Configuration
 """
-from django.contrib import admin
+WebVirtCloud URL Configuration
+"""
 from django.conf import settings
-from django.urls import include, path
+from django.urls import include, path, re_path
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    re_path(r'api/(?P<version>[v1|v2]+)/', include('account.urls')),
 ]
 
 if settings.DEBUG:
