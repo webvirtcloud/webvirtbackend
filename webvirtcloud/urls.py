@@ -2,10 +2,11 @@
 WebVirtCloud URL Configuration
 """
 from django.conf import settings
-from django.urls import include, path, re_path
+from django.urls import include, path
+
 
 urlpatterns = [
-    re_path(r'api/(?P<version>[v1|v2]+)/', include('account.urls')),
+    path('', include('singlepage.urls')),
 ]
 
 if settings.DEBUG:

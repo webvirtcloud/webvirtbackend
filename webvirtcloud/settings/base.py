@@ -29,6 +29,7 @@ INSTALLED_APPS = [
 # Project application definition
 INSTALLED_APPS += [
     'account',
+    'singlepage',
 ]
 
 # Third party application definition
@@ -57,7 +58,7 @@ ROOT_URLCONF = 'webvirtcloud.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
