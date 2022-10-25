@@ -1,3 +1,4 @@
+import os
 import binascii
 from uuid import uuid4
 
