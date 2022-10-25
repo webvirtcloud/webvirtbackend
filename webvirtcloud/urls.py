@@ -7,6 +7,7 @@ from django.urls import include, path
 
 urlpatterns = [
     path('', include('singlepage.urls')),
+    path('account/', include('account.urls')),
 ]
 
 if settings.DEBUG:

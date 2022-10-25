@@ -3,10 +3,8 @@ Django develop settings for WebVirtCloud project.
 
 """
 import socket
-try:
-    from .base import *
-except ImportError:
-    pass
+
+from .base import *
 
 
 # Django settings
@@ -18,8 +16,12 @@ ALLOWED_HOSTS = ['*']
 
 # Application definition
 INSTALLED_APPS += [
+    'corsheaders',
     'debug_toolbar',
 ]
+
+# CORS settings
+CORS_ORIGIN_ALLOW_ALL = True
 
 # DebugToolBar
 hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())

@@ -2,11 +2,7 @@
 Django production settings for WebVirtCloud project.
 
 """
-try:
-    from .base import *
-except ImportError:
-    pass
-
+from .base import *
 
 # Django settings
 DEBUG = False

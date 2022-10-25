@@ -1,3 +1,4 @@
 -r production.txt
 bpython
+django-cors-headers
 django-debug-toolbar
