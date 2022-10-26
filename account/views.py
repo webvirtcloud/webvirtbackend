@@ -1,10 +1,10 @@
 from rest_framework.response import Response
-from rest_framework.authtoken.views import ObtainAuthToken as BaseObtainAuthToken
+from rest_framework.authtoken.views import ObtainAuthToken
 
 from .models import Token
 
 
-class ObtainAuthToken(BaseObtainAuthToken):
+class Login(ObtainAuthToken):
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
