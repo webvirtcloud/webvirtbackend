@@ -48,7 +48,9 @@ class User(AbstractBaseUser):
 
     last_name = models.CharField(max_length=50, blank=True)
 
-    date_joined = models.DateTimeField(auto_now_add=True)
+    created = models.DateTimeField(auto_now_add=True)
+    
+    updated = models.DateTimeField(auto_now=True)
 
     is_verified = models.BooleanField(default=False)
 
@@ -91,14 +93,18 @@ class User(AbstractBaseUser):
         verbose_name = 'User'
         verbose_name_plural = 'Users'
 
+    def save(self, *args, **kwargs):
+        self.updated = timezone.now()
+        return super(User, self).save(*args, **kwargs)
+
 
 class Token(models.Model):
 
-    READ_CHOICE = 'read'
-    WRITE_CHOICE = 'write'
+    READ_SCOPE = 'read'
+    WRITE_SCOPE = 'write'
     SCOPE_CHOICES = (
-        (READ_CHOICE, 'Read'),
-        (WRITE_CHOICE, 'Write'),
+        (READ_SCOPE, 'Read scope'),
+        (WRITE_SCOPE, 'Write scope'),
     )
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, models.PROTECT)
@@ -107,12 +113,15 @@ class Token(models.Model):
 
     key = models.CharField(max_length=40, unique=True)
 
-    scope = models.TextField(choices=SCOPE_CHOICES, default=READ_CHOICE)
+    scope = models.TextField(choices=SCOPE_CHOICES, default=READ_SCOPE)
 
-    created_at = models.DateTimeField(auto_now_add=True)
+    created = models.DateTimeField(auto_now_add=True)
 
-    updated_at = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
 
+    expired = models.DateField(null=True, blank=True)
+
+    is_obtained = models.BooleanField(default=False)
     class Meta:
         verbose_name = 'Token'
         verbose_name_plural = 'Tokens'
@@ -120,12 +129,12 @@ class Token(models.Model):
     def save(self, *args, **kwargs):
         if not self.key:
             self.key = self.generate_key()
-        self.updated_at = timezone.now()
+        self.updated = timezone.now()
         return super(Token, self).save(*args, **kwargs)
 
     @classmethod
     def generate_key(cls):
         return binascii.hexlify(os.urandom(20)).decode()
 
-    def __str__(self):
+    def __unicode__(self):
         return self.key

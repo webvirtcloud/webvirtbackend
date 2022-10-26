@@ -10,7 +10,12 @@ class ObtainAuthToken(BaseObtainAuthToken):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
-        token = Token.objects.filter(user=user).first()
-        if token is None:
-            token = Token.objects.create(user=user, name='API token')
+        
+        try:
+            token = Token.objects.get(user=user, scope=Token.WRITE_SCOPE, is_obtained=True)
+        except Token.DoesNotExist:
+            token = Token.objects.create(
+                user=user, scope=Token.WRITE_SCOPE, is_obtained=True, name='Obtained auth token'
+            )
+        
         return Response({'token': token.key})
