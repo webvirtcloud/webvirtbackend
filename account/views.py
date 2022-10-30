@@ -1,3 +1,4 @@
+from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
@@ -11,9 +12,9 @@ class Login(ObtainAuthToken):
     serializer_class = AuthTokenSerializer
 
     def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
+        serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data['user']
+        user = serializer.validated_data.get('user')
 
         try:
             token = Token.objects.get(user=user, scope=Token.WRITE_SCOPE, is_obtained=True)
@@ -30,15 +31,10 @@ class Register(APIView):
     permission_classes = (AllowAny,)
 
     def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
+        serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
-        email = serializer.validated_data['email']
-        password = serializer.validated_data['password']
-
-        user = User.objects.create_user(email=email, password=password)
-        token = Token.objects.create(user=user, scope=Token.WRITE_SCOPE, is_obtained=True, name='Obtained auth token')
-
-        return Response({'token': token.key})
+        data = serializer.save()
+        return Response(data.get('token'), status=status.HTTP_201_CREATED)
 
 
 class ResetPassword(APIView):
