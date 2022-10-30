@@ -126,15 +126,16 @@ class Token(models.Model):
         verbose_name = 'Token'
         verbose_name_plural = 'Tokens'
 
+    @classmethod
+    def generate_key(cls):
+        return binascii.hexlify(os.urandom(20)).decode()
+        self.save()
+
     def save(self, *args, **kwargs):
         if not self.key:
             self.key = self.generate_key()
         self.updated = timezone.now()
         return super(Token, self).save(*args, **kwargs)
-
-    @classmethod
-    def generate_key(cls):
-        return binascii.hexlify(os.urandom(20)).decode()
 
     def __unicode__(self):
         return self.key

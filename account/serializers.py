@@ -29,8 +29,10 @@ class AuthTokenSerializer(serializers.Serializer):
 
 
 class RegisterSerializer(serializers.Serializer):
-    email = serializers.EmailField(required=False, write_only=True)
-    password = serializers.CharField(required=False, write_only=True)
+    email = serializers.EmailField(label="Email", write_only=True)
+    password = serializers.CharField(
+        label="Password", style={'input_type': 'password'}, trim_whitespace=False, write_only=True
+    )
 
     def validate_password(self, password):
         if password and len(password) < 8:
@@ -58,4 +60,55 @@ class RegisterSerializer(serializers.Serializer):
         )
         
         validated_data['token'] = token.key
+        return validated_data
+
+
+class ResetPasswordSerializer(serializers.Serializer):
+    email = serializers.EmailField(label="Email", write_only=True)
+
+    def create(self, validated_data):
+        email = validated_data.get('email')
+
+        try:
+            user = User.objects.get(email=email)
+            user.update_hash()
+        except User.DoesNotExist:
+            pass
+
+        return validated_data
+
+class ResetPasswordHashSerializer(serializers.Serializer):
+    password = serializers.CharField(
+        label="Password", style={'input_type': 'password'}, trim_whitespace=False, write_only=True
+    )
+    password_confirm = serializers.CharField(
+        label="Password Confirm", style={'input_type': 'password'}, trim_whitespace=False, write_only=True
+    )
+
+    def validate_password(self, attrs):
+        if attrs and len(attrs) < 8:
+            raise serializers.ValidationError('Password must be at least 8 characters long.')
+        return attrs
+
+    def validate(self, attrs):
+        password = attrs.get('password')
+        password_confirm = attrs.get('password_confirm')
+
+        if password != password_confirm:
+            raise serializers.ValidationError('Passwords do not match.')
+
+        return attrs
+
+    def update(self, instance, validated_data):
+        password = validated_data.get('password')
+
+        if instance is None:
+            serializers.ValidationError("Hash is incorrect or your account is not activated")
+        
+        instance.set_password(password)
+        instance.update_hash()
+
+        token = Token.objects.get(is_obtained=True, user=instance)
+        token.generate_key()
+
         return validated_data

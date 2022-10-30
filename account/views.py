@@ -5,7 +5,12 @@ from rest_framework.permissions import AllowAny
 from rest_framework.authtoken.views import ObtainAuthToken
 
 from .models import User, Token
-from .serializers import AuthTokenSerializer, RegisterSerializer
+from .serializers import (
+    RegisterSerializer, 
+    AuthTokenSerializer,
+    ResetPasswordSerializer, 
+    ResetPasswordHashSerializer,
+)
 
 
 class Login(ObtainAuthToken):
@@ -27,8 +32,8 @@ class Login(ObtainAuthToken):
 
 
 class Register(APIView):
-    serializer_class = RegisterSerializer
     permission_classes = (AllowAny,)
+    serializer_class = RegisterSerializer
 
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
@@ -39,40 +44,29 @@ class Register(APIView):
 
 class ResetPassword(APIView):
     permission_classes = (AllowAny,)
+    serializer_class = ResetPasswordSerializer
 
     def post(self, request, *args, **kwargs):
-        email = request.data.get('email')
-
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
         return Response()
 
 
 class ResetPasswordHash(APIView):
     permission_classes = (AllowAny,)
+    serializer_class = ResetPasswordHashSerializer
 
-    def get(self, request, *args, **kwargs):
+    def post(self, request, hash, *args, **kwargs):
         try:
-            User.objects.get(hash=kwargs['hash'], is_active=True)
+            user = User.objects.get(hash=hash, is_active=True)
         except User.DoesNotExist:
-            msg = "Hash is incorrect or your account is not activated"
-            return Response({'message': msg})
-
+            user = None
+        
+        serializer = self.serializer_class(user, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
         return Response()
-
-    def post(self, request, *args, **kwargs):
-        password = request.data.get('password')
-        password_confirm = request.data.get('password_confirm')
-
-        try:
-            user = User.objects.get(hash=kwargs['hash'], is_active=True)
-            user.set_password(password)
-            token = Token.objects.get(is_obtained=True, user=user)
-            token.generate_key()
-            token.save()
-        except User.DoesNotExist:
-            msg = "Hash is incorrect or your account is not activated"
-            return Response({'message': msg}, status=400)
-
-        return Response({'token': token.key})
 
 
 class VerifyEmail(APIView):
