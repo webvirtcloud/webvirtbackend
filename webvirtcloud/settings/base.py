@@ -86,7 +86,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'CONN_MAX_AGE': 3600,
-        'NAME': 'hubgridcloud',
+        'NAME': 'webvirtcloud',
         'USER': os.environ.get('DB_USER', 'root'),
         'PASSWORD': os.environ.get('DB_PASSWORD', 'root'),
         'HOST': os.environ.get('DB_HOST', '127.0.0.1'),
