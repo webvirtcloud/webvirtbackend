@@ -2,12 +2,12 @@
 WebVirtCloud URL Configuration
 """
 from django.conf import settings
-from django.urls import include, path
+from django.urls import include, re_path
 
 
 urlpatterns = [
-    path('', include('singlepage.urls')),
-    path('account/', include('account.urls')),
+    re_path(r'', include('singlepage.urls')),
+    re_path(r'account/', include('account.urls')),
 ]
 
 if settings.DEBUG:
