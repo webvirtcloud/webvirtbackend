@@ -47,7 +47,7 @@ class ResetPassword(APIView):
     def post(self, request, *args, **kwargs):
         email = request.data.get('email')
 
-        return Response({'success': token.key})
+        return Response()
 
 
 class ResetPasswordHash(APIView):
@@ -58,8 +58,9 @@ class ResetPasswordHash(APIView):
             User.objects.get(hash=kwargs['hash'], is_active=True)
         except User.DoesNotExist:
             msg = "Hash is incorrect or your account is not activated"
-
-        return Response({'message': msg})
+            return Response({'message': msg})
+        
+        return Response()
 
     def post(self, request, *args, **kwargs):
         password = request.data.get('password')
@@ -73,9 +74,9 @@ class ResetPasswordHash(APIView):
             token.save()
         except User.DoesNotExist:
             msg = "Hash is incorrect or your account is not activated"
+            return Response({'message': msg}, status=400)
 
-        return Response({'message': msg})
-
+        return Response({'token': token.key})
 
 def VeryfyEmail(APIView):
     permission_classes = (AllowAny,)
@@ -87,5 +88,6 @@ def VeryfyEmail(APIView):
             user.save()
         except User.DoesNotExist:
             msg = "Hash is incorrect or your account is not activated"
+            return Response({'message': msg}, status=400)
 
-        return Response({'message': msg})
+        return Response()
