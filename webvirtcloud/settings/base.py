@@ -55,7 +55,7 @@ MIDDLEWARE = [
 # Rest framework definition
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'webvirtcloud.authentication.TokenAuthentication',
+        'account.authentication.TokenAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
