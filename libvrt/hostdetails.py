@@ -12,7 +12,7 @@ class wvmHostDetails(wvmConnect):
         return [
             self.wvm.getHostname(),
             self.wvm.getInfo()[0],
-            self.wvm.getInfo()[1] * (1024 ** 2),
+            self.wvm.getInfo()[1] * (1024**2),
             self.wvm.getInfo()[2],
             get_xml_data(self.wvm.getSysinfo(0), 'processor/entry[6]'),
             self.wvm.getURI(),
@@ -28,7 +28,7 @@ class wvmHostDetails(wvmConnect):
         """
         Function return memory usage on node.
         """
-        host_mem = self.wvm.getInfo()[1] * (1024 ** 2)
+        host_mem = self.wvm.getInfo()[1] * (1024**2)
         free_mem = self.wvm.getMemoryStats(-1, 0)
         if isinstance(free_mem, dict):
             mem = list(free_mem.values())

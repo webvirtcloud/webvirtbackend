@@ -254,14 +254,16 @@ class wvmInstance(wvmConnect):
                 vol = self.get_volume_by_path(disk_img)
                 stg = vol.storagePoolLookupByVolume()
 
-                result.append({
-                    'dev': disk_dev,
-                    'image': vol.name(),
-                    'storage': stg.name(),
-                    'path': disk_img,
-                    'format': disk_format,
-                    'size': vol.info()[1],
-                })
+                result.append(
+                    {
+                        'dev': disk_dev,
+                        'image': vol.name(),
+                        'storage': stg.name(),
+                        'path': disk_img,
+                        'format': disk_format,
+                        'size': vol.info()[1],
+                    }
+                )
 
         return result
 
@@ -287,12 +289,14 @@ class wvmInstance(wvmConnect):
                     stg = vol.storagePoolLookupByVolume()
                     stg_name = stg.name()
 
-                result.append({
-                    'dev': disk_dev,
-                    'image': vol_name,
-                    'storage': stg_name,
-                    'path': disk_img,
-                })
+                result.append(
+                    {
+                        'dev': disk_dev,
+                        'image': vol_name,
+                        'storage': stg_name,
+                        'path': disk_img,
+                    }
+                )
 
         return result
 
@@ -394,9 +398,9 @@ class wvmInstance(wvmConnect):
             diff_total = total_now - total_ago
             diff_system = system_now - system_ago
 
-            usage['user'] = 100 * diff_user / (nbcore * (10 ** 9))
-            usage['total'] = 100 * diff_total / (nbcore * (10 ** 9))
-            usage['system'] = 100 * diff_system / (nbcore * (10 ** 9))
+            usage['user'] = 100 * diff_user / (nbcore * (10**9))
+            usage['total'] = 100 * diff_total / (nbcore * (10**9))
+            usage['system'] = 100 * diff_system / (nbcore * (10**9))
 
             if usage['user'] > 100:
                 usage['user'] = 100
@@ -570,7 +574,12 @@ class wvmInstance(wvmConnect):
 
     def get_console_keymap(self):
         return (
-            get_xml_data(self.XMLDesc(libvirt.VIR_DOMAIN_XML_SECURE), 'devices/graphics', 'keymap',) or ''
+            get_xml_data(
+                self.XMLDesc(libvirt.VIR_DOMAIN_XML_SECURE),
+                'devices/graphics',
+                'keymap',
+            )
+            or ''
         )
 
     def resize_resources(self, vcpu, memory, current_vcpu=None, current_memory=None):

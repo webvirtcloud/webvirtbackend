@@ -28,13 +28,15 @@ class wvmStorages(wvmConnect):
             else:
                 stg_vol = None
             stg_size = stg.info()[1]
-            storages.append({
-                'name': pool,
-                'status': stg_status,
-                'type': stg_type,
-                'volumes': stg_vol,
-                'size': stg_size,
-            })
+            storages.append(
+                {
+                    'name': pool,
+                    'status': stg_status,
+                    'type': stg_type,
+                    'volumes': stg_vol,
+                    'size': stg_size,
+                }
+            )
         return storages
 
     def define_storage(self, xml, flag):

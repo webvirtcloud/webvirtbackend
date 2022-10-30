@@ -10,7 +10,6 @@ from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 
 
 class UserManager(BaseUserManager):
-    
     def create_user(self, email, password=None):
         if not email:
             raise ValueError('Input email')
@@ -49,7 +48,7 @@ class User(AbstractBaseUser):
     last_name = models.CharField(max_length=50, blank=True)
 
     created = models.DateTimeField(auto_now_add=True)
-    
+
     updated = models.DateTimeField(auto_now=True)
 
     is_verified = models.BooleanField(default=False)
@@ -122,6 +121,7 @@ class Token(models.Model):
     expired = models.DateField(null=True, blank=True)
 
     is_obtained = models.BooleanField(default=False)
+
     class Meta:
         verbose_name = 'Token'
         verbose_name_plural = 'Tokens'

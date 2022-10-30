@@ -11,7 +11,7 @@ def create_ipv4_subnet(subnet):
     """
     network = []
     net = IP(subnet)
-    subnet = net[2 - len(network): -1]
+    subnet = net[2 - len(network) : -1]
 
     for ip in subnet:
         network.append([ip.strNormal(), net.strNetmask()])

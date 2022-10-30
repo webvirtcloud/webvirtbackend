@@ -119,19 +119,19 @@ def get_xml_findall(xml, string):
 
 
 def pretty_megabytes(val):
-    return "%dMb" % (int(val) / (1024.0 ** 2))
+    return "%dMb" % (int(val) / (1024.0**2))
 
 
 def pretty_gigabytes(val):
-    return "%dGb" % (int(val) / (1024.0 ** 3))
+    return "%dGb" % (int(val) / (1024.0**3))
 
 
 def pretty_bytes(val):
     val = int(val)
-    if val > (1024 ** 3):
-        return "%2.2fGb" % (val / (1024.0 ** 3))
+    if val > (1024**3):
+        return "%2.2fGb" % (val / (1024.0**3))
     else:
-        return "%2.2fMb" % (val / (1024.0 ** 2))
+        return "%2.2fMb" % (val / (1024.0**2))
 
 
 def gen_password(length=22, symbols=False):
@@ -160,7 +160,11 @@ def check_ssh_connection(host, password, username='root', timeout=300):
     for i in range(timeout):
         try:
             ssh.connect(
-                host, username=username, password=password, allow_agent=False, look_for_keys=False,
+                host,
+                username=username,
+                password=password,
+                allow_agent=False,
+                look_for_keys=False,
             )
             ssh.close()
             return True
