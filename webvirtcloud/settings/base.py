@@ -54,8 +54,9 @@ MIDDLEWARE = [
 
 # Rest framework definition
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': ('account.authentication.TokenAuthentication',),
+    'EXCEPTION_HANDLER': 'webvirtcloud.views.custom_exception_handler',
     'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAuthenticated',),
+    'DEFAULT_AUTHENTICATION_CLASSES': ('webvirtcloud.authentication.TokenAuthentication',),
 }
 
 ROOT_URLCONF = 'webvirtcloud.urls'
