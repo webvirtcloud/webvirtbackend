@@ -29,6 +29,7 @@ INTERNAL_IPS = [ip[: ip.rfind(".")] + ".1" for ip in ips] + ['127.0.0.1']
 
 # Middleware definition
 MIDDLEWARE += [
+    'corsheaders.middleware.CorsMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
