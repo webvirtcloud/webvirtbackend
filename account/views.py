@@ -78,7 +78,7 @@ class ResetPasswordHash(APIView):
 
         return Response({'token': token.key})
 
-def VeryfyEmail(APIView):
+class VerifyEmail(APIView):
     permission_classes = (AllowAny,)
 
     def get(self, request, *args, **kwargs):
