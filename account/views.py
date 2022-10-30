@@ -75,3 +75,17 @@ class ResetPasswordHash(APIView):
             msg = "Hash is incorrect or your account is not activated"
 
         return Response({'message': msg})
+
+
+def VeryfyEmail(APIView):
+    permission_classes = (AllowAny,)
+
+    def get(self, request, *args, **kwargs):
+        try:
+            user = User.objects.get(hash=kwargs['hash'], is_active=False)
+            user.is_active = True
+            user.save()
+        except User.DoesNotExist:
+            msg = "Hash is incorrect or your account is not activated"
+
+        return Response({'message': msg})

@@ -1,6 +1,6 @@
 from django.urls import re_path
 
-from .views import Login, Register, ResetPassword, ResetPasswordHash
+from .views import Login, Register, ResetPassword, ResetPasswordHash, VeryfyEmail
 
 urlpatterns = [
     re_path(r'login/?$', Login.as_view(), name='login'),
