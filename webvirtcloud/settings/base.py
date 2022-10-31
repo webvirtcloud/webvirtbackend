@@ -32,6 +32,7 @@ INSTALLED_APPS = [
 
 # Project application definition
 INSTALLED_APPS += [
+    "api",
     "account",
     "singlepage",
 ]
