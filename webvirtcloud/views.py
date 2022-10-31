@@ -5,34 +5,28 @@ from rest_framework.response import Response
 from rest_framework.views import exception_handler
 
 
-def http_code_to_message(code):
-    return HTTPStatus(code).description
-
-
 def payload_response():
     return {
-        "status": "error",
-        "status_code": 0,
         "message": "",
-        "data": [],
+        "status_code": 0,
     }
 
 
 def success_message_reponse(message):
     status_code = status.HTTP_200_OK
-    success_payload = payload_response()
-    success_payload["status"] = "success"
-    success_payload["status_code"] = status_code
-    success_payload["message"] = message
+    success_payload = {
+        "message": message,
+        "status_code": status_code,
+    }
     return Response(success_payload, status=status_code)
 
 
 def custom_exception(message):
     status_code = status.HTTP_400_BAD_REQUEST
-    error_payload = payload_response()
-    error_payload["status_code"] = status_code
-    error_payload["message"] = http_code_to_message(status_code)
-    error_payload["data"] = {settings.REST_FRAMEWORK.get('NON_FIELD_ERRORS_KEY'): [message]}
+    error_payload = {
+        "message": message,
+        "status_code": status_code,
+    }
     return Response(error_payload, status=status_code)
 
 
@@ -41,10 +35,24 @@ def custom_exception_handler(exc, context):
     response = exception_handler(exc, context)
 
     if response is not None:
-        error_payload = payload_response()
-        status_code = response.status_code  
+        error_fileds = []
+        error_payload = {
+            "message": "",
+            "status_code": 0,
+        }
+        status_code = response.status_code
+        non_field_error = response.data.get(settings.REST_FRAMEWORK.get("NON_FIELD_ERRORS_KEY"))
+
+        if non_field_error:
+            error_message = non_field_error[0]
+
+        if not error_message:
+            for k, v in response.data.items():
+                error_fileds.append({"message": v[0], "field": k})
+            error_payload["errors"] = error_fileds
+            error_message = HTTPStatus(status_code).description
+
+        error_payload["message"] = error_message
         error_payload["status_code"] = status_code
-        error_payload["message"] = http_code_to_message(status_code)
-        error_payload["data"] = response.data
         response.data = error_payload
     return response

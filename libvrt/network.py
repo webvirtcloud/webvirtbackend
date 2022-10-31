@@ -40,13 +40,13 @@ class wvmNetworks(wvmConnect):
             net = self.get_network(network)
             net_status = net.isActive()
             net_bridge = net.bridgeName()
-            net_forwd = get_xml_data(net.XMLDesc(0), 'forward', 'mode')
+            net_forwd = get_xml_data(net.XMLDesc(0), "forward", "mode")
             networks.append(
                 {
-                    'name': network,
-                    'status': net_status,
-                    'device': net_bridge,
-                    'forward': net_forwd,
+                    "name": network,
+                    "status": net_status,
+                    "device": net_bridge,
+                    "forward": net_forwd,
                 }
             )
         return networks
@@ -58,25 +58,25 @@ class wvmNetworks(wvmConnect):
         xml = f"""
             <network>
                 <name>{name}</name>"""
-        if forward in ['nat', 'route', 'bridge']:
+        if forward in ["nat", "route", "bridge"]:
             xml += f"""<forward mode='{forward}'/>"""
         xml += """<bridge """
-        if forward in ['nat', 'route', 'none']:
+        if forward in ["nat", "route", "none"]:
             xml += """stp='on' delay='0'"""
-        if forward == 'bridge':
+        if forward == "bridge":
             xml += f"""name='{bridge}'"""
         xml += """/>"""
         if openvswitch is True:
             xml += """<virtualport type='openvswitch'/>"""
-        if forward != 'bridge':
+        if forward != "bridge":
             xml += f"""
                         <ip address='{gateway}' netmask='{mask}'>"""
             if dhcp:
                 xml += f"""<dhcp>
                             <range start='{dhcp[0]}' end='{dhcp[1]}' />"""
                 if fixed:
-                    fist_oct = int(dhcp[0].strip().split('.')[3])
-                    last_oct = int(dhcp[1].strip().split('.')[3])
+                    fist_oct = int(dhcp[0].strip().split(".")[3])
+                    last_oct = int(dhcp[1].strip().split(".")[3])
                     for ip in range(fist_oct, last_oct + 1):
                         xml += f"""<host mac='{randomMAC()}' ip='{gateway[:-2]}.{ip}' />"""
                 xml += """</dhcp>"""
@@ -132,12 +132,12 @@ class wvmNetwork(wvmConnect):
 
     def get_ipv4_network(self):
         xml = self.XMLDesc(0)
-        if not get_xml_data(xml, 'ip'):
+        if not get_xml_data(xml, "ip"):
             return None
 
-        addrStr = get_xml_data(xml, 'ip', 'address')
-        netmaskStr = get_xml_data(xml, 'ip', 'netmask')
-        prefix = get_xml_data(xml, 'ip', 'prefix')
+        addrStr = get_xml_data(xml, "ip", "address")
+        netmaskStr = get_xml_data(xml, "ip", "netmask")
+        prefix = get_xml_data(xml, "ip", "prefix")
 
         if prefix:
             prefix = int(prefix)
@@ -148,7 +148,7 @@ class wvmNetwork(wvmConnect):
             netmask = IP(netmaskStr)
             gateway = IP(addrStr)
             network = IP(gateway.int() & netmask.int())
-            ret = IP(f'{network}/{netmaskStr}')
+            ret = IP(f"{network}/{netmaskStr}")
         else:
             ret = IP(str(addrStr))
 
@@ -156,14 +156,14 @@ class wvmNetwork(wvmConnect):
 
     def get_ipv4_forward(self):
         xml = self.XMLDesc(0)
-        fw = get_xml_data(xml, 'forward', 'mode')
-        forwardDev = get_xml_data(xml, 'forward', 'dev')
+        fw = get_xml_data(xml, "forward", "mode")
+        forwardDev = get_xml_data(xml, "forward", "dev")
         return [fw, forwardDev]
 
     def get_ipv4_dhcp_range(self):
         xml = self.XMLDesc(0)
-        dhcpstart = get_xml_data(xml, 'ip/dhcp/range[1]', 'start')
-        dhcpend = get_xml_data(xml, 'ip/dhcp/range[1]', 'end')
+        dhcpstart = get_xml_data(xml, "ip/dhcp/range[1]", "start")
+        dhcpend = get_xml_data(xml, "ip/dhcp/range[1]", "end")
         if not dhcpstart and not dhcpend:
             return None
         return [IP(dhcpstart), IP(dhcpend)]
@@ -185,14 +185,14 @@ class wvmNetwork(wvmConnect):
         forward = self.get_ipv4_forward()[0]
         if forward and forward != "nat":
             return True
-        return bool(get_xml_data(xml, 'ip/dhcp/bootp', 'file'))
+        return bool(get_xml_data(xml, "ip/dhcp/bootp", "file"))
 
     def get_mac_ipaddr(self):
         fixed_mac = []
         xml = self.XMLDesc(0)
         tree = ElementTree.fromstring(xml)
-        dhcp_list = tree.findall('ip/dhcp/host')
+        dhcp_list = tree.findall("ip/dhcp/host")
         for i in dhcp_list:
-            fixed_mac.append({'host': i.get('ip'), 'mac': i.get('mac')})
+            fixed_mac.append({"host": i.get("ip"), "mac": i.get("mac")})
 
         return fixed_mac

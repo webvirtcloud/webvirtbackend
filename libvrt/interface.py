@@ -9,9 +9,9 @@ class wvmInterfaces(wvmConnect):
         iface = self.get_iface(name)
         xml = iface.XMLDesc(1)
         mac = iface.MACString()
-        itype = get_xml_data(xml, element='type')
+        itype = get_xml_data(xml, element="type")
         state = iface.isActive()
-        return {'name': name, 'type': itype, 'state': state, 'mac': mac}
+        return {"name": name, "type": itype, "state": state, "mac": mac}
 
     def define_iface(self, xml, flag=0):
         self.wvm.interfaceDefineXML(xml, flag)
@@ -21,27 +21,27 @@ class wvmInterfaces(wvmConnect):
     ):
         xml = f"""<interface type='{itype}' name='{name}'>
                     <start mode='{mode}'/>"""
-        if ipv4_type == 'dhcp':
+        if ipv4_type == "dhcp":
             xml += """<protocol family='ipv4'>
                         <dhcp/>
                       </protocol>"""
-        if ipv4_type == 'static':
-            address, prefix = ipv4_addr.split('/')
+        if ipv4_type == "static":
+            address, prefix = ipv4_addr.split("/")
             xml += f"""<protocol family='ipv4'>
                         <ip address='{address}' prefix='{prefix}'/>
                         <route gateway='{ipv4_gw}'/>
                       </protocol>"""
-        if ipv6_type == 'dhcp':
+        if ipv6_type == "dhcp":
             xml += """<protocol family='ipv6'>
                         <dhcp/>
                       </protocol>"""
-        if ipv6_type == 'static':
-            address, prefix = ipv6_addr.split('/')
+        if ipv6_type == "static":
+            address, prefix = ipv6_addr.split("/")
             xml += f"""<protocol family='ipv6'>
                         <ip address='{address}' prefix='{prefix}'/>
                         <route gateway='{ipv6_gw}'/>
                       </protocol>"""
-        if itype == 'bridge':
+        if itype == "bridge":
             xml += f"""<bridge stp='{stp}' delay='{delay}'>
                         <interface name='{netdev}' type='ethernet'/>
                       </bridge>"""
@@ -62,7 +62,7 @@ class wvmInterface(wvmConnect):
     def get_start_mode(self):
         try:
             xml = self._XMLDesc(VIR_INTERFACE_XML_INACTIVE)
-            return get_xml_data(xml, 'start', 'mode')
+            return get_xml_data(xml, "start", "mode")
         except Exception:
             return None
 
@@ -78,77 +78,77 @@ class wvmInterface(wvmConnect):
 
     def get_type(self):
         xml = self._XMLDesc()
-        return get_xml_data(xml, element='type')
+        return get_xml_data(xml, element="type")
 
     def get_ipv4_type(self):
         try:
             xml = self._XMLDesc(VIR_INTERFACE_XML_INACTIVE)
-            ip_family = get_xml_data(xml, 'protocol', 'family')
-            if ip_family == 'ipv4':
-                ipaddr = get_xml_data(xml, 'protocol/ip', 'address')
+            ip_family = get_xml_data(xml, "protocol", "family")
+            if ip_family == "ipv4":
+                ipaddr = get_xml_data(xml, "protocol/ip", "address")
                 if ipaddr:
-                    return 'static'
+                    return "static"
                 else:
-                    return 'dhcp'
+                    return "dhcp"
             return None
         except Exception:
             return None
 
     def get_ipv4(self):
         xml = self._XMLDesc()
-        ip_family = get_xml_data(xml, 'protocol', 'family')
-        if ip_family == 'ipv4':
-            int_ipv4_ip = get_xml_data(xml, 'protocol/ip', 'address')
-            int_ipv4_mask = get_xml_data(xml, 'protocol/ip', 'prefix')
+        ip_family = get_xml_data(xml, "protocol", "family")
+        if ip_family == "ipv4":
+            int_ipv4_ip = get_xml_data(xml, "protocol/ip", "address")
+            int_ipv4_mask = get_xml_data(xml, "protocol/ip", "prefix")
         else:
             int_ipv4_ip = None
             int_ipv4_mask = None
         if not int_ipv4_ip or not int_ipv4_mask:
             return None
         else:
-            return f'{int_ipv4_ip}/{int_ipv4_mask}'
+            return f"{int_ipv4_ip}/{int_ipv4_mask}"
 
     def get_ipv6_type(self):
         try:
             xml = self._XMLDesc()
-            ip_family = get_xml_data(xml, 'protocol', 'family')
-            if ip_family == 'ipv6':
-                ipaddr = get_xml_data(xml, 'protocol/ip', 'address')
+            ip_family = get_xml_data(xml, "protocol", "family")
+            if ip_family == "ipv6":
+                ipaddr = get_xml_data(xml, "protocol/ip", "address")
             else:
-                ip_family = get_xml_data(xml, 'protocol[2]', 'family')
-                if ip_family == 'ipv6':
-                    ipaddr = get_xml_data(xml, 'protocol[2]/ip', 'address')
+                ip_family = get_xml_data(xml, "protocol[2]", "family")
+                if ip_family == "ipv6":
+                    ipaddr = get_xml_data(xml, "protocol[2]/ip", "address")
                 else:
                     return None
             if ipaddr:
-                return 'static'
+                return "static"
             else:
-                return 'dhcp'
+                return "dhcp"
         except Exception:
             return None
 
     def get_ipv6(self):
         xml = self._XMLDesc()
-        ip_family = get_xml_data(xml, 'protocol', 'family')
-        if ip_family == 'ipv6':
-            int_ipv6_ip = get_xml_data(xml, 'protocol/ip', 'address')
-            int_ipv6_mask = get_xml_data(xml, 'protocol/ip', 'prefix')
+        ip_family = get_xml_data(xml, "protocol", "family")
+        if ip_family == "ipv6":
+            int_ipv6_ip = get_xml_data(xml, "protocol/ip", "address")
+            int_ipv6_mask = get_xml_data(xml, "protocol/ip", "prefix")
         else:
-            ip_family = get_xml_data(xml, 'protocol[2]', 'family')
-            if ip_family == 'ipv6':
-                int_ipv6_ip = get_xml_data(xml, 'protocol[2]/ip', 'address')
-                int_ipv6_mask = get_xml_data(xml, 'protocol[2]/ip', 'prefix')
+            ip_family = get_xml_data(xml, "protocol[2]", "family")
+            if ip_family == "ipv6":
+                int_ipv6_ip = get_xml_data(xml, "protocol[2]/ip", "address")
+                int_ipv6_mask = get_xml_data(xml, "protocol[2]/ip", "prefix")
             else:
                 return None
         if not int_ipv6_ip or not int_ipv6_mask:
             return None
         else:
-            return f'{int_ipv6_ip}/{int_ipv6_mask}'
+            return f"{int_ipv6_ip}/{int_ipv6_mask}"
 
     def get_bridge(self):
-        if self.get_type() == 'bridge':
+        if self.get_type() == "bridge":
             xml = self._XMLDesc()
-            return get_xml_data(xml, 'bridge/interface', 'name')
+            return get_xml_data(xml, "bridge/interface", "name")
         else:
             return None
 

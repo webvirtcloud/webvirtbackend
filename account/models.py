@@ -12,7 +12,7 @@ from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None):
         if not email:
-            raise ValueError('Input email')
+            raise ValueError("Input email")
 
         user = self.model(email=self.normalize_email(email))
         user.hash = get_random_string(length=40)
@@ -22,7 +22,7 @@ class UserManager(BaseUserManager):
 
     def create_superuser(self, email, password):
         if not email:
-            raise ValueError('Input email')
+            raise ValueError("Input email")
 
         user = self.create_user(email, password=password)
         user.hash = get_random_string(length=40)
@@ -55,13 +55,13 @@ class User(AbstractBaseUser):
 
     objects = UserManager()
 
-    USERNAME_FIELD = 'email'
+    USERNAME_FIELD = "email"
 
     def get_full_name(self):
-        return self.first_name + ' ' + self.last_name
+        return self.first_name + " " + self.last_name
 
     def get_short_name(self):
-        return self.first_name + ' ' + self.last_name[0]
+        return self.first_name + " " + self.last_name[0]
 
     def __str__(self):
         return self.email
@@ -89,8 +89,8 @@ class User(AbstractBaseUser):
         self.save()
 
     class Meta:
-        verbose_name = 'User'
-        verbose_name_plural = 'Users'
+        verbose_name = "User"
+        verbose_name_plural = "Users"
 
     def save(self, *args, **kwargs):
         self.updated = timezone.now()
@@ -99,11 +99,11 @@ class User(AbstractBaseUser):
 
 class Token(models.Model):
 
-    READ_SCOPE = 'read'
-    WRITE_SCOPE = 'write'
+    READ_SCOPE = "read"
+    WRITE_SCOPE = "write"
     SCOPE_CHOICES = (
-        (READ_SCOPE, 'Read scope'),
-        (WRITE_SCOPE, 'Write scope'),
+        (READ_SCOPE, "Read scope"),
+        (WRITE_SCOPE, "Write scope"),
     )
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, models.PROTECT)
@@ -123,8 +123,8 @@ class Token(models.Model):
     is_obtained = models.BooleanField(default=False)
 
     class Meta:
-        verbose_name = 'Token'
-        verbose_name_plural = 'Tokens'
+        verbose_name = "Token"
+        verbose_name_plural = "Tokens"
 
     @classmethod
     def generate_key(cls):

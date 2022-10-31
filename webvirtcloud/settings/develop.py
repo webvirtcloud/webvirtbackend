@@ -12,12 +12,12 @@ DEBUG = True
 ADMIN_ENABLED = True
 
 # Allowed hosts
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ["*"]
 
 # Application definition
 INSTALLED_APPS += [
-    'corsheaders',
-    'debug_toolbar',
+    "corsheaders",
+    "debug_toolbar",
 ]
 
 # CORS settings
@@ -25,12 +25,12 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 # DebugToolBar
 hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
-INTERNAL_IPS = [ip[: ip.rfind(".")] + ".1" for ip in ips] + ['127.0.0.1']
+INTERNAL_IPS = [ip[: ip.rfind(".")] + ".1" for ip in ips] + ["127.0.0.1"]
 
 # Middleware definition
 MIDDLEWARE += [
-    'corsheaders.middleware.CorsMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
 try:

@@ -8,11 +8,11 @@ class wvmSecrets(wvmConnect):
     def create_secret(self, ephemeral, private, secret_type, data):
         xml = f"""<secret ephemeral='{ephemeral}' private='{private}'>
                     <usage type='{secret_type}'>"""
-        if secret_type == 'ceph':
+        if secret_type == "ceph":
             xml += f"""<name>{data}</name>"""
-        if secret_type == 'volume':
+        if secret_type == "volume":
             xml += f"""<volume>{data}</volume>"""
-        if secret_type == 'iscsi':
+        if secret_type == "iscsi":
             xml += f"""<target>{data}</target>"""
         xml += """</usage>
                  </secret>"""
@@ -37,7 +37,7 @@ class wvmSecrets(wvmConnect):
     def delete_secret_value(self, uuid):
         secret = self.get_secret(uuid)
         try:
-            secret.setValue(value='')
+            secret.setValue(value="")
         except TypeError:
             pass
 

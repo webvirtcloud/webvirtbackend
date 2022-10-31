@@ -5,11 +5,11 @@ from .util import get_xml_data, pretty_bytes
 def get_rbd_storage_data(stg):
     hosts = []
     xml = stg.XMLDesc(0)
-    host_count = xml.find('host')
-    username = get_xml_data(xml, 'source/auth', 'username')
-    uuid = get_xml_data(xml, 'source/auth/secret', 'uuid')
+    host_count = xml.find("host")
+    username = get_xml_data(xml, "source/auth", "username")
+    uuid = get_xml_data(xml, "source/auth/secret", "uuid")
     for i in range(1, host_count + 1):
-        host = get_xml_data(xml, f'source/host[{i}]', 'name')
+        host = get_xml_data(xml, f"source/host[{i}]", "name")
         if host:
             hosts.append(host)
     return username, uuid, hosts
@@ -22,7 +22,7 @@ class wvmStorages(wvmConnect):
         for pool in get_storages:
             stg = self.get_storage(pool)
             stg_status = stg.isActive()
-            stg_type = get_xml_data(stg.XMLDesc(0), element='type')
+            stg_type = get_xml_data(stg.XMLDesc(0), element="type")
             if stg_status:
                 stg_vol = len(stg.listVolumes())
             else:
@@ -30,11 +30,11 @@ class wvmStorages(wvmConnect):
             stg_size = stg.info()[1]
             storages.append(
                 {
-                    'name': pool,
-                    'status': stg_status,
-                    'type': stg_type,
-                    'volumes': stg_vol,
-                    'size': stg_size,
+                    "name": pool,
+                    "status": stg_status,
+                    "type": stg_type,
+                    "volumes": stg_vol,
+                    "size": stg_size,
                 }
             )
         return storages
@@ -46,15 +46,15 @@ class wvmStorages(wvmConnect):
         xml = f"""
                 <pool type='{stg_type}'>
                 <name>{name}</name>"""
-        if stg_type == 'logical':
+        if stg_type == "logical":
             xml += f"""
                   <source>
                     <device path='{source}'/>
                     <name>{name}</name>
                     <format type='lvm2'/>
                   </source>"""
-        if stg_type == 'logical':
-            target = '/dev/' + name
+        if stg_type == "logical":
+            target = "/dev/" + name
         xml += f"""
                   <target>
                        <path>{target}</path>
@@ -62,7 +62,7 @@ class wvmStorages(wvmConnect):
                 </pool>"""
         self.define_storage(xml, 0)
         stg = self.get_storage(name)
-        if stg_type == 'logical':
+        if stg_type == "logical":
             stg.build(0)
         stg.create(0)
         stg.setAutostart(1)
@@ -121,15 +121,15 @@ class wvmStorage(wvmConnect):
 
     def get_status(self):
         status = [
-            'Not running',
-            'Initializing pool, not available',
-            'Running normally',
-            'Running degraded',
+            "Not running",
+            "Initializing pool, not available",
+            "Running normally",
+            "Running degraded",
         ]
         try:
             return status[self.pool.info()[0]]
         except ValueError:
-            return 'Unknown'
+            return "Unknown"
 
     def get_size(self):
         return [self.pool.info()[1], self.pool.info()[3]]
@@ -168,19 +168,19 @@ class wvmStorage(wvmConnect):
         self.pool.setAutostart(value)
 
     def get_type(self):
-        return get_xml_data(self.XMLDesc(0), element='type')
+        return get_xml_data(self.XMLDesc(0), element="type")
 
     def get_target_path(self):
-        return get_xml_data(self.XMLDesc(0), 'target/path')
+        return get_xml_data(self.XMLDesc(0), "target/path")
 
     def get_allocation(self):
-        return int(get_xml_data(self.XMLDesc(0), 'allocation'))
+        return int(get_xml_data(self.XMLDesc(0), "allocation"))
 
     def get_available(self):
-        return int(get_xml_data(self.XMLDesc(0), 'available'))
+        return int(get_xml_data(self.XMLDesc(0), "available"))
 
     def get_capacity(self):
-        return int(get_xml_data(self.XMLDesc(0), 'capacity'))
+        return int(get_xml_data(self.XMLDesc(0), "capacity"))
 
     def get_pretty_allocation(self):
         return pretty_bytes(self.get_allocation())
@@ -210,7 +210,7 @@ class wvmStorage(wvmConnect):
         vol.delete(0)
 
     def get_volume_type(self, name):
-        return get_xml_data(self._vol_XMLDesc(name), 'target/format', 'type')
+        return get_xml_data(self._vol_XMLDesc(name), "target/format", "type")
 
     def refresh(self):
         self.pool.refresh(0)
@@ -226,20 +226,20 @@ class wvmStorage(wvmConnect):
         for vol_name in vols:
             vol_list.append(
                 {
-                    'name': vol_name,
-                    'size': self.get_volume_size(vol_name),
-                    'type': self.get_volume_type(vol_name),
+                    "name": vol_name,
+                    "size": self.get_volume_size(vol_name),
+                    "type": self.get_volume_type(vol_name),
                 }
             )
         return vol_list
 
-    def create_volume(self, name, size, vol_fmt='qcow2', metadata=False):
+    def create_volume(self, name, size, vol_fmt="qcow2", metadata=False):
         storage_type = self.get_type()
         alloc = size
-        if vol_fmt == 'unknown':
-            vol_fmt = 'raw'
-        if storage_type == 'dir':
-            name += '.img'
+        if vol_fmt == "unknown":
+            vol_fmt = "raw"
+        if storage_type == "dir":
+            name += ".img"
             alloc = 0
         xml = f"""
             <volume>
@@ -254,8 +254,8 @@ class wvmStorage(wvmConnect):
 
     def clone_volume(self, name, clone, vol_fmt=None, metadata=False):
         storage_type = self.get_type()
-        if storage_type == 'dir':
-            clone += '.img'
+        if storage_type == "dir":
+            clone += ".img"
         vol = self.get_volume(name)
         if not vol_fmt:
             vol_fmt = self.get_volume_type(name)

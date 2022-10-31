@@ -10,8 +10,8 @@ from string import ascii_letters, digits
 
 def is_kvm_available(xml):
     tree = ET.fromstring(xml)
-    for dom in tree.findall('guest/arch/domain'):
-        if 'kvm' in dom.get('type'):
+    for dom in tree.findall("guest/arch/domain"):
+        if "kvm" in dom.get("type"):
             return True
     return False
 
@@ -29,7 +29,7 @@ def randomMAC():
         random.randint(0x00, 0xFF),
         random.randint(0x00, 0xFF),
     ]
-    return ':'.join("%02x" % x for x in mac)
+    return ":".join("%02x" % x for x in mac)
 
 
 def randomUUID():
@@ -66,7 +66,7 @@ def xml_escape(data):
 
     data = data.replace("&", "&amp;")
     data = data.replace("'", "&apos;")
-    data = data.replace("\"", "&quot;")
+    data = data.replace('"', "&quot;")
     data = data.replace("<", "&lt;")
     data = data.replace(">", "&gt;")
     return data
@@ -96,9 +96,9 @@ def compareMAC(p, q):
 
 
 def get_xml_data(xml, path=None, element=None):
-    res = ''
+    res = ""
     if not path and not element:
-        return ''
+        return ""
 
     tree = ET.fromstring(xml)
     if path:
@@ -135,10 +135,10 @@ def pretty_bytes(val):
 
 
 def gen_password(length=22, symbols=False):
-    simple_symbols = ''
+    simple_symbols = ""
     if symbols:
-        simple_symbols = '!@#$%^&*()_+[]-=:;{}?|<>'
-    password = ''.join([random.choice(ascii_letters + simple_symbols + digits) for _ in range(length)])
+        simple_symbols = "!@#$%^&*()_+[]-=:;{}?|<>"
+    password = "".join([random.choice(ascii_letters + simple_symbols + digits) for _ in range(length)])
     return password
 
 
@@ -153,7 +153,7 @@ def password_to_hash(password):
     return password_hash
 
 
-def check_ssh_connection(host, password, username='root', timeout=300):
+def check_ssh_connection(host, password, username="root", timeout=300):
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 

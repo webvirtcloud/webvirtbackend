@@ -14,7 +14,7 @@ class wvmHostDetails(wvmConnect):
             self.wvm.getInfo()[0],
             self.wvm.getInfo()[1] * (1024**2),
             self.wvm.getInfo()[2],
-            get_xml_data(self.wvm.getSysinfo(0), 'processor/entry[6]'),
+            get_xml_data(self.wvm.getSysinfo(0), "processor/entry[6]"),
             self.wvm.getURI(),
         ]
 
@@ -22,7 +22,7 @@ class wvmHostDetails(wvmConnect):
         """
         Return hypervisor type
         """
-        return get_xml_data(self.get_cap_xml(), 'guest/arch/domain', 'type')
+        return get_xml_data(self.get_cap_xml(), "guest/arch/domain", "type")
 
     def get_memory_usage(self):
         """
@@ -35,8 +35,8 @@ class wvmHostDetails(wvmConnect):
             free = (mem[1] + mem[2] + mem[3]) * 1024
             percent = 100 - ((free * 100) / host_mem)
             usage = host_mem - free
-            return {'size': host_mem, 'usage': usage, 'percent': round(percent)}
-        return {'size': 0, 'usage': 0, 'percent': 0}
+            return {"size": host_mem, "usage": usage, "percent": round(percent)}
+        return {"size": 0, "usage": 0, "percent": 0}
 
     def get_storage_usage(self, name):
         """
@@ -49,8 +49,8 @@ class wvmHostDetails(wvmConnect):
             free = pool.info()[3]
             used = size - free
             percent = (used * 100) / size
-            return {'size': size, 'used': used, 'percent': percent}
-        return {'size': 0, 'used': 0, 'percent': 0}
+            return {"size": size, "used": used, "percent": percent}
+        return {"size": 0, "used": 0, "percent": 0}
 
     def get_cpu_usage(self):
         """
@@ -62,7 +62,7 @@ class wvmHostDetails(wvmConnect):
         cpu = self.wvm.getCPUStats(-1, 0)
         if isinstance(cpu, dict):
             for num in range(2):
-                idle = self.wvm.getCPUStats(-1, 0)['idle']
+                idle = self.wvm.getCPUStats(-1, 0)["idle"]
                 total = sum(self.wvm.getCPUStats(-1, 0).values())
                 diff_idle = idle - prev_idle
                 diff_total = total - prev_total
@@ -73,4 +73,4 @@ class wvmHostDetails(wvmConnect):
                     time.sleep(1)
                 if diff_usage < 0:
                     diff_usage = 0
-        return {'usage': round(diff_usage)}
+        return {"usage": round(diff_usage)}

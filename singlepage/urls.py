@@ -3,5 +3,5 @@ from .views import IndexView
 from django.views.decorators.cache import never_cache
 
 urlpatterns = [
-    path('', never_cache(IndexView.as_view()), name='index'),
+    path("", never_cache(IndexView.as_view()), name="index"),
 ]

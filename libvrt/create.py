@@ -8,10 +8,10 @@ from .util import get_xml_data, gen_password
 
 
 # Default settings
-DISPLAY = 'vnc'
-VENDOR = 'WebVirtCloud'
-PRODUCT = 'WebVirtCloud'
-MANUFACTURER = 'WebVirtCloud'
+DISPLAY = "vnc"
+VENDOR = "WebVirtCloud"
+PRODUCT = "WebVirtCloud"
+MANUFACTURER = "WebVirtCloud"
 
 
 class wvmCreate(wvmConnect):
@@ -28,7 +28,7 @@ class wvmCreate(wvmConnect):
             except libvirtError:
                 pass
             for img in stg.listVolumes():
-                if img.endswith('.iso'):
+                if img.endswith(".iso"):
                     pass
                 else:
                     images.append(img)
@@ -36,17 +36,17 @@ class wvmCreate(wvmConnect):
 
     def get_os_type(self):
         """Get guest capabilities"""
-        return get_xml_data(self.get_cap_xml(), 'guest/os_type')
+        return get_xml_data(self.get_cap_xml(), "guest/os_type")
 
     def get_host_arch(self):
         """Get guest capabilities"""
-        return get_xml_data(self.get_cap_xml(), 'host/cpu/arch')
+        return get_xml_data(self.get_cap_xml(), "host/cpu/arch")
 
-    def create_volume(self, storage, name, size, volume_format='qcow2', metadata=False):
+    def create_volume(self, storage, name, size, volume_format="qcow2", metadata=False):
         stg = self.get_storage(storage)
-        storage_type = get_xml_data(stg.XMLDesc(0), element='type')
-        if storage_type == 'dir':
-            name = f'{name}.img'
+        storage_type = get_xml_data(stg.XMLDesc(0), element="type")
+        if storage_type == "dir":
+            name = f"{name}.img"
             alloc = 0
         else:
             alloc = size
@@ -69,13 +69,13 @@ class wvmCreate(wvmConnect):
 
     def get_volume_type(self, path):
         vol = self.get_volume_by_path(path)
-        vol_type = get_xml_data(vol.XMLDesc(0), 'target/format', 'type')
-        if vol_type == 'unknown':
-            return 'raw'
+        vol_type = get_xml_data(vol.XMLDesc(0), "target/format", "type")
+        if vol_type == "unknown":
+            return "raw"
         if vol_type:
             return vol_type
         else:
-            return 'raw'
+            return "raw"
 
     def get_volume_path(self, volume):
         storages = self.get_storages()
@@ -95,10 +95,10 @@ class wvmCreate(wvmConnect):
     def clone_from_template(self, clone, template, metadata=False):
         vol = self.get_volume_by_path(template)
         stg = vol.storagePoolLookupByVolume()
-        storage_type = get_xml_data(stg.XMLDesc(0), element='type')
-        vol_type = get_xml_data(vol.XMLDesc(0), 'target/format', 'type')
-        if storage_type == 'dir':
-            clone += '.img'
+        storage_type = get_xml_data(stg.XMLDesc(0), element="type")
+        vol_type = get_xml_data(vol.XMLDesc(0), "target/format", "type")
+        if storage_type == "dir":
+            clone += ".img"
         else:
             metadata = False
         xml = f"""
@@ -181,9 +181,9 @@ class wvmCreate(wvmConnect):
         for image, img_type in images.items():
             disk_letter = disk_letters.pop(0)
             stg = self.get_storage_by_vol_path(image)
-            stg_type = get_xml_data(stg.XMLDesc(0), element='type')
+            stg_type = get_xml_data(stg.XMLDesc(0), element="type")
 
-            if stg_type == 'rbd':
+            if stg_type == "rbd":
                 ceph_user, secret_uuid, ceph_host = get_rbd_storage_data(stg)
 
                 xml += f"""<disk type='network' device='disk'>
@@ -213,21 +213,21 @@ class wvmCreate(wvmConnect):
                   </disk>"""
 
         # Create public pool device with IP and IPv6 and Anchor
-        if network.get('public_ipv4_address'):
+        if network.get("public_ipv4_address"):
             xml += f"""<interface type='network'>
                         <mac address='{network.get('public_device_mac')}'/>
                         <source network='{network.get('public_pool')}'/>"""
             if nwfilter:
                 xml += """<filterref filter='clean-traffic-ipv6'>"""
 
-                if network.get('public_ipv4_anchor'):
+                if network.get("public_ipv4_anchor"):
                     xml += f"""<parameter name='IP' value='{network.get('public_ipv4_address')}'/>"""
 
-                if network.get('public_ipv4_anchor'):
+                if network.get("public_ipv4_anchor"):
                     xml += f"""<parameter name='IP' value='{network.get('public_ipv4_anchor')}'/>"""
 
-                if network.get('public_ipv6_range'):
-                    for ipv6 in IP(network['public_ipv6_range']):
+                if network.get("public_ipv6_range"):
+                    for ipv6 in IP(network["public_ipv6_range"]):
                         xml += f"""<parameter name='IPV6' value='{ipv6.strNormal()}'/>"""
 
                 xml += """</filterref>"""
@@ -236,7 +236,7 @@ class wvmCreate(wvmConnect):
                       </interface>"""
 
         # Create private pool device with IP
-        if network.get('private_ipv4_address'):
+        if network.get("private_ipv4_address"):
             xml += f"""<interface type='network'>
                         <mac address='{network.get('private_device_mac')}'/>
                         <source network='{network.get('private_pool')}'/>"""
@@ -249,7 +249,7 @@ class wvmCreate(wvmConnect):
                       </interface>"""
 
         # Create vpc device for VPC
-        if network.get('vpc_ipv4_address'):
+        if network.get("vpc_ipv4_address"):
             xml += f"""<interface type='bridge'>
                         <mac address='{network.get('vpc_device_mac')}'/>
                         <source bridge='{network.get('vpc_device')}'/>"""
@@ -263,7 +263,7 @@ class wvmCreate(wvmConnect):
                       </interface>"""
 
         # Create public pool device without public IP
-        if network.get('public_ipv4_anchor') and not network.get('public_ipv4_address'):
+        if network.get("public_ipv4_anchor") and not network.get("public_ipv4_address"):
             xml += f"""<interface type='network'>
                         <mac address='{network.get('public_mac')}'/>
                         <source network='{network.get('public_pool')}'/>"""

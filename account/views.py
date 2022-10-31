@@ -7,9 +7,9 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from webvirtcloud.views import custom_exception, success_message_reponse
 from .models import User, Token
 from .serializers import (
-    RegisterSerializer, 
+    RegisterSerializer,
     AuthTokenSerializer,
-    ResetPasswordSerializer, 
+    ResetPasswordSerializer,
     ResetPasswordHashSerializer,
 )
 
@@ -20,16 +20,16 @@ class Login(ObtainAuthToken):
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data.get('user')
+        user = serializer.validated_data.get("user")
 
         try:
             token = Token.objects.get(user=user, scope=Token.WRITE_SCOPE, is_obtained=True)
         except Token.DoesNotExist:
             token = Token.objects.create(
-                user=user, scope=Token.WRITE_SCOPE, is_obtained=True, name='Obtained auth token'
+                user=user, scope=Token.WRITE_SCOPE, is_obtained=True, name="Obtained auth token"
             )
 
-        return Response({'token': token.key})
+        return Response({"token": token.key})
 
 
 class Register(APIView):
@@ -40,7 +40,7 @@ class Register(APIView):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         data = serializer.save()
-        return Response({'token': data.get('token')}, status=status.HTTP_201_CREATED)
+        return Response({"token": data.get("token")}, status=status.HTTP_201_CREATED)
 
 
 class ResetPassword(APIView):
@@ -59,15 +59,13 @@ class ResetPasswordHash(APIView):
     serializer_class = ResetPasswordHashSerializer
 
     def post(self, request, hash, *args, **kwargs):
-        try:
-            user = User.objects.get(hash=hash, is_active=True)
-        except User.DoesNotExist:
-            return success_message_reponse('Check your email for the reset password link.')
-        
-        serializer = self.serializer_class(user, data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response()
+        if User.objects.filter(hash=hash, is_active=True).exists():
+            user = User.objects.get(hash=hash)
+            serializer = self.serializer_class(user, data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(status=status.HTTP_200_OK)
+        return custom_exception("User not found or hash is invalid.")
 
 
 class VerifyEmail(APIView):
@@ -75,11 +73,11 @@ class VerifyEmail(APIView):
 
     def get(self, request, *args, **kwargs):
         try:
-            user = User.objects.get(hash=kwargs['hash'], is_active=False)
+            user = User.objects.get(hash=kwargs["hash"], is_active=False)
             user.is_active = True
             user.save()
         except User.DoesNotExist:
             msg = "Hash is incorrect or your account is not activated"
-            return Response({'message': msg}, status=400)
+            return Response({"message": msg}, status=400)
 
         return Response()

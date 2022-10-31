@@ -26,7 +26,7 @@ def host_is_up(conn_type, hostname):
         socket_host = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         socket_host.settimeout(2)
         if conn_type == CONN_SSH:
-            if ':' in hostname:
+            if ":" in hostname:
                 LIBVIRT_HOST, PORT = (hostname).split(":")
                 PORT = int(PORT)
             else:
@@ -39,7 +39,7 @@ def host_is_up(conn_type, hostname):
             socket_host.connect((hostname, TLS_PORT))
         socket_host.close()
     except socket.error:
-        raise libvirt.libvirtError('Unable to connect to host server: Operation timed out')
+        raise libvirt.libvirtError("Unable to connect to host server: Operation timed out")
 
 
 class wvmEventLoop(threading.Thread):
@@ -50,7 +50,7 @@ class wvmEventLoop(threading.Thread):
         libvirt.virEventRegisterDefaultImpl()
 
         if name is None:
-            name = 'libvirt event loop'
+            name = "libvirt event loop"
 
         super(wvmEventLoop, self).__init__(group, target, name, args, kwargs)
 
@@ -153,7 +153,7 @@ class wvmConnection(object):
             # on server shutdown libvirt module gets freed before the close callbacks are called
             # so we just check here if it is still present
             if libvirt is not None:
-                self.last_error = 'Connection closed'
+                self.last_error = "Connection closed"
 
             # prevent other threads from using the connection (in the future)
             self.connection = None
@@ -163,46 +163,46 @@ class wvmConnection(object):
     def __connect_tcp(self):
         flags = [libvirt.VIR_CRED_AUTHNAME, libvirt.VIR_CRED_PASSPHRASE]
         auth = [flags, self.__libvirt_auth_credentials_callback, None]
-        uri = f'qemu+tcp://{self.host}/system'
+        uri = f"qemu+tcp://{self.host}/system"
 
         try:
             self.connection = libvirt.openAuth(uri, auth, 0)
             self.last_error = None
         except lbivirt.libvirtError as e:
-            self.last_error = 'Connection Failed: ' + str(e)
+            self.last_error = "Connection Failed: " + str(e)
             self.connection = None
 
     def __connect_ssh(self):
-        uri = f'qemu+ssh://{self.login}@{self.host}/system'
+        uri = f"qemu+ssh://{self.login}@{self.host}/system"
 
         try:
             self.connection = libvirt.open(uri)
             self.last_error = None
         except libvirt.libvirtError as e:
-            self.last_error = f'Connection Failed: {str(e)} --- {repr(libvirt.virGetLastError())}'
+            self.last_error = f"Connection Failed: {str(e)} --- {repr(libvirt.virGetLastError())}"
             self.connection = None
 
     def __connect_tls(self):
         flags = [libvirt.VIR_CRED_AUTHNAME, libvirt.VIR_CRED_PASSPHRASE]
         auth = [flags, self.__libvirt_auth_credentials_callback, None]
-        uri = f'qemu+tls://{self.login}@{self.host}/system'
+        uri = f"qemu+tls://{self.login}@{self.host}/system"
 
         try:
             self.connection = libvirt.openAuth(uri, auth, 0)
             self.last_error = None
         except libvirt.libvirtError as e:
-            self.last_error = f'Connection Failed: {str(e)}'
+            self.last_error = f"Connection Failed: {str(e)}"
             self.connection = None
 
     def __connect_socket(self):
-        uri = 'qemu:///system'
+        uri = "qemu:///system"
 
         try:
             self.connection = libvirt.open(uri)
             self.last_error = None
 
         except libvirt.libvirtError as e:
-            self.last_error = f'Connection Failed: {str(e)}'
+            self.last_error = f"Connection Failed: {str(e)}"
             self.connection = None
 
     def close(self):
@@ -233,18 +233,18 @@ class wvmConnection(object):
 
     def __unicode__(self):
         if self.type == CONN_TCP:
-            type_str = u'tcp'
+            type_str = "tcp"
         elif self.type == CONN_SSH:
-            type_str = u'ssh'
+            type_str = "ssh"
         elif self.type == CONN_TLS:
-            type_str = u'tls'
+            type_str = "tls"
         else:
-            type_str = u'invalid_type'
+            type_str = "invalid_type"
 
-        return f'qemu+{type_str}://{self.login}@{self.host}/system'
+        return f"qemu+{type_str}://{self.login}@{self.host}/system"
 
     def __repr__(self):
-        return f'<wvmConnection {str(self)}>'
+        return f"<wvmConnection {str(self)}>"
 
 
 class wvmConnectionManager(object):
@@ -359,14 +359,14 @@ class wvmConnect(object):
 
                 flags = [libvirt.VIR_CRED_AUTHNAME, libvirt.VIR_CRED_PASSPHRASE]
                 auth = [flags, creds, None]
-                uri = f'qemu+tcp://{self.host}/system'
+                uri = f"qemu+tcp://{self.host}/system"
                 try:
                     self.wvm = libvirt.openAuth(uri, auth, 0)
                 except libvirt.libvirtError:
-                    raise libvirt.libvirtError('Connection Failed')
+                    raise libvirt.libvirtError("Connection Failed")
 
             if self.conn == CONN_SSH:
-                uri = f'qemu+ssh://{self.login}@{self.host}/system'
+                uri = f"qemu+ssh://{self.login}@{self.host}/system"
                 try:
                     self.wvm = libvirt.open(uri)
                 except libvirt.libvirtError as err:
@@ -388,11 +388,11 @@ class wvmConnect(object):
 
                 flags = [libvirt.VIR_CRED_AUTHNAME, libvirt.VIR_CRED_PASSPHRASE]
                 auth = [flags, creds, None]
-                uri = f'qemu+tls://{self.login}@{self.host}/system'
+                uri = f"qemu+tls://{self.login}@{self.host}/system"
                 try:
                     self.wvm = libvirt.openAuth(uri, auth, 0)
                 except libvirt.libvirtError:
-                    raise libvirt.libvirtError('Connection Failed')
+                    raise libvirt.libvirtError("Connection Failed")
 
     def get_cap_xml(self):
         return self.wvm.getCapabilities()
@@ -474,24 +474,24 @@ class wvmConnect(object):
         netdevice = []
         for dev in self.wvm.listAllDevices(0):
             xml = dev.XMLDesc(0)
-            if get_xml_data(xml, 'capability', 'type') == 'net':
-                netdevice.append(get_xml_data(xml, 'capability/interface'))
+            if get_xml_data(xml, "capability", "type") == "net":
+                netdevice.append(get_xml_data(xml, "capability/interface"))
         return netdevice
 
     def get_host_instances(self):
         instances = []
         for name in self.get_instances():
             dom = self.get_instance(name)
-            mem = get_xml_data(dom.XMLDesc(0), 'currentMemory')
-            vcpu_c = get_xml_data(dom.XMLDesc(0), 'vcpu', 'current')
-            vcpu = vcpu_c if vcpu_c is not None else get_xml_data(dom.XMLDesc(0), 'vcpu')
+            mem = get_xml_data(dom.XMLDesc(0), "currentMemory")
+            vcpu_c = get_xml_data(dom.XMLDesc(0), "vcpu", "current")
+            vcpu = vcpu_c if vcpu_c is not None else get_xml_data(dom.XMLDesc(0), "vcpu")
             instances.append(
                 {
-                    'name': dom.name(),
-                    'vcpu': vcpu,
-                    'memory': round(int(mem) / 1024),
-                    'status': dom.info()[0],
-                    'uuid': dom.UUIDString(),
+                    "name": dom.name(),
+                    "vcpu": vcpu,
+                    "memory": round(int(mem) / 1024),
+                    "status": dom.info()[0],
+                    "uuid": dom.UUIDString(),
                 }
             )
         return instances
