@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from rest_framework.authtoken.views import ObtainAuthToken
 
-from webvirtcloud.views import custom_exception
+from webvirtcloud.views import custom_exception, success_message_reponse
 from .models import User, Token
 from .serializers import (
     RegisterSerializer, 
@@ -62,7 +62,7 @@ class ResetPasswordHash(APIView):
         try:
             user = User.objects.get(hash=hash, is_active=True)
         except User.DoesNotExist:
-            return custom_exception('Check your email for the reset password link.')
+            return success_message_reponse('Check your email for the reset password link.')
         
         serializer = self.serializer_class(user, data=request.data)
         serializer.is_valid(raise_exception=True)
