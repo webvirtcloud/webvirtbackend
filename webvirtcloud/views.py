@@ -32,7 +32,7 @@ def custom_exception(message):
     error_payload = payload_response()
     error_payload["status_code"] = status_code
     error_payload["message"] = http_code_to_message(status_code)
-    error_payload["data"] = {settings.REST_FRAMEWORK['NON_FIELD_ERRORS_KEY']: [message]}
+    error_payload["data"] = {settings.REST_FRAMEWORK.get('NON_FIELD_ERRORS_KEY'): [message]}
     return Response(error_payload, status=status_code)
 
 

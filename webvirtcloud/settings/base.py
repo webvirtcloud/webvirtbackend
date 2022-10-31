@@ -54,7 +54,7 @@ MIDDLEWARE = [
 
 # Rest framework definition
 REST_FRAMEWORK = {
-    'NON_FIELD_ERRORS_KEY': 'non_filed',
+    'NON_FIELD_ERRORS_KEY': 'non_field',
     'EXCEPTION_HANDLER': 'webvirtcloud.views.custom_exception_handler',
     'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAuthenticated',),
     'DEFAULT_AUTHENTICATION_CLASSES': ('webvirtcloud.authentication.TokenAuthentication',),
