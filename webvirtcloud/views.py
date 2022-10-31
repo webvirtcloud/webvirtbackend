@@ -47,8 +47,8 @@ def custom_exception_handler(exc, context):
             error_message = non_field_error[0]
 
         if not error_message:
-            for k, v in response.data.items():
-                error_fileds.append({"message": v[0], "field": k})
+            for key, value in response.data.items():
+                error_fileds.append({"message": value[0], "field": key})
             error_payload["errors"] = error_fileds
             error_message = HTTPStatus(status_code).description
 
