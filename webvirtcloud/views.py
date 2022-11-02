@@ -41,9 +41,13 @@ def custom_exception_handler(exc, context):
             "status_code": 0,
         }
         status_code = response.status_code
+        detail_error = response.data.get("detail")
         non_field_error = response.data.get(settings.REST_FRAMEWORK.get("NON_FIELD_ERRORS_KEY"))
 
-        if non_field_error:
+        if detail_error:
+            error_message = detail_error
+
+        if not detail_error and non_field_error:
             error_message = non_field_error[0]
 
         if not error_message:
