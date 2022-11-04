@@ -39,10 +39,6 @@ class User(AbstractBaseUser):
 
     hash = models.CharField(max_length=40)
 
-    is_admin = models.BooleanField(default=False)
-
-    is_active = models.BooleanField(default=True)
-
     first_name = models.CharField(max_length=50, blank=True)
 
     last_name = models.CharField(max_length=50, blank=True)
@@ -51,7 +47,13 @@ class User(AbstractBaseUser):
 
     updated = models.DateTimeField(auto_now=True)
 
+    is_admin = models.BooleanField(default=False)
+
+    is_active = models.BooleanField(default=True)
+
     is_verified = models.BooleanField(default=False)
+
+    is_email_verified = models.BooleanField(default=False)
 
     objects = UserManager()
 
