@@ -86,4 +86,4 @@ class ProfileAPI(APIView):
 
     def get(self, request, *args, **kwargs):
         serializer = self.serializer_class(request.user)
-        return Response(serializer.data)
+        return Response({'profile': serializer.data})
