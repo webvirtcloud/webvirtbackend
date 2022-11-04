@@ -111,3 +111,14 @@ class ResetPasswordHashSerializer(serializers.Serializer):
         token.generate_key()
 
         return validated_data
+
+
+class ProfileSerilizer(serializers.ModelSerializer):
+    first_name = serializers.CharField(required=False)
+    last_name = serializers.CharField(required=False)
+    created_at = serializers.DateTimeField(source='created', read_only=True)
+    updated_at = serializers.DateTimeField(source='updated', read_only=True)
+
+    class Meta:
+        model = User
+        fields = ["uuid", "email", "first_name", "last_name", "created_at", "updated_at"]

@@ -12,7 +12,9 @@ from .serializers import (
     ResetPasswordSerializer,
     ResetPasswordHashSerializer,
 )
-
+from .serializers import (
+        ProfileSerilizer,
+)
 
 class Login(ObtainAuthToken):
     serializer_class = AuthTokenSerializer
@@ -69,28 +71,20 @@ class ResetPasswordHash(APIView):
 
 
 class VerifyEmail(APIView):
-    permission_classes = (AllowAny,)
 
     def get(self, request, *args, **kwargs):
-        try:
-            user = User.objects.get(hash=kwargs["hash"], is_active=False)
+        if User.objects.filter(hash=hash, is_active=True).exists():
+            user = User.objects.get(hash=hash)
             user.is_active = True
             user.save()
-        except User.DoesNotExist:
-            msg = "Hash is incorrect or your account is not activated"
-            return Response({"message": msg}, status=400)
-
-        return Response()
+            return Response(status=status.HTTP_200_OK)
+        return custom_exception("Account not found.")
 
 
 class ProfileAPI(APIView):
+    serializer_class = ProfileSerilizer
 
     def get(self, request, *args, **kwargs):
         user = request.user
-        return Response(
-            {
-                "email": user.email,
-                "first_name": user.first_name,
-                "last_name": user.last_name,
-            }
-        )
+        serializer = self.serializer_class(user)
+        return Response(serializer.data)
