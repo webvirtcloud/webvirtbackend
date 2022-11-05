@@ -114,6 +114,7 @@ class ResetPasswordHashSerializer(serializers.Serializer):
 
 
 class ProfileSerilizer(serializers.ModelSerializer):
+    email = serializers.EmailField(read_only=True)
     first_name = serializers.CharField(required=False)
     last_name = serializers.CharField(required=False)
     created_at = serializers.DateTimeField(source='created', read_only=True)
@@ -126,3 +127,16 @@ class ProfileSerilizer(serializers.ModelSerializer):
         fields = [
             "uuid", "email", "first_name", "last_name", "verified", "email_verified", "created_at", "updated_at"
         ]
+
+    def update(self, instance, validated_data):
+        first_name = validated_data.get("first_name")
+        last_name = validated_data.get("last_name")
+
+        if first_name:
+            instance.first_name = first_name
+        if last_name:
+            instance.last_name = last_name
+
+        instance.save()
+
+        return instance

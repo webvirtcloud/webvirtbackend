@@ -72,13 +72,14 @@ class ResetPasswordHash(APIView):
 
 class VerifyEmail(APIView):
 
-    def get(self, request, *args, **kwargs):
-        if User.objects.filter(hash=hash, is_active=True).exists():
+    def get(self, request, hash, *args, **kwargs):
+        if User.objects.filter(hash=hash, is_email_verified=False, is_active=True).exists():
             user = User.objects.get(hash=hash)
-            user.is_active = True
+            user.is_email_verified = True
+            user.update_hash()
             user.save()
             return Response(status=status.HTTP_200_OK)
-        return custom_exception("Account not found.")
+        return custom_exception("Invalid token or email already verified.")
 
 
 class ProfileAPI(APIView):
@@ -86,4 +87,10 @@ class ProfileAPI(APIView):
 
     def get(self, request, *args, **kwargs):
         serializer = self.serializer_class(request.user)
+        return Response({'profile': serializer.data})
+
+    def put(self, request, *args, **kwargs):
+        serializer = self.serializer_class(request.user, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
         return Response({'profile': serializer.data})
