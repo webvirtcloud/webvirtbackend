@@ -1,5 +1,6 @@
 from http import HTTPStatus
 from django.conf import settings
+from django.http import JsonResponse
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import exception_handler
@@ -59,4 +60,30 @@ def custom_exception_handler(exc, context):
         error_payload["message"] = error_message
         error_payload["status_code"] = status_code
         response.data = error_payload
+    return response
+
+
+def custom_handler404(request, exception):
+    status_code = 404
+    response = JsonResponse(
+        {
+            "status_code": status_code,
+            "message": "The resource you were accessing could not be found.",
+        },
+        content_type="application/json",
+        status=status_code,
+    )
+    return response
+
+
+def custom_handler500(request):
+    status_code = 500
+    response = JsonResponse(
+        {
+            "status_code": status_code,
+            "message": "The resource you were accessing got internal error.",
+        },
+        content_type='application/json',
+        status=status_code,
+    )
     return response
