@@ -13,9 +13,10 @@ from .serializers import (
     ResetPasswordHashSerializer,
 )
 from .serializers import (
-        ProfileSerilizer,
-        ChangePasswordSerializer,
+    ProfileSerilizer,
+    ChangePasswordSerializer,
 )
+
 
 class Login(ObtainAuthToken):
     serializer_class = AuthTokenSerializer
@@ -72,7 +73,6 @@ class ResetPasswordHash(APIView):
 
 
 class VerifyEmail(APIView):
-
     def get(self, request, hash, *args, **kwargs):
         if User.objects.filter(hash=hash, is_email_verified=False, is_active=True).exists():
             user = User.objects.get(hash=hash)
@@ -88,13 +88,13 @@ class ProfileAPI(APIView):
 
     def get(self, request, *args, **kwargs):
         serializer = self.serializer_class(request.user)
-        return Response({'profile': serializer.data})
+        return Response({"profile": serializer.data})
 
     def put(self, request, *args, **kwargs):
         serializer = self.serializer_class(request.user, data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response({'profile': serializer.data})
+        return Response({"profile": serializer.data})
 
 
 class ChangePasswordAPI(APIView):

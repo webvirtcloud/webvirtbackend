@@ -117,16 +117,14 @@ class ProfileSerilizer(serializers.ModelSerializer):
     email = serializers.EmailField(read_only=True)
     first_name = serializers.CharField(required=False)
     last_name = serializers.CharField(required=False)
-    created_at = serializers.DateTimeField(source='created', read_only=True)
-    updated_at = serializers.DateTimeField(source='updated', read_only=True)
-    verified = serializers.BooleanField(source='is_verified', read_only=True)
-    email_verified = serializers.BooleanField(source='is_email_verified', read_only=True)
+    created_at = serializers.DateTimeField(source="created", read_only=True)
+    updated_at = serializers.DateTimeField(source="updated", read_only=True)
+    verified = serializers.BooleanField(source="is_verified", read_only=True)
+    email_verified = serializers.BooleanField(source="is_email_verified", read_only=True)
 
     class Meta:
         model = User
-        fields = [
-            "uuid", "email", "first_name", "last_name", "verified", "email_verified", "created_at", "updated_at"
-        ]
+        fields = ["uuid", "email", "first_name", "last_name", "verified", "email_verified", "created_at", "updated_at"]
 
     def update(self, instance, validated_data):
         first_name = validated_data.get("first_name")
@@ -182,5 +180,5 @@ class ChangePasswordSerializer(serializers.Serializer):
         token = Token.objects.get(is_obtained=True, user=instance)
         token.key = token.generate_key()
         token.save()
-    
+
         return instance

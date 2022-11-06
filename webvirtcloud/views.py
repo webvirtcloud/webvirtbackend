@@ -43,7 +43,7 @@ def custom_exception_handler(exc, context):
             "status_code": 0,
         }
         status_code = response.status_code
-        
+
         if isinstance(response.data, dict):
             detail_error = response.data.get("detail")
             non_field_error = response.data.get("non_field_errors")
@@ -53,10 +53,10 @@ def custom_exception_handler(exc, context):
 
             if non_field_error:
                 error_message = non_field_error[0]
-        
+
         if isinstance(response.data, list):
             error_message = response.data[0]
-        
+
         if not error_message:
             for key, value in response.data.items():
                 error_fileds.append({"message": value[0], "field": key})
@@ -89,7 +89,7 @@ def custom_handler500(request):
             "status_code": status_code,
             "message": "The resource you were accessing got internal error.",
         },
-        content_type='application/json',
+        content_type="application/json",
         status=status_code,
     )
     return response
