@@ -14,6 +14,7 @@ from .serializers import (
 )
 from .serializers import (
         ProfileSerilizer,
+        ChangePasswordSerializer,
 )
 
 class Login(ObtainAuthToken):
@@ -94,3 +95,13 @@ class ProfileAPI(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response({'profile': serializer.data})
+
+
+class ChangePasswordAPI(APIView):
+    serializer_class = ChangePasswordSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(request.user, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(status=status.HTTP_200_OK)

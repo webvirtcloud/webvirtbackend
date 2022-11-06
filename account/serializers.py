@@ -140,3 +140,47 @@ class ProfileSerilizer(serializers.ModelSerializer):
         instance.save()
 
         return instance
+
+
+class ChangePasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField(
+        label="Old Password", style={"input_type": "password"}, trim_whitespace=False, write_only=True
+    )
+    new_password = serializers.CharField(
+        label="New Password", style={"input_type": "password"}, trim_whitespace=False, write_only=True
+    )
+    new_password_confirm = serializers.CharField(
+        label="New Password Confirm", style={"input_type": "password"}, trim_whitespace=False, write_only=True
+    )
+
+    def validate(self, attrs):
+        old_password = attrs.get("old_password")
+        new_password = attrs.get("new_password")
+        new_password_confirm = attrs.get("new_password_confirm")
+
+        if new_password != new_password_confirm:
+            raise serializers.ValidationError("New password and password confirm do not match.")
+
+        if len(new_password) < 8:
+            raise serializers.ValidationError("Password must be at least 8 characters long.")
+
+        if old_password == new_password:
+            raise serializers.ValidationError("New password must be different from old one.")
+
+        return attrs
+
+    def update(self, instance, validated_data):
+        old_password = validated_data.get("old_password")
+        new_password = validated_data.get("new_password")
+
+        if not instance.check_password(old_password):
+            raise serializers.ValidationError("Old password is incorrect.")
+
+        instance.set_password(new_password)
+        instance.save()
+
+        token = Token.objects.get(is_obtained=True, user=instance)
+        token.key = token.generate_key()
+        token.save()
+    
+        return instance

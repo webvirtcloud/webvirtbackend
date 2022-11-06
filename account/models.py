@@ -131,7 +131,6 @@ class Token(models.Model):
     @classmethod
     def generate_key(cls):
         return binascii.hexlify(os.urandom(20)).decode()
-        self.save()
 
     def save(self, *args, **kwargs):
         if not self.key:
