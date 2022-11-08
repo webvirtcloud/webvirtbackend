@@ -32,28 +32,17 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser):
-
     uuid = models.UUIDField(unique=True, editable=False, default=uuid4)
-
     email = models.EmailField(max_length=255, unique=True)
-
     hash = models.CharField(max_length=40)
-
     first_name = models.CharField(max_length=50, blank=True)
-
     last_name = models.CharField(max_length=50, blank=True)
-
-    created = models.DateTimeField(auto_now_add=True)
-
-    updated = models.DateTimeField(auto_now=True)
-
     is_admin = models.BooleanField(default=False)
-
     is_active = models.BooleanField(default=True)
-
     is_verified = models.BooleanField(default=False)
-
     is_email_verified = models.BooleanField(default=False)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
 
     objects = UserManager()
 
@@ -109,20 +98,13 @@ class Token(models.Model):
     )
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, models.PROTECT)
-
     name = models.CharField(max_length=255)
-
     key = models.CharField(max_length=40, unique=True)
-
     scope = models.TextField(choices=SCOPE_CHOICES, default=READ_SCOPE)
-
-    created = models.DateTimeField(auto_now_add=True)
-
-    updated = models.DateTimeField(auto_now=True)
-
-    expired = models.DateField(null=True, blank=True)
-
     is_obtained = models.BooleanField(default=False)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+    expired = models.DateField(null=True, blank=True)
 
     class Meta:
         verbose_name = "Token"
@@ -139,4 +121,4 @@ class Token(models.Model):
         return super(Token, self).save(*args, **kwargs)
 
     def __unicode__(self):
-        return self.key
+        return self.name
