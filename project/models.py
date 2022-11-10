@@ -5,7 +5,7 @@ from django.conf import settings
 from django.utils import timezone
 
 
-class Space(models.Model):
+class Project(models.Model):
     uuid = models.UUIDField(unique=True, editable=False, default=uuid4)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, models.PROTECT)
     name = models.CharField(max_length=100)
