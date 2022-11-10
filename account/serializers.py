@@ -56,10 +56,8 @@ class RegisterSerializer(serializers.Serializer):
         password = validated_data.get("password")
 
         user = User.objects.create_user(email=email, password=password)
-        
-        token = Token.objects.create(
-            user=user, name="Obtained auth token", scope=Token.WRITE_SCOPE, is_obtained=True
-        )
+
+        token = Token.objects.create(user=user, name="Obtained auth token", scope=Token.WRITE_SCOPE, is_obtained=True)
 
         user_name = user.email.split("@")[0]
         project_name = f"{user_name.capitalize()}'s project"

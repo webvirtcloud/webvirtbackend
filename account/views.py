@@ -1,8 +1,8 @@
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import AllowAny
 from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from webvirtcloud.views import custom_exception, success_message_reponse
 from .models import User, Token
@@ -73,6 +73,8 @@ class ResetPasswordHash(APIView):
 
 
 class VerifyEmail(APIView):
+    permission_classes = (IsAuthenticated,)
+
     def get(self, request, hash, *args, **kwargs):
         if User.objects.filter(hash=hash, is_email_verified=False, is_active=True).exists():
             user = User.objects.get(hash=hash)
@@ -85,6 +87,7 @@ class VerifyEmail(APIView):
 
 class ProfileAPI(APIView):
     serializer_class = ProfileSerilizer
+    # permission_classes = (IsAuthenticated,)
 
     def get(self, request, *args, **kwargs):
         serializer = self.serializer_class(request.user)
@@ -99,6 +102,7 @@ class ProfileAPI(APIView):
 
 class ChangePasswordAPI(APIView):
     serializer_class = ChangePasswordSerializer
+    permission_classes = (IsAuthenticated,)
 
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(request.user, data=request.data)
