@@ -2,6 +2,7 @@ from rest_framework import serializers
 from django.contrib.auth import authenticate
 
 from .models import User, Token
+from project.models import Project
 
 
 class AuthTokenSerializer(serializers.Serializer):
@@ -55,7 +56,14 @@ class RegisterSerializer(serializers.Serializer):
         password = validated_data.get("password")
 
         user = User.objects.create_user(email=email, password=password)
-        token = Token.objects.create(user=user, scope=Token.WRITE_SCOPE, is_obtained=True, name="Obtained auth token")
+        
+        token = Token.objects.create(
+            user=user, name="Obtained auth token", scope=Token.WRITE_SCOPE, is_obtained=True
+        )
+
+        user_name = user.email.split("@")[0]
+        project_name = f"{user_name.capitalize()}'s project"
+        project = Project.objects.create(name=project_name, user=user, is_default=True)
 
         validated_data["token"] = token.key
         return validated_data

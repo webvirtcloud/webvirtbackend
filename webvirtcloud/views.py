@@ -34,7 +34,6 @@ def custom_exception(message):
 def custom_exception_handler(exc, context):
     error_message = None
     response = exception_handler(exc, context)
-    print(response.data)
 
     if response is not None:
         error_fileds = []
