@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
-from webvirtcloud.views import custom_exception, success_message_reponse
+from webvirtcloud.views import error_message_response
 from .models import User, Token
 from .serializers import (
     RegisterSerializer,
@@ -69,7 +69,7 @@ class ResetPasswordHash(APIView):
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response(status=status.HTTP_200_OK)
-        return custom_exception("User not found or hash is invalid.")
+        return error_message_response("User not found or hash is invalid.")
 
 
 class VerifyEmail(APIView):
@@ -82,7 +82,7 @@ class VerifyEmail(APIView):
             user.update_hash()
             user.save()
             return Response(status=status.HTTP_200_OK)
-        return custom_exception("Invalid token or email already verified.")
+        return error_message_response("Invalid token or email already verified.")
 
 
 class ProfileAPI(APIView):

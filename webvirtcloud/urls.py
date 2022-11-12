@@ -3,11 +3,11 @@ WebVirtCloud URL Configuration
 """
 from django.conf import settings
 from django.urls import include, path, re_path
-from webvirtcloud.views import custom_handler404, custom_handler500
+from webvirtcloud.views import exception_handler404, exception_handler500
 
 
-handler404 = custom_handler404
-handler500 = custom_handler500
+handler404 = exception_handler404
+handler500 = exception_handler500
 
 
 urlpatterns = [

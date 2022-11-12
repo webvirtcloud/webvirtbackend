@@ -6,14 +6,7 @@ from rest_framework.response import Response
 from rest_framework.views import exception_handler
 
 
-def payload_response():
-    return {
-        "message": "",
-        "status_code": 0,
-    }
-
-
-def success_message_reponse(message):
+def success_message_response(message):
     status_code = status.HTTP_200_OK
     success_payload = {
         "message": message,
@@ -22,7 +15,7 @@ def success_message_reponse(message):
     return Response(success_payload, status=status_code)
 
 
-def custom_exception(message):
+def error_message_response(message):
     status_code = status.HTTP_400_BAD_REQUEST
     error_payload = {
         "message": message,
@@ -31,7 +24,7 @@ def custom_exception(message):
     return Response(error_payload, status=status_code)
 
 
-def custom_exception_handler(exc, context):
+def exception_handler(exc, context):
     error_message = None
     response = exception_handler(exc, context)
 
@@ -68,7 +61,7 @@ def custom_exception_handler(exc, context):
     return response
 
 
-def custom_handler404(request, exception):
+def exception_handler404(request, exception):
     status_code = 404
     response = JsonResponse(
         {
@@ -81,7 +74,7 @@ def custom_handler404(request, exception):
     return response
 
 
-def custom_handler500(request):
+def exception_handler500(request):
     status_code = 500
     response = JsonResponse(
         {

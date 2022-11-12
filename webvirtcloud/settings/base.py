@@ -57,7 +57,7 @@ MIDDLEWARE = [
 
 # Rest framework definition
 REST_FRAMEWORK = {
-    "EXCEPTION_HANDLER": "webvirtcloud.views.custom_exception_handler",
+    "EXCEPTION_HANDLER": "webvirtcloud.views.exception_handler",
     "DEFAULT_PERMISSION_CLASSES": ("webvirtcloud.permissions.IsAuthenticatedAndVerified",),
     "DEFAULT_AUTHENTICATION_CLASSES": ("webvirtcloud.authentication.TokenAuthentication",),
 }
