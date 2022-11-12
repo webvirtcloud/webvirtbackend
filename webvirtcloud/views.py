@@ -24,7 +24,7 @@ def error_message_response(message):
     return Response(error_payload, status=status_code)
 
 
-def exception_handler(exc, context):
+def app_exception_handler(exc, context):
     error_message = None
     response = exception_handler(exc, context)
 
@@ -61,7 +61,7 @@ def exception_handler(exc, context):
     return response
 
 
-def exception_handler404(request, exception):
+def app_exception_handler404(request, exception):
     status_code = 404
     response = JsonResponse(
         {
@@ -74,7 +74,7 @@ def exception_handler404(request, exception):
     return response
 
 
-def exception_handler500(request):
+def app_exception_handler500(request):
     status_code = 500
     response = JsonResponse(
         {
