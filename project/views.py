@@ -32,6 +32,12 @@ class ProjectListAPI(APIView):
         serilizator = self.class_serializer(projects, many=True)
         return Response({'projects': serilizator.data})
 
+    def post(self, request, *args, **kwargs):
+        serilizator = self.class_serializer(data=request.data)
+        if serilizator.is_valid(raise_exception=True):
+            serilizator.save(user=request.user)
+        return Response(serilizator.data, status=status.HTTP_201_CREATED)
+
 
 class ProjectDataAPI(APIView):
     class_serializer = ProjectSerializer
