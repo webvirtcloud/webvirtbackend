@@ -1,7 +1,6 @@
 -r production.txt
 black
-pyyaml
 bpython
-uritemplate
+djang-yasg
 django-cors-headers
 django-debug-toolbar

@@ -18,37 +18,26 @@ urlpatterns = [
 
 if settings.DEBUG:
     import debug_toolbar
-    from django.views.generic import TemplateView
-    from rest_framework import permissions
-    from rest_framework.schemas import get_schema_view
+    from drf_yasg import openapi
+    from drf_yasg.views import get_schema_view 
+    from rest_framework.permissions import AllowAny
+
+    schema_view = get_schema_view(
+        openapi.Info(
+            title="WebVirtCloud",
+            default_version='v1',
+            description="WebVirtCloud API documentation",
+        ),
+        public=True,
+        permission_classes=(AllowAny,),
+    )
 
     urlpatterns += [
-        path(
-            "openapi/",
-            get_schema_view(
-                title="WebVirtCloud",
-                description="WebVirtCloud API documentation",
-                version="v1",
-                public=True,
-                # patterns=[path('api/', include('api.urls')), ],
-                permission_classes=(permissions.AllowAny,),
-            ),
-            name="openapi-schema",
-        ),
         # Swagger
-        path(
-            "swagger-ui/",
-            TemplateView.as_view(
-                template_name="openapi/swagger-ui.html", extra_context={"schema_url": "openapi-schema"}
-            ),
-            name="swagger-ui",
-        ),
-        # ReDoc
-        path(
-            "redoc/",
-            TemplateView.as_view(template_name="openapi/redoc.html", extra_context={"schema_url": "openapi-schema"}),
-            name="redoc",
-        ),
+        re_path(r'^redoc/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+        re_path(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+        re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
+
         # Debug Toolbar
         path("__debug__/", include("debug_toolbar.urls")),
     ]

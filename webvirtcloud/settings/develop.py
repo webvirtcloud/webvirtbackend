@@ -16,6 +16,7 @@ ALLOWED_HOSTS = ["*"]
 
 # Application definition
 INSTALLED_APPS += [
+    "drf_yasg",
     "corsheaders",
     "debug_toolbar",
 ]
