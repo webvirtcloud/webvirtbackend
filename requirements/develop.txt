@@ -1,5 +1,6 @@
 -r production.txt
 bpython
-drf-yasg
+pyyaml
+uritemplate
 django-cors-headers
 django-debug-toolbar
