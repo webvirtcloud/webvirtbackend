@@ -87,7 +87,7 @@ class VerifyEmail(APIView):
 
 class ProfileAPI(APIView):
     serializer_class = ProfileSerilizer
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
 
     def get(self, request, *args, **kwargs):
         serializer = self.serializer_class(request.user)
