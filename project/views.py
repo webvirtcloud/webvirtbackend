@@ -21,7 +21,7 @@ class ProjectDefaultAPI(APIView):
     def get(self, request, *args, **kwargs):
         projects = self.get_object(user=request.user)
         serilizator = self.class_serializer(projects, many=False)
-        return Response({'project': serilizator.data})
+        return Response({"project": serilizator.data})
 
 
 class ProjectListAPI(APIView):
@@ -30,7 +30,7 @@ class ProjectListAPI(APIView):
     def get(self, request, *args, **kwargs):
         projects = Project.objects.filter(user=request.user, is_deleted=False)
         serilizator = self.class_serializer(projects, many=True)
-        return Response({'projects': serilizator.data})
+        return Response({"projects": serilizator.data})
 
     def post(self, request, *args, **kwargs):
         serilizator = self.class_serializer(data=request.data)
@@ -55,7 +55,7 @@ class ProjectDataAPI(APIView):
     def get(self, request, uuid, *args, **kwargs):
         project = self.get_object(uuid, request.user)
         serilizator = self.class_serializer(project, many=False)
-        return Response({'project': serilizator.data})
+        return Response({"project": serilizator.data})
 
     def put(self, request, uuid, *args, **kwargs):
         project = self.get_object(uuid, request.user)
@@ -67,8 +67,8 @@ class ProjectDataAPI(APIView):
     def delete(self, request, uuid, *args, **kwargs):
         project = self.get_object(uuid, request.user)
         if project.is_default:
-            return error_message_response('You can not delete default project.')
+            return error_message_response("You can not delete default project.")
         project.is_deleted = True
         project.deleted = timezone.now()
         project.save()
-        return Response({'message': 'Project deleted.'})
+        return Response({"message": "Project deleted."})
