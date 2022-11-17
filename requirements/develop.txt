@@ -1,6 +1,6 @@
 -r production.txt
 black
 bpython
-djang-yasg
+drf-yasg
 django-cors-headers
 django-debug-toolbar
