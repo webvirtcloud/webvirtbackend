@@ -37,6 +37,7 @@ INSTALLED_APPS += [
     "region",
     "account",
     "project",
+    "ssh_key",
     "singlepage",
 ]
 
