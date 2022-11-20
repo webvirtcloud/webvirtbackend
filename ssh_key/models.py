@@ -1,11 +1,13 @@
 import base64
 import hashlib
 from django.db import models
+from django.conf import settings
 from django.utils import timezone
 
 
 class SshKey(models.Model):
-    name = models.CharField(max_length=100)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, models.PROTECT)
+    name = models.CharField(max_length=255)
     public = models.CharField(max_length=1000)
     fingerprint = models.CharField(max_length=50)
     created = models.DateTimeField(auto_now_add=True)
