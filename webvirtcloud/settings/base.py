@@ -34,6 +34,7 @@ INSTALLED_APPS = [
 INSTALLED_APPS += [
     "api",
     "size",
+    "image",
     "region",
     "account",
     "project",
