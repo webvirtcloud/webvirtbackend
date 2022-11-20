@@ -20,7 +20,7 @@ class Size(models.Model):
     class Meta:
         verbose_name = "Size"
         verbose_name_plural = "Sizes"
-        ordering = ["-id"]
+        ordering = ["-memory", "-vcpu", "-disk", "-transfer"]
 
     def save(self, *args, **kwargs):
         self.updated_at = timezone.now()
