@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils import timezone
 
+from region.models import Region
+
 
 class Size(models.Model):
     name = models.CharField(max_length=100)
@@ -10,6 +12,7 @@ class Size(models.Model):
     disk = models.BigIntegerField()
     memory = models.BigIntegerField()
     transfer = models.BigIntegerField()
+    regions = models.ManyToManyField(Region)
     is_active = models.BooleanField(default=False)
     is_deleted = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
@@ -20,7 +23,7 @@ class Size(models.Model):
     class Meta:
         verbose_name = "Size"
         verbose_name_plural = "Sizes"
-        ordering = ["-memory", "-vcpu", "-disk", "-transfer"]
+        ordering = ["memory", "vcpu", "disk", "transfer"]
 
     def save(self, *args, **kwargs):
         self.updated_at = timezone.now()
