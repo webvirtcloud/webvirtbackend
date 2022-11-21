@@ -38,7 +38,7 @@ class Migration(migrations.Migration):
                 ("deleted", models.DateTimeField(blank=True, null=True)),
                 (
                     "price",
-                    models.DecimalField(decimal_places=4, default=0.0, max_digits=10),
+                    models.DecimalField(decimal_places=6, default=0.0, max_digits=12),
                 ),
                 (
                     "regions",

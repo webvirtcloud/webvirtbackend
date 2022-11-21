@@ -18,7 +18,7 @@ class Image(models.Model):
         (DISTRIBUTION, "Distribution"),
     ]
 
-    UNKNOWN = "Unknown"
+    UNKNOWN = "unknown"
     DEBIAN = "debian"
     UBUNTU = "ubuntu"
     FEDORA = "fedora"
@@ -41,9 +41,11 @@ class Image(models.Model):
     type = models.CharField(max_length=50, choices=TYPE_CHOICES, default=SNAPSHOT)
     md5sum = models.CharField(max_length=50)
     distribution = models.CharField(max_length=50, choices=TYPE_CHOICES, default=UNKNOWN)
+    description = models.TextField(blank=True, null=True)
+    regions = models.ManyToManyField("region.Region", blank=True)
     file_name = models.CharField(max_length=100)
-    file_size = models.BigIntegerField()
-    disk_size = models.BigIntegerField()
+    file_size = models.BigIntegerField(blank=True, null=True)
+    disk_size = models.BigIntegerField(blank=True, null=True)
     is_active = models.BooleanField(default=False)
     is_deleted = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
