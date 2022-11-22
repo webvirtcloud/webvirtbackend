@@ -40,6 +40,7 @@ INSTALLED_APPS += [
     "compute",
     "keypair",
     "project",
+    "network",
     "singlepage",
 ]
 
