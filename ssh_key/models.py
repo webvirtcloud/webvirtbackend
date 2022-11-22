@@ -1,5 +1,6 @@
 import base64
 import hashlib
+from uuid import uuid4
 from django.db import models
 from django.conf import settings
 from django.utils import timezone
@@ -7,6 +8,7 @@ from django.utils import timezone
 
 class SshKey(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, models.PROTECT)
+    uuid = models.UUIDField(unique=True, editable=False, default=uuid4)
     name = models.CharField(max_length=255)
     public = models.CharField(max_length=1000)
     fingerprint = models.CharField(max_length=50)

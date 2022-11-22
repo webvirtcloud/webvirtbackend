@@ -1,13 +1,12 @@
 from uuid import uuid4
-
 from django.db import models
 from django.conf import settings
 from django.utils import timezone
 
 
 class Project(models.Model):
-    uuid = models.UUIDField(unique=True, editable=False, default=uuid4)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, models.PROTECT)
+    uuid = models.UUIDField(unique=True, editable=False, default=uuid4)
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)
     is_default = models.BooleanField(default=False)
@@ -17,8 +16,8 @@ class Project(models.Model):
     deleted = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        verbose_name = "Space"
-        verbose_name_plural = "Spaces"
+        verbose_name = "Project"
+        verbose_name_plural = "Projects"
         ordering = ["-id"]
 
     def __unicode__(self):
