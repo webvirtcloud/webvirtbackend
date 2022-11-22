@@ -1,5 +1,6 @@
 from uuid import uuid4
 from django.db import models
+from django.utils import timezone
 
 
 class Compute(models.Model):
@@ -17,9 +18,13 @@ class Compute(models.Model):
     deleted = models.DateTimeField(null=True, blank=True)
 
     class Meta:
-        ordering = ("-id",)
         verbose_name = "Compute"
         verbose_name_plural = "Computes"
+        ordering = ["-id"]
 
     def __unicode__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        self.updated = timezone.now()
+        super(Compute(), self).save(*args, **kwargs)
