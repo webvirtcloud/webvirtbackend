@@ -37,8 +37,9 @@ INSTALLED_APPS += [
     "image",
     "region",
     "account",
+    "compute",
+    "keypair",
     "project",
-    "ssh_key",
     "singlepage",
 ]
 
