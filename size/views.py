@@ -10,7 +10,7 @@ class SizeListAPI(APIView):
     class_serializer = SizeSerializer
 
     def get_queryset(self):
-        return Size.objects.filter(is_deleted=False) 
+        return Size.objects.filter(is_deleted=False)
 
     def get(self, request, *args, **kwargs):
         serilizator = self.class_serializer(self.get_queryset(), many=True)

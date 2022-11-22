@@ -10,7 +10,7 @@ class Size(models.Model):
     disk = models.BigIntegerField()
     memory = models.BigIntegerField()
     transfer = models.BigIntegerField()
-    regions = models.ManyToManyField('region.Region', related_name='regions')
+    regions = models.ManyToManyField("region.Region", related_name="regions")
     is_active = models.BooleanField(default=False)
     is_deleted = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)

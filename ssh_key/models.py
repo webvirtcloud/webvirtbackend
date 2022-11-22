@@ -23,7 +23,7 @@ class SshKey(models.Model):
     def make_fingerprint(self):
         p_bytes = base64.b64decode(self.public.strip().split()[1])
         fp_plain = hashlib.md5(p_bytes).hexdigest()
-        self.fingerprint = ":".join([fp_plain[i:i+2] for i in range(0, len(fp_plain), 2)])
+        self.fingerprint = ":".join([fp_plain[i : i + 2] for i in range(0, len(fp_plain), 2)])
 
     def __unicode__(self):
         return self.name

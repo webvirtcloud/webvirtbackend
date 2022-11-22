@@ -4,7 +4,7 @@ from django.utils import timezone
 
 
 class Image(models.Model):
-    
+
     CUSTOM = "custom"
     BACKUP = "backup"
     SNAPSHOT = "snapshot"

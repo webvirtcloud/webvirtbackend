@@ -7,7 +7,7 @@ from region.models import Region
 
 class SizeSerializer(serializers.ModelSerializer):
     available = serializers.BooleanField(source="is_active")
-    price_hourly = serializers.DecimalField(source='price', max_digits=10, decimal_places=6)
+    price_hourly = serializers.DecimalField(source="price", max_digits=10, decimal_places=6)
     price_monthly = serializers.SerializerMethodField()
     disk = serializers.SerializerMethodField()
     memory = serializers.SerializerMethodField()
@@ -34,7 +34,7 @@ class SizeSerializer(serializers.ModelSerializer):
 
     def get_memory(self, obj):
         return obj.memory // 1048576
-    
+
     def get_transfer(self, obj):
         return obj.transfer / 1099511627776
 

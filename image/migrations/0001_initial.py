@@ -32,9 +32,7 @@ class Migration(migrations.Migration):
                 ("name", models.CharField(max_length=100)),
                 (
                     "slug",
-                    models.SlugField(
-                        blank=True, max_length=100, null=True, unique=True
-                    ),
+                    models.SlugField(blank=True, max_length=100, null=True, unique=True),
                 ),
                 (
                     "type",

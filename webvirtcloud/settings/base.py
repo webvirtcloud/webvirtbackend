@@ -139,7 +139,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 #
 # WebVirtCloud Settings
-# 
+#
 
 # Public images URL (Distributions, Applicatons)
 PUBLIC_IMAGES_URL = "https://cloud-images.webvirt.cloud"

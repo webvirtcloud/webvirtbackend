@@ -27,7 +27,7 @@ class ImageSerializer(serializers.ModelSerializer):
             "description",
             "min_disk_size",
             "size_gigabytes",
-            "status"
+            "status",
         )
 
     def get_regions(self, obj):
@@ -43,7 +43,7 @@ class ImageSerializer(serializers.ModelSerializer):
     def get_status(self, obj):
         if obj.is_active is True:
             return "available"
-        return "unavailable"        
+        return "unavailable"
 
     def get_distribution(self, obj):
         for distro in obj.DISTRO_CHOICES:

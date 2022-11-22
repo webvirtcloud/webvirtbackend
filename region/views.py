@@ -10,7 +10,7 @@ class RegionListAPI(APIView):
     class_serializer = RegionSerializer
 
     def get_queryset(self):
-        return Region.objects.filter(is_deleted=False) 
+        return Region.objects.filter(is_deleted=False)
 
     def get(self, request, *args, **kwargs):
         serilizator = self.class_serializer(self.get_queryset(), many=True)
