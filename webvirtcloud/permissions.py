@@ -20,4 +20,6 @@ class IsAuthenticatedAndVerified(permissions.BasePermission):
                     self.message = "You do not have permission to write."
                     return False
 
-        return True
+            return True
+
+        return False

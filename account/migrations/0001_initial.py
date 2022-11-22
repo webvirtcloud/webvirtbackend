@@ -65,7 +65,7 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 ("name", models.CharField(max_length=255)),
-                ("key", models.CharField(max_length=40, unique=True)),
+                ("key", models.CharField(max_length=64, unique=True)),
                 (
                     "scope",
                     models.TextField(

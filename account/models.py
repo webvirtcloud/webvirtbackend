@@ -99,7 +99,7 @@ class Token(models.Model):
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, models.PROTECT)
     name = models.CharField(max_length=255)
-    key = models.CharField(max_length=40, unique=True)
+    key = models.CharField(max_length=64, unique=True)
     scope = models.TextField(choices=SCOPE_CHOICES, default=READ_SCOPE)
     is_obtained = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
@@ -112,7 +112,7 @@ class Token(models.Model):
 
     @classmethod
     def generate_key(cls):
-        return binascii.hexlify(os.urandom(20)).decode()
+        return binascii.hexlify(os.urandom(32)).decode()
 
     def save(self, *args, **kwargs):
         if not self.key:
