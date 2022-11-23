@@ -41,6 +41,7 @@ INSTALLED_APPS += [
     "keypair",
     "project",
     "network",
+    "virtance",
     "singlepage",
 ]
 

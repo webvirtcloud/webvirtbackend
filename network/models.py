@@ -35,10 +35,10 @@ class Network(models.Model):
         verbose_name = "Aggregate"
         verbose_name_plural = "Aggregates"
         ordering = ["-id"]
-        
+
     def __unicode__(self):
         return self.name
-    
+
     def save(self, *args, **kwargs):
         self.updated = timezone.now()
         super(Compute(), self).save(*args, **kwargs)
@@ -46,8 +46,10 @@ class Network(models.Model):
 
 class IPAddress(models.Model):
     network = models.ForeignKey(Network, models.PROTECT)
+    virtance = models.ForeignKey("virtance.Virtance", models.PROTECT)
     address = models.GenericIPAddressField()
     netmask = models.GenericIPAddressField()
+    created = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         verbose_name = "IP Address"
