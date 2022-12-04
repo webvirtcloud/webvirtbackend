@@ -15,6 +15,7 @@ class VirtanceListAPI(APIView):
         return Response({"virtances": serilizator.data})
 
     def post(self, request, *args, **kwargs):
-        serilizator = CreateVirtanceSerializer(data=request.data)
+        serilizator = CreateVirtanceSerializer(data=request.data, context={'request': request})
         serilizator.is_valid(raise_exception=True)
-        return Response()
+        serilizator.save()
+        return Response({"virtance": serilizator.data}, status=status.HTTP_201_CREATED)

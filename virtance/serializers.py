@@ -1,7 +1,12 @@
 from decimal import Decimal
+from django.db.models import Q
 from rest_framework import serializers
 
 from .models import Virtance
+from size.models import Size
+from image.models import Image
+from region.models import Region
+from keypair.models import KeyPair
 from size.serializers import SizeSerializer
 from image.serializers import ImageSerializer
 from region.serializers import RegionSerializer
@@ -66,13 +71,61 @@ class VirtanceSerializer(serializers.ModelSerializer):
 
 
 class CreateVirtanceSerializer(serializers.Serializer):
-    size = serializers.SlugField()
-    image = serializers.IntegerField()
-    region = serializers.SlugField()
     name = serializers.CharField(max_length=100)
+    size = serializers.SlugField()
+    image = serializers.CharField()
+    region = serializers.SlugField()
+    ipv6 = serializers.BooleanField(required=False)
+    backups = serializers.BooleanField(required=False)
+    keypairs = serializers.ListField(required=False, allow_empty=True)
+    user_data = serializers.CharField(required=False, allow_blank=True)
 
-    def validate_name(self, value):
-        raise serializers.ValidationError("Name already exists")
+ 
+    def validate_size(self, value):
+        try:
+            size = Size.objects.get(slug=value, is_deleted=False)
+            if size.is_active is False:
+                raise serializers.ValidationError({"size": ["Size is not active."]})
+        except Size.DoesNotExist:
+            raise serializers.ValidationError({"size": ["Size not found."]})
+        return value
+
+    def validate_image(self, value):
+        if value.isdigit():
+            try:
+                image = Image.objects.get(
+                    Q(type=Image.SNAPSHOT) | Q(type=Image.BACKUP) | Q(type=Image.CUSTOM),
+                    id=value, is_deleted=False
+                )
+            except Image.DoesNotExist:
+                raise serializers.ValidationError({"image": ["Image not found."]})
+        else:
+            try:
+                image = Image.objects.get(
+                    Q(type=Image.DISTRIBUTION) | Q(type=Image.APPLICATION),
+                    slug=value, is_deleted=False
+                )
+                if image.is_active is False:
+                    raise serializers.ValidationError({"image": ["Image is not active."]})
+            except Image.DoesNotExist:
+                raise serializers.ValidationError({"image": ["Image not found."]})
+        return value
+
+    def validate_region(self, value):
+        try:
+            region = Region.objects.get(slug=value, is_deleted=False)
+            if region.is_active is False:
+                raise serializers.ValidationError({"region": ["Region is not active."]})
+        except Region.DoesNotExist:
+            raise serializers.ValidationError({"region": ["Region not found."]})
+        return value
+
+    def validate_keypairs(self, value):
+        for k_id in value:
+            try:
+                KeyPair.objects.get(id=k_id, user=self.context.get("request").user)
+            except KeyPair.DoesNotExist:
+                raise serializers.ValidationError({"keypairs": ["Invalid keypair ID."]})
         return value
 
     def create(self, validated_data):
