@@ -22,6 +22,7 @@ class Virtance(models.Model):
     name = models.CharField(max_length=100)
     disk = models.BigIntegerField()
     status = models.CharField(max_length=100, choices=STATUS_CHOICES, default=PENDING)
+    user_data = models.TextField(blank=True, null=True)
     is_locked = models.BooleanField(default=False)
     is_deleted = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
