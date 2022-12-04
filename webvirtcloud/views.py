@@ -42,6 +42,10 @@ def app_exception_handler(exc, context):
 
             if detail_error:
                 error_message = detail_error
+                if status_code == HTTPStatus.NOT_FOUND:
+                    error_message = "The resource you were accessing could not be found."
+                if status_code == HTTPStatus.INTERNAL_SERVER_ERROR:
+                    error_message = "The resource you were accessing got internal error."
 
             if non_field_error:
                 error_message = non_field_error[0]

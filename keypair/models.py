@@ -31,4 +31,4 @@ class KeyPair(models.Model):
     def save(self, *args, **kwargs):
         self.updated = timezone.now()
         self.make_fingerprint()
-        super(Image, self).save(*args, **kwargs)
+        super(KeyPair, self).save(*args, **kwargs)
