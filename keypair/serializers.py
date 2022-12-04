@@ -5,8 +5,8 @@ from .models import KeyPair
 
 
 class KeyPairSerializer(serializers.ModelSerializer):
-    name = serializers.CharField(max_length=255)
-    public_key = serializers.CharField(max_length=1000)
+    name = serializers.CharField(max_length=255, required=False)
+    public_key = serializers.CharField(max_length=1000, required=False)
     fingerprint = serializers.CharField(read_only=True)
 
     class Meta:
@@ -37,15 +37,32 @@ class KeyPairSerializer(serializers.ModelSerializer):
         return value
 
     def update(self, instance, validated_data):
-        try:
-            KeyPair.objects.get(public_key=validated_data.get("public_key"))
-            raise serializers.ValidationError("Key already exists.")
-        except KeyPair.DoesNotExist:
-            pass
-        instance.name = validated_data.get("name", instance.name)
-        instance.public_key = validated_data.get("public_key", instance.public_key)
+        if not validated_data.get("public_key") and not validated_data.get("name"):
+            raise serializers.ValidationError(
+                {"name": ["This field is required."], "public_key": ["This field is required."]}
+            )
+
+        if validated_data.get("public_key"):
+            instance.public_key = validated_data.get("public_key", instance.public_key)
+            try:
+                keypair = KeyPair.objects.get(public_key=validated_data.get("public_key"))
+                if keypair.id != instance.id:
+                    raise serializers.ValidationError("Key already exists.")
+            except KeyPair.DoesNotExist:
+                pass
+        
+        if validated_data.get("name"):
+            instance.name = validated_data.get("name", instance.name)
+        
         instance.save()
         return instance
 
     def create(self, validated_data):
+        errors = {}
+        if not validated_data.get("name"):
+            errors["name"] = ["This field is required."]
+        if not validated_data.get("public_key"):
+            errors["public_key"] = ["This field is required."]
+        if errors:
+            raise serializers.ValidationError(errors)
         return KeyPair.objects.create(**validated_data)
