@@ -17,7 +17,7 @@ class Virtance(models.Model):
     size = models.ForeignKey("size.Size", models.PROTECT)
     image = models.ForeignKey("image.Image", models.PROTECT)
     region = models.ForeignKey("region.Region", models.PROTECT)
-    compute = models.ForeignKey("compute.Compute", models.PROTECT)
+    compute = models.ForeignKey("compute.Compute", models.PROTECT, null=True, blank=True)
     uuid = models.UUIDField(unique=True, editable=False, default=uuid4)
     name = models.CharField(max_length=100)
     disk = models.BigIntegerField()
@@ -36,7 +36,7 @@ class Virtance(models.Model):
 
     def save(self, *args, **kwargs):
         self.updated = timezone.now()
-        super(Region, self).save(*args, **kwargs)
+        super(Virtance, self).save(*args, **kwargs)
 
     def __unicode__(self):
         return self.name

@@ -71,6 +71,7 @@ class VirtanceSerializer(serializers.ModelSerializer):
 
 
 class CreateVirtanceSerializer(serializers.Serializer):
+    id = serializers.IntegerField(required=False, read_only=True)
     name = serializers.CharField(max_length=100)
     size = serializers.SlugField()
     image = serializers.CharField()
@@ -127,9 +128,3 @@ class CreateVirtanceSerializer(serializers.Serializer):
             except KeyPair.DoesNotExist:
                 raise serializers.ValidationError({"keypairs": ["Invalid keypair ID."]})
         return value
-
-    def create(self, validated_data):
-        return {**validated_data}
-
-    def update(self, instance, validated_data):
-        return instance

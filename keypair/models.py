@@ -32,3 +32,14 @@ class KeyPair(models.Model):
         self.updated = timezone.now()
         self.make_fingerprint()
         super(KeyPair, self).save(*args, **kwargs)
+
+
+class KeyPairVirtance(models.Model):
+    keypair = models.ForeignKey(KeyPair, models.CASCADE)
+    virtance = models.ForeignKey("virtance.Virtance", models.PROTECT)
+    created = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "SSH Key Virtance"
+        verbose_name_plural = "SSH Keys Virtance"
+        ordering = ["-id"]
