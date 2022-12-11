@@ -62,13 +62,6 @@ class VirtanceSerializer(serializers.ModelSerializer):
     def get_snapshot_ids(self, obj):
         return []
 
-    def create(self, validated_data):
-        print(validated_data)
-        return {**validated_data}
-
-    def update(self, instance, validated_data):
-        return instance
-
 
 class CreateVirtanceSerializer(serializers.Serializer):
     id = serializers.IntegerField(required=False, read_only=True)
