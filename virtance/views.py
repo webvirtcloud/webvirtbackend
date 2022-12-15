@@ -24,29 +24,30 @@ class VirtanceListAPI(APIView):
         validated_data = serilizator.validated_data
         ipv6 = validated_data.get("ipv6")
         name = validated_data.get("name")
+        size = validated_data.get("size")
         region = validated_data.get("region")
         backups = validated_data.get("backups")
         keypairs = validated_data.get("keypairs")
         user_data = validated_data.get("user_data")
-        user = self.context.get("request").user
-        size = Size.objects.get(slug=validated_data.get("size"))
-        image = Image.objects.get(slug=validated_data.get("image"))
-        region = Region.objects.get(slug=validated_data.get("region"))
+
+        if validated_data.get("size").isdigit():
+            image = Image.objects.get(id=validated_data.get("image"))
+        else:
+            image = Image.objects.get(slug=validated_data.get("image"))
 
         virtance = Virtance.objects.create(
-            user=user,
+            user=request.user,
             name=name,
             disk=size.disk,
-            size=size,
+            size__slug=size,
             image=image,
-            region=region,
+            region__slug=region,
             user_data=user_data
         )
 
         if keypairs:
             for k_id in keypairs:
-                keypair = KeyPair.objects.get(id=k_id)
-                KeyPairVirtance.objects.create(keypair=keypair, virtance=virtance)
+                KeyPairVirtance.objects.create(keypair_id=k_id, virtance=virtance)
 
         if ipv6:
             pass
