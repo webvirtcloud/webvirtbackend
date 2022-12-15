@@ -2,10 +2,8 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from size.models import Size
 from image.models import Image
-from region.models import Region
-from keypair.models import KeyPair, KeyPairVirtance
+from keypair.models import KeyPairVirtance
 from .models import Virtance
 from .serializers import VirtanceSerializer, CreateVirtanceSerializer
 
