@@ -71,6 +71,7 @@ class CreateVirtanceSerializer(serializers.Serializer):
     region = serializers.SlugField()
     ipv6 = serializers.BooleanField(required=False)
     backups = serializers.BooleanField(required=False)
+    password = serializers.CharField(required=False, allow_blank=True)
     keypairs = serializers.ListField(required=False, allow_empty=True)
     user_data = serializers.CharField(required=False, allow_blank=True)
 

@@ -1,7 +1,7 @@
 import requests
 from webvirtcloud.celery import app
 
-from compute.helper import assign_free_compute
+from compute.helper import assign_free_compute, WebVirtCompute
 from network.helper import (
     assign_free_ipv4_public,
     assign_free_ipv4_compute,
@@ -13,7 +13,7 @@ from .models import Virtance
 
 
 @app.task
-def create_virtance(virtance_id):
+def create_virtance(virtance_id, password):
     compute = None
     ipv4_public = None
     ipv4_compute = None
@@ -33,4 +33,15 @@ def create_virtance(virtance_id):
         ipv4_private = IPAddress.objects.get(network__type=Network.PRIVATE, virtance=virtance)
 
     if compute and ipv4_public and ipv4_compute and ipv4_private:
-        pass
+        images = []
+        network = []
+        keypairs = []
+        wvcomp = WebVirtCompute(compute.token, compute.hostname)
+        wvcomp.create_virtance(
+            virtance.size.vcpu,
+            virtance.size.memory,
+            images, 
+            network, 
+            keypairs, 
+            root_password
+        )

@@ -26,6 +26,7 @@ class VirtanceListAPI(APIView):
         size = validated_data.get("size")
         region = validated_data.get("region")
         backups = validated_data.get("backups")
+        password = validated_data.get("password")a
         keypairs = validated_data.get("keypairs")
         user_data = validated_data.get("user_data")
 
@@ -54,7 +55,7 @@ class VirtanceListAPI(APIView):
         if backups:
            pass
 
-        create_virtance.delay(virtance.id)
+        create_virtance.delay(virtance.id, password=password)
 
         serilizator = self.class_serializer(virtance, many=False)
         return Response({"virtance": serilizator.data}, status=status.HTTP_201_CREATED)
