@@ -4,6 +4,7 @@ from rest_framework.response import Response
 
 from image.models import Image
 from keypair.models import KeyPairVirtance
+from .tasks import create_virtance
 from .models import Virtance
 from .serializers import VirtanceSerializer, CreateVirtanceSerializer
 
@@ -52,6 +53,8 @@ class VirtanceListAPI(APIView):
 
         if backups:
            pass
+
+        create_virtance.delay(virtance.id)
 
         serilizator = self.class_serializer(virtance, many=False)
         return Response({"virtance": serilizator.data}, status=status.HTTP_201_CREATED)

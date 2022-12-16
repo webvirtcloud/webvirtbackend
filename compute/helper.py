@@ -10,4 +10,5 @@ def assign_free_compute(virtance_id):
     for compute in computes: # TODO: check if compute is available
         virtance.compute = compute
         virtance.save()
+        return True
     return False
