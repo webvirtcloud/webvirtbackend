@@ -4,6 +4,10 @@ from ipaddress import IPv4Network
 from .models import Network, IPAddress
 
 
+# First address is gateway, last address is broadcast
+FIRST_IP_START = 2
+LAST_IP_END = -1
+
 def assign_free_ipv4_compute(virtance_id):
     virtance = Virtance.objects.get(id=virtance_id)
     virtances = Virtance.objects.filter(compute=virtance.compute, is_deleted=False)
@@ -15,8 +19,7 @@ def assign_free_ipv4_compute(virtance_id):
         is_deleted=False
     )
     assigned_ipv4_compute = IPAddress.objects.filter(network=network, virtance__in=virtances)
-    # Use from 2nd to last IP address
-    list_ips = list(net)[2:-1]
+    list_ips = list(net)[FIRST_IP_START:LAST_IP_END]
     shuffle(list_ips)
     for ip in list_ips:
         if str(ip) not in [ip.address for ip in assigned_ipv4_compute]:
@@ -37,8 +40,7 @@ def assign_free_ipv4_public(region_id, virtance_id):
         is_deleted=False
     )
     for net in networks:
-        # Use from 2nd to last IP address
-        list_ips = list(net)[2:-1]
+        list_ips = list(net)[FIRST_IP_START:LAST_IP_END]
         shuffle(list_ips)
         for ip in list_ips:
             if not IPAddress.objects.filter(network=net, address=str(ip)).exists():
@@ -59,8 +61,7 @@ def assign_free_ipv4_private(virtance_id):
         is_deleted=False
     )
     for net in networks:
-        # Use from 2nd to last IP address
-        list_ips = list(net)[2:-1]
+        list_ips = list(net)[FIRST_IP_START:LAST_IP_END]
         shuffle(list_ips)
         for ip in list_ips:
             if not IPAddress.objects.filter(network=net, address=str(ip)).exists():
