@@ -5,7 +5,7 @@ from compute.helper import assign_free_compute
 from network.helper import (
     assign_free_ipv4_public,
     assign_free_ipv4_compute,
-    assign_free_ipv4_private, 
+    assign_free_ipv4_private,
 )
 from models.models import Compute
 from network.models import Network, IPAddress
