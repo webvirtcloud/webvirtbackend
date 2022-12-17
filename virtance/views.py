@@ -26,7 +26,7 @@ class VirtanceListAPI(APIView):
         size = validated_data.get("size")
         region = validated_data.get("region")
         backups = validated_data.get("backups")
-        password = validated_data.get("password")a
+        password = validated_data.get("password")
         keypairs = validated_data.get("keypairs")
         user_data = validated_data.get("user_data")
 
