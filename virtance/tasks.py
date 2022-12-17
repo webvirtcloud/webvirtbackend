@@ -8,7 +8,7 @@ from network.helper import (
     assign_free_ipv4_compute,
     assign_free_ipv4_private,
 )
-from models.models import Compute
+from compute.models import Compute
 from network.models import Network, IPAddress
 from .models import Virtance
 
