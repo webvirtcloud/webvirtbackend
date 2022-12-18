@@ -10,12 +10,14 @@ from network.helper import (
 )
 from compute.models import Compute
 from network.models import Network, IPAddress
+from keypair.models import KeyPairVirtance
 from .models import Virtance
 
 
 @app.task
 def create_virtance(virtance_id, password):
     compute = None
+    keypairs = None
     ipv4_public = None
     ipv4_compute = None
     ipv4_private = None
@@ -32,6 +34,12 @@ def create_virtance(virtance_id, password):
 
     if assign_free_ipv4_private(virtance.id) is True:
         ipv4_private = IPAddress.objects.get(network__type=Network.PRIVATE, virtance=virtance)
+
+    for virtance in KeyPairVirtance.objects.filter(virtance=virtance):
+        if keypairs is not None:
+            keypairs += "\n" + virtance.keypair.public_key
+        else:
+            keypairs = virtance.keypair.public_key
 
     if compute and ipv4_public and ipv4_compute and ipv4_private:
         images = [
@@ -89,7 +97,6 @@ def create_virtance(virtance_id, password):
                 }
             }
         ]
-        keypairs = []
         wvcomp = WebVirtCompute(compute.token, compute.hostname)
         wvcomp.create_virtance(
             virtance.size.vcpu,
