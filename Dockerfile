@@ -2,15 +2,12 @@ FROM rockylinux:8
 
 EXPOSE 8000
 
-ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
 
 RUN dnf -y install epel-release && \
-    dnf -y install gcc \
-           python38 \
-           python38-devel \
-           glibc-langpack-en \
-           mariadb-connector-c-devel && \
+    dnf -y install gcc procps-ng findutils bash-completion net-tools telnet \
+           python38 python38-devel glibc-langpack-all mariadb-connector-c-devel && \
     dnf clean all
 
 COPY requirements/*.txt .

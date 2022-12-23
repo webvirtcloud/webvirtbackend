@@ -5,14 +5,11 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: webvirtcloud:dev
+    image: webvirtbackend:dev
     hostname: backend
     ports:
       - 8000:8000
-      - 5678:5678
-    volumes:
-      - .:/app
-    command: ["sh", "-c", "python3.8 -m pip install debugpy && python3.8 -m debugpy --wait-for-client --listen 0.0.0.0:5678 manage.py runserver 0.0.0.0:8000 --nothreading --noreload"]
+    command: gunicorn webvirtcloud.wsgi:application --bind 0.0.0.0:8000
     environment:
       DB_HOST: mariadb
       DB_PORT: 3306
