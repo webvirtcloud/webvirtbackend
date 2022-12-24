@@ -7,7 +7,7 @@ ENV PYTHONDONTWRITEBYTECODE=1
 
 RUN dnf -y install epel-release && \
     dnf -y install gcc procps-ng findutils bash-completion net-tools telnet \
-           python38 python38-devel glibc-langpack-all mariadb-connector-c-devel && \
+           python38 python38-devel glibc-langpack-en mariadb-connector-c-devel && \
     dnf clean all
 
 COPY requirements/*.txt .
