@@ -16,6 +16,7 @@ class KeyPairSerializer(serializers.ModelSerializer):
             "name",
             "public_key",
             "fingerprint",
+            "created_at",
         )
 
     def validate_public_key(self, value):
