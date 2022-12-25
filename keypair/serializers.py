@@ -23,7 +23,7 @@ class KeyPairSerializer(serializers.ModelSerializer):
     def validate_public_key(self, value):
         if not value.startswith("ssh-rsa"):
             raise serializers.ValidationError("Invalid public key format.")
-        if len(value.strip().split()) >= 2:
+        if len(value.strip().split()) <= 1:
             raise serializers.ValidationError("Invalid public key format.")
         try:
             b64decode(value.strip().split()[1])
