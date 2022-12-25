@@ -8,6 +8,7 @@ class KeyPairSerializer(serializers.ModelSerializer):
     name = serializers.CharField(max_length=255, required=False)
     public_key = serializers.CharField(max_length=1000, required=False)
     fingerprint = serializers.CharField(read_only=True)
+    created_at = serializers.DateTimeField(read_only=True, source="created")
 
     class Meta:
         model = KeyPair
