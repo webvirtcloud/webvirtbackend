@@ -5,8 +5,7 @@
 	],
 	"extensions": [
 		"ms-python.python",
-		"GitHub.copilot",
-		"ms-azuretools.vscode-docker"
+		"GitHub.copilot"
 	],
 	"service": "backend",
 	"workspaceFolder": "/app"
