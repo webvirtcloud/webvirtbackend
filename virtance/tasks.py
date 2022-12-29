@@ -27,7 +27,7 @@ def create_virtance(virtance_id, password):
     password_hash = sha512_crypt.encrypt(password, salt=uuid4().hex[0:8], rounds=5000)
 
     if assign_free_compute(virtance.id) is True:
-        compute = Compute.objects.get(id=virtance.compute.id)
+        compute = Compute.objects.get(virtance=virtance)
 
     if assign_free_ipv4_compute(virtance.id) is True:
         ipv4_compute = IPAddress.objects.get(network__type=Network.COMPUTE, virtance=virtance)
@@ -49,7 +49,7 @@ def create_virtance(virtance_id, password):
             {
                 "name": virtance.name,
                 "size": virtance.size.disk,
-                "url": settings.IMAGE_URL + "/" + virtance.image.slug + ".qcow2",
+                "url": f"{settings.PUBLIC_IMAGES_URL}{virtance.image.slug}.qcow2",
                 "md5sum": virtance.image.md5sum,
                 "primary": True
             }
@@ -100,8 +100,7 @@ def create_virtance(virtance_id, password):
                 }
             }
         ]
-        # wvcomp = WebVirtCompute(compute.token, compute.hostname)
-        wvcomp = WebVirtCompute(compute.token, '192.168.1.103')
+        wvcomp = WebVirtCompute(compute.token, compute.hostname)
         wvcomp.create_virtance(
             virtance.name,
             virtance.size.vcpu,

@@ -35,7 +35,7 @@ class WebVirtCompute(object):
         }
 
     def _make_get(self, query, stream=False):
-        url = self._url + query
+        url = self._url() + query
         response = requests.get(url, headers=self._headers(), stream=stream)
         return response
 
@@ -44,17 +44,17 @@ class WebVirtCompute(object):
         return response
 
     def _make_post(self, url, params):
-        url = self._url + url
+        url = self._url() + url
         response = requests.post(url, headers=self._headers(), json=params)
         return response
 
     def _make_form_post(self, url, files=None):
-        url = self._url + url
+        url = self._url() + url
         response = requests.post(url, headers=self._headers(), files=files)
         return response
 
     def _make_put(self, url, params):
-        url = self._url + url
+        url = self._url() + url
         response = requests.put(url, headers=self._headers(), json=params)
         return response
 
@@ -107,4 +107,5 @@ class WebVirtCompute(object):
         }
         response = self._make_post(url, data)
         body = self._process_post(response)
+        print(body)
         return body.get("virtance")

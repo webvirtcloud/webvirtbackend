@@ -48,6 +48,7 @@ INSTALLED_APPS += [
 # Third party application definition
 INSTALLED_APPS += [
     "rest_framework",
+    "django_celery_results",
 ]
 
 # Middleware definition
@@ -107,6 +108,12 @@ DATABASES = {
     },
 }
 
+# Celery
+CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL", "amqp://guest:guest@127.0.0.1:5672")
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60
+CELERY_RESULT_BACKEND = "django-db"
+
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -145,4 +152,4 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 #
 
 # Public images URL (Distributions, Applicatons)
-PUBLIC_IMAGES_URL = "https://cloud-images.webvirt.cloud"
+PUBLIC_IMAGES_URL = "https://cloud-images.webvirt.cloud/"
