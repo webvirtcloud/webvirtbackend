@@ -1,15 +1,15 @@
-from decimal import Decimal
 from django.db.models import Q
 from rest_framework import serializers
 
-from .models import Virtance
 from size.models import Size
 from image.models import Image
 from region.models import Region
-from keypair.models import KeyPair
+from keypair.models import KeyPair, KeyPairVirtance
 from size.serializers import SizeSerializer
 from image.serializers import ImageSerializer
 from region.serializers import RegionSerializer
+from .models import Virtance
+from .tasks import create_virtance
 
 
 class VirtanceSerializer(serializers.ModelSerializer):
@@ -51,7 +51,7 @@ class VirtanceSerializer(serializers.ModelSerializer):
         return obj.INACTIVE
 
     def get_disk(self, obj):
-        return self.obj.disk // (1024 ** 3)
+        return obj.disk // (1024 ** 3)
 
     def get_features(self, obj):
         return []
@@ -61,6 +61,9 @@ class VirtanceSerializer(serializers.ModelSerializer):
 
     def get_snapshot_ids(self, obj):
         return []
+
+    def get_networks(self, obj):
+        return {}
 
 
 class CreateVirtanceSerializer(serializers.Serializer):
@@ -122,3 +125,46 @@ class CreateVirtanceSerializer(serializers.Serializer):
             except KeyPair.DoesNotExist:
                 raise serializers.ValidationError({"keypairs": ["Invalid keypair ID."]})
         return value
+    
+    def create(self, validated_data):
+        ipv6 = validated_data.get("ipv6")
+        name = validated_data.get("name")
+        size = validated_data.get("size")
+        region = validated_data.get("region")
+        backups = validated_data.get("backups")
+        password = validated_data.get("password")
+        keypairs = validated_data.get("keypairs")
+        user_data = validated_data.get("user_data")
+
+        if validated_data.get("size").isdigit():
+            image = Image.objects.get(id=validated_data.get("image"))
+        else:
+            image = Image.objects.get(slug=validated_data.get("image"))
+
+        size = Size.objects.get(slug=validated_data.get("size"))
+        region = Region.objects.get(slug=validated_data.get("region"))
+
+        virtance = Virtance.objects.create(
+            user=self.context.get("request").user,
+            name=name,
+            size=size,
+            disk=size.disk,
+            image=image,
+            region=region,
+            user_data=user_data
+        )
+
+        if keypairs:
+            for k_id in keypairs:
+                KeyPairVirtance.objects.create(keypair_id=k_id, virtance=virtance)
+
+        if ipv6:
+            pass
+
+        if backups:
+           pass
+
+        create_virtance.delay(virtance.id, password=password)
+
+        validated_data["id"] = virtance.id
+        return validated_data

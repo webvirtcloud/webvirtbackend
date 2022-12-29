@@ -6,7 +6,7 @@ from .models import Compute
 
 
 def assign_free_compute(virtance_id):
-    virtance = virtance.objects.get(id=virtance_id)
+    virtance = Virtance.objects.get(id=virtance_id)
     computes = Compute.objects.filter(
         region=virtance.region, is_active=True, is_deleted=False
     ).order_by("?")
@@ -18,9 +18,14 @@ def assign_free_compute(virtance_id):
 
 
 class WebVirtCompute(object):
-    def __init__(self, token, api_url):
+    def __init__(self, token, host, secure=False):
+        self.port = 8087
+        self.host = host
         self.token = token
-        self.api_url = api_url
+        self.secure = secure
+
+    def _url(self):
+        return f"http{'s' if self.secure else ''}://{self.host}:{self.port}/"
 
     def _headers(self):
         return {
@@ -30,7 +35,7 @@ class WebVirtCompute(object):
         }
 
     def _make_get(self, query, stream=False):
-        url = self.api_url + query
+        url = self._url + query
         response = requests.get(url, headers=self._headers(), stream=stream)
         return response
 
@@ -39,17 +44,17 @@ class WebVirtCompute(object):
         return response
 
     def _make_post(self, url, params):
-        url = self.api_url + url
+        url = self._url + url
         response = requests.post(url, headers=self._headers(), json=params)
         return response
 
     def _make_form_post(self, url, files=None):
-        url = self.api_url + url
+        url = self._url + url
         response = requests.post(url, headers=self._headers(), files=files)
         return response
 
     def _make_put(self, url, params):
-        url = self.api_url + url
+        url = self._url + url
         response = requests.put(url, headers=self._headers(), json=params)
         return response
 
@@ -89,16 +94,16 @@ class WebVirtCompute(object):
             logging.exception(response.text)
         return {}
 
-    def create_virtance(name, vcpu, memory, images, network, keypairs, root_password):
+    def create_virtance(self, name, vcpu, memory, images, network, keypairs, password):
         url = "virtances/"
         data = {
-            "name": "name",
+            "name": name,
             "vcpu": vcpu,
             "memory": memory,
             "images": images,
             "network": network,
             "keypairs": keypairs,
-            "root_password": root_password,
+            "root_password": password,
         }
         response = self._make_post(url, data)
         body = self._process_post(response)

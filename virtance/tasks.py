@@ -1,6 +1,7 @@
-import requests
+from uuid import uuid4
 from django.conf import settings
 from webvirtcloud.celery import app
+from passlib.hash import sha512_crypt
 
 from compute.helper import assign_free_compute, WebVirtCompute
 from network.helper import (
@@ -22,6 +23,8 @@ def create_virtance(virtance_id, password):
     ipv4_compute = None
     ipv4_private = None
     virtance = Virtance.objects.get(id=virtance_id)
+    password = password if password else uuid4().hex[0:24]
+    password_hash = sha512_crypt.encrypt(password, salt=uuid4().hex[0:8], rounds=5000)
 
     if assign_free_compute(virtance.id) is True:
         compute = Compute.objects.get(id=virtance.compute.id)
@@ -97,12 +100,14 @@ def create_virtance(virtance_id, password):
                 }
             }
         ]
-        wvcomp = WebVirtCompute(compute.token, compute.hostname)
+        # wvcomp = WebVirtCompute(compute.token, compute.hostname)
+        wvcomp = WebVirtCompute(compute.token, '192.168.1.103')
         wvcomp.create_virtance(
+            virtance.name,
             virtance.size.vcpu,
             virtance.size.memory,
             images, 
             network, 
-            keypairs, 
-            root_password
+            keypairs,
+            password_hash
         )
