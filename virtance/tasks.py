@@ -39,7 +39,7 @@ def create_virtance(virtance_id, password):
         ipv4_private = IPAddress.objects.get(network__type=Network.PRIVATE, virtance=virtance)
 
     for kpv in KeyPairVirtance.objects.filter(virtance=virtance):
-        keypairs.append(kpv.keypair.private_key)
+        keypairs.append(kpv.keypair.public_key)
         
     if compute and ipv4_public and ipv4_compute and ipv4_private:
         images = [
