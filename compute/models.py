@@ -26,4 +26,4 @@ class Compute(models.Model):
 
     def save(self, *args, **kwargs):
         self.updated = timezone.now()
-        super(Compute(), self).save(*args, **kwargs)
+        super(Compute, self).save(*args, **kwargs)
