@@ -46,7 +46,7 @@ def create_virtance(virtance_id, password):
             {
                 "name": virtance.name,
                 "size": virtance.size.disk,
-                "url": f"{settings.PUBLIC_IMAGES_URL}{virtance.image.slug}.qcow2",
+                "url": f"{settings.PUBLIC_IMAGES_URL}{virtance.image.file_name}",
                 "md5sum": virtance.image.md5sum,
                 "primary": True
             }
