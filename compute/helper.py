@@ -1,5 +1,6 @@
 import logging
 import requests
+from django.conf import settings
 
 from virtance.models import Virtance
 from .models import Compute
@@ -19,7 +20,7 @@ def assign_free_compute(virtance_id):
 
 class WebVirtCompute(object):
     def __init__(self, token, host, secure=False):
-        self.port = 8087
+        self.port = settings.COMPUTE_PORT
         self.host = host
         self.token = token
         self.secure = secure
@@ -36,26 +37,26 @@ class WebVirtCompute(object):
 
     def _make_get(self, query, stream=False):
         url = self._url() + query
-        response = requests.get(url, headers=self._headers(), stream=stream)
+        response = requests.get(url, headers=self._headers(), stream=stream, verify=False)
         return response
 
     def _make_get_url(self, url, stream=False):
-        response = requests.get(url, headers=self._headers(), stream=stream)
+        response = requests.get(url, headers=self._headers(), stream=stream, verify=False)
         return response
 
     def _make_post(self, url, params):
         url = self._url() + url
-        response = requests.post(url, headers=self._headers(), json=params)
+        response = requests.post(url, headers=self._headers(), json=params, verify=False)
         return response
 
     def _make_form_post(self, url, files=None):
         url = self._url() + url
-        response = requests.post(url, headers=self._headers(), files=files)
+        response = requests.post(url, headers=self._headers(), files=files, verify=False)
         return response
 
     def _make_put(self, url, params):
         url = self._url() + url
-        response = requests.put(url, headers=self._headers(), json=params)
+        response = requests.put(url, headers=self._headers(), json=params, verify=False)
         return response
 
     def _process_get(self, response, json=True):
@@ -94,10 +95,11 @@ class WebVirtCompute(object):
             logging.exception(response.text)
         return {}
 
-    def create_virtance(self, name, vcpu, memory, images, network, keypairs, password):
+    def create_virtance(self, id, uuid, vcpu, memory, images, network, keypairs, password):
         url = "virtances/"
         data = {
-            "name": name,
+            "name": settings.VM_NAME_PREFIX + str(id),
+            "uuid": uuid,
             "vcpu": vcpu,
             "memory": memory,
             "images": images,
@@ -107,5 +109,4 @@ class WebVirtCompute(object):
         }
         response = self._make_post(url, data)
         body = self._process_post(response)
-        print(body)
         return body.get("virtance")

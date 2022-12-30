@@ -38,11 +38,11 @@ def create_virtance(virtance_id, password):
     if assign_free_ipv4_private(virtance.id) is True:
         ipv4_private = IPAddress.objects.get(network__type=Network.PRIVATE, virtance=virtance)
 
-    for virtance in KeyPairVirtance.objects.filter(virtance=virtance):
+    for kpv in KeyPairVirtance.objects.filter(virtance=virtance):
         if keypairs is not None:
-            keypairs += "\n" + virtance.keypair.public_key
+            keypairs += "\n" + kpv.keypair.public_key
         else:
-            keypairs = virtance.keypair.public_key
+            keypairs = kpv.keypair.public_key
 
     if compute and ipv4_public and ipv4_compute and ipv4_private:
         images = [
@@ -94,7 +94,6 @@ def create_virtance(virtance_id, password):
                             "prefix": "",
                             "dns1": "",
                             "dns2": ""
-                            
                         }
                     }
                 }
@@ -102,11 +101,12 @@ def create_virtance(virtance_id, password):
         ]
         wvcomp = WebVirtCompute(compute.token, compute.hostname)
         wvcomp.create_virtance(
-            virtance.name,
+            virtance.id,
+            virtance.uuid.hex,
             virtance.size.vcpu,
             virtance.size.memory,
             images, 
             network, 
             keypairs,
-            password_hash
+            password_hash,
         )

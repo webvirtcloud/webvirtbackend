@@ -152,4 +152,10 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 #
 
 # Public images URL (Distributions, Applicatons)
-PUBLIC_IMAGES_URL = "https://cloud-images.webvirt.cloud/"
+PUBLIC_IMAGES_URL = os.environ.get("PUBLIC_IMAGES_URL", "https://cloud-images.webvirt.cloud/")
+
+# Compute settings
+COMPUTE_PORT = os.environ.get("COMPUTE_PORT", 8884)
+
+# Virtual machine name prefix
+VM_NAME_PREFIX = os.environ.get("VM_NAME_PREFIX", "Virtance-")
