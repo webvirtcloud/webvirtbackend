@@ -39,20 +39,11 @@ class KeyPairSerializer(serializers.ModelSerializer):
         return value
 
     def update(self, instance, validated_data):
-        if not validated_data.get("public_key") and not validated_data.get("name"):
+        if not validated_data.get("name"):
             raise serializers.ValidationError(
-                {"name": ["This field is required."], "public_key": ["This field is required."]}
+                {"name": ["This field is required."]}
             )
 
-        if validated_data.get("public_key"):
-            instance.public_key = validated_data.get("public_key", instance.public_key)
-            try:
-                keypair = KeyPair.objects.get(public_key=validated_data.get("public_key"))
-                if keypair.id != instance.id:
-                    raise serializers.ValidationError("Key already exists.")
-            except KeyPair.DoesNotExist:
-                pass
-        
         if validated_data.get("name"):
             instance.name = validated_data.get("name", instance.name)
         
