@@ -2,7 +2,7 @@
 WebVirtCloud URL Configuration
 """
 from django.conf import settings
-from django.urls import include, path, re_path
+from django.urls import include, re_path
 from webvirtcloud.views import app_exception_handler404, app_exception_handler500
 
 
@@ -12,8 +12,9 @@ handler500 = app_exception_handler500
 
 urlpatterns = [
     re_path(r"", include("singlepage.urls")),
-    re_path(r"account/", include("account.urls")),
     re_path(r"api/", include("api.urls")),
+    re_path(r"account/", include("account.urls")),
+    re_path(r"metadata/", include("metadata.urls")),
 ]
 
 if settings.DEBUG:
@@ -38,5 +39,5 @@ if settings.DEBUG:
         re_path(r"^swagger/$", schema_view.with_ui("swagger", cache_timeout=0), name="schema-swagger-ui"),
         re_path(r"^swagger(?P<format>\.json|\.yaml)$", schema_view.without_ui(cache_timeout=0), name="schema-json"),
         # Debug Toolbar
-        path("__debug__/", include("debug_toolbar.urls")),
+        re_path("__debug__/", include("debug_toolbar.urls")),
     ]
