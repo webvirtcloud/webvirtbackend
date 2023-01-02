@@ -41,7 +41,7 @@ class KeyPairDataAPI(APIView):
         serilizator = self.class_serializer(self.get_queryset(), data=request.data)
         serilizator.is_valid(raise_exception=True)
         serilizator.save(user=request.user)
-        return Response({"keypair": serilizator.data}, status=status.HTTP_201_CREATED)
+        return Response({"keypair": serilizator.data}, status=status.HTTP_200_OK)
 
     def delete(self, request, pk, *args, **kwargs):
         keypair = self.get_queryset()
