@@ -1,5 +1,6 @@
 import logging
 import requests
+from base64 import b64encode
 from django.conf import settings
 
 from virtance.models import Virtance
@@ -29,10 +30,11 @@ class WebVirtCompute(object):
         return f"http{'s' if self.secure else ''}://{self.host}:{self.port}/"
 
     def _headers(self):
+        credentials = f"{self.token}:{self.token}"
         return {
             "Accept": "application/json, */*",
             "Content-Type": "application/json",
-            "Authorization": f"Bearer {self.token}",
+            "Authorization": f"Basic {b64encode(credentials.encode()).decode()}",
         }
 
     def _make_get(self, query, stream=False):

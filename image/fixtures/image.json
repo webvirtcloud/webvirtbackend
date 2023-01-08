@@ -51,7 +51,7 @@
             "name": "8 Stream x64",
             "slug": "centos-8-stream-x64",
             "type": "distribution",
-            "md5sum": "67eef26d3b3b8eb2095b9090a6bfd0ca",
+            "md5sum": "36ef40ccb3a23673a6ac396885f97064",
             "distribution": "centos",
             "description": "CentOS 8 Stream x64",
             "file_name": "centos-8-stream-x64.qcow2",

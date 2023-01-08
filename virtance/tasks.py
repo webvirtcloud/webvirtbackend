@@ -44,58 +44,38 @@ def create_virtance(virtance_id, password):
     if compute and ipv4_public and ipv4_compute and ipv4_private:
         images = [
             {
-                "name": virtance.name,
+                "name": settings.VM_NAME_PREFIX + str(virtance.id),
                 "size": virtance.size.disk,
                 "url": f"{settings.PUBLIC_IMAGES_URL}{virtance.image.file_name}",
                 "md5sum": virtance.image.md5sum,
                 "primary": True
             }
         ]
-        network = [
-            {
-                "v4": {
-                    "public": {
-                        "primary": {
-                            "address": ipv4_public.address,
-                            "gateway": ipv4_public.network.gateway,
-                            "netmask": ipv4_public.network.netmask,
-                            "dns1": ipv4_public.network.dns1,
-                            "dns2": ipv4_public.network.dns2
-                            
-                        },
-                        "secondary": {
-                            "address": ipv4_compute.address,
-                            "gateway": ipv4_compute.network.gateway,
-                            "netmask": ipv4_compute.network.netmask
-                        }
+        network = {
+            "v4": {
+                "public": {
+                    "primary": {
+                        "address": ipv4_public.address,
+                        "gateway": ipv4_public.network.gateway,
+                        "netmask": ipv4_public.network.netmask,
+                        "dns1": ipv4_public.network.dns1,
+                        "dns2": ipv4_public.network.dns2
+                        
                     },
-                    "private": {
-                        "primary": {
-                            "address": ipv4_private.address,
-                            "gateway": ipv4_private.network.gateway,
-                            "netmask": ipv4_private.network.netmask
-                            
-                        },
-                        "secondary": {
-                            "address": "",
-                            "gateway": "",
-                            "netmask": ""
-                        }
+                    "secondary": {
+                        "address": ipv4_compute.address,
+                        "gateway": ipv4_compute.network.gateway,
+                        "netmask": ipv4_compute.network.netmask
                     }
                 },
-                "v6": {
-                    "public": {
-                        "primary": {
-                            "address": "",
-                            "gateway": "",
-                            "prefix": "",
-                            "dns1": "",
-                            "dns2": ""
-                        }
-                    }
+                "private": {
+                    "address": ipv4_private.address,
+                    "gateway": ipv4_private.network.gateway,
+                    "netmask": ipv4_private.network.netmask
                 }
-            }
-        ]
+            },
+            "v6": {}
+        }
         wvcomp = WebVirtCompute(compute.token, compute.hostname)
         wvcomp.create_virtance(
             virtance.id,
