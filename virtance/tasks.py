@@ -74,12 +74,13 @@ def create_virtance(virtance_id, password):
                     "netmask": ipv4_private.network.netmask
                 }
             },
-            "v6": {}
+            "v6": None
         }
         wvcomp = WebVirtCompute(compute.token, compute.hostname)
         wvcomp.create_virtance(
             virtance.id,
             virtance.uuid.hex,
+            virtance.name,
             virtance.size.vcpu,
             virtance.size.memory,
             images, 

@@ -97,11 +97,12 @@ class WebVirtCompute(object):
             logging.exception(response.text)
         return {}
 
-    def create_virtance(self, id, uuid, vcpu, memory, images, network, keypairs, password):
+    def create_virtance(self, id, uuid, hostname, vcpu, memory, images, network, keypairs, password):
         url = "virtances/"
         data = {
             "name": settings.VM_NAME_PREFIX + str(id),
             "uuid": uuid,
+            "hostname": hostname,
             "vcpu": vcpu,
             "memory": memory,
             "images": images,
