@@ -48,7 +48,7 @@ class IPAddress(models.Model):
     network = models.ForeignKey(Network, models.PROTECT)
     virtance = models.ForeignKey("virtance.Virtance", models.PROTECT)
     address = models.GenericIPAddressField()
-    netmask = models.GenericIPAddressField()
+    updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -58,3 +58,7 @@ class IPAddress(models.Model):
 
     def __unicode__(self):
         return self.address
+
+    def save(self, *args, **kwargs):
+        self.updated = timezone.now()
+        super(IPAddress, self).save(*args, **kwargs)
