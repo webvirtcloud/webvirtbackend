@@ -1,4 +1,4 @@
-from random import shuffle
+import random
 from ipaddress import IPv4Network
 
 from virtance.models import Virtance
@@ -22,11 +22,11 @@ def assign_free_ipv4_compute(virtance_id):
     assigned_ipv4_compute = IPAddress.objects.filter(network=network, virtance__in=virtances)
     ipv4net = IPv4Network(f"{network.cidr}/{network.netmask}")
     list_ipv4 = list(ipv4net)[FIRST_IP_START:LAST_IP_END]
-    shuffle(list_ipv4)
-    for ip in list_ipv4:
-        if str(ip) not in [ip.address for ip in assigned_ipv4_compute]:
+    random.shuffle(list_ipv4)
+    for ipaddr in list_ipv4:
+        if str(ipaddr) not in [ip.address for ip in assigned_ipv4_compute]:
             IPAddress.objects.create(
-                network=network, address=str(ip), virtance=virtance, netmask=str(network.netmask)
+                network=network, address=str(ipaddr), virtance=virtance, netmask=str(network.netmask)
             )
             return True
     return False
@@ -44,11 +44,11 @@ def assign_free_ipv4_public(virtance_id):
     for net in networks:
         ipv4net = IPv4Network(f"{net.cidr}/{net.netmask}")
         list_ipv4 = list(ipv4net)[FIRST_IP_START:LAST_IP_END]
-        shuffle(list_ipv4)
-        for ip in list_ipv4:
-            if not IPAddress.objects.filter(network=net, address=str(ip)).exists():
+        random.shuffle(list_ipv4)
+        for ipaddr in list_ipv4:
+            if not IPAddress.objects.filter(network=net, address=str(ipaddr)).exists():
                 IPAddress.objects.create(
-                    network=net, address=str(ip), virtance=virtance, netmask=str(net.netmask)
+                    network=net, address=str(ipaddr), virtance=virtance, netmask=str(net.netmask)
                 )
                 return True
     return False
@@ -66,11 +66,11 @@ def assign_free_ipv4_private(virtance_id):
     for net in networks:
         ipv4net = IPv4Network(f"{net.cidr}/{net.netmask}")
         list_ipv4 = list(ipv4net)[FIRST_IP_START:LAST_IP_END]
-        shuffle(list_ipv4)
-        for ip in list_ipv4:
-            if not IPAddress.objects.filter(network=net, address=str(ip)).exists():
+        random.shuffle(list_ipv4)
+        for ipaddr in list_ipv4:
+            if not IPAddress.objects.filter(network=net, address=str(ipaddr)).exists():
                 IPAddress.objects.create(
-                    network=net, address=str(ip), virtance=virtance, netmask=str(net.netmask)
+                    network=net, address=str(ipaddr), virtance=virtance, netmask=str(net.netmask)
                 )
                 return True
     return False
