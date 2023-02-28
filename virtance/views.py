@@ -6,7 +6,7 @@ from size.models import Size
 from image.models import Image
 from keypair.models import KeyPairVirtance
 from .models import Virtance
-from .serializers import VirtanceSerializer, CreateVirtanceSerializer
+from .serializers import VirtanceSerializer, CreateVirtanceSerializer, VirtanceActionSerializer
 
 
 class VirtanceListAPI(APIView):
@@ -31,7 +31,9 @@ class VirtanceDataAPI(APIView):
 
     def get_object(self):
         try:
-            return Virtance.objects.get(pk=self.kwargs.get("id"), user=self.request.user, is_deleted=False)
+            return Virtance.objects.get(
+                pk=self.kwargs.get("id"), user=self.request.user, is_deleted=False
+            )
         except Virtance.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -39,3 +41,20 @@ class VirtanceDataAPI(APIView):
         virtances = self.get_object()
         serilizator = self.class_serializer(virtances, many=False)
         return Response({"virtance": serilizator.data})
+
+
+class VirtanceActionAPI(APIView):
+    class_serializer = VirtanceActionSerializer
+
+    def get_object(self):
+        try:
+            return Virtance.objects.get(
+                pk=self.kwargs.get("id"), user=self.request.user, is_deleted=False
+            )
+        except Virtance.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+    def post(self, request, *args, **kwargs):
+        virtances = self.get_object()
+        serilizator = self.class_serializer(virtances, many=False)
+        return Response({"action": serilizator.data})

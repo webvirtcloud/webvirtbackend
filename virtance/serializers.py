@@ -168,3 +168,13 @@ class CreateVirtanceSerializer(serializers.Serializer):
 
         validated_data["id"] = virtance.id
         return validated_data
+
+
+class VirtanceActionSerializer(serializers.Serializer):
+    action = serializers.CharField(max_length=20)
+
+    def validate_action(self, value):
+        actions = ["reboot", "shutdown", "power_on", "power_off", "password_reset", "resize", "rename", "rebuild"]
+        if value not in actions:
+            raise serializers.ValidationError({"action": ["Invalid action."]})
+        return value
