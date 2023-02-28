@@ -25,9 +25,7 @@ def assign_free_ipv4_compute(virtance_id):
     random.shuffle(list_ipv4)
     for ipaddr in list_ipv4:
         if str(ipaddr) not in [ip.address for ip in assigned_ipv4_compute]:
-            IPAddress.objects.create(
-                network=network, address=str(ipaddr), virtance=virtance, netmask=str(network.netmask)
-            )
+            IPAddress.objects.create(network=network, address=str(ipaddr), virtance=virtance)
             return True
     return False
 
@@ -47,9 +45,7 @@ def assign_free_ipv4_public(virtance_id):
         random.shuffle(list_ipv4)
         for ipaddr in list_ipv4:
             if not IPAddress.objects.filter(network=net, address=str(ipaddr)).exists():
-                IPAddress.objects.create(
-                    network=net, address=str(ipaddr), virtance=virtance, netmask=str(net.netmask)
-                )
+                IPAddress.objects.create(network=net, address=str(ipaddr), virtance=virtance)
                 return True
     return False
 
@@ -69,9 +65,7 @@ def assign_free_ipv4_private(virtance_id):
         random.shuffle(list_ipv4)
         for ipaddr in list_ipv4:
             if not IPAddress.objects.filter(network=net, address=str(ipaddr)).exists():
-                IPAddress.objects.create(
-                    network=net, address=str(ipaddr), virtance=virtance, netmask=str(net.netmask)
-                )
+                IPAddress.objects.create(network=net, address=str(ipaddr), virtance=virtance)
                 return True
     return False
 
