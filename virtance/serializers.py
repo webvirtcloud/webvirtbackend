@@ -4,6 +4,7 @@ from rest_framework import serializers
 from size.models import Size
 from image.models import Image
 from region.models import Region
+from network.models import IPAddress
 from keypair.models import KeyPair, KeyPairVirtance
 from size.serializers import SizeSerializer
 from image.serializers import ImageSerializer
@@ -48,7 +49,7 @@ class VirtanceSerializer(serializers.ModelSerializer):
         )
 
     def get_status(self, obj):
-        return obj.INACTIVE
+        return obj.ACTIVE
 
     def get_disk(self, obj):
         return obj.disk // (1024 ** 3)
@@ -63,7 +64,16 @@ class VirtanceSerializer(serializers.ModelSerializer):
         return []
 
     def get_networks(self, obj):
-        return {}
+        v4 = []
+        v6 = []
+        for ip in IPAddress.objects.filter(virtance=obj):
+            v4.append({
+                "address": ip.address,
+                "netmask": ip.network.netmask,
+                "gateway": ip.network.gateway,
+                "type": ip.network.type,
+            })
+        return {"v4": v4, "v6": v6}
 
 
 class CreateVirtanceSerializer(serializers.Serializer):
