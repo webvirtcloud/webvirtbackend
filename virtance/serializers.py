@@ -67,12 +67,20 @@ class VirtanceSerializer(serializers.ModelSerializer):
         v4 = []
         v6 = []
         for ip in IPAddress.objects.filter(virtance=obj):
-            v4.append({
-                "address": ip.address,
-                "netmask": ip.network.netmask,
-                "gateway": ip.network.gateway,
-                "type": ip.network.type,
-            })
+            if ip.network.version == ip.network.IPV6:
+                v6.append({
+                    "address": ip.address,
+                    "prefix": ip.network.netmask,
+                    "gateway": ip.network.gateway,
+                    "type": ip.network.type,
+                })
+            else:
+                v4.append({
+                    "address": ip.address,
+                    "netmask": ip.network.netmask,
+                    "gateway": ip.network.gateway,
+                    "type": ip.network.type,
+                })
         return {"v4": v4, "v6": v6}
 
 
