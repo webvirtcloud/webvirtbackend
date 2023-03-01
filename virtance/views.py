@@ -55,6 +55,8 @@ class VirtanceActionAPI(APIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
     def post(self, request, *args, **kwargs):
-        virtances = self.get_object()
-        serilizator = self.class_serializer(virtances, many=False)
-        return Response({"action": serilizator.data})
+        virtance = self.get_object()
+        serilizator = self.class_serializer(data=request.data)
+        serilizator.is_valid(raise_exception=True)
+        serilizator.save(virtance=virtance)
+        return Response(serilizator.data)

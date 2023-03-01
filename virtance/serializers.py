@@ -9,8 +9,9 @@ from keypair.models import KeyPair, KeyPairVirtance
 from size.serializers import SizeSerializer
 from image.serializers import ImageSerializer
 from region.serializers import RegionSerializer
+from compute.helper import WebVirtCompute
 from .models import Virtance
-from .tasks import create_virtance
+from .tasks import create_virtance, action_virtance
 
 
 class VirtanceSerializer(serializers.ModelSerializer):
@@ -49,7 +50,12 @@ class VirtanceSerializer(serializers.ModelSerializer):
         )
 
     def get_status(self, obj):
-        return obj.ACTIVE
+        wvcomp = WebVirtCompute(obj.compute.token, obj.compute.hostname)
+        if wvcomp.status_virtance(obj.id) == "running":
+            return obj.ACTIVE
+        if wvcomp.status_virtance(obj.id) == "shutoff":
+            return obj.INACTIVE
+        return obj.PENDING
 
     def get_disk(self, obj):
         return obj.disk // (1024 ** 3)
@@ -192,7 +198,14 @@ class VirtanceActionSerializer(serializers.Serializer):
     action = serializers.CharField(max_length=20)
 
     def validate_action(self, value):
-        actions = ["reboot", "shutdown", "power_on", "power_off", "password_reset", "resize", "rename", "rebuild"]
+        actions = ["power_on", "power_off", "shutdown", "reboot", "password_reset", "resize", "rename", "rebuild"]
         if value not in actions:
             raise serializers.ValidationError({"action": ["Invalid action."]})
         return value
+    
+    def create(self, validated_data):
+        action = validated_data.get("action")
+        virtnace = validated_data.get("virtance")
+        if action in ["power_on", "power_off", "shutdown", "reboot"]:
+            action_virtance.delay(virtnace.id, action)
+        return validated_data

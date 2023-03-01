@@ -7,6 +7,10 @@ from virtance.models import Virtance
 from .models import Compute
 
 
+def vm_name(virtance_id):
+    return f"{settings.VM_NAME_PREFIX}{str(virtance_id)}"
+
+
 def assign_free_compute(virtance_id):
     virtance = Virtance.objects.get(id=virtance_id)
     computes = Compute.objects.filter(
@@ -100,7 +104,7 @@ class WebVirtCompute(object):
     def create_virtance(self, id, uuid, hostname, vcpu, memory, images, network, keypairs, password):
         url = "virtances/"
         data = {
-            "name": settings.VM_NAME_PREFIX + str(id),
+            "name": vm_name(id),
             "uuid": uuid,
             "hostname": hostname,
             "vcpu": vcpu,
@@ -113,3 +117,15 @@ class WebVirtCompute(object):
         response = self._make_post(url, data)
         body = self._process_post(response)
         return body.get("virtance")
+
+    def status_virtance(self, id):
+        url = f"virtances/{vm_name(id)}/status/"
+        response = self._make_get(url)
+        body = self._process_get(response)
+        return body.get("status")
+
+    def action_virtance(self, id, action):
+        url = f"virtances/{vm_name(id)}/status/"
+        response = self._make_post(url, {"action": action})
+        body = self._process_post(response)
+        return body.get("status")

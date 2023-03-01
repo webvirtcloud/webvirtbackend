@@ -88,3 +88,9 @@ def create_virtance(virtance_id, password):
             keypairs,
             password_hash,
         )
+
+@app.task
+def action_virtance(virtance_id, action):
+    virtance = Virtance.objects.get(id=virtance_id)
+    wvcomp = WebVirtCompute(virtance.compute.token, virtance.compute.hostname)
+    wvcomp.action_virtance(virtance.id, action)
