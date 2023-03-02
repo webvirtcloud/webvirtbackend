@@ -1,11 +1,10 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from size.models import Size
-from image.models import Image
-from keypair.models import KeyPairVirtance
 from .models import Virtance
+from .tasks import delete_virtance
 from .serializers import VirtanceSerializer, CreateVirtanceSerializer, VirtanceActionSerializer
 
 
@@ -30,29 +29,28 @@ class VirtanceDataAPI(APIView):
     class_serializer = VirtanceSerializer
 
     def get_object(self):
-        try:
-            return Virtance.objects.get(
-                pk=self.kwargs.get("id"), user=self.request.user, is_deleted=False
-            )
-        except Virtance.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+        return get_object_or_404(
+            Virtance, pk=self.kwargs.get("id"), user=self.request.user, is_deleted=False
+        )
 
     def get(self, request, *args, **kwargs):
         virtances = self.get_object()
         serilizator = self.class_serializer(virtances, many=False)
         return Response({"virtance": serilizator.data})
 
+    def delete(self, request, *args, **kwargs):
+        virtance = self.get_object()
+        delete_virtance(virtance.id)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 class VirtanceActionAPI(APIView):
     class_serializer = VirtanceActionSerializer
 
     def get_object(self):
-        try:
-            return Virtance.objects.get(
-                pk=self.kwargs.get("id"), user=self.request.user, is_deleted=False
-            )
-        except Virtance.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+        return get_object_or_404(
+            Virtance, pk=self.kwargs.get("id"), user=self.request.user, is_deleted=False
+        )
 
     def post(self, request, *args, **kwargs):
         virtance = self.get_object()

@@ -55,6 +55,11 @@ class WebVirtCompute(object):
         response = requests.post(url, headers=self._headers(), json=params, verify=False)
         return response
 
+    def _make_delete(self, url):
+        url = self._url() + url
+        response = requests.delete(url, headers=self._headers(), verify=False)
+        return response
+
     def _make_form_post(self, url, files=None):
         url = self._url() + url
         response = requests.post(url, headers=self._headers(), files=files, verify=False)
@@ -101,6 +106,20 @@ class WebVirtCompute(object):
             logging.exception(response.text)
         return {}
 
+    def _process_delete(self, response, json=True):
+        if response.status_code == 204:
+            if json is True:
+                body = response.json()
+                if body is not None:
+                    if isinstance(body, bytes) and hasattr(body, "decode"):
+                        body = body.decode("utf-8")
+                    return body
+            else:
+                return response.raw
+        if 400 <= response.status_code:
+            logging.exception(response.text)
+        return {}
+
     def create_virtance(self, id, uuid, hostname, vcpu, memory, images, network, keypairs, password):
         url = "virtances/"
         data = {
@@ -129,3 +148,9 @@ class WebVirtCompute(object):
         response = self._make_post(url, {"action": action})
         body = self._process_post(response)
         return body.get("status")
+
+    def delete_virtance(self, id):
+        url = f"virtances/{vm_name(id)}/"
+        response = self._make_delete(url)
+        body = self._process_delete(response)
+        return body

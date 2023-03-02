@@ -38,5 +38,10 @@ class Virtance(models.Model):
         self.updated = timezone.now()
         super(Virtance, self).save(*args, **kwargs)
 
+    def delete(self, *args, **kwargs):
+        self.is_deleted = True
+        self.deleted = timezone.now()
+        self.save()
+
     def __unicode__(self):
         return self.name

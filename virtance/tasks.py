@@ -94,3 +94,12 @@ def action_virtance(virtance_id, action):
     virtance = Virtance.objects.get(id=virtance_id)
     wvcomp = WebVirtCompute(virtance.compute.token, virtance.compute.hostname)
     wvcomp.action_virtance(virtance.id, action)
+
+@app.task
+def delete_virtance(virtance_id):
+    virtance = Virtance.objects.get(id=virtance_id)
+    wvcomp = WebVirtCompute(virtance.compute.token, virtance.compute.hostname)
+    wvcomp.delete_virtance(virtance.id)
+    ipaddresse = IPAddress.objects.filter(virtance=virtance)
+    ipaddresse.delete()
+    virtance.delete()
