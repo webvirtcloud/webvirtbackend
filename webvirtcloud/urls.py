@@ -3,7 +3,7 @@ WebVirtCloud URL Configuration
 """
 from django.conf import settings
 from django.urls import include, re_path
-from webvirtcloud.views import app_exception_handler404, app_exception_handler500
+from webvirtcloud.views import IndexView, app_exception_handler404, app_exception_handler500
 
 
 handler404 = app_exception_handler404
@@ -11,14 +11,14 @@ handler500 = app_exception_handler500
 
 
 urlpatterns = [
-    re_path(r"", include("singlepage.urls")),
+    re_path(r"$", IndexView.as_view(), name="index"),
     re_path(r"api/", include("api.urls")),
     re_path(r"account/", include("account.urls")),
     re_path(r"metadata/", include("metadata.urls")),
+    re_path(r"admin/", include("admin.urls")),
 ]
 
 if settings.DEBUG:
-    import debug_toolbar
     from drf_yasg import openapi
     from drf_yasg.views import get_schema_view
     from rest_framework.permissions import AllowAny

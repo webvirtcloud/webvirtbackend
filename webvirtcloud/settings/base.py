@@ -22,7 +22,6 @@ AUTH_USER_MODEL = "account.User"
 
 # Application definition
 INSTALLED_APPS = [
-    "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -34,6 +33,7 @@ INSTALLED_APPS = [
 INSTALLED_APPS += [
     "api",
     "size",
+    "admin",
     "image",
     "region",
     "account",
@@ -42,7 +42,6 @@ INSTALLED_APPS += [
     "project",
     "network",
     "virtance",
-    "singlepage",
 ]
 
 # Third party application definition
