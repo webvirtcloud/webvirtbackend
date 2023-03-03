@@ -1,6 +1,5 @@
 from http import HTTPStatus
-from django.http import JsonResponse, HttpResponse
-from django.views.generic.base import View
+from django.http import JsonResponse
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import exception_handler
@@ -93,11 +92,3 @@ def app_exception_handler500(request):
         status=status_code,
     )
     return response
-
-
-class IndexView(View):
-    def dispatch(self, request, *args, **kwargs):
-        return super(IndexView, self).dispatch(request, *args, **kwargs)
-
-    def get(self, request, *args, **kwargs):
-        return HttpResponse("WebVirtCloud API")
