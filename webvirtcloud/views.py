@@ -1,4 +1,5 @@
 from http import HTTPStatus
+from django.shortcuts import render
 from django.http import JsonResponse
 from rest_framework import status
 from rest_framework.response import Response
@@ -70,25 +71,33 @@ def app_exception_handler(exc, context):
 
 def app_exception_handler404(request, exception):
     status_code = 404
-    response = JsonResponse(
-        {
-            "status_code": status_code,
-            "message": "The resource you were accessing could not be found.",
-        },
-        content_type="application/json",
-        status=status_code,
-    )
-    return response
+    
+    if "api/" in request.META["PATH_INFO"]:
+        response = JsonResponse(
+            {
+                "status_code": status_code,
+                "message": "The resource you were accessing could not be found.",
+            },
+            content_type="application/json",
+            status=status_code,
+        )
+        return response
+
+    return render(request, "404.html", status=status_code)
 
 
 def app_exception_handler500(request):
     status_code = 500
-    response = JsonResponse(
-        {
-            "status_code": status_code,
-            "message": "The resource you were accessing got internal error.",
-        },
-        content_type="application/json",
-        status=status_code,
-    )
-    return response
+
+    if "api/" in request.META["PATH_INFO"]:
+        response = JsonResponse(
+            {
+                "status_code": status_code,
+                "message": "The resource you were accessing got internal error.",
+            },
+            content_type="application/json",
+            status=status_code,
+        )
+        return response
+
+    return render(request, "500.html", status=status_code)
