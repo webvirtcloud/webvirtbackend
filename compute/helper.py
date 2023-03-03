@@ -84,24 +84,30 @@ class WebVirtCompute(object):
             logging.exception(response.text)
         return {}
 
-    def _process_post(self, response):
+    def _process_post(self, response, json=True):
         if response.status_code == 201:
-            body = response.json()
-            if body:
-                if isinstance(body, bytes) and hasattr(body, "decode"):
-                    body = body.decode("utf-8")
-                return body
+            if json is True:
+                body = response.json()
+                if body:
+                    if isinstance(body, bytes) and hasattr(body, "decode"):
+                        body = body.decode("utf-8")
+                    return body
+            else:
+                return response.raw
         if 400 <= response.status_code:
             logging.exception(response.text)
         return {}
 
-    def _process_put(self, response):
+    def _process_put(self, response, json=True):
         if response.status_code == 204:
-            body = response
-            if body:
-                if isinstance(body, bytes) and hasattr(body, "decode"):
-                    body = body.decode("utf-8")
-                return body
+            if json is True:
+                body = response.json()
+                if body:
+                    if isinstance(body, bytes) and hasattr(body, "decode"):
+                        body = body.decode("utf-8")
+                    return body
+            else:
+                return response.raw
         if 400 <= response.status_code:
             logging.exception(response.text)
         return {}
