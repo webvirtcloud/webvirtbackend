@@ -46,28 +46,19 @@ class WebVirtCompute(object):
         response = requests.get(url, headers=self._headers(), stream=stream, verify=False)
         return response
 
-    def _make_get_url(self, url, stream=False):
-        response = requests.get(url, headers=self._headers(), stream=stream, verify=False)
-        return response
-
     def _make_post(self, url, params):
         url = self._url() + url
         response = requests.post(url, headers=self._headers(), json=params, verify=False)
         return response
 
-    def _make_delete(self, url):
-        url = self._url() + url
-        response = requests.delete(url, headers=self._headers(), verify=False)
-        return response
-
-    def _make_form_post(self, url, files=None):
-        url = self._url() + url
-        response = requests.post(url, headers=self._headers(), files=files, verify=False)
-        return response
-
     def _make_put(self, url, params):
         url = self._url() + url
         response = requests.put(url, headers=self._headers(), json=params, verify=False)
+        return response
+
+    def _make_delete(self, url):
+        url = self._url() + url
+        response = requests.delete(url, headers=self._headers(), verify=False)
         return response
 
     def _process_get(self, response, json=True):
