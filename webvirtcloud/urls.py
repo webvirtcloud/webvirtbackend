@@ -3,11 +3,6 @@ WebVirtCloud URL Configuration
 """
 from django.conf import settings
 from django.urls import include, re_path
-from webvirtcloud.views import app_exception_handler404, app_exception_handler500
-
-
-handler404 = app_exception_handler404
-handler500 = app_exception_handler500
 
 
 urlpatterns = [
@@ -40,3 +35,6 @@ if settings.DEBUG:
         # Debug Toolbar
         re_path("__debug__/", include("debug_toolbar.urls")),
     ]
+
+handler404 = "webvirtcloud.views.app_exception_handler404"
+handler500 = "webvirtcloud.views.app_exception_handler500"
