@@ -73,7 +73,7 @@ class WebVirtCompute(object):
                 return response.raw
         if 400 <= response.status_code:
             logging.exception(response.text)
-        return {}
+        return None
 
     def _process_post(self, response, json=True):
         if response.status_code == 201:
@@ -87,7 +87,7 @@ class WebVirtCompute(object):
                 return response.raw
         if 400 <= response.status_code:
             logging.exception(response.text)
-        return {}
+        return None
 
     def _process_put(self, response, json=True):
         if response.status_code == 204:
@@ -101,21 +101,14 @@ class WebVirtCompute(object):
                 return response.raw
         if 400 <= response.status_code:
             logging.exception(response.text)
-        return {}
+        return None
 
-    def _process_delete(self, response, json=True):
+    def _process_delete(self, response):
         if response.status_code == 204:
-            if json is True:
-                body = response.json()
-                if body is not None:
-                    if isinstance(body, bytes) and hasattr(body, "decode"):
-                        body = body.decode("utf-8")
-                    return body
-            else:
-                return response.raw
+            return True
         if 400 <= response.status_code:
             logging.exception(response.text)
-        return {}
+        return None
 
     def create_virtance(self, id, uuid, hostname, vcpu, memory, images, network, keypairs, password):
         url = "virtances/"
