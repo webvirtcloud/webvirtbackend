@@ -1,3 +1,4 @@
+from django.urls import reverse_lazy
 from django.views.generic import TemplateView
 from django.contrib.auth.views import LoginView, LogoutView
 from .forms import AdminAuthForm
@@ -6,12 +7,13 @@ from .mixins import LoginRequiredMixin
 
 class AdminSingInView(LoginView):
     authentication_form = AdminAuthForm
-    template_name = 'admin/sign_in.html'
+    template_name = "admin/sign_in.html"
+    redirect_authenticated_user=True
 
 
 class AdminSingOutView(LoginRequiredMixin, LogoutView):
-    template_name = 'admin/sign_out.html'
+    template_name = "admin/sign_out.html"
 
 
 class AdminIndexView(TemplateView):
-    template_name = 'admin/index.html'
+    template_name = "admin/index.html"

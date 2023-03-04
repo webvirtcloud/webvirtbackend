@@ -149,6 +149,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Login redirect url
 LOGIN_URL = "/admin/sign_in/"
+LOGIN_REDIRECT_URL = "/admin/"
 
 #
 # WebVirtCloud Settings
