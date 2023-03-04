@@ -13,5 +13,5 @@ class AdminSingOutView(LoginRequiredMixin, LogoutView):
     template_name = 'admin/sing_out.html'
 
 
-class AdminIndexView(LoginRequiredMixin, TemplateView):
+class AdminIndexView(TemplateView):
     template_name = 'admin/index.html'
