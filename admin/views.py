@@ -6,11 +6,11 @@ from .mixins import LoginRequiredMixin
 
 class AdminSingInView(LoginView):
     authentication_form = AdminAuthForm
-    template_name = 'admin/sing_in.html'
+    template_name = 'admin/sign_in.html'
 
 
 class AdminSingOutView(LoginRequiredMixin, LogoutView):
-    template_name = 'admin/sing_out.html'
+    template_name = 'admin/sign_out.html'
 
 
 class AdminIndexView(TemplateView):

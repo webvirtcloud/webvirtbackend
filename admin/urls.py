@@ -4,6 +4,6 @@ from .views import AdminIndexView, AdminSingInView, AdminSingOutView
 
 urlpatterns = [
     re_path("$", AdminIndexView.as_view(), name="admin_index"),
-    re_path("sing_in/?$", AdminSingInView.as_view(), name="admin_sing_in"),
-    re_path("sing_out/?$", AdminSingOutView.as_view(), name="admin_sing_out"),
+    re_path("sign_in/?$", AdminSingInView.as_view(), name="admin_sign_in"),
+    re_path("sign_out/?$", AdminSingOutView.as_view(), name="admin_sign_out"),
 ]

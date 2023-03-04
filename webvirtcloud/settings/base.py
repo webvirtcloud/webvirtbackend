@@ -149,7 +149,7 @@ STATICFILES_DIRS = (os.path.join(BASE_DIR, "../", "static"),)
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Login redirect url
-LOGIN_URL = "/admin/sing_in/"
+LOGIN_URL = "/admin/sign_in/"
 
 #
 # WebVirtCloud Settings
