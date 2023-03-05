@@ -75,9 +75,16 @@
                   class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6"
                 >
                   <a
-                    href="#"
+                    href="{% url 'admin_region_update' region.id %}"
                     class="text-blue-600 hover:text-blue-900"
                     >Edit<span class="sr-only"
+                      >{{ region.name }}</span
+                    ></a
+                  >
+                  <a
+                    href="{% url 'admin_region_delete' region.id %}"
+                    class="text-blue-600 hover:text-blue-900"
+                    >Delete<span class="sr-only"
                       >{{ region.name }}</span
                     ></a
                   >
