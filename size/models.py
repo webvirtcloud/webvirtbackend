@@ -27,5 +27,11 @@ class Size(models.Model):
         self.updated_at = timezone.now()
         super(Size, self).save(*args, **kwargs)
 
+    def delete(self, *args, **kwargs):
+        self.is_active = False
+        self.deleted_at = timezone.now()
+        self.is_deleted = True
+        self.save()
+
     def __unicode__(self):
         return self.name
