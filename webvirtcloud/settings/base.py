@@ -46,6 +46,8 @@ INSTALLED_APPS += [
 
 # Third party application definition
 INSTALLED_APPS += [
+    "crispy_forms",
+    "crispy_tailwind",
     "rest_framework",
     "django_celery_results",
 ]
@@ -150,6 +152,10 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Login redirect url
 LOGIN_URL = "/admin/sign_in/"
 LOGIN_REDIRECT_URL = "/admin/"
+
+# Crispy forms
+CRISPY_TEMPLATE_PACK = "tailwind"
+CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
 
 #
 # WebVirtCloud Settings
