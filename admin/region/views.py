@@ -29,12 +29,7 @@ class AdminRegionUpdateView(LoginRequiredMixin, UpdateView):
     template_name_suffix = "_form"
     model = Region
     success_url = reverse_lazy('admin_region_index')
-    fields = [
-        "name",
-        "slug",
-        "description",
-        "is_active",
-    ]
+    fields = ["name", "slug", "description", "is_active"]
 
 class AdminRegionDeleteView(LoginRequiredMixin, DeleteView):
     template_name = 'admin/region/delete.html'
