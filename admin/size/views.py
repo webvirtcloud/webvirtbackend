@@ -1,9 +1,12 @@
+from django import forms
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView, UpdateView, DeleteView
-from .forms import FormSize
 from size.models import Size
+from region.models import Region
 from admin.mixins import LoginRequiredMixin
+from .forms import FormSize, CustomModelMultipleChoiceField
+
 
 class AdminSizeIndexView(LoginRequiredMixin, TemplateView):
     template_name = 'admin/size/index.html'
@@ -32,6 +35,14 @@ class AdminSizeUpdateView(LoginRequiredMixin, UpdateView):
     fields = [
         "name", "slug", "description", "vcpu", "disk", "memory", "transfer", "regions", "price", "is_active"
     ]
+
+    def get_form(self, form_class=None):
+        form = super(AdminSizeUpdateView, self).get_form(form_class)
+        form.fields["regions"] = CustomModelMultipleChoiceField(
+            queryset=Region.objects.filter(is_deleted=False), 
+            widget=forms.CheckboxSelectMultiple()
+        )
+        return form
 
 class AdminSizeDeleteView(LoginRequiredMixin, DeleteView):
     template_name = 'admin/size/delete.html'

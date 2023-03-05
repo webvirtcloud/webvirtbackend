@@ -16,7 +16,9 @@
     </p>
 
     <form class="mt-8 space-y-6" method="post">
-      {% csrf_token %} {{ form|crispy }}
+      {% csrf_token %} 
+      
+      {{ form|crispy }}
 
       <div>
         <button
