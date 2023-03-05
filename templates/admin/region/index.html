@@ -13,6 +13,8 @@
         <div
           class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg"
         >
+
+          {% if not regions %}
           <table class="min-w-full divide-y divide-gray-300">
             <thead class="bg-gray-50">
               <tr>
@@ -95,6 +97,9 @@
               <!-- More people... -->
             </tbody>
           </table>
+          {% else %}
+          <p>No regions found</p>
+          {% endif %}
         </div>
       </div>
     </div>
