@@ -23,11 +23,6 @@ class AdminRegionCreateView(LoginRequiredMixin, FormView):
         form.save()
         return super().form_valid(form)
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['regions'] = Region.objects.filter(is_deleted=False)
-        return context
-
 
 class AdminRegionUpdateView(LoginRequiredMixin, UpdateView):
     template_name = 'admin/region/update.html'
