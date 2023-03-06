@@ -5,6 +5,7 @@ from .forms import FormRegion
 from region.models import Region
 from admin.mixins import LoginRequiredMixin
 
+
 class AdminRegionIndexView(LoginRequiredMixin, TemplateView):
     template_name = 'admin/region/index.html'
 
@@ -30,6 +31,7 @@ class AdminRegionUpdateView(LoginRequiredMixin, UpdateView):
     model = Region
     success_url = reverse_lazy('admin_region_index')
     fields = ["name", "slug", "description", "is_active"]
+
 
 class AdminRegionDeleteView(LoginRequiredMixin, DeleteView):
     template_name = 'admin/region/delete.html'

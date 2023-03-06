@@ -9,11 +9,8 @@
         Create Region
       </h2>
     </div>
-    <form class="mt-8 space-y-6" method="post">
-      {% csrf_token %} 
-      
-      {{ form|crispy }}
-
+    <form class="mt-8 space-y-6 text-sm" method="post">
+      {% crispy form %}
       <div>
         <button
           type="submit"
