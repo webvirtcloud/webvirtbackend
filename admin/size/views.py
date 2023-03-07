@@ -37,7 +37,7 @@ class AdminSizeUpdateView(LoginRequiredMixin, UpdateView):
     model = Size
     success_url = reverse_lazy('admin_size_index')
     fields = [
-        "name", "slug", "description", "vcpu", "disk", "memory", "transfer", "regions", "price", "is_active"
+        "name", "slug", "description", "vcpu", "disk", "memory", "transfer", "price", "regions", "is_active"
     ]
 
     def __init__(self, *args, **kwargs):
