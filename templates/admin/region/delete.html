@@ -3,7 +3,26 @@
 <div
   class="flex min-h-screen items-center justify-center py-12 px-4 sm:px-6 lg:px-8"
 >
-  <div class="w-full max-w-md space-y-8 bg-white p-4 md:p-8 rounded-lg border">
+  <div class="w-full max-w-md space-y-4 bg-white p-4 md:p-8 rounded-lg border">
+    <a
+      href="{% url 'admin_region_index' %}"
+      class="inline-flex items-center text-sm p-2 bg-gray-100 rounded-md space-x-2 hover:bg-gray-200"
+      ><svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="currentColor"
+        class="w-5 h-5"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3"
+        />
+      </svg>
+      <span>Back to the list</span>
+    </a>
     <div>
       <h2 class="text-2xl font-medium tracking-tight text-gray-900">
         Delete Region
@@ -16,9 +35,7 @@
     </p>
 
     <form class="mt-8 space-y-6" method="post">
-      {% csrf_token %} 
-      
-      {{ form|crispy }}
+      {% csrf_token %} {{ form|crispy }}
 
       <div>
         <button
