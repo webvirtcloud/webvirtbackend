@@ -43,9 +43,14 @@ class FormNetwork(forms.ModelForm):
             raise forms.ValidationError(err)
         
         # Check if CIDR already exists
-        if Network.objects.filter(cidr=cidr, netmask=netmask, region=region).exists():
+        if Network.objects.filter(cidr=cidr, netmask=netmask, region=region, is_deleted=True).exists():
             raise forms.ValidationError("Network already exists in this region")
 
+        # Check if CIDR compute already exists in the region
+        if net_type == "compute":
+            if Network.objects.filter(type="compute", region=region).exists():
+                raise forms.ValidationError("Compute network already exists in this region")
+    
         # Validate DNS
         if net_type == "public":
             if not dns1 or not dns2:
@@ -59,16 +64,17 @@ class FormNetwork(forms.ModelForm):
                 ip_address(dns2)
             except ValueError as err:
                 raise forms.ValidationError(err)
+        
         return self.cleaned_data
     
     def save(self, commit=True):
-        cidr = self.data.get("cidr")
-        netmask = self.data.get("netmask")
-        dns1 = self.data.get("dns1")
-        dns2 = self.data.get("dns2")
-        net_type = self.data.get("type")
+        cidr = self.cleaned_data.get("cidr")
+        netmask = self.cleaned_data.get("netmask")
+        dns1 = self.cleaned_data.get("dns1")
+        dns2 = self.cleaned_data.get("dns2")
+        region = self.cleaned_data.get("region")
+        net_type = self.cleaned_data.get("type")
         subnet = ip_network(f"{cidr}/{netmask}")
-        region = Region.objects.get(id= self.data.get("region"))
 
         network = Network.objects.create(
             cidr=cidr,
