@@ -20,13 +20,13 @@ class Network(models.Model):
     cidr = models.GenericIPAddressField()
     netmask = models.GenericIPAddressField()
     gateway = models.GenericIPAddressField()
-    dns1 = models.GenericIPAddressField()
-    dns2 = models.GenericIPAddressField()
+    dns1 = models.GenericIPAddressField(default="0.0.0.0")
+    dns2 = models.GenericIPAddressField(default="0.0.0.0")
     type = models.CharField(max_length=10, choices=TYPE_CHOICES, default=PUBLIC)
     version = models.IntegerField(choices=VERSION_CHOICES, default=IPv4)
     region = models.ForeignKey("region.Region", models.PROTECT)
-    is_active = models.BooleanField(default=True)
-    is_deleted = models.BooleanField(default=False)
+    is_active = models.BooleanField("Active", default=True)
+    is_deleted = models.BooleanField("Deleted", default=False)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     deleted = models.DateTimeField(null=True, blank=True)
@@ -42,6 +42,11 @@ class Network(models.Model):
     def save(self, *args, **kwargs):
         self.updated = timezone.now()
         super(Network, self).save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        self.is_deleted = True
+        self.deleted = timezone.now()
+        self.save()
 
 
 class IPAddress(models.Model):

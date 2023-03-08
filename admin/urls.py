@@ -9,4 +9,5 @@ urlpatterns = [
     re_path("$", AdminIndexView.as_view(), name="admin_index"),
     re_path("region/", include("admin.region.urls")),
     re_path("size/", include("admin.size.urls")),
+    re_path("network/", include("admin.network.urls")),
 ]

@@ -29,8 +29,8 @@ class Migration(migrations.Migration):
                 ("cidr", models.GenericIPAddressField()),
                 ("netmask", models.GenericIPAddressField()),
                 ("gateway", models.GenericIPAddressField()),
-                ("dns1", models.GenericIPAddressField()),
-                ("dns2", models.GenericIPAddressField()),
+                ("dns1", models.GenericIPAddressField(default="0.0.0.0")),
+                ("dns2", models.GenericIPAddressField(default="0.0.0.0")),
                 (
                     "type",
                     models.CharField(
@@ -47,8 +47,8 @@ class Migration(migrations.Migration):
                     "version",
                     models.IntegerField(choices=[(4, "IPv4"), (6, "IPv6")], default=4),
                 ),
-                ("is_active", models.BooleanField(default=True)),
-                ("is_deleted", models.BooleanField(default=False)),
+                ("is_active", models.BooleanField(default=True, verbose_name='Active')),
+                ("is_deleted", models.BooleanField(default=False, verbose_name='Deleted')),
                 ("created", models.DateTimeField(auto_now_add=True)),
                 ("updated", models.DateTimeField(auto_now=True)),
                 ("deleted", models.DateTimeField(blank=True, null=True)),

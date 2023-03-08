@@ -17,10 +17,6 @@ class CustomModelMultipleChoiceField(forms.ModelMultipleChoiceField):
 
 class FormSize(forms.ModelForm):
 
-    class Meta:
-        model = Size
-        fields = ["name", "slug", "description", "vcpu", "disk", "memory", "transfer", "price", "regions"]
-
     def __init__(self, *args, **kwargs):
         super(FormSize, self).__init__(*args, **kwargs)
         self.fields["regions"] = CustomModelMultipleChoiceField(
@@ -28,8 +24,13 @@ class FormSize(forms.ModelForm):
             widget=forms.CheckboxSelectMultiple()
         )
         self.helper = FormHelper()
+        self.helper.form_tag = False
         self.helper.layout = Layout(
             "name", "slug", "description", "vcpu", "disk", "memory", "transfer", "price",
             InlineCheckboxes("regions", css_class="checkboxinput"),
             "is_active",
         )
+
+    class Meta:
+        model = Size
+        fields = ["name", "slug", "description", "vcpu", "disk", "memory", "transfer", "price", "regions"]

@@ -41,6 +41,7 @@ class AdminSizeUpdateView(AdminUpdateView):
     def __init__(self, *args, **kwargs):
         super(AdminSizeUpdateView, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
+        self.helper.form_tag = False
         self.helper.layout = Layout(
             "name", "slug", "description", "vcpu", "disk", "memory", "transfer", "price",
             InlineCheckboxes("regions", css_class="checkboxinput"),
@@ -70,3 +71,13 @@ class AdminSizeDeleteView(AdminDeleteView):
         size = self.get_object()
         size.delete()
         return super(self).delete(request, *args, **kwargs)
+
+    def __init__(self, *args, **kwargs):
+        super(AdminSizeDeleteView, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+    
+    def get_context_data(self, **kwargs):
+        context = super(AdminSizeDeleteView, self).get_context_data(**kwargs)
+        context['helper'] = self.helper
+        return context

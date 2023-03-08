@@ -1,4 +1,5 @@
 from django.urls import reverse_lazy
+from crispy_forms.helper import FormHelper
 from .forms import FormRegion
 from region.models import Region
 from admin.mixins import AdminTemplateView, AdminFormView, AdminUpdateView, AdminDeleteView, AdminTemplateView
@@ -30,6 +31,16 @@ class AdminRegionUpdateView(AdminUpdateView):
     success_url = reverse_lazy('admin_region_index')
     fields = ["name", "slug", "description", "is_active"]
 
+    def __init__(self, *args, **kwargs):
+        super(AdminRegionUpdateView, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+
+    def get_context_data(self, **kwargs):
+        context = super(AdminRegionUpdateView, self).get_context_data(**kwargs)
+        context['helper'] = self.helper
+        return context
+
 
 class AdminRegionDeleteView(AdminDeleteView):
     template_name = 'admin/region/delete.html'
@@ -40,3 +51,13 @@ class AdminRegionDeleteView(AdminDeleteView):
         region = self.get_object()
         region.delete()
         return super(self).delete(request, *args, **kwargs)
+
+    def __init__(self, *args, **kwargs):
+        super(AdminRegionDeleteView, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+
+    def get_context_data(self, **kwargs):
+        context = super(AdminRegionDeleteView, self).get_context_data(**kwargs)
+        context['helper'] = self.helper
+        return context
