@@ -1,18 +1,16 @@
 from django import forms
 from django.urls import reverse_lazy
-from django.views.generic import TemplateView
-from django.views.generic.edit import FormView, UpdateView, DeleteView
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Submit
+from crispy_forms.layout import Layout
 from crispy_forms.bootstrap import InlineCheckboxes
 
 from size.models import Size
 from region.models import Region
-from admin.mixins import LoginRequiredMixin
 from .forms import FormSize, CustomModelMultipleChoiceField
+from admin.mixins import AdminTemplateView, AdminFormView, AdminUpdateView, AdminDeleteView
 
 
-class AdminSizeIndexView(LoginRequiredMixin, TemplateView):
+class AdminSizeIndexView(AdminTemplateView):
     template_name = 'admin/size/index.html'
 
     def get_context_data(self, **kwargs):
@@ -21,7 +19,7 @@ class AdminSizeIndexView(LoginRequiredMixin, TemplateView):
         return context
 
 
-class AdminSizeCreateView(LoginRequiredMixin, FormView):
+class AdminSizeCreateView(AdminFormView):
     template_name = 'admin/size/create.html'
     form_class = FormSize
     success_url = reverse_lazy('admin_size_index')
@@ -31,7 +29,7 @@ class AdminSizeCreateView(LoginRequiredMixin, FormView):
         return super().form_valid(form)
 
 
-class AdminSizeUpdateView(LoginRequiredMixin, UpdateView):
+class AdminSizeUpdateView(AdminUpdateView):
     template_name = 'admin/size/update.html'
     template_name_suffix = "_form"
     model = Size
@@ -63,7 +61,7 @@ class AdminSizeUpdateView(LoginRequiredMixin, UpdateView):
         return context
 
 
-class AdminSizeDeleteView(LoginRequiredMixin, DeleteView):
+class AdminSizeDeleteView(AdminDeleteView):
     template_name = 'admin/size/delete.html'
     model = Size
     success_url = reverse_lazy('admin_size_index')

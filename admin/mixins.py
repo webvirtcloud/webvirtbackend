@@ -1,6 +1,9 @@
 from django.contrib import messages
 from django.urls import reverse_lazy
 from django.shortcuts import redirect
+from django.views.generic import View
+from django.views.generic import TemplateView
+from django.views.generic.edit import FormView, UpdateView, DeleteView
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 
@@ -20,3 +23,19 @@ class LoginRequiredMixin:
                 return redirect(reverse_lazy("admin_sign_out"))
 
         return super(LoginRequiredMixin, self).dispatch(request, *args, **kwargs)
+
+
+class AdminView(LoginRequiredMixin, View):
+    pass
+
+class AdminFormView(LoginRequiredMixin, FormView):
+    pass
+
+class AdminUpdateView(LoginRequiredMixin, UpdateView):
+    pass
+
+class AdminDeleteView(LoginRequiredMixin, DeleteView):
+    pass
+
+class AdminTemplateView(LoginRequiredMixin, TemplateView):
+    pass
