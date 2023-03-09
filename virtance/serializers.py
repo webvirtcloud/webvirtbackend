@@ -104,52 +104,64 @@ class CreateVirtanceSerializer(serializers.Serializer):
     user_data = serializers.CharField(required=False, allow_blank=True)
 
  
-    def validate_size(self, value):
+    def validate(self, attrs):
+        image = attrs.get("image")
+        size = attrs.get("size")
+        region = attrs.get("region")
+        keypairs = attrs.get("keypairs")
+        
+        # Check if keypairs are active
+        for k_id in keypairs:
+            try:
+                KeyPair.objects.get(id=k_id, user=self.context.get("request").user)
+            except KeyPair.DoesNotExist:
+                raise serializers.ValidationError({"keypairs": ["Invalid keypair ID."]})
+        
+        # Check if region is active
         try:
-            size = Size.objects.get(slug=value, is_deleted=False)
-            if size.is_active is False:
+            check_region = Region.objects.get(slug=region, is_deleted=False)
+            if check_region.is_active is False:
+                raise serializers.ValidationError({"region": ["Region is not active."]})
+        except Region.DoesNotExist:
+            raise serializers.ValidationError({"region": ["Region not found."]})
+
+        # Check if size is active
+        try:
+            check_size = Size.objects.get(slug=size, is_deleted=False)
+            if check_size.is_active is False:
                 raise serializers.ValidationError({"size": ["Size is not active."]})
         except Size.DoesNotExist:
             raise serializers.ValidationError({"size": ["Size not found."]})
-        return value
 
-    def validate_image(self, value):
-        if value.isdigit():
+        # Check if image is active
+        if image.isdigit():
             try:
-                image = Image.objects.get(
+                check_image = Image.objects.get(
                     Q(type=Image.SNAPSHOT) | Q(type=Image.BACKUP) | Q(type=Image.CUSTOM),
-                    id=value, is_deleted=False
+                    id=image, is_deleted=False
                 )
             except Image.DoesNotExist:
                 raise serializers.ValidationError({"image": ["Image not found."]})
         else:
             try:
-                image = Image.objects.get(
+                check_image = Image.objects.get(
                     Q(type=Image.DISTRIBUTION) | Q(type=Image.APPLICATION),
-                    slug=value, is_deleted=False
+                    slug=image, is_deleted=False
                 )
-                if image.is_active is False:
+                if check_image.is_active is False:
                     raise serializers.ValidationError({"image": ["Image is not active."]})
             except Image.DoesNotExist:
                 raise serializers.ValidationError({"image": ["Image not found."]})
-        return value
 
-    def validate_region(self, value):
-        try:
-            region = Region.objects.get(slug=value, is_deleted=False)
-            if region.is_active is False:
-                raise serializers.ValidationError({"region": ["Region is not active."]})
-        except Region.DoesNotExist:
-            raise serializers.ValidationError({"region": ["Region not found."]})
-        return value
-
-    def validate_keypairs(self, value):
-        for k_id in value:
-            try:
-                KeyPair.objects.get(id=k_id, user=self.context.get("request").user)
-            except KeyPair.DoesNotExist:
-                raise serializers.ValidationError({"keypairs": ["Invalid keypair ID."]})
-        return value
+        # Check if size is available in region
+        if check_region not in check_size.regions.all():
+            raise serializers.ValidationError({"size": ["Size is not available in the region."]})
+        
+        # Check if image is available in region
+        if check_region not in check_image.regions.all():
+            raise serializers.ValidationError({"image": ["Image is not available in the region."]})
+        
+        return attrs
     
     def create(self, validated_data):
         ipv6 = validated_data.get("ipv6")

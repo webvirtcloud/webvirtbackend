@@ -34,9 +34,7 @@ class AdminSizeUpdateView(AdminUpdateView):
     template_name_suffix = "_form"
     model = Size
     success_url = reverse_lazy('admin_size_index')
-    fields = [
-        "name", "slug", "description", "vcpu", "disk", "memory", "transfer", "price", "regions", "is_active"
-    ]
+    fields = "__all__"
 
     def __init__(self, *args, **kwargs):
         super(AdminSizeUpdateView, self).__init__(*args, **kwargs)

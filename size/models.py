@@ -29,7 +29,7 @@ class Size(models.Model):
 
     def delete(self, *args, **kwargs):
         self.is_active = False
-        self.deleted_at = timezone.now()
+        self.deleted = timezone.now()
         self.is_deleted = True
         self.save()
 

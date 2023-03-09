@@ -44,8 +44,9 @@ class Network(models.Model):
         super(Network, self).save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
-        self.is_deleted = True
+        self.is_active = False
         self.deleted = timezone.now()
+        self.is_deleted = True
         self.save()
 
 
