@@ -55,11 +55,13 @@ class Migration(migrations.Migration):
                     "distribution",
                     models.CharField(
                         choices=[
-                            ("custom", "Custom"),
-                            ("backup", "Backup"),
-                            ("snapshot", "Snapshot"),
-                            ("application", "Application"),
-                            ("distribution", "Distribution"),
+                            ("unknown", "Unknown"),
+                            ("debian", "Debian"),
+                            ("ubuntu", "Ubuntu"),
+                            ("fedora", "Fedora"),
+                            ("centos", "CentOS"),
+                            ("almalinux", "AlmaLinux"),
+                            ("rockylinux", "Rocky Linux"),
                         ],
                         default="unknown",
                         max_length=50,

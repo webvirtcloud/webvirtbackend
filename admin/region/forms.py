@@ -1,5 +1,4 @@
 from django import forms
-from django.core.validators import validate_slug
 from crispy_forms.helper import FormHelper
 from region.models import Region
 

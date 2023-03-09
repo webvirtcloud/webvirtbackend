@@ -40,7 +40,7 @@ class Image(models.Model):
     slug = models.SlugField(max_length=100, unique=True, blank=True, null=True)
     type = models.CharField(max_length=50, choices=TYPE_CHOICES, default=SNAPSHOT)
     md5sum = models.CharField(max_length=50)
-    distribution = models.CharField(max_length=50, choices=TYPE_CHOICES, default=UNKNOWN)
+    distribution = models.CharField(max_length=50, choices=DISTRO_CHOICES, default=UNKNOWN)
     description = models.TextField(blank=True, null=True)
     regions = models.ManyToManyField("region.Region", blank=True)
     file_name = models.CharField(max_length=100)
