@@ -63,3 +63,8 @@ class Image(models.Model):
     def save(self, *args, **kwargs):
         self.updated = timezone.now()
         super(Image, self).save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        self.is_deleted = True
+        self.deleted = timezone.now()
+        self.save()
