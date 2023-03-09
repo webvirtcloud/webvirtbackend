@@ -12,4 +12,4 @@ class FormRegion(forms.ModelForm):
 
     class Meta:
         model = Region
-        fields = ("name", "slug", "description")
+        fields = ["name", "slug", "description"]

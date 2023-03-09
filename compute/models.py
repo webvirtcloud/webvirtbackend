@@ -17,8 +17,8 @@ class Compute(models.Model):
     hostname = models.CharField(max_length=255)
     token = models.CharField(max_length=255)
     region = models.ForeignKey("region.Region", models.PROTECT)
-    is_active = models.BooleanField(default=True)
-    is_deleted = models.BooleanField(default=False)
+    is_active = models.BooleanField("Active", default=True)
+    is_deleted = models.BooleanField("Deleted",default=False)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     deleted = models.DateTimeField(null=True, blank=True)
@@ -34,3 +34,8 @@ class Compute(models.Model):
     def save(self, *args, **kwargs):
         self.updated = timezone.now()
         super(Compute, self).save(*args, **kwargs)
+
+    def deletea(self):
+        self.is_deleted = True
+        self.deleted = timezone.now()
+        self.save()

@@ -42,4 +42,4 @@ class SizeSerializer(serializers.ModelSerializer):
         return int(round(obj.price * 730, 0))
 
     def get_regions(self, obj):
-        return [region.slug for region in obj.regions.filter(is_deleted=False)]
+        return [region.slug for region in obj.regions.all()]

@@ -32,7 +32,7 @@ class ImageSerializer(serializers.ModelSerializer):
 
     def get_regions(self, obj):
         if obj.type == obj.DISTRIBUTION or obj.type == obj.APPLICATION:
-            return [region.slug for region in Region.objects.filter(is_deleted=False)]
+            return [region.slug for region in obj.regions.all()]
         return []
 
     def get_public(self, obj):
