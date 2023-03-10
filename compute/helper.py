@@ -144,3 +144,10 @@ class WebVirtCompute(object):
         response = self._make_delete(url)
         body = self._process_delete(response)
         return body
+
+    def get_host_overview(self):
+        url = "host/"
+        response = self._make_get(url)
+        body = self._process_get(response)
+        return body
+    

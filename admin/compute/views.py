@@ -1,8 +1,10 @@
 from django.urls import reverse_lazy
+from django.shortcuts import get_object_or_404
 from crispy_forms.helper import FormHelper
 from .forms import FormCompute
 from compute.models import Compute
 from admin.mixins import AdminTemplateView, AdminFormView, AdminUpdateView, AdminDeleteView
+from compute.helper import WebVirtCompute
 
 
 class AdminComputeIndexView(AdminTemplateView):
@@ -60,4 +62,17 @@ class AdminComputeDeleteView(AdminDeleteView):
     def get_context_data(self, **kwargs):
         context = super(AdminComputeDeleteView, self).get_context_data(**kwargs)
         context['helper'] = self.helper
+        return context
+
+
+class AdminComputeOverviewView(AdminTemplateView):
+    template_name = 'admin/compute/overview.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        compute = get_object_or_404(Compute, pk=kwargs.get("pk"), is_deleted=False)
+        wvcomp = WebVirtCompute(compute.token, compute.hostname)
+        host_overview = wvcomp.get_host_overview()
+        context['compute'] = compute
+        context['host_overview'] = host_overview
         return context
