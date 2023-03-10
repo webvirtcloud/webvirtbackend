@@ -37,4 +37,4 @@ class FormImage(forms.ModelForm):
 
     class Meta:
         model = Image
-        fields = ["name", "slug", "type", "description", "md5sum", "distribution", "regions", "file_name"]
+        fields = "__all__"

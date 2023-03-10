@@ -28,6 +28,11 @@ class AdminSizeCreateView(AdminFormView):
         form.save()
         return super().form_valid(form)
 
+    # def get_form(self, form_class=None):
+    #     form = super(AdminSizeCreateView, self).get_form(form_class)
+    #     form.helper.exclude_by_widget(forms.CheckboxSelectMultiple())
+    #     return form
+
 
 class AdminSizeUpdateView(AdminUpdateView):
     template_name = 'admin/size/update.html'

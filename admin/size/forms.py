@@ -1,5 +1,5 @@
 from django import forms
-from crispy_forms.layout import Layout
+from crispy_forms.layout import Layout, Field
 from crispy_forms.helper import FormHelper
 from crispy_forms.bootstrap import InlineCheckboxes
 
@@ -22,14 +22,13 @@ class FormSize(forms.ModelForm):
             queryset=Region.objects.filter(is_deleted=False), 
             widget=forms.CheckboxSelectMultiple()
         )
-        self.helper = FormHelper()
+        self.helper = FormHelper(self)
         self.helper.form_tag = False
         self.helper.layout = Layout(
             "name", "slug", "description", "vcpu", "disk", "memory", "transfer", "price",
-            InlineCheckboxes("regions", css_class="checkboxinput"),
-            "is_active",
+            InlineCheckboxes("regions", css_class="checkboxinput")
         )
 
     class Meta:
         model = Size
-        fields = ["name", "slug", "description", "vcpu", "disk", "memory", "transfer", "price", "regions"]
+        fields = "__all__"
