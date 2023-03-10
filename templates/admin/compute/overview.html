@@ -7,6 +7,11 @@
 
   <h1>Compute overview</h1>
 
+  <p>IP: {{ compute.hostname }}</p>
+  <p>Region: {{ compute.region.name }}</p>
+  <p>Active: {{ compute.is_active }}</p>
+  <p>Description: {{ compute.description }}</p>
+
   <p>Hostname: {{ host_overview.host.hostname }}</p>
   <p>Arch: {{ host_overview.host.arch }}</p>
   <p>CPUs: {{ host_overview.host.cpus }}</p>
