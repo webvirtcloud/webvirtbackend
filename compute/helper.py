@@ -151,3 +151,9 @@ class WebVirtCompute(object):
         body = self._process_get(response)
         return body
     
+    def get_host_storages(self):
+        url = "storages/"
+        response = self._make_get(url)
+        body = self._process_get(response)
+        return body
+    

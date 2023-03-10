@@ -76,3 +76,16 @@ class AdminComputeOverviewView(AdminTemplateView):
         context['compute'] = compute
         context['host_overview'] = host_overview
         return context
+
+
+class AdminComputeStoragesView(AdminTemplateView):
+    template_name = 'admin/compute/storages.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        compute = get_object_or_404(Compute, pk=kwargs.get("pk"), is_deleted=False)
+        wvcomp = WebVirtCompute(compute.token, compute.hostname)
+        host_storages = wvcomp.get_host_storages()
+        context['compute'] = compute
+        context['storages'] = host_storages
+        return context
