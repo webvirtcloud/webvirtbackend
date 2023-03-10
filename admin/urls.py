@@ -12,4 +12,5 @@ urlpatterns = [
     re_path("image/", include("admin.image.urls")),
     re_path("network/", include("admin.network.urls")),
     re_path("compute/", include("admin.compute.urls")),
+    re_path("virtance/", include("admin.virtance.urls")),
 ]

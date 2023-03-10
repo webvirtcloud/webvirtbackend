@@ -2,7 +2,7 @@ from django.urls import reverse_lazy
 from crispy_forms.helper import FormHelper
 from .forms import FormRegion
 from region.models import Region
-from admin.mixins import AdminTemplateView, AdminFormView, AdminUpdateView, AdminDeleteView, AdminTemplateView
+from admin.mixins import AdminTemplateView, AdminFormView, AdminUpdateView, AdminDeleteView
 
 
 class AdminRegionIndexView(AdminTemplateView):
