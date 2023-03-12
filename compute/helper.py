@@ -61,54 +61,14 @@ class WebVirtCompute(object):
         response = requests.delete(url, headers=self._headers(), verify=False)
         return response
 
-    def _process_get(self, response, json=True):
-        if response.status_code == 200:
-            if json is True:
-                body = response.json()
-                if body is not None:
-                    if isinstance(body, bytes) and hasattr(body, "decode"):
-                        body = body.decode("utf-8")
-                    return body
-            else:
-                return response.raw
-        if 400 <= response.status_code:
-            logging.exception(response.text)
-        return None
-
-    def _process_post(self, response, json=True):
-        if response.status_code == 200 or response.status_code == 201:
-            if json is True:
-                body = response.json()
-                if body:
-                    if isinstance(body, bytes) and hasattr(body, "decode"):
-                        body = body.decode("utf-8")
-                    return body
-            else:
-                return response.raw
-        if 400 <= response.status_code:
-            logging.exception(response.text)
-        return None
-
-    def _process_put(self, response, json=True):
-        if response.status_code == 204:
-            if json is True:
-                body = response.json()
-                if body:
-                    if isinstance(body, bytes) and hasattr(body, "decode"):
-                        body = body.decode("utf-8")
-                    return body
-            else:
-                return response.raw
-        if 400 <= response.status_code:
-            logging.exception(response.text)
-        return None
-
-    def _process_delete(self, response):
-        if response.status_code == 204:
-            return True
-        if 400 <= response.status_code:
-            logging.exception(response.text)
-        return None
+    def _process_response(self, response, json=True):
+        if json:
+            body = response.json()
+            if body:
+                if isinstance(body, bytes) and hasattr(body, "decode"):
+                    body = body.decode("utf-8")
+                return body
+        return response.raw
 
     def create_virtance(self, id, uuid, hostname, vcpu, memory, images, network, keypairs, password):
         url = "virtances/"
@@ -124,72 +84,72 @@ class WebVirtCompute(object):
             "root_password": password,
         }
         response = self._make_post(url, data)
-        body = self._process_post(response)
+        body = self._process_response(response)
         return body.get("virtance")
 
     def status_virtance(self, id):
         url = f"virtances/{vm_name(id)}/status/"
         response = self._make_get(url)
-        body = self._process_get(response)
+        body = self._process_response(response)
         return body.get("status")
 
     def action_virtance(self, id, action):
         url = f"virtances/{vm_name(id)}/status/"
         response = self._make_post(url, {"action": action})
-        body = self._process_post(response)
+        body = self._process_response(response)
         return body.get("status")
 
     def delete_virtance(self, id):
         url = f"virtances/{vm_name(id)}/"
-        response = self._make_delete(url)
-        body = self._process_delete(response)
+        response = self._make_response(url)
+        body = self._process_response(response)
         return body
 
     def get_host_overview(self):
         url = "host/"
         response = self._make_get(url)
-        body = self._process_get(response)
+        body = self._process_response(response)
         return body
     
     def get_storages(self):
         url = "storages/"
         response = self._make_get(url)
-        body = self._process_get(response)
+        body = self._process_response(response)
         return body
 
     def get_storage(self, pool):
         url = f"storages/{pool}/"
         response = self._make_get(url)
-        body = self._process_get(response)
+        body = self._process_response(response)
         return body
 
     def set_storage_action(self, pool, action):
         url = f"storages/{pool}/"
         action = {"action": action}
         response = self._make_post(url, action)
-        body = self._process_post(response)
+        body = self._process_response(response)
         return body
 
     def get_networks(self):
         url = "networks/"
         response = self._make_get(url)
-        body = self._process_get(response)
+        body = self._process_response(response)
         return body
 
     def get_network(self, pool):
         url = f"networks/{pool}/"
         response = self._make_get(url)
-        body = self._process_get(response)
+        body = self._process_response(response)
         return body
 
     def get_secrets(self):
         url = "secrets/"
         response = self._make_get(url)
-        body = self._process_get(response)
+        body = self._process_response(response)
         return body
 
     def get_nwfilters(self):
         url = "nwfilters/"
         response = self._make_get(url)
-        body = self._process_get(response)
+        body = self._process_response(response)
         return body
