@@ -89,3 +89,69 @@ class AdminComputeStoragesView(AdminTemplateView):
         context['compute'] = compute
         context['storages'] = host_storages
         return context
+
+
+class AdminComputeStoragePoolView(AdminTemplateView):
+    template_name = 'admin/compute/storage_pool.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        compute = get_object_or_404(Compute, pk=kwargs.get("pk"), is_deleted=False)
+        wvcomp = WebVirtCompute(compute.token, compute.hostname)
+        host_storage_pool = wvcomp.get_host_storage_pool(kwargs.get("pool"))
+        context['compute'] = compute
+        context['storage_pool'] = host_storage_pool
+        return context
+
+
+class AdminComputeNetworksView(AdminTemplateView):
+    template_name = 'admin/compute/networks.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        compute = get_object_or_404(Compute, pk=kwargs.get("pk"), is_deleted=False)
+        wvcomp = WebVirtCompute(compute.token, compute.hostname)
+        host_networks = wvcomp.get_host_networks()
+        context['compute'] = compute
+        context['networks'] = host_networks
+        return context
+
+
+class AdminComputeNetworkIfaceView(AdminTemplateView):
+    template_name = 'admin/compute/network_iface.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        compute = get_object_or_404(Compute, pk=kwargs.get("pk"), is_deleted=False)
+        wvcomp = WebVirtCompute(compute.token, compute.hostname)
+        host_network_iface = wvcomp.get_host_network_iface(kwargs.get("iface"))
+        context['compute'] = compute
+        context['network_iface'] = host_network_iface
+        return context
+
+
+class AdminComputeSecretsView(AdminTemplateView):
+    template_name = 'admin/compute/secrets.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        compute = get_object_or_404(Compute, pk=kwargs.get("pk"), is_deleted=False)
+        wvcomp = WebVirtCompute(compute.token, compute.hostname)
+        host_secrets = wvcomp.get_host_secrets()
+        context['compute'] = compute
+        context['secrets'] = host_secrets
+        return context
+
+
+class AdminComputeNwfiltersView(AdminTemplateView):
+    template_name = 'admin/compute/nwfilters.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        compute = get_object_or_404(Compute, pk=kwargs.get("pk"), is_deleted=False)
+        wvcomp = WebVirtCompute(compute.token, compute.hostname)
+        host_nwfilters = wvcomp.get_host_nwfilters()
+        print(host_nwfilters)
+        context['compute'] = compute
+        context['nwfilters'] = host_nwfilters
+        return context

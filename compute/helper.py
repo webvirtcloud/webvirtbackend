@@ -156,4 +156,33 @@ class WebVirtCompute(object):
         response = self._make_get(url)
         body = self._process_get(response)
         return body
-    
+
+    def get_host_storage_pool(self, pool):
+        url = f"storages/{pool}/"
+        response = self._make_get(url)
+        body = self._process_get(response)
+        return body
+
+    def get_host_networks(self):
+        url = "networks/"
+        response = self._make_get(url)
+        body = self._process_get(response)
+        return body
+
+    def get_host_network_iface(self, iface):
+        url = f"networks/{iface}/"
+        response = self._make_get(url)
+        body = self._process_get(response)
+        return body
+
+    def get_host_secrets(self):
+        url = "secrets/"
+        response = self._make_get(url)
+        body = self._process_get(response)
+        return body
+
+    def get_host_nwfilters(self):
+        url = "nwfilters/"
+        response = self._make_get(url)
+        body = self._process_get(response)
+        return body
