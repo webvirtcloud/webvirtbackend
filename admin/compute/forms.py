@@ -25,3 +25,21 @@ class FormCompute(forms.ModelForm):
     class Meta:
         model = Compute
         fields = ["name", "arch", "description", "hostname", "token", "region"]
+
+
+class FormStorageAction(forms.Form):
+    action = forms.ChoiceField(
+        choices=[("start", "Start"), ("stop", "Stop"), ("autostart", "Autostart"), ("manualstart", "Manualstart")]
+    )
+
+    def __init__(self, *args, **kwargs):
+        super(FormStorageAction, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+
+    def clean(self):
+        cleaned_data = super().clean()
+        action = cleaned_data.get("action")
+        if action not in ["start", "stop", "autostart", "manualstart"]:
+            raise forms.ValidationError("Invalid action")
+        return cleaned_data

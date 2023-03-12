@@ -1,5 +1,6 @@
 {% extends "admin/base.html" %}
 {% load static %}
+{% load crispy_forms_tags %}
 {% block content %}
 <div
   class="flex min-h-screen justify-center py-12 px-4 sm:px-6 lg:px-8"
@@ -17,5 +18,10 @@
   </p>
 
 </div>
+<form method="post">
+{% crispy form %}
+<input type="submit" value="Submit" />
+</form>
+
 </div>
 {% endblock %}

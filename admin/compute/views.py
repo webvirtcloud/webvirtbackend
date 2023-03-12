@@ -1,7 +1,7 @@
-from django.urls import reverse_lazy
-from django.shortcuts import get_object_or_404
+from django.urls import reverse_lazy, reverse
+from django.shortcuts import redirect, get_object_or_404
 from crispy_forms.helper import FormHelper
-from .forms import FormCompute
+from .forms import FormCompute, FormStorageAction
 from compute.models import Compute
 from admin.mixins import AdminTemplateView, AdminFormView, AdminUpdateView, AdminDeleteView
 from compute.helper import WebVirtCompute
@@ -85,23 +85,35 @@ class AdminComputeStoragesView(AdminTemplateView):
         context = super().get_context_data(**kwargs)
         compute = get_object_or_404(Compute, pk=kwargs.get("pk"), is_deleted=False)
         wvcomp = WebVirtCompute(compute.token, compute.hostname)
-        host_storages = wvcomp.get_host_storages()
+        host_storages = wvcomp.get_storages()
         context['compute'] = compute
         context['storages'] = host_storages
         return context
 
 
-class AdminComputeStoragePoolView(AdminTemplateView):
-    template_name = 'admin/compute/storage_pool.html'
+class AdminComputeStorageView(AdminTemplateView):
+    template_name = 'admin/compute/storage.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         compute = get_object_or_404(Compute, pk=kwargs.get("pk"), is_deleted=False)
         wvcomp = WebVirtCompute(compute.token, compute.hostname)
-        host_storage_pool = wvcomp.get_host_storage_pool(kwargs.get("pool"))
+        host_storage_pool = wvcomp.get_storage(kwargs.get("pool"))
+        context['form'] = FormStorageAction()
         context['compute'] = compute
         context['storage_pool'] = host_storage_pool
         return context
+
+    def post(self, request, *args, **kwargs):
+        form = FormStorageAction(request.POST)
+        if form.is_valid():
+            compute = get_object_or_404(Compute, pk=kwargs.get("pk"), is_deleted=False)
+            wvcomp = WebVirtCompute(compute.token, compute.hostname)
+            wvcomp.set_storage_action(kwargs.get("pool"), form.cleaned_data.get("action"))
+            return redirect(self.request.get_full_path())
+        context = self.get_context_data()
+        context['form'] = FormStorageAction()
+        return self.render_to_response(context)
 
 
 class AdminComputeNetworksView(AdminTemplateView):
@@ -111,22 +123,22 @@ class AdminComputeNetworksView(AdminTemplateView):
         context = super().get_context_data(**kwargs)
         compute = get_object_or_404(Compute, pk=kwargs.get("pk"), is_deleted=False)
         wvcomp = WebVirtCompute(compute.token, compute.hostname)
-        host_networks = wvcomp.get_host_networks()
+        host_networks = wvcomp.get_networks()
         context['compute'] = compute
         context['networks'] = host_networks
         return context
 
 
-class AdminComputeNetworkIfaceView(AdminTemplateView):
-    template_name = 'admin/compute/network_iface.html'
+class AdminComputeNetworkView(AdminTemplateView):
+    template_name = 'admin/compute/network.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         compute = get_object_or_404(Compute, pk=kwargs.get("pk"), is_deleted=False)
         wvcomp = WebVirtCompute(compute.token, compute.hostname)
-        host_network_iface = wvcomp.get_host_network_iface(kwargs.get("iface"))
+        host_network_pool = wvcomp.get_network(kwargs.get("pool"))
         context['compute'] = compute
-        context['network_iface'] = host_network_iface
+        context['network_pool'] = host_network_pool
         return context
 
 
@@ -137,7 +149,7 @@ class AdminComputeSecretsView(AdminTemplateView):
         context = super().get_context_data(**kwargs)
         compute = get_object_or_404(Compute, pk=kwargs.get("pk"), is_deleted=False)
         wvcomp = WebVirtCompute(compute.token, compute.hostname)
-        host_secrets = wvcomp.get_host_secrets()
+        host_secrets = wvcomp.get_secrets()
         context['compute'] = compute
         context['secrets'] = host_secrets
         return context
@@ -150,8 +162,7 @@ class AdminComputeNwfiltersView(AdminTemplateView):
         context = super().get_context_data(**kwargs)
         compute = get_object_or_404(Compute, pk=kwargs.get("pk"), is_deleted=False)
         wvcomp = WebVirtCompute(compute.token, compute.hostname)
-        host_nwfilters = wvcomp.get_host_nwfilters()
-        print(host_nwfilters)
+        host_nwfilters = wvcomp.get_nwfilters()
         context['compute'] = compute
         context['nwfilters'] = host_nwfilters
         return context

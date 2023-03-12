@@ -1,8 +1,8 @@
 from django.urls import re_path
 from .views import AdminComputeIndexView, AdminComputeCreateView, AdminComputeUpdateView, AdminComputeDeleteView
 from .views import AdminComputeOverviewView
-from .views import AdminComputeStoragesView, AdminComputeStoragePoolView
-from .views import AdminComputeNetworksView, AdminComputeNetworkIfaceView
+from .views import AdminComputeStoragesView, AdminComputeStorageView
+from .views import AdminComputeNetworksView, AdminComputeNetworkView
 from .views import AdminComputeSecretsView
 from .views import AdminComputeNwfiltersView
 
@@ -16,11 +16,11 @@ urlpatterns = [
     re_path("(?P<pk>\d+)/overview/?$", AdminComputeOverviewView.as_view(), name="admin_compute_overview"),
     re_path("(?P<pk>\d+)/storages/?$", AdminComputeStoragesView.as_view(), name="admin_compute_storages"),
     re_path(
-        "(?P<pk>\d+)/storages/(?P<pool>[\w\d\-]+)/?$", AdminComputeStoragePoolView.as_view(), name="admin_compute_storage_pool"
+        "(?P<pk>\d+)/storages/(?P<pool>[\w\d\-]+)/?$", AdminComputeStorageView.as_view(), name="admin_compute_storage"
     ),
     re_path("(?P<pk>\d+)/networks/?$", AdminComputeNetworksView.as_view(), name="admin_compute_networks"),
     re_path(
-        "(?P<pk>\d+)/networks/(?P<iface>[\w\d\-]+)/?$", AdminComputeNetworkIfaceView.as_view(), name="admin_compute_network_iface"
+        "(?P<pk>\d+)/networks/(?P<pool>[\w\d\-]+)/?$", AdminComputeNetworkView.as_view(), name="admin_compute_network"
     ),
     re_path("(?P<pk>\d+)/secrets/?$", AdminComputeSecretsView.as_view(), name="admin_compute_secrets"),
     re_path("(?P<pk>\d+)/nwfilters/?$", AdminComputeNwfiltersView.as_view(), name="admin_compute_nwfilters"),

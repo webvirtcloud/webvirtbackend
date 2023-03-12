@@ -76,7 +76,7 @@ class WebVirtCompute(object):
         return None
 
     def _process_post(self, response, json=True):
-        if response.status_code == 201:
+        if response.status_code == 200 or response.status_code == 201:
             if json is True:
                 body = response.json()
                 if body:
@@ -151,37 +151,44 @@ class WebVirtCompute(object):
         body = self._process_get(response)
         return body
     
-    def get_host_storages(self):
+    def get_storages(self):
         url = "storages/"
         response = self._make_get(url)
         body = self._process_get(response)
         return body
 
-    def get_host_storage_pool(self, pool):
+    def get_storage(self, pool):
         url = f"storages/{pool}/"
         response = self._make_get(url)
         body = self._process_get(response)
         return body
 
-    def get_host_networks(self):
+    def set_storage_action(self, pool, action):
+        url = f"storages/{pool}/"
+        action = {"action": action}
+        response = self._make_post(url, action)
+        body = self._process_post(response)
+        return body
+
+    def get_networks(self):
         url = "networks/"
         response = self._make_get(url)
         body = self._process_get(response)
         return body
 
-    def get_host_network_iface(self, iface):
-        url = f"networks/{iface}/"
+    def get_network(self, pool):
+        url = f"networks/{pool}/"
         response = self._make_get(url)
         body = self._process_get(response)
         return body
 
-    def get_host_secrets(self):
+    def get_secrets(self):
         url = "secrets/"
         response = self._make_get(url)
         body = self._process_get(response)
         return body
 
-    def get_host_nwfilters(self):
+    def get_nwfilters(self):
         url = "nwfilters/"
         response = self._make_get(url)
         body = self._process_get(response)
