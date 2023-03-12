@@ -1,3 +1,4 @@
+from django import forms
 from django.urls import reverse_lazy, reverse
 from django.shortcuts import redirect, get_object_or_404
 from crispy_forms.helper import FormHelper
@@ -109,10 +110,13 @@ class AdminComputeStorageView(AdminTemplateView):
         if form.is_valid():
             compute = get_object_or_404(Compute, pk=kwargs.get("pk"), is_deleted=False)
             wvcomp = WebVirtCompute(compute.token, compute.hostname)
-            wvcomp.set_storage_action(kwargs.get("pool"), form.cleaned_data.get("action"))
-            return redirect(self.request.get_full_path())
-        context = self.get_context_data()
-        context['form'] = FormStorageAction()
+            res = wvcomp.set_storage_action(kwargs.get("pool"), form.cleaned_data.get("action"))
+            if res.get("detail") is None:
+                return redirect(self.request.get_full_path())
+        form_errors = form._errors.setdefault(forms.forms.NON_FIELD_ERRORS, form.error_class())
+        form_errors.append(res.get("detail"))
+        context = self.get_context_data(*args, **kwargs)
+        context['form'] = form
         return self.render_to_response(context)
 
 
