@@ -1,4 +1,3 @@
-from django import forms
 from django.urls import reverse_lazy, reverse
 from django.shortcuts import redirect, get_object_or_404
 from crispy_forms.helper import FormHelper
@@ -93,6 +92,7 @@ class AdminComputeStoragesView(AdminTemplateView):
 
 
 class AdminComputeStorageView(AdminTemplateView):
+    form_class = FormStorageAction
     template_name = 'admin/compute/storage.html'
 
     def get_context_data(self, **kwargs):
@@ -100,22 +100,23 @@ class AdminComputeStorageView(AdminTemplateView):
         compute = get_object_or_404(Compute, pk=kwargs.get("pk"), is_deleted=False)
         wvcomp = WebVirtCompute(compute.token, compute.hostname)
         host_storage_pool = wvcomp.get_storage(kwargs.get("pool"))
-        context['form'] = FormStorageAction()
+        context['form'] = self.form_class()
         context['compute'] = compute
         context['storage_pool'] = host_storage_pool
         return context
 
     def post(self, request, *args, **kwargs):
-        form = FormStorageAction(request.POST)
+        form = self.form_class(request.POST)
+        context = self.get_context_data(*args, **kwargs)
+        
         if form.is_valid():
             compute = get_object_or_404(Compute, pk=kwargs.get("pk"), is_deleted=False)
             wvcomp = WebVirtCompute(compute.token, compute.hostname)
             res = wvcomp.set_storage_action(kwargs.get("pool"), form.cleaned_data.get("action"))
             if res.get("detail") is None:
                 return redirect(self.request.get_full_path())
-        form_errors = form._errors.setdefault(forms.forms.NON_FIELD_ERRORS, form.error_class())
-        form_errors.append(res.get("detail"))
-        context = self.get_context_data(*args, **kwargs)
+
+        form.add_error("__all__", res.get("detail"))
         context['form'] = form
         return self.render_to_response(context)
 
