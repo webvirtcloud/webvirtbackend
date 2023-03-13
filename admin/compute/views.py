@@ -109,25 +109,27 @@ class AdminComputeStorageView(AdminTemplateView):
         form_state = FormStateAction(request.POST)
         form_start = FormStartAction(request.POST)
         context = self.get_context_data(*args, **kwargs)
-        
+
         if form_state.is_valid():
             compute = get_object_or_404(Compute, pk=kwargs.get("pk"), is_deleted=False)
             wvcomp = WebVirtCompute(compute.token, compute.hostname)
             res = wvcomp.set_storage_action(kwargs.get("pool"), form_state.cleaned_data.get("action"))
             if res.get("detail") is None:
                 return redirect(self.request.get_full_path())
+            else:
+                form_state.add_error("__all__", res.get("detail"))
+                context['form_state'] = form_state
 
         if form_start.is_valid():
             compute = get_object_or_404(Compute, pk=kwargs.get("pk"), is_deleted=False)
             wvcomp = WebVirtCompute(compute.token, compute.hostname)
-            res = wvcomp.set_storage_action(kwargs.get("pool"), form_state.cleaned_data.get("action"))
+            res = wvcomp.set_storage_action(kwargs.get("pool"), form_start.cleaned_data.get("action"))
             if res.get("detail") is None:
                 return redirect(self.request.get_full_path())
-
-        form_state.add_error("__all__", res.get("detail"))
-        form_start.add_error("__all__", res.get("detail"))
-        context['form_state'] = form_state
-        context['form_start'] = form_start
+            else:
+                form_start.add_error("__all__", res.get("detail"))
+                context['form_start'] = form_start
+            
         return self.render_to_response(context)
 
 

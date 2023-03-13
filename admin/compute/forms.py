@@ -40,7 +40,7 @@ class FormStateAction(forms.Form):
     def clean(self):
         cleaned_data = super().clean()
         action = cleaned_data.get("action")
-        if action not in ["start", "stop", "autostart", "manualstart"]:
+        if action not in ["start", "stop"]:
             raise forms.ValidationError("Invalid action")
         return cleaned_data
 
@@ -51,13 +51,13 @@ class FormStartAction(forms.Form):
     )
 
     def __init__(self, *args, **kwargs):
-        super(FormStateAction, self).__init__(*args, **kwargs)
+        super(FormStartAction, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_tag = False
 
     def clean(self):
         cleaned_data = super().clean()
         action = cleaned_data.get("action")
-        if action not in ["start", "stop", "autostart", "manualstart"]:
+        if action not in ["autostart", "manualstart"]:
             raise forms.ValidationError("Invalid action")
         return cleaned_data
