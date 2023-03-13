@@ -188,7 +188,6 @@ class AdminComputeNetworkView(AdminTemplateView):
         return self.render_to_response(context)
 
 
-
 class AdminComputeSecretsView(AdminTemplateView):
     template_name = 'admin/compute/secrets.html'
 
