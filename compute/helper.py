@@ -142,6 +142,13 @@ class WebVirtCompute(object):
         body = self._process_response(response)
         return body
 
+    def set_network_action(self, pool, action):
+        url = f"networks/{pool}/"
+        action = {"action": action}
+        response = self._make_post(url, action)
+        body = self._process_response(response)
+        return body
+
     def get_secrets(self):
         url = "secrets/"
         response = self._make_get(url)
