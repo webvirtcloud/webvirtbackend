@@ -33,7 +33,7 @@
             Name
           </span>
         </div>
-        <div class="truncate text-sm font-medium">{{ storage_pool.storage.name }}</div>
+        <div class="truncate text-sm font-medium">{{ storage_pool.name }}</div>
       </div>
       <div class="px-4 py-4 sm:px-6">
         <div class="flex items-center text-sm text-neutral-500 mb-1">
@@ -41,7 +41,7 @@
             Active
           </span>
         </div>
-        <div class="truncate text-sm font-medium">{{ storage_pool.storage.active }}</div>
+        <div class="truncate text-sm font-medium">{{ storage_pool.active }}</div>
       </div>
       <div class="px-4 py-4 sm:px-6">
         <div class="flex items-center text-sm text-neutral-500 mb-1">
@@ -49,15 +49,15 @@
             Type
           </span>
         </div>
-        <div class="truncate text-sm font-medium">{{ storage_pool.storage.type }}</div>
+        <div class="truncate text-sm font-medium">{{ storage_pool.type|upper }}</div>
       </div>
       <div class="px-4 py-4 sm:px-6">
         <div class="flex items-center text-sm text-neutral-500 mb-1">
           <span class="font-medium">
-            Size
+            Size (Total / Usage)
           </span>
         </div>
-        <div class="truncate text-sm font-medium">{{ storage_pool.storage.size.used|filesizeformat }}/{{ storage_pool.storage.size.total|filesizeformat }}</div>
+        <div class="truncate text-sm font-medium">{{ storage_pool.size.total|filesizeformat }} / {{ storage_pool.size.used|filesizeformat }}</div>
       </div>
       <div class="px-4 py-4 sm:px-6">
         <div class="flex items-center text-sm text-neutral-500 mb-1">
@@ -65,7 +65,7 @@
             Autostart
           </span>
         </div>
-        <div class="truncate text-sm font-medium">{{ storage_pool.storage.autostart }}</div>
+        <div class="truncate text-sm font-medium">{{ storage_pool.autostart }}</div>
       </div>
     </div>
   </div>

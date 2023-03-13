@@ -26,26 +26,26 @@
       <div class="px-4 py-4 sm:px-6">
         <div class="flex items-center text-sm text-neutral-500 mb-1">
           <span class="font-medium">
-            CPU Usage
-          </span>
-        </div>
-        <div class="truncate text-sm font-medium">{{ host_overview.cpu.usage }}%</div>
-      </div>
-      <div class="px-4 py-4 sm:px-6">
-        <div class="flex items-center text-sm text-neutral-500 mb-1">
-          <span class="font-medium">
-            Memory Used
-          </span>
-        </div>
-        <div class="truncate text-sm font-medium">{{ host_overview.memory.usage|filesizeformat }}</div>
-      </div>
-      <div class="px-4 py-4 sm:px-6">
-        <div class="flex items-center text-sm text-neutral-500 mb-1">
-          <span class="font-medium">
             URI
           </span>
         </div>
         <a href="{{ host_overview.host.connection }}" class="truncate text-sm font-medium text-blue-600">{{ host_overview.host.connection }}</a>
+      </div>
+      <div class="px-4 py-4 sm:px-6">
+        <div class="flex items-center text-sm text-neutral-500 mb-1">
+          <span class="font-medium">
+            CPU (Cores)
+          </span>
+        </div>
+        <div class="truncate text-sm font-medium">{{ host_overview.host.processor }} / {{ host_overview.host.cpus }}</div>
+      </div>
+      <div class="px-4 py-4 sm:px-6">
+        <div class="flex items-center text-sm text-neutral-500 mb-1">
+          <span class="font-medium">
+            RAM
+          </span>
+        </div>
+        <div class="truncate text-sm font-medium">{{ host_overview.host.memory|filesizeformat }}</div>
       </div>
       <div class="px-4 py-4 sm:px-6">
         <div class="flex items-center text-sm text-neutral-500 mb-1">
@@ -58,10 +58,18 @@
       <div class="px-4 py-4 sm:px-6">
         <div class="flex items-center text-sm text-neutral-500 mb-1">
           <span class="font-medium">
-            CPU
+            CPU Usage
           </span>
         </div>
-        <div class="truncate text-sm font-medium">{{ host_overview.host.processor }} / {{ host_overview.host.cpus }}</div>
+        <div class="truncate text-sm font-medium">{{ host_overview.cpu.usage }}%</div>
+      </div>
+      <div class="px-4 py-4 sm:px-6">
+        <div class="flex items-center text-sm text-neutral-500 mb-1">
+          <span class="font-medium">
+            RAM Usage
+          </span>
+        </div>
+        <div class="truncate text-sm font-medium">{{ host_overview.memory.usage|filesizeformat }}</div>
       </div>
     </div>
   </div>

@@ -3,7 +3,7 @@
 {% block computecontent %}
 <main>
   <h1 class="text-2xl font-medium mb-4">Networks</h1>
-  {% if networks.networks %}
+  {% if networks %}
     <div
       class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg"
     >
@@ -37,7 +37,7 @@
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-200 bg-white">
-          {% for network in networks.networks %}
+          {% for network in networks %}
           <tr>
             <td
               class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"

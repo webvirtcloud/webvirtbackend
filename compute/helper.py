@@ -103,7 +103,7 @@ class WebVirtCompute(object):
         url = f"virtances/{vm_name(id)}/"
         response = self._make_response(url)
         body = self._process_response(response)
-        return body
+        return body.get("virtance")
 
     def get_host_overview(self):
         url = "host/"
@@ -115,13 +115,13 @@ class WebVirtCompute(object):
         url = "storages/"
         response = self._make_get(url)
         body = self._process_response(response)
-        return body
+        return body.get("storages")
 
     def get_storage(self, pool):
         url = f"storages/{pool}/"
         response = self._make_get(url)
         body = self._process_response(response)
-        return body
+        return body.get("storage")
 
     def set_storage_action(self, pool, action):
         url = f"storages/{pool}/"
@@ -134,13 +134,13 @@ class WebVirtCompute(object):
         url = "networks/"
         response = self._make_get(url)
         body = self._process_response(response)
-        return body
+        return body.get("networks")
 
     def get_network(self, pool):
         url = f"networks/{pool}/"
         response = self._make_get(url)
         body = self._process_response(response)
-        return body
+        return body.get("network")
 
     def set_network_action(self, pool, action):
         url = f"networks/{pool}/"
@@ -153,10 +153,10 @@ class WebVirtCompute(object):
         url = "secrets/"
         response = self._make_get(url)
         body = self._process_response(response)
-        return body
+        return body.get("secrets")
 
     def get_nwfilters(self):
         url = "nwfilters/"
         response = self._make_get(url)
         body = self._process_response(response)
-        return body
+        return body.get("nwfilters")
