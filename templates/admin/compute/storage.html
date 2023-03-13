@@ -1,36 +1,97 @@
-{% extends "admin/base.html" %}
+{% extends "admin/compute/base.html" %} 
 {% load static %}
 {% load crispy_forms_tags %}
-{% block content %}
-<div
-  class="flex min-h-screen justify-center py-12 px-4 sm:px-6 lg:px-8"
->
+{% block computecontent %}
+<main>
+  <a
+    href="{% url 'admin_compute_storages' compute.id %}"
+    class="inline-flex items-center text-sm p-2 bg-neutral-100 rounded-md space-x-2 hover:bg-neutral-200 mb-4"
+    ><svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke-width="1.5"
+      stroke="currentColor"
+      class="w-5 h-5"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3"
+      />
+    </svg>
+    <span>Back to the list</span>
+  </a>
+  <div class="overflow-hidden bg-white sm:rounded-lg sm:shadow mb-8">
+    <div class="border-b border-neutral-200 bg-white px-4 py-5 sm:px-6">
+      <h3 class="text-base font-semibold leading-6 text-neutral-900">Storage</h3>
+    </div>
+    <div class="grid md:grid-cols-3">
+      <div class="px-4 py-4 sm:px-6">
+        <div class="flex items-center text-sm text-neutral-500 mb-1">
+          <span class="font-medium">
+            Name
+          </span>
+        </div>
+        <div class="truncate text-sm font-medium">{{ storage_pool.storage.name }}</div>
+      </div>
+      <div class="px-4 py-4 sm:px-6">
+        <div class="flex items-center text-sm text-neutral-500 mb-1">
+          <span class="font-medium">
+            Active
+          </span>
+        </div>
+        <div class="truncate text-sm font-medium">{{ storage_pool.storage.active }}</div>
+      </div>
+      <div class="px-4 py-4 sm:px-6">
+        <div class="flex items-center text-sm text-neutral-500 mb-1">
+          <span class="font-medium">
+            Type
+          </span>
+        </div>
+        <div class="truncate text-sm font-medium">{{ storage_pool.storage.type }}</div>
+      </div>
+      <div class="px-4 py-4 sm:px-6">
+        <div class="flex items-center text-sm text-neutral-500 mb-1">
+          <span class="font-medium">
+            Size
+          </span>
+        </div>
+        <div class="truncate text-sm font-medium">{{ storage_pool.storage.size.used|filesizeformat }}/{{ storage_pool.storage.size.total|filesizeformat }}</div>
+      </div>
+      <div class="px-4 py-4 sm:px-6">
+        <div class="flex items-center text-sm text-neutral-500 mb-1">
+          <span class="font-medium">
+            Autostart
+          </span>
+        </div>
+        <div class="truncate text-sm font-medium">{{ storage_pool.storage.autostart }}</div>
+      </div>
+    </div>
+  </div>
 
-  <h1>Compute overview</h1>
+  <div class="overflow-hidden bg-white sm:rounded-lg sm:shadow mb-8">
+    <div class="border-b border-neutral-200 bg-white px-4 py-5 sm:px-6">
+      <h3 class="text-base font-semibold leading-6 text-neutral-900">State form</h3>
+    </div>
+    <div class="px-4 py-4 sm:px-6">
+      <form method="post">
+        {% crispy form_state %}
+        <input type="submit" value="Submit" class="group relative flex w-full justify-center rounded-md bg-blue-600 py-2.5 px-3 text-sm font-semibold text-white hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600" />
+      </form>
+    </div>
+  </div>
 
-  <p>IP: {{ compute.hostname }}</p>
-  <p>Region: {{ compute.region.name }}</p>
-  <p>Active: {{ compute.is_active }}</p>
-  <p>Description: {{ compute.description }}</p>
-
-  <p>
-    {{ storage_pool }}
-  </p>
-
-</div>
-
-
-<p>State form</p>
-<form method="post">
-  {% crispy form_state %}
-  <input type="submit" value="Submit" />
-</form>
-
-<p>Autostart form</p>
-<form method="post">
-  {% crispy form_start %}
-  <input type="submit" value="Submit" />
-</form>
-
-</div>
+  <div class="overflow-hidden bg-white sm:rounded-lg sm:shadow">
+    <div class="border-b border-neutral-200 bg-white px-4 py-5 sm:px-6">
+      <h3 class="text-base font-semibold leading-6 text-neutral-900">Autostart form</h3>
+    </div>
+    <div class="px-4 py-4 sm:px-6">
+      <form method="post">
+        {% crispy form_start %}
+        <input type="submit" value="Submit" class="group relative flex w-full justify-center rounded-md bg-blue-600 py-2.5 px-3 text-sm font-semibold text-white hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600" />
+      </form> 
+    </div>
+  </div>
+</main>
 {% endblock %}

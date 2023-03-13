@@ -1,27 +1,69 @@
-{% extends "admin/base.html" %}
-{% load static %}
-{% block content %}
-<div
-  class="flex min-h-screen justify-center py-12 px-4 sm:px-6 lg:px-8"
->
-
-  <h1>Compute overview</h1>
-
-  <p>IP: {{ compute.hostname }}</p>
-  <p>Region: {{ compute.region.name }}</p>
-  <p>Active: {{ compute.is_active }}</p>
-  <p>Description: {{ compute.description }}</p>
-
-  <p>Hostname: {{ host_overview.host.hostname }}</p>
-  <p>Arch: {{ host_overview.host.arch }}</p>
-  <p>CPUs: {{ host_overview.host.cpus }}</p>
-  <p>Memory: {{ host_overview.host.memory|filesizeformat }}</p>
-  <p>Processor: {{ host_overview.host.processor }}</p>
-  <p>URI: {{ host_overview.host.connection }}</p>
-  
-  <p>CPU usage: {{ host_overview.cpu.usage }}%</p>
-  <p>Memory Used: {{ host_overview.memory.usage|filesizeformat }}</p>
-  
-</div>
-</div>
+{% extends "admin/compute/base.html" %} 
+{% load static %} 
+{% block computecontent %}
+<main>
+  <div class="overflow-hidden bg-white sm:rounded-lg sm:shadow">
+    <div class="border-b border-neutral-200 bg-white px-4 py-5 sm:px-6">
+      <h3 class="text-base font-semibold leading-6 text-neutral-900">Overview</h3>
+    </div>
+    <div class="grid md:grid-cols-3">
+      <div class="px-4 py-4 sm:px-6">
+        <div class="flex items-center text-sm text-neutral-500 mb-1">
+          <span class="font-medium">
+            Hostname
+          </span>
+        </div>
+        <div class="truncate text-sm font-medium">{{ host_overview.host.hostname }}</div>
+      </div>
+      <div class="px-4 py-4 sm:px-6">
+        <div class="flex items-center text-sm text-neutral-500 mb-1">
+          <span class="font-medium">
+            Region
+          </span>
+        </div>
+        <div class="truncate text-sm font-medium">{{ compute.region.name }}</div>
+      </div>
+      <div class="px-4 py-4 sm:px-6">
+        <div class="flex items-center text-sm text-neutral-500 mb-1">
+          <span class="font-medium">
+            CPU Usage
+          </span>
+        </div>
+        <div class="truncate text-sm font-medium">{{ host_overview.cpu.usage }}%</div>
+      </div>
+      <div class="px-4 py-4 sm:px-6">
+        <div class="flex items-center text-sm text-neutral-500 mb-1">
+          <span class="font-medium">
+            Memory Used
+          </span>
+        </div>
+        <div class="truncate text-sm font-medium">{{ host_overview.memory.usage|filesizeformat }}</div>
+      </div>
+      <div class="px-4 py-4 sm:px-6">
+        <div class="flex items-center text-sm text-neutral-500 mb-1">
+          <span class="font-medium">
+            URI
+          </span>
+        </div>
+        <a href="{{ host_overview.host.connection }}" class="truncate text-sm font-medium text-blue-600">{{ host_overview.host.connection }}</a>
+      </div>
+      <div class="px-4 py-4 sm:px-6">
+        <div class="flex items-center text-sm text-neutral-500 mb-1">
+          <span class="font-medium">
+            Arch
+          </span>
+        </div>
+        <div class="truncate text-sm font-medium">{{ host_overview.host.arch }}</div>
+      </div>
+      <div class="px-4 py-4 sm:px-6">
+        <div class="flex items-center text-sm text-neutral-500 mb-1">
+          <span class="font-medium">
+            CPU
+          </span>
+        </div>
+        <div class="truncate text-sm font-medium">{{ host_overview.host.processor }} / {{ host_overview.host.cpus }}</div>
+      </div>
+    </div>
+  </div>
+</main>
 {% endblock %}

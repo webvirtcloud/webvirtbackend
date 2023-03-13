@@ -1,0 +1,52 @@
+{% extends "admin/base.html" %} 
+{% load static %} 
+{% block content %}
+<header class="">
+  <a
+    href="{% url 'admin_compute_index' %}"
+    class="inline-flex items-center text-sm p-2 bg-neutral-100 rounded-md space-x-2 hover:bg-neutral-200 mb-4"
+    ><svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke-width="1.5"
+      stroke="currentColor"
+      class="w-5 h-5"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3"
+      />
+    </svg>
+    <span>Back to the list</span>
+  </a>
+  <div class="flex items-center space-x-2">
+    <h1 class="font-bold text-2xl mb-1">{{ compute.name }}</h1>
+    <div
+      class="inline-flex items-baseline rounded-full px-2.5 py-0.5 text-sm font-medium md:mt-2 lg:mt-0 {% if compute.is_active %}bg-green-100 text-green-800{% else %}bg-red-100 text-red-800{% endif %}"
+    >
+      <span>
+        {% if compute.is_active %}Online{% else %}Offline{% endif %}
+      </span>
+    </div>
+  </div>
+  <p class="text-neutral-500 mb-8">{{ compute.description }}</p>
+
+  <div class="border-b border-neutral-200 mb-8">
+    <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+      <!-- Current: "border-blue-500 text-blue-600", Default: "border-transparent text-neutral-500 hover:border-neutral-300 hover:text-neutral-700" -->
+      <a href="{% url 'admin_compute_overview' compute.id %}" class="{% if 'overview' in request.path %}border-blue-500 text-blue-600{% else %}border-transparent text-neutral-500 hover:border-neutral-300 hover:text-neutral-700{% endif %} whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium">Overview</a>
+
+      <a href="{% url 'admin_compute_networks' compute.id %}" class="{% if 'networks' in request.path %}border-blue-500 text-blue-600{% else %}border-transparent text-neutral-500 hover:border-neutral-300 hover:text-neutral-700{% endif %} whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium">Networks</a>
+      
+      <a href="{% url 'admin_compute_nwfilters' compute.id %}" class="{% if 'nwfilters' in request.path %}border-blue-500 text-blue-600{% else %}border-transparent text-neutral-500 hover:border-neutral-300 hover:text-neutral-700{% endif %} whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium">NWFilters</a>
+
+      <a href="{% url 'admin_compute_secrets' compute.id %}" class="{% if 'secrets' in request.path %}border-blue-500 text-blue-600{% else %}border-transparent text-neutral-500 hover:border-neutral-300 hover:text-neutral-700{% endif %} whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium" aria-current="page">Secrets</a>
+      
+      <a href="{% url 'admin_compute_storages' compute.id %}" class="{% if 'storages' in request.path %}border-blue-500 text-blue-600{% else %}border-transparent text-neutral-500 hover:border-neutral-300 hover:text-neutral-700{% endif %} whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium">Storages</a>
+    </nav>
+  </div>
+  {% block computecontent %}{% endblock %}
+</header>
+{% endblock %}
