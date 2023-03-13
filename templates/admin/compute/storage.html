@@ -67,6 +67,14 @@
         </div>
         <div class="truncate text-sm font-medium">{{ storage_pool.autostart }}</div>
       </div>
+      <div class="px-4 py-4 sm:px-6">
+        <div class="flex items-center text-sm text-neutral-500 mb-1">
+          <span class="font-medium">
+            Path
+          </span>
+        </div>
+        <div class="truncate text-sm font-medium">{{ storage_pool.path }}</div>
+      </div>
     </div>
   </div>
 
@@ -93,5 +101,40 @@
       </form> 
     </div>
   </div>
+  
+  <h1 class="text-2xl font-medium mb-4">Volumes</h1>
+  {% if storage_pool.volumes %}
+    <div
+      class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg"
+    >
+      <table class="min-w-full divide-y divide-gray-300">
+        <thead class="bg-gray-50">
+          <tr>
+            <th
+              scope="col"
+              class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+            >
+              Name
+            </th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200 bg-white">
+          {% for volume in storage_pool.volumes %}
+          <tr>
+            <td
+              class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
+            >
+              {{ volume.name }}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="bg-white border p-4 md:p-8 rounded-lg text-center">
+      <h2 class="text-xl font-medium">No volumes</h2>
+    </div>
+  {% endif %}
 </main>
 {% endblock %}
