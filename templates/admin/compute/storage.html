@@ -18,10 +18,20 @@
   </p>
 
 </div>
+
+
+<p>Autostart form</p>
 <form method="post">
-{% crispy form %}
-<input type="submit" value="Submit" />
+  {% crispy for_state %}
+  <input type="submit" value="Submit" />
 </form>
+
+<p>Autostart form</p>
+<form method="post">
+  {% crispy form_start %}
+  <input type="submit" value="Submit" />
+</form>
+
 
 </div>
 {% endblock %}

@@ -1,7 +1,7 @@
 from django.urls import reverse_lazy, reverse
 from django.shortcuts import redirect, get_object_or_404
 from crispy_forms.helper import FormHelper
-from .forms import FormCompute, FormStorageAction
+from .forms import FormCompute, FormStateAction, FormStartAction
 from compute.models import Compute
 from admin.mixins import AdminTemplateView, AdminFormView, AdminUpdateView, AdminDeleteView
 from compute.helper import WebVirtCompute
@@ -92,7 +92,6 @@ class AdminComputeStoragesView(AdminTemplateView):
 
 
 class AdminComputeStorageView(AdminTemplateView):
-    form_class = FormStorageAction
     template_name = 'admin/compute/storage.html'
 
     def get_context_data(self, **kwargs):
@@ -100,24 +99,35 @@ class AdminComputeStorageView(AdminTemplateView):
         compute = get_object_or_404(Compute, pk=kwargs.get("pk"), is_deleted=False)
         wvcomp = WebVirtCompute(compute.token, compute.hostname)
         host_storage_pool = wvcomp.get_storage(kwargs.get("pool"))
-        context['form'] = self.form_class()
         context['compute'] = compute
+        context['form_state'] = FormStateAction()
+        context['form_start'] = FormStartAction()
         context['storage_pool'] = host_storage_pool
         return context
 
     def post(self, request, *args, **kwargs):
-        form = self.form_class(request.POST)
+        form_state = FormStateAction(request.POST)
+        form_start = FormStartAction(request.POST)
         context = self.get_context_data(*args, **kwargs)
         
-        if form.is_valid():
+        if form_state.is_valid():
             compute = get_object_or_404(Compute, pk=kwargs.get("pk"), is_deleted=False)
             wvcomp = WebVirtCompute(compute.token, compute.hostname)
-            res = wvcomp.set_storage_action(kwargs.get("pool"), form.cleaned_data.get("action"))
+            res = wvcomp.set_storage_action(kwargs.get("pool"), form_state.cleaned_data.get("action"))
             if res.get("detail") is None:
                 return redirect(self.request.get_full_path())
 
-        form.add_error("__all__", res.get("detail"))
-        context['form'] = form
+        if form_start.is_valid():
+            compute = get_object_or_404(Compute, pk=kwargs.get("pk"), is_deleted=False)
+            wvcomp = WebVirtCompute(compute.token, compute.hostname)
+            res = wvcomp.set_storage_action(kwargs.get("pool"), form_state.cleaned_data.get("action"))
+            if res.get("detail") is None:
+                return redirect(self.request.get_full_path())
+
+        form_state.add_error("__all__", res.get("detail"))
+        form_start.add_error("__all__", res.get("detail"))
+        context['form_state'] = form_state
+        context['form_start'] = form_start
         return self.render_to_response(context)
 
 
