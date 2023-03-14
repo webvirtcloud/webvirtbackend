@@ -3,7 +3,7 @@ from django.urls import reverse_lazy, reverse
 from django.shortcuts import redirect, get_object_or_404
 from crispy_forms.helper import FormHelper
 from .forms import FormCompute, FormStartAction, FormAutostartAction
-from .forms import FormVolumeCloneAction, FormVolumeResizeAction
+from .forms import FormVolumeCreateAction,FormVolumeCloneAction, FormVolumeResizeAction
 from compute.models import Compute
 from admin.mixins import AdminView, AdminTemplateView, AdminFormView, AdminUpdateView, AdminDeleteView
 from compute.helper import WebVirtCompute
@@ -120,7 +120,7 @@ class AdminComputeStorageView(AdminTemplateView):
                 return redirect(self.request.get_full_path())
             else:
                 form_start.add_error("__all__", res.get("detail"))
-                context['form_start'] = form_start
+                context["form_start"] = form_start
 
         if form_autostart.is_valid():
             compute = get_object_or_404(Compute, pk=kwargs.get("pk"), is_deleted=False)
@@ -130,41 +130,42 @@ class AdminComputeStorageView(AdminTemplateView):
                 return redirect(self.request.get_full_path())
             else:
                 form_autostart.add_error("__all__", res.get("detail"))
-                context['form_autostart'] = form_autostart
+                context["form_autostart"] = form_autostart
             
         return self.render_to_response(context)
 
 
-class AdminComputeStorageVolumeDeleteView(AdminView):
+class AdminComputeStorageVolumeCreateView(AdminFormView):
+    template_name = "admin/compute/volume_create.html"
+    form_class = FormVolumeCreateAction
 
-    def get(self, request, *args, **kwargs):
-        compute = get_object_or_404(Compute, pk=kwargs.get("pk"), is_deleted=False)
+    def form_valid(self, form):
+        compute = get_object_or_404(Compute, pk=self.kwargs.get("pk"), is_deleted=False)
         wvcomp = WebVirtCompute(compute.token, compute.hostname)
-        res = wvcomp.delete_storage_volume(kwargs.get("pool"), kwargs.get("vol"))
-        if res.get("detail") is None:
-            messages.success(request, "Volume successfuly deleted.")
-        else:
-            messages.errors(request, res.get("detail"))
-        return redirect(reverse('admin_compute_storage', args=[kwargs.get("pk"), kwargs.get("pool")]))
-
-
-class AdminComputeStorageVolumeDeleteView(AdminFormView):
-
-    def get(self, request, *args, **kwargs):
-        compute = get_object_or_404(Compute, pk=kwargs.get("pk"), is_deleted=False)
-        wvcomp = WebVirtCompute(compute.token, compute.hostname)
-        res = wvcomp.delete_storage_volume(kwargs.get("pool"), kwargs.get("vol"))
-        if res.get("detail") is None:
-            messages.success(request, "Volume successfuly deleted.")
-        else:
-            messages.error(request, res.get("detail"))
-        return redirect(reverse('admin_compute_storage', args=[kwargs.get("pk"), kwargs.get("pool")]))
+        res = wvcomp.create_storage_volume(
+            self.kwargs.get("pool"), 
+            form.cleaned_data.get("name"), 
+            form.cleaned_data.get("size"), 
+            form.cleaned_data.get("format")
+        )
+        if res.get("detail") is not None:
+            form.add_error("__all__", res.get("detail"))
+            return super().form_invalid(form)
+            
+        self.success_url = reverse("admin_compute_storage", args=[self.kwargs.get("pk"), self.kwargs.get("pool")])
+        return super().form_valid(form)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        compute = get_object_or_404(Compute, pk=self.kwargs.get("pk"), is_deleted=False)
+        context["compute"] = compute
+        context["pool"] = self.kwargs.get("pool")
+        return context
 
 
 class AdminComputeStorageVolumeCloneView(AdminFormView):
-    template_name = 'admin/compute/volume_clone.html'
+    template_name = "admin/compute/volume_clone.html"
     form_class = FormVolumeCloneAction
-    success_url = reverse_lazy('admin_compute_storage')
 
     def form_valid(self, form):
         compute = get_object_or_404(Compute, pk=self.kwargs.get("pk"), is_deleted=False)
@@ -176,7 +177,7 @@ class AdminComputeStorageVolumeCloneView(AdminFormView):
             form.add_error("__all__", res.get("detail"))
             return super().form_invalid(form)
             
-        self.success_url = reverse('admin_compute_storage', args=[self.kwargs.get("pk"), self.kwargs.get("pool")])
+        self.success_url = reverse("admin_compute_storage", args=[self.kwargs.get("pk"), self.kwargs.get("pool")])
         return super().form_valid(form)
     
     def get_context_data(self, **kwargs):
@@ -189,7 +190,7 @@ class AdminComputeStorageVolumeCloneView(AdminFormView):
 
 
 class AdminComputeStorageVolumeResizeView(AdminFormView):
-    template_name = 'admin/compute/volume_resize.html'
+    template_name = "admin/compute/volume_resize.html"
     form_class = FormVolumeResizeAction
 
     def form_valid(self, form):
@@ -214,8 +215,21 @@ class AdminComputeStorageVolumeResizeView(AdminFormView):
         return context
 
 
+class AdminComputeStorageVolumeDeleteView(AdminView):
+
+    def get(self, request, *args, **kwargs):
+        compute = get_object_or_404(Compute, pk=kwargs.get("pk"), is_deleted=False)
+        wvcomp = WebVirtCompute(compute.token, compute.hostname)
+        res = wvcomp.delete_storage_volume(kwargs.get("pool"), kwargs.get("vol"))
+        if res.get("detail") is None:
+            messages.success(request, "Volume successfuly deleted.")
+        else:
+            messages.error(request, res.get("detail"))
+        return redirect(reverse('admin_compute_storage', args=[kwargs.get("pk"), kwargs.get("pool")]))
+
+
 class AdminComputeNetworksView(AdminTemplateView):
-    template_name = 'admin/compute/networks.html'
+    template_name = "admin/compute/networks.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -228,17 +242,17 @@ class AdminComputeNetworksView(AdminTemplateView):
 
 
 class AdminComputeNetworkView(AdminTemplateView):
-    template_name = 'admin/compute/network.html'
+    template_name = "admin/compute/network.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         compute = get_object_or_404(Compute, pk=kwargs.get("pk"), is_deleted=False)
         wvcomp = WebVirtCompute(compute.token, compute.hostname)
         host_network_pool = wvcomp.get_network(kwargs.get("pool"))
-        context['compute'] = compute
-        context['form_start'] = FormStartAction()
-        context['form_autostart'] = FormAutostartAction()
-        context['network_pool'] = host_network_pool
+        context["compute"] = compute
+        context["form_start"] = FormStartAction()
+        context["form_autostart"] = FormAutostartAction()
+        context["network_pool"] = host_network_pool
         return context
 
     def post(self, request, *args, **kwargs):
@@ -254,7 +268,7 @@ class AdminComputeNetworkView(AdminTemplateView):
                 return redirect(self.request.get_full_path())
             else:
                 form_start.add_error("__all__", res.get("detail"))
-                context['form_start'] = form_start
+                context["form_start"] = form_start
 
         if form_autostart.is_valid():
             compute = get_object_or_404(Compute, pk=kwargs.get("pk"), is_deleted=False)
@@ -264,7 +278,7 @@ class AdminComputeNetworkView(AdminTemplateView):
                 return redirect(self.request.get_full_path())
             else:
                 form_autostart.add_error("__all__", res.get("detail"))
-                context['form_autostart'] = form_autostart
+                context["form_autostart"] = form_autostart
             
         return self.render_to_response(context)
 
@@ -283,7 +297,7 @@ class AdminComputeSecretsView(AdminTemplateView):
 
 
 class AdminComputeNwfiltersView(AdminTemplateView):
-    template_name = 'admin/compute/nwfilters.html'
+    template_name = "admin/compute/nwfilters.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

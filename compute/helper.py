@@ -131,6 +131,13 @@ class WebVirtCompute(object):
         body = self._process_response(response)
         return body
 
+    def create_storage_volume(self, pool, name, size, format="qcow2"):
+        url = f"storages/{pool}/volumes/"
+        payload = {"name": name, "size": size, "format": format}
+        response = self._make_post(url, payload)
+        body = self._process_response(response)
+        return body
+
     def action_storage_volume(self, pool, name, action, data):
         url = f"storages/{pool}/volumes/{name}/"
         if action == "resize":
