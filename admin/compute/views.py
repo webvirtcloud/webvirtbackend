@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.urls import reverse_lazy, reverse
 from django.shortcuts import redirect, get_object_or_404
 from crispy_forms.helper import FormHelper
-from .forms import FormCompute, FormStartAction, FormAutostartAction
+from .forms import FormCompute, FormStartAction, FormAutostartAction, FormNwfilterCreateAction
 from .forms import FormVolumeCreateAction,FormVolumeCloneAction, FormVolumeResizeAction
 from compute.models import Compute
 from admin.mixins import AdminView, AdminTemplateView, AdminFormView, AdminUpdateView, AdminDeleteView
@@ -307,3 +307,51 @@ class AdminComputeNwfiltersView(AdminTemplateView):
         context['compute'] = compute
         context['nwfilters'] = host_nwfilters
         return context
+
+
+class AdminComputeNwfilterCreateView(AdminFormView):
+    template_name = "admin/compute/nwfilter_create.html"
+    form_class = FormNwfilterCreateAction
+
+    def form_valid(self, form):
+        compute = get_object_or_404(Compute, pk=self.kwargs.get("pk"), is_deleted=False)
+        wvcomp = WebVirtCompute(compute.token, compute.hostname)
+        res = wvcomp.create_nwfilter(form.cleaned_data.get("xml"))
+        if res.get("detail") is not None:
+            form.add_error("__all__", res.get("detail"))
+            return super().form_invalid(form)
+            
+        self.success_url = reverse("admin_compute_nwfilters", args=self.kwargs.get("pk"))
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        compute = get_object_or_404(Compute, pk=self.kwargs.get("pk"), is_deleted=False)
+        context["compute"] = compute
+        return context
+
+
+class AdminComputeNwfilterView(AdminTemplateView):
+    template_name = "admin/compute/nwfilter.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        compute = get_object_or_404(Compute, pk=self.kwargs.get("pk"), is_deleted=False)
+        wvcomp = WebVirtCompute(compute.token, compute.hostname)
+        host_nwfilter = wvcomp.view_nwfilter(kwargs.get("nfilter"))
+        context["compute"] = compute
+        context["nwfilter"] = host_nwfilter
+        return context
+
+
+class AdminComputeNwfilterDeleteView(AdminView):
+
+    def get(self, request, *args, **kwargs):
+        compute = get_object_or_404(Compute, pk=kwargs.get("pk"), is_deleted=False)
+        wvcomp = WebVirtCompute(compute.token, compute.hostname)
+        res = wvcomp.delete_nwfilter(kwargs.get("nfilter"))
+        if res.get("detail") is None:
+            messages.success(request, "NwFilter successfuly deleted.")
+        else:
+            messages.error(request, res.get("detail"))
+        return redirect(reverse("admin_compute_nwfilters", args=kwargs.get("pk")))

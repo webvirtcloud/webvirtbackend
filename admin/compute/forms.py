@@ -93,3 +93,12 @@ class FormVolumeResizeAction(forms.Form):
         super(FormVolumeResizeAction, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_tag = False
+
+
+class FormNwfilterCreateAction(forms.Form):
+    xml = forms.CharField(label="XML", widget=forms.Textarea)
+    
+    def __init__(self, *args, **kwargs):
+        super(FormNwfilterCreateAction, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False

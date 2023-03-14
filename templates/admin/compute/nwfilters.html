@@ -2,7 +2,14 @@
 {% load static %} 
 {% block computecontent %}
 <main>
-  <h1 class="text-2xl font-medium mb-4">NwFilters</h1>
+  <div class="flex items-center justify-between mb-6">
+    <h1 class="text-2xl font-medium mb-4">NwFilters</h1>
+    <a
+      href="{% url 'admin_compute_nwfilter_create' compute.id %}"
+      class="block rounded-md bg-blue-600 py-2 px-3 text-center text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+      >Add NwFilter</a
+    >
+    </div>
   {% if nwfilters %}
     <div
       class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg"
@@ -16,15 +23,31 @@
             >
               Name
             </th>
+            <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
+              <span class="sr-only">Edit</span>
+            </th>
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-200 bg-white">
-          {% for secret in nwfilters %}
+          {% for nwfilter in nwfilters %}
           <tr>
             <td
               class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
             >
-              {{ secret.name }}
+            <a
+              href="{% url 'admin_compute_nwfilter' compute.id nwfilter.name %}"
+              >{{ nwfilter.name }}<span class="sr-only">{{ compute.name }}</span></a
+            >
+            </td>
+            <td
+              class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6"
+            >
+            <a
+              href="{% url 'admin_compute_nwfilter_delete' compute.id nwfilter.name %}"
+              class="text-blue-600 hover:text-blue-900"
+              onclick="return confirm('Are you sure you would like to deelete this volume?');"
+              >Delete<span class="sr-only">{{ compute.name }}</span></a
+            >
             </td>
           </tr>
           {% endfor %}

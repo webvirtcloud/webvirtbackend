@@ -185,3 +185,21 @@ class WebVirtCompute(object):
         response = self._make_get(url)
         body = self._process_response(response)
         return body.get("nwfilters")
+
+    def create_nwfilter(self, xml):
+        url = "nwfilters/"
+        response = self._make_post(url, {"xml": xml})
+        body = self._process_response(response)
+        return body
+
+    def view_nwfilter(self, name):
+        url = f"nwfilters/{name}/"
+        response = self._make_get(url)
+        body = self._process_response(response)
+        return body.get("nwfilter")
+
+    def delete_nwfilter(self, name):
+        url = f"nwfilters/{name}/"
+        response = self._make_delete(url)
+        body = self._process_response(response)
+        return body
