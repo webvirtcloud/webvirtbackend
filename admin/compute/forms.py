@@ -27,13 +27,13 @@ class FormCompute(forms.ModelForm):
         fields = ["name", "arch", "description", "hostname", "token", "region"]
 
 
-class FormStateAction(forms.Form):
+class FormStartAction(forms.Form):
     action = forms.ChoiceField(
         choices=[("start", "Start"), ("stop", "Stop")]
     )
 
     def __init__(self, *args, **kwargs):
-        super(FormStateAction, self).__init__(*args, **kwargs)
+        super(FormStartAction, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_tag = False
 
@@ -45,13 +45,13 @@ class FormStateAction(forms.Form):
         return cleaned_data
 
 
-class FormStartAction(forms.Form):
+class FormAutostartAction(forms.Form):
     action = forms.ChoiceField(
         choices=[("autostart", "Autostart"), ("manualstart", "Manualstart")]
     )
 
     def __init__(self, *args, **kwargs):
-        super(FormStartAction, self).__init__(*args, **kwargs)
+        super(FormAutostartAction, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_tag = False
 

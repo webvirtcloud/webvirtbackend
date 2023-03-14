@@ -1,7 +1,7 @@
 from django.urls import reverse_lazy, reverse
 from django.shortcuts import redirect, get_object_or_404
 from crispy_forms.helper import FormHelper
-from .forms import FormCompute, FormStateAction, FormStartAction
+from .forms import FormCompute, FormStartAction, FormAutostartAction
 from compute.models import Compute
 from admin.mixins import AdminTemplateView, AdminFormView, AdminUpdateView, AdminDeleteView
 from compute.helper import WebVirtCompute
@@ -100,25 +100,15 @@ class AdminComputeStorageView(AdminTemplateView):
         wvcomp = WebVirtCompute(compute.token, compute.hostname)
         host_storage_pool = wvcomp.get_storage(kwargs.get("pool"))
         context['compute'] = compute
-        context['form_state'] = FormStateAction()
         context['form_start'] = FormStartAction()
+        context['form_autostart'] = FormAutostartAction()
         context['storage_pool'] = host_storage_pool
         return context
 
     def post(self, request, *args, **kwargs):
-        form_state = FormStateAction(request.POST)
         form_start = FormStartAction(request.POST)
+        form_autostart = FormAutostartAction(request.POST)
         context = self.get_context_data(*args, **kwargs)
-
-        if form_state.is_valid():
-            compute = get_object_or_404(Compute, pk=kwargs.get("pk"), is_deleted=False)
-            wvcomp = WebVirtCompute(compute.token, compute.hostname)
-            res = wvcomp.set_storage_action(kwargs.get("pool"), form_state.cleaned_data.get("action"))
-            if res.get("detail") is None:
-                return redirect(self.request.get_full_path())
-            else:
-                form_state.add_error("__all__", res.get("detail"))
-                context['form_state'] = form_state
 
         if form_start.is_valid():
             compute = get_object_or_404(Compute, pk=kwargs.get("pk"), is_deleted=False)
@@ -129,6 +119,16 @@ class AdminComputeStorageView(AdminTemplateView):
             else:
                 form_start.add_error("__all__", res.get("detail"))
                 context['form_start'] = form_start
+
+        if form_autostart.is_valid():
+            compute = get_object_or_404(Compute, pk=kwargs.get("pk"), is_deleted=False)
+            wvcomp = WebVirtCompute(compute.token, compute.hostname)
+            res = wvcomp.set_storage_action(kwargs.get("pool"), form_autostart.cleaned_data.get("action"))
+            if res.get("detail") is None:
+                return redirect(self.request.get_full_path())
+            else:
+                form_autostart.add_error("__all__", res.get("detail"))
+                context['form_autostart'] = form_autostart
             
         return self.render_to_response(context)
 
@@ -155,35 +155,35 @@ class AdminComputeNetworkView(AdminTemplateView):
         wvcomp = WebVirtCompute(compute.token, compute.hostname)
         host_network_pool = wvcomp.get_network(kwargs.get("pool"))
         context['compute'] = compute
-        context['form_state'] = FormStateAction()
         context['form_start'] = FormStartAction()
+        context['form_autostart'] = FormAutostartAction()
         context['network_pool'] = host_network_pool
         return context
 
     def post(self, request, *args, **kwargs):
-        form_state = FormStateAction(request.POST)
         form_start = FormStartAction(request.POST)
+        form_autostart = FormAutostartAction(request.POST)
         context = self.get_context_data(*args, **kwargs)
-
-        if form_state.is_valid():
-            compute = get_object_or_404(Compute, pk=kwargs.get("pk"), is_deleted=False)
-            wvcomp = WebVirtCompute(compute.token, compute.hostname)
-            res = wvcomp.set_network_action(kwargs.get("pool"), form_state.cleaned_data.get("action"))
-            if res.get("detail") is None:
-                return redirect(self.request.get_full_path())
-            else:
-                form_state.add_error("__all__", res.get("detail"))
-                context['form_state'] = form_state
 
         if form_start.is_valid():
             compute = get_object_or_404(Compute, pk=kwargs.get("pk"), is_deleted=False)
             wvcomp = WebVirtCompute(compute.token, compute.hostname)
-            res = wvcomp.set_network_action(kwargs.get("pool"), form_start.cleaned_data.get("action"))
+            res = wvcomp.set_storage_action(kwargs.get("pool"), form_start.cleaned_data.get("action"))
             if res.get("detail") is None:
                 return redirect(self.request.get_full_path())
             else:
                 form_start.add_error("__all__", res.get("detail"))
                 context['form_start'] = form_start
+
+        if form_autostart.is_valid():
+            compute = get_object_or_404(Compute, pk=kwargs.get("pk"), is_deleted=False)
+            wvcomp = WebVirtCompute(compute.token, compute.hostname)
+            res = wvcomp.set_storage_action(kwargs.get("pool"), form_autostart.cleaned_data.get("action"))
+            if res.get("detail") is None:
+                return redirect(self.request.get_full_path())
+            else:
+                form_autostart.add_error("__all__", res.get("detail"))
+                context['form_autostart'] = form_autostart
             
         return self.render_to_response(context)
 
