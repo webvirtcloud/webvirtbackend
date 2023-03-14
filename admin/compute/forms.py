@@ -95,9 +95,25 @@ class FormVolumeResizeAction(forms.Form):
         self.helper.form_tag = False
 
 
+class FormSecretCreateAction(forms.Form):
+    ephemeral = forms.ChoiceField(choices=(("no", "no"), ("yes", "yes")))
+    private = forms.ChoiceField(choices=(("no", "no"), ("yes", "yes")))
+    type = forms.ChoiceField(choices=(("ceph", "ceph"), ("volume", "volume"), ("iscsi", "iscsi")))
+    data = forms.CharField(
+        max_length=100,
+        initial="client.libvirt",
+        validators=[RegexValidator("^[0-9a-z.]+$")],
+    )
+
+    def __init__(self, *args, **kwargs):
+        super(FormSecretCreateAction, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+
+
 class FormNwfilterCreateAction(forms.Form):
     xml = forms.CharField(label="XML", widget=forms.Textarea)
-    
+
     def __init__(self, *args, **kwargs):
         super(FormNwfilterCreateAction, self).__init__(*args, **kwargs)
         self.helper = FormHelper()

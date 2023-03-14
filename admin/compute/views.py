@@ -3,7 +3,7 @@ from django.urls import reverse_lazy, reverse
 from django.shortcuts import redirect, get_object_or_404
 from crispy_forms.helper import FormHelper
 from .forms import FormCompute, FormStartAction, FormAutostartAction, FormNwfilterCreateAction
-from .forms import FormVolumeCreateAction,FormVolumeCloneAction, FormVolumeResizeAction
+from .forms import FormVolumeCreateAction,FormVolumeCloneAction, FormVolumeResizeAction, FormSecretCreateAction
 from compute.models import Compute
 from admin.mixins import AdminView, AdminTemplateView, AdminFormView, AdminUpdateView, AdminDeleteView
 from compute.helper import WebVirtCompute
@@ -294,6 +294,46 @@ class AdminComputeSecretsView(AdminTemplateView):
         context['compute'] = compute
         context['secrets'] = host_secrets
         return context
+    
+
+class AdminComputeSecretCreateView(AdminFormView):
+    template_name = "admin/compute/secret_create.html"
+    form_class = FormSecretCreateAction
+
+    def form_valid(self, form):
+        compute = get_object_or_404(Compute, pk=self.kwargs.get("pk"), is_deleted=False)
+        wvcomp = WebVirtCompute(compute.token, compute.hostname)
+        res = wvcomp.create_secret(
+            form.cleaned_data.get("ephemeral"), 
+            form.cleaned_data.get("private"), 
+            form.cleaned_data.get("type"),
+            form.cleaned_data.get("data")
+        )
+        if res.get("detail") is not None:
+            form.add_error("__all__", res.get("detail"))
+            return super().form_invalid(form)
+
+        self.success_url = reverse("admin_compute_secrets", args=self.kwargs.get("pk"))
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        compute = get_object_or_404(Compute, pk=self.kwargs.get("pk"), is_deleted=False)
+        context["compute"] = compute
+        return context
+
+
+class AdminComputeSecretDeleteView(AdminView):
+
+    def get(self, request, *args, **kwargs):
+        compute = get_object_or_404(Compute, pk=kwargs.get("pk"), is_deleted=False)
+        wvcomp = WebVirtCompute(compute.token, compute.hostname)
+        res = wvcomp.delete_secret(kwargs.get("uuid"))
+        if res.get("detail") is None:
+            messages.success(request, "Secret successfuly deleted.")
+        else:
+            messages.error(request, res.get("detail"))
+        return redirect(reverse("admin_compute_secrets", args=kwargs.get("pk")))
 
 
 class AdminComputeNwfiltersView(AdminTemplateView):

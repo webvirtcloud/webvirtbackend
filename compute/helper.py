@@ -180,6 +180,24 @@ class WebVirtCompute(object):
         body = self._process_response(response)
         return body.get("secrets")
 
+    def create_secret(self, ephemeral, private, type, data):
+        url = "secrets/"
+        payload = {
+            "ephemeral": ephemeral, 
+            "private": private, 
+            "type": type,
+            "data": data
+        }
+        response = self._make_post(url, payload)
+        body = self._process_response(response)
+        return body
+
+    def delete_secret(self, uuid):
+        url = f"secrets/{uuid}/"
+        response = self._make_delete(url)
+        body = self._process_response(response)
+        return body
+
     def get_nwfilters(self):
         url = "nwfilters/"
         response = self._make_get(url)

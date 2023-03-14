@@ -5,7 +5,7 @@ from .views import AdminComputeStoragesView, AdminComputeStorageView
 from .views import AdminComputeStorageVolumeCreateView, AdminComputeStorageVolumeCloneView
 from .views import AdminComputeStorageVolumeResizeView, AdminComputeStorageVolumeDeleteView
 from .views import AdminComputeNetworksView, AdminComputeNetworkView
-from .views import AdminComputeSecretsView
+from .views import AdminComputeSecretsView, AdminComputeSecretCreateView, AdminComputeSecretDeleteView
 from .views import AdminComputeNwfiltersView, AdminComputeNwfilterCreateView
 from .views import AdminComputeNwfilterView, AdminComputeNwfilterDeleteView
 
@@ -46,6 +46,15 @@ urlpatterns = [
     ),
     
     re_path("(?P<pk>\d+)/secrets/?$", AdminComputeSecretsView.as_view(), name="admin_compute_secrets"),
+    re_path(
+        "(?P<pk>\d+)/secrets/create/?$",
+        AdminComputeSecretCreateView.as_view(), name="admin_compute_secret_create"
+    ),
+    re_path(
+        "(?P<pk>\d+)/secret/(?P<uuid>[\w\d\-]+)/delete/?$",
+        AdminComputeSecretDeleteView.as_view(), name="admin_compute_secret_delete"
+    ),
+
     re_path("(?P<pk>\d+)/nwfilters/?$", AdminComputeNwfiltersView.as_view(), name="admin_compute_nwfilters"),
     re_path(
         "(?P<pk>\d+)/nwfilters/create/?$",
