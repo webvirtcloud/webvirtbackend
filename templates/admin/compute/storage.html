@@ -41,7 +41,15 @@
             Active
           </span>
         </div>
-        <div class="truncate text-sm font-medium">{{ storage_pool.active }}</div>
+        <form method="post">
+          {% csrf_token %}
+          {% if storage_pool.active is True %}
+            <input type="button" name="action" value="stop" />
+          {% else %}
+            <input type="button" name="action" value="start" />
+          {% endif %}
+        </form>
+        
       </div>
       <div class="px-4 py-4 sm:px-6">
         <div class="flex items-center text-sm text-neutral-500 mb-1">
@@ -65,7 +73,15 @@
             Autostart
           </span>
         </div>
-        <div class="truncate text-sm font-medium">{{ storage_pool.autostart }}</div>
+        <form method="post">
+          {% csrf_token %}
+          {% if storage_pool.autostart is True %}
+            <input type="checkbox" name="action" value="manualstart" checked />
+          {% else %}
+            <input type="checkbox" name="action" value="autostart"  />
+          {% endif %}
+        </form>
+        <div class="truncate text-sm font-medium">On Boot ({{ storage_pool.autostart }})</div>
       </div>
       <div class="px-4 py-4 sm:px-6">
         <div class="flex items-center text-sm text-neutral-500 mb-1">
@@ -116,6 +132,18 @@
             >
               Name
             </th>
+            <th
+              scope="col"
+              class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+            >
+              Size
+            </th>
+            <th
+              scope="col"
+              class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+            >
+              Type
+            </th>
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-200 bg-white">
@@ -125,6 +153,16 @@
               class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
             >
               {{ volume.name }}
+            </td>
+            <td
+              class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
+            >
+              {{ volume.size|filesizeformat }}
+            </td>
+            <td
+              class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
+            >
+              {{ volume.type|upper }}
             </td>
           </tr>
           {% endfor %}
