@@ -3,6 +3,7 @@ from .views import AdminComputeIndexView, AdminComputeCreateView, AdminComputeUp
 from .views import AdminComputeOverviewView
 from .views import AdminComputeStoragesView, AdminComputeStorageView
 from .views import AdminComputeStorageVolumeDeleteView, AdminComputeStorageVolumeCloneView
+from .views import AdminComputeStorageVolumeResizeView
 from .views import AdminComputeNetworksView, AdminComputeNetworkView
 from .views import AdminComputeSecretsView
 from .views import AdminComputeNwfiltersView
@@ -29,6 +30,11 @@ urlpatterns = [
         "(?P<pk>\d+)/storages/(?P<pool>[\w\d\-]+)/volume/(?P<vol>[\w\d\-\.]+)/clone/?$", 
         AdminComputeStorageVolumeCloneView.as_view(), name="admin_compute_storage_volume_clone"
     ),
+        re_path(
+        "(?P<pk>\d+)/storages/(?P<pool>[\w\d\-]+)/volume/(?P<vol>[\w\d\-\.]+)/resize/?$", 
+        AdminComputeStorageVolumeResizeView.as_view(), name="admin_compute_storage_volume_resize"
+    ),
+
 
     re_path("(?P<pk>\d+)/networks/?$", AdminComputeNetworksView.as_view(), name="admin_compute_networks"),
     re_path(

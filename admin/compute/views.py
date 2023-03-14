@@ -2,7 +2,8 @@ from django.contrib import messages
 from django.urls import reverse_lazy, reverse
 from django.shortcuts import redirect, get_object_or_404
 from crispy_forms.helper import FormHelper
-from .forms import FormCompute, FormStartAction, FormAutostartAction, FormVolumeCloneAction
+from .forms import FormCompute, FormStartAction, FormAutostartAction
+from .forms import FormVolumeCloneAction, FormVolumeResizeAction
 from compute.models import Compute
 from admin.mixins import AdminView, AdminTemplateView, AdminFormView, AdminUpdateView, AdminDeleteView
 from compute.helper import WebVirtCompute
@@ -148,7 +149,6 @@ class AdminComputeStorageVolumeDeleteView(AdminView):
 
 
 class AdminComputeStorageVolumeDeleteView(AdminFormView):
-    template_name = 'admin/compute/storage_volume_clone.html'
 
     def get(self, request, *args, **kwargs):
         compute = get_object_or_404(Compute, pk=kwargs.get("pk"), is_deleted=False)
@@ -157,7 +157,7 @@ class AdminComputeStorageVolumeDeleteView(AdminFormView):
         if res.get("detail") is None:
             messages.success(request, "Volume successfuly deleted.")
         else:
-            messages.errors(request, res.get("detail"))
+            messages.error(request, res.get("detail"))
         return redirect(reverse('admin_compute_storage', args=[kwargs.get("pk"), kwargs.get("pool")]))
 
 
@@ -172,7 +172,46 @@ class AdminComputeStorageVolumeCloneView(AdminFormView):
         res = wvcomp.action_storage_volume(
             self.kwargs.get("pool"), self.kwargs.get("vol"), "clone", form.cleaned_data.get("name")
         )
-        return redirect(reverse('admin_compute_storage', args=[self.kwargs.get("pk"), self.kwargs.get("pool")]))
+        if res.get("detail") is not None:
+            form.add_error("__all__", res.get("detail"))
+            return super().form_invalid(form)
+            
+        self.success_url = reverse('admin_compute_storage', args=[self.kwargs.get("pk"), self.kwargs.get("pool")])
+        return super().form_valid(form)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        compute = get_object_or_404(Compute, pk=self.kwargs.get("pk"), is_deleted=False)
+        context["compute"] = compute
+        context["pool"] = self.kwargs.get("pool")
+        context["vol"] = self.kwargs.get("vol")
+        return context
+
+
+class AdminComputeStorageVolumeResizeView(AdminFormView):
+    template_name = 'admin/compute/volume_resize.html'
+    form_class = FormVolumeResizeAction
+
+    def form_valid(self, form):
+        compute = get_object_or_404(Compute, pk=self.kwargs.get("pk"), is_deleted=False)
+        wvcomp = WebVirtCompute(compute.token, compute.hostname)
+        res = wvcomp.action_storage_volume(
+            self.kwargs.get("pool"), self.kwargs.get("vol"), "resize", form.cleaned_data.get("size") * (1024**3)
+        )
+        if res.get("detail") is not None:
+            form.add_error("__all__", res.get("detail"))
+            return super().form_invalid(form)
+            
+        self.success_url = reverse('admin_compute_storage', args=[self.kwargs.get("pk"), self.kwargs.get("pool")])
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        compute = get_object_or_404(Compute, pk=self.kwargs.get("pk"), is_deleted=False)
+        context["compute"] = compute
+        context["pool"] = self.kwargs.get("pool")
+        context["vol"] = self.kwargs.get("vol")
+        return context
 
 
 class AdminComputeNetworksView(AdminTemplateView):

@@ -1,4 +1,5 @@
 from django import forms
+from django.core.validators import RegexValidator
 from crispy_forms.helper import FormHelper
 from region.models import Region
 from compute.models import Compute
@@ -65,9 +66,19 @@ class FormAutostartAction(forms.Form):
 
 class FormVolumeCloneAction(forms.Form):
     action = forms.HiddenInput(attrs={"value": "clone"})
-    name = forms.CharField(label="Name", max_length=100)
+    name = forms.CharField(label="Name", max_length=100, validators=[RegexValidator("^[a-zA-Z0-9_-]+$")])
 
     def __init__(self, *args, **kwargs):
         super(FormVolumeCloneAction, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+
+
+class FormVolumeResizeAction(forms.Form):
+    action = forms.HiddenInput(attrs={"value": "resize"})
+    size = forms.IntegerField(label="Size", min_value=1, initial=1)
+
+    def __init__(self, *args, **kwargs):
+        super(FormVolumeResizeAction, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_tag = False

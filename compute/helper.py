@@ -1,4 +1,3 @@
-import logging
 import requests
 from base64 import b64encode
 from django.conf import settings

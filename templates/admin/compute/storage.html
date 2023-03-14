@@ -173,6 +173,11 @@
               class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
             >
               <a
+                href="{% url 'admin_compute_storage_volume_resize' compute.id  storage_pool.name volume.name %}"
+                class="text-blue-600 hover:text-blue-900"
+                >Resize<span class="sr-only">{{ compute.name }}</span></a
+              >
+              <a
                 href="{% url 'admin_compute_storage_volume_clone' compute.id  storage_pool.name volume.name %}"
                 class="text-blue-600 hover:text-blue-900"
                 >Clone<span class="sr-only">{{ compute.name }}</span></a
