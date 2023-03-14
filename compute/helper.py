@@ -132,6 +132,17 @@ class WebVirtCompute(object):
         body = self._process_response(response)
         return body
 
+    def action_storage_volume(self, pool, name, action, data):
+        url = f"storages/{pool}/volumes/{name}/"
+        if action == "resize":
+            var = "size"
+        if action == "clone":
+            var = "name"
+        params = {"action": action, var: data}
+        response = self._make_post(url, params)
+        body = self._process_response(response)
+        return body
+
     def delete_storage_volume(self, pool, name):
         url = f"storages/{pool}/volumes/{name}/"
         response = self._make_delete(url)

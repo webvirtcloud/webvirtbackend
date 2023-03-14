@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.urls import reverse_lazy, reverse
 from django.shortcuts import redirect, get_object_or_404
 from crispy_forms.helper import FormHelper
-from .forms import FormCompute, FormStartAction, FormAutostartAction
+from .forms import FormCompute, FormStartAction, FormAutostartAction, FormVolumeCloneAction
 from compute.models import Compute
 from admin.mixins import AdminView, AdminTemplateView, AdminFormView, AdminUpdateView, AdminDeleteView
 from compute.helper import WebVirtCompute
@@ -145,6 +145,34 @@ class AdminComputeStorageVolumeDeleteView(AdminView):
         else:
             messages.errors(request, res.get("detail"))
         return redirect(reverse('admin_compute_storage', args=[kwargs.get("pk"), kwargs.get("pool")]))
+
+
+class AdminComputeStorageVolumeDeleteView(AdminFormView):
+    template_name = 'admin/compute/storage_volume_clone.html'
+
+    def get(self, request, *args, **kwargs):
+        compute = get_object_or_404(Compute, pk=kwargs.get("pk"), is_deleted=False)
+        wvcomp = WebVirtCompute(compute.token, compute.hostname)
+        res = wvcomp.delete_storage_volume(kwargs.get("pool"), kwargs.get("vol"))
+        if res.get("detail") is None:
+            messages.success(request, "Volume successfuly deleted.")
+        else:
+            messages.errors(request, res.get("detail"))
+        return redirect(reverse('admin_compute_storage', args=[kwargs.get("pk"), kwargs.get("pool")]))
+
+
+class AdminComputeStorageVolumeCloneView(AdminFormView):
+    template_name = 'admin/compute/volume_clone.html'
+    form_class = FormVolumeCloneAction
+    success_url = reverse_lazy('admin_compute_storage')
+
+    def form_valid(self, form):
+        compute = get_object_or_404(Compute, pk=self.kwargs.get("pk"), is_deleted=False)
+        wvcomp = WebVirtCompute(compute.token, compute.hostname)
+        res = wvcomp.action_storage_volume(
+            self.kwargs.get("pool"), self.kwargs.get("vol"), "clone", form.cleaned_data.get("name")
+        )
+        return redirect(reverse('admin_compute_storage', args=[self.kwargs.get("pk"), self.kwargs.get("pool")]))
 
 
 class AdminComputeNetworksView(AdminTemplateView):

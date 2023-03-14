@@ -61,3 +61,13 @@ class FormAutostartAction(forms.Form):
         if action not in ["autostart", "manualstart"]:
             raise forms.ValidationError("Invalid action")
         return cleaned_data
+
+
+class FormVolumeCloneAction(forms.Form):
+    action = forms.HiddenInput(attrs={"value": "clone"})
+    name = forms.CharField(label="Name", max_length=100)
+
+    def __init__(self, *args, **kwargs):
+        super(FormVolumeCloneAction, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
