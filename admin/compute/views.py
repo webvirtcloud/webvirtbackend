@@ -1,9 +1,10 @@
+from django.contrib import messages
 from django.urls import reverse_lazy, reverse
 from django.shortcuts import redirect, get_object_or_404
 from crispy_forms.helper import FormHelper
 from .forms import FormCompute, FormStartAction, FormAutostartAction
 from compute.models import Compute
-from admin.mixins import AdminTemplateView, AdminFormView, AdminUpdateView, AdminDeleteView
+from admin.mixins import AdminView, AdminTemplateView, AdminFormView, AdminUpdateView, AdminDeleteView
 from compute.helper import WebVirtCompute
 
 
@@ -131,6 +132,19 @@ class AdminComputeStorageView(AdminTemplateView):
                 context['form_autostart'] = form_autostart
             
         return self.render_to_response(context)
+
+
+class AdminComputeStorageVolumeDeleteView(AdminView):
+
+    def get(self, request, *args, **kwargs):
+        compute = get_object_or_404(Compute, pk=kwargs.get("pk"), is_deleted=False)
+        wvcomp = WebVirtCompute(compute.token, compute.hostname)
+        res = wvcomp.delete_storage_volume(kwargs.get("pool"), kwargs.get("vol"))
+        if res.get("detail") is None:
+            messages.success(request, "Volume successfuly deleted.")
+        else:
+            messages.errors(request, res.get("detail"))
+        return redirect(reverse('admin_compute_storage', args=[kwargs.get("pk"), kwargs.get("pool")]))
 
 
 class AdminComputeNetworksView(AdminTemplateView):

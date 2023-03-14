@@ -62,6 +62,8 @@ class WebVirtCompute(object):
         return response
 
     def _process_response(self, response, json=True):
+        if response.status_code == 204:
+            return {}
         if json:
             body = response.json()
             if body:
@@ -127,6 +129,12 @@ class WebVirtCompute(object):
         url = f"storages/{pool}/"
         action = {"action": action}
         response = self._make_post(url, action)
+        body = self._process_response(response)
+        return body
+
+    def delete_storage_volume(self, pool, name):
+        url = f"storages/{pool}/volumes/{name}/"
+        response = self._make_delete(url)
         body = self._process_response(response)
         return body
 
