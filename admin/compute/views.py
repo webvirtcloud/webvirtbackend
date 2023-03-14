@@ -249,7 +249,7 @@ class AdminComputeNetworkView(AdminTemplateView):
         if form_start.is_valid():
             compute = get_object_or_404(Compute, pk=kwargs.get("pk"), is_deleted=False)
             wvcomp = WebVirtCompute(compute.token, compute.hostname)
-            res = wvcomp.set_storage_action(kwargs.get("pool"), form_start.cleaned_data.get("action"))
+            res = wvcomp.set_network_action(kwargs.get("pool"), form_start.cleaned_data.get("action"))
             if res.get("detail") is None:
                 return redirect(self.request.get_full_path())
             else:
@@ -259,7 +259,7 @@ class AdminComputeNetworkView(AdminTemplateView):
         if form_autostart.is_valid():
             compute = get_object_or_404(Compute, pk=kwargs.get("pk"), is_deleted=False)
             wvcomp = WebVirtCompute(compute.token, compute.hostname)
-            res = wvcomp.set_storage_action(kwargs.get("pool"), form_autostart.cleaned_data.get("action"))
+            res = wvcomp.set_network_action(kwargs.get("pool"), form_autostart.cleaned_data.get("action"))
             if res.get("detail") is None:
                 return redirect(self.request.get_full_path())
             else:

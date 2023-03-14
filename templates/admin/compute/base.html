@@ -42,7 +42,7 @@
 
       <a href="{% url 'admin_compute_networks' compute.id %}" class="{% if 'networks' in request.path %}border-blue-500 text-blue-600{% else %}border-transparent text-neutral-500 hover:border-neutral-300 hover:text-neutral-700{% endif %} whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium">Networks</a>
       
-      <a href="{% url 'admin_compute_nwfilters' compute.id %}" class="{% if 'nwfilters' in request.path %}border-blue-500 text-blue-600{% else %}border-transparent text-neutral-500 hover:border-neutral-300 hover:text-neutral-700{% endif %} whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium">NWFilters</a>
+      <a href="{% url 'admin_compute_nwfilters' compute.id %}" class="{% if 'nwfilters' in request.path %}border-blue-500 text-blue-600{% else %}border-transparent text-neutral-500 hover:border-neutral-300 hover:text-neutral-700{% endif %} whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium">NwFilters</a>
 
       <a href="{% url 'admin_compute_secrets' compute.id %}" class="{% if 'secrets' in request.path %}border-blue-500 text-blue-600{% else %}border-transparent text-neutral-500 hover:border-neutral-300 hover:text-neutral-700{% endif %} whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium" aria-current="page">Secrets</a>      
     </nav>
