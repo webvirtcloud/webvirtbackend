@@ -92,7 +92,7 @@
 
               <a
                 href="{% url 'admin_image_index' %}"
-                class="group flex items-center rounded-md px-2 py-2 text-sm font-medium {% if 'image' in request.path %}bg-gray-100 text-gray-900{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900 {% endif %}"
+                class="group flex items-center rounded-md px-2 py-2 text-sm font-medium {% if '/image/' in request.path %}bg-gray-100 text-gray-900{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900 {% endif %}"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -113,7 +113,7 @@
 
               <a
                 href="{% url 'admin_network_index' %}"
-                class="group flex items-center rounded-md px-2 py-2 text-sm font-medium {% if 'network' in request.path %}bg-gray-100 text-gray-900{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900 {% endif %}"
+                class="group flex items-center rounded-md px-2 py-2 text-sm font-medium {% if '/network/' in request.path %}bg-gray-100 text-gray-900{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900 {% endif %}"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
