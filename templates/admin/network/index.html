@@ -83,7 +83,7 @@
                   {{ network.created }}
                 </td>
                 <td
-                  class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6"
+                  class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6 space-x-4"
                 >
                   <a
                     href="{% url 'admin_network_update' network.id %}"
@@ -92,7 +92,7 @@
                   >
                   <a
                     href="{% url 'admin_network_delete' network.id %}"
-                    class="text-blue-600 hover:text-blue-900"
+                    class="text-red-600 hover:text-red-900"
                     >Delete<span class="sr-only">{{ network.name }}</span></a
                   >
                 </td>
