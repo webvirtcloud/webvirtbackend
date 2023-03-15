@@ -5,7 +5,7 @@
 <div
   class="flex min-h-screen items-center justify-center py-12 px-4 sm:px-6 lg:px-8"
 >
-  <div class="w-full max-w-md space-y-4 bg-white p-4 md:p-8 rounded-lg border">
+  <div class="w-full max-w-2xl space-y-4 bg-white p-4 md:p-8 rounded-lg border">
     <a
       href="{% url 'admin_compute_nwfilters' compute.id %}"
       class="inline-flex items-center text-sm p-2 bg-gray-100 rounded-md space-x-2 hover:bg-gray-200"
@@ -26,11 +26,13 @@
       <span>Back to the list</span>
     </a>
     <div>
-      <h2 class="text-2xl font-medium tracking-tight text-gray-900">
+      <h2 class="text-2xl font-medium tracking-tight text-gray-900 mb-4">
         NwFilter {{ nwfilter.name }}
       </h2>
 
-      <pre>{{ nwfilter.xml }}</pre>
+      <code>
+        <pre class="bg-gray-100 rounded-lg overflow-auto p-4">{{ nwfilter.xml }}</pre>
+      </code>
 
     </div>
   </div>
