@@ -11,7 +11,7 @@
             src="{% static 'admin/svg/logo.svg' %}"
             alt="WebVirtCloud"
           />
-          <span class="font-medium">WebVirtCloud</span>
+          <span class="font-medium">WebVirtCloud</span> 
         </div>
         <nav class="mt-5 flex-1 space-y-8" aria-label="Sidebar">
           <div>
@@ -21,7 +21,7 @@
             <div class="space-y-1 px-2">
               <a
                 href="{% url 'admin_index' %}"
-                class="bg-gray-100 text-gray-900 group flex items-center rounded-md px-2 py-2 text-sm font-medium"
+                class="group flex items-center rounded-md px-2 py-2 text-sm font-medium {% if request.path == '/admin/' %}bg-gray-100 text-gray-900{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900 {% endif %}"
               >
                 <!-- Current: "text-gray-500", Default: "text-gray-400 group-hover:text-gray-500" -->
                 <svg
@@ -44,7 +44,7 @@
 
               <a
                 href="{% url 'admin_region_index' %}"
-                class="text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center rounded-md px-2 py-2 text-sm font-medium"
+                class="group flex items-center rounded-md px-2 py-2 text-sm font-medium {% if 'region' in request.path %}bg-gray-100 text-gray-900{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900 {% endif %}"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -71,7 +71,7 @@
 
               <a
                 href="{% url 'admin_size_index' %}"
-                class="text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center rounded-md px-2 py-2 text-sm font-medium"
+                class="group flex items-center rounded-md px-2 py-2 text-sm font-medium {% if 'size' in request.path %}bg-gray-100 text-gray-900{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900 {% endif %}"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -92,7 +92,7 @@
 
               <a
                 href="{% url 'admin_image_index' %}"
-                class="text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center rounded-md px-2 py-2 text-sm font-medium"
+                class="group flex items-center rounded-md px-2 py-2 text-sm font-medium {% if 'image' in request.path %}bg-gray-100 text-gray-900{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900 {% endif %}"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -113,7 +113,7 @@
 
               <a
                 href="{% url 'admin_network_index' %}"
-                class="text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center rounded-md px-2 py-2 text-sm font-medium"
+                class="group flex items-center rounded-md px-2 py-2 text-sm font-medium {% if 'network' in request.path %}bg-gray-100 text-gray-900{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900 {% endif %}"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -134,7 +134,7 @@
 
               <a
                 href="{% url 'admin_compute_index' %}"
-                class="text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center rounded-md px-2 py-2 text-sm font-medium"
+                class="group flex items-center rounded-md px-2 py-2 text-sm font-medium {% if 'compute' in request.path %}bg-gray-100 text-gray-900{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900 {% endif %}"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -163,7 +163,7 @@
             <div class="space-y-1 px-2">
               <a
                 href="{% url 'admin_virtance_index' %}"
-                class="text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center rounded-md px-2 py-2 text-sm font-medium"
+                class="group flex items-center rounded-md px-2 py-2 text-sm font-medium {% if 'virtance' in request.path %}bg-gray-100 text-gray-900{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900 {% endif %}"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -191,7 +191,7 @@
             <div class="space-y-1 px-2">
               <a
                 href="#"
-                class="text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center rounded-md px-2 py-2 text-sm font-medium"
+                class="group flex items-center rounded-md px-2 py-2 text-sm font-medium {% if 'user' in request.path %}bg-gray-100 text-gray-900{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900 {% endif %}"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
