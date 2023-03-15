@@ -4,7 +4,7 @@
 <header class="">
   <a
     href="{% url 'admin_compute_index' %}"
-    class="inline-flex items-center text-sm p-2 bg-neutral-100 rounded-md space-x-2 hover:bg-neutral-200 mb-4"
+    class="inline-flex items-center text-sm p-2 bg-gray-100 rounded-md space-x-2 hover:bg-gray-200 mb-4"
     ><svg
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
@@ -31,22 +31,22 @@
       </span>
     </div>
   </div>
-  <p class="text-neutral-500 mb-8">{{ compute.description }}</p>
+  <p class="text-gray-500 mb-8">{{ compute.description }}</p>
 
   {% include 'admin/alerts.html' %}
 
-  <div class="border-b border-neutral-200 mb-8">
+  <div class="border-b border-gray-200 mb-8">
     <nav class="-mb-px flex space-x-8" aria-label="Tabs">
-      <!-- Current: "border-blue-500 text-blue-600", Default: "border-transparent text-neutral-500 hover:border-neutral-300 hover:text-neutral-700" -->
-      <a href="{% url 'admin_compute_overview' compute.id %}" class="{% if 'overview' in request.path %}border-blue-500 text-blue-600{% else %}border-transparent text-neutral-500 hover:border-neutral-300 hover:text-neutral-700{% endif %} whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium">Overview</a>
+      <!-- Current: "border-blue-500 text-blue-600", Default: "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700" -->
+      <a href="{% url 'admin_compute_overview' compute.id %}" class="{% if 'overview' in request.path %}border-blue-500 text-blue-600{% else %}border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700{% endif %} whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium">Overview</a>
 
-      <a href="{% url 'admin_compute_storages' compute.id %}" class="{% if 'storages' in request.path %}border-blue-500 text-blue-600{% else %}border-transparent text-neutral-500 hover:border-neutral-300 hover:text-neutral-700{% endif %} whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium">Storages</a>
+      <a href="{% url 'admin_compute_storages' compute.id %}" class="{% if 'storages' in request.path %}border-blue-500 text-blue-600{% else %}border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700{% endif %} whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium">Storages</a>
 
-      <a href="{% url 'admin_compute_networks' compute.id %}" class="{% if 'networks' in request.path %}border-blue-500 text-blue-600{% else %}border-transparent text-neutral-500 hover:border-neutral-300 hover:text-neutral-700{% endif %} whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium">Networks</a>
+      <a href="{% url 'admin_compute_networks' compute.id %}" class="{% if 'networks' in request.path %}border-blue-500 text-blue-600{% else %}border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700{% endif %} whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium">Networks</a>
       
-      <a href="{% url 'admin_compute_nwfilters' compute.id %}" class="{% if 'nwfilters' in request.path %}border-blue-500 text-blue-600{% else %}border-transparent text-neutral-500 hover:border-neutral-300 hover:text-neutral-700{% endif %} whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium">NwFilters</a>
+      <a href="{% url 'admin_compute_nwfilters' compute.id %}" class="{% if 'nwfilters' in request.path %}border-blue-500 text-blue-600{% else %}border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700{% endif %} whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium">NwFilters</a>
 
-      <a href="{% url 'admin_compute_secrets' compute.id %}" class="{% if 'secrets' in request.path %}border-blue-500 text-blue-600{% else %}border-transparent text-neutral-500 hover:border-neutral-300 hover:text-neutral-700{% endif %} whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium" aria-current="page">Secrets</a>      
+      <a href="{% url 'admin_compute_secrets' compute.id %}" class="{% if 'secrets' in request.path %}border-blue-500 text-blue-600{% else %}border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700{% endif %} whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium" aria-current="page">Secrets</a>      
     </nav>
   </div>
   {% block computecontent %}{% endblock %}

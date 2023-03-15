@@ -5,7 +5,7 @@
 <main>
   <a
     href="{% url 'admin_compute_networks' compute.id %}"
-    class="inline-flex items-center text-sm p-2 bg-neutral-100 rounded-md space-x-2 hover:bg-neutral-200 mb-4"
+    class="inline-flex items-center text-sm p-2 bg-gray-100 rounded-md space-x-2 hover:bg-gray-200 mb-4"
     ><svg
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
@@ -23,12 +23,12 @@
     <span>Back to the list</span>
   </a>
   <div class="overflow-hidden bg-white sm:rounded-lg sm:shadow mb-8">
-    <div class="border-b border-neutral-200 bg-white px-4 py-5 sm:px-6">
-      <h3 class="text-base font-semibold leading-6 text-neutral-900">Network</h3>
+    <div class="border-b border-gray-200 bg-white px-4 py-5 sm:px-6">
+      <h3 class="text-base font-semibold leading-6 text-gray-900">Network</h3>
     </div>
     <div class="grid md:grid-cols-3">
       <div class="px-4 py-4 sm:px-6">
-        <div class="flex items-center text-sm text-neutral-500 mb-1">
+        <div class="flex items-center text-sm text-gray-500 mb-1">
           <span class="font-medium">
             Name
           </span>
@@ -36,7 +36,7 @@
         <div class="truncate text-sm font-medium">{{ network_pool.name }}</div>
       </div>
       <div class="px-4 py-4 sm:px-6">
-        <div class="flex items-center text-sm text-neutral-500 mb-1">
+        <div class="flex items-center text-sm text-gray-500 mb-1">
           <span class="font-medium">
             Active
           </span>
@@ -59,7 +59,7 @@
         </form>
       </div>
       <div class="px-4 py-4 sm:px-6">
-        <div class="flex items-center text-sm text-neutral-500 mb-1">
+        <div class="flex items-center text-sm text-gray-500 mb-1">
           <span class="font-medium">
             Device
           </span>
@@ -67,7 +67,7 @@
         <div class="truncate text-sm font-medium">{{ network_pool.device }}</div>
       </div>
       <div class="px-4 py-4 sm:px-6">
-        <div class="flex items-center text-sm text-neutral-500 mb-1">
+        <div class="flex items-center text-sm text-gray-500 mb-1">
           <span class="font-medium">
             Forward
           </span>
@@ -75,7 +75,7 @@
         <div class="truncate text-sm font-medium">{{ network_pool.forward }}</div>
       </div>
       <div class="px-4 py-4 sm:px-6">
-        <div class="flex items-center text-sm text-neutral-500 mb-1">
+        <div class="flex items-center text-sm text-gray-500 mb-1">
           <span class="font-medium">
             Autostart
           </span>
