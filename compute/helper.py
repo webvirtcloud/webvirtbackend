@@ -112,6 +112,13 @@ class WebVirtCompute(object):
         body = self._process_response(response)
         return body
     
+    def create_storage_dir(self, name, target):
+        url = f"storages/"
+        payload = {"name": name, "target": target, "type": "dir"}
+        response = self._make_post(url, payload)
+        body = self._process_response(response)
+        return body
+
     def get_storages(self):
         url = "storages/"
         response = self._make_get(url)

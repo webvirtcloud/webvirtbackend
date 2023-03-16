@@ -64,6 +64,25 @@ class FormAutostartAction(forms.Form):
         return cleaned_data
 
 
+class FormStorageDirCreate(forms.Form):
+    name = forms.CharField(
+        max_length=100,
+        widget=forms.TextInput(attrs={"value": "images"}),
+        validators=[RegexValidator("^[a-z0-9]+$")],
+    )
+    type = forms.HiddenInput(attrs={"value": "dir"})
+    target = forms.CharField(
+        max_length=250,
+        widget=forms.TextInput(attrs={"value": "/var/lib/libvirt/images"}),
+        validators=[RegexValidator("^[a-zA-Z0-9/]+$")],
+    )
+
+    def __init__(self, *args, **kwargs):
+        super(FormStorageDirCreate, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+
+
 class FormVolumeCreateAction(forms.Form):
     name = forms.CharField(label="Name", max_length=100, validators=[RegexValidator("^[a-zA-Z0-9_-]+$")])
     size = forms.IntegerField(label="Size", min_value=1, initial=20)

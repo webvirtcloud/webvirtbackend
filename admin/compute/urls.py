@@ -1,7 +1,9 @@
 from django.urls import re_path
-from .views import AdminComputeIndexView, AdminComputeCreateView, AdminComputeUpdateView, AdminComputeDeleteView
+from .views import AdminComputeIndexView, AdminComputeCreateView
+from .views import AdminComputeUpdateView, AdminComputeDeleteView
 from .views import AdminComputeOverviewView
 from .views import AdminComputeNetworkCreateView
+from .views import AdminComputeStorageDirCreateView, AdminComputeStorageRBDCreateView
 from .views import AdminComputeStoragesView, AdminComputeStorageView, AdminComputeStorageDeleteView
 from .views import AdminComputeStorageVolumeCreateView, AdminComputeStorageVolumeCloneView
 from .views import AdminComputeStorageVolumeResizeView, AdminComputeStorageVolumeDeleteView
@@ -21,6 +23,14 @@ urlpatterns = [
     re_path("(?P<pk>\d+)/overview/?$", AdminComputeOverviewView.as_view(), name="admin_compute_overview"),
     
     re_path("(?P<pk>\d+)/storages/?$", AdminComputeStoragesView.as_view(), name="admin_compute_storages"),
+    re_path(
+        "(?P<pk>\d+)/storages/dir_create/?$", 
+        AdminComputeStorageDirCreateView.as_view(), name="admin_compute_storage_dir_create"
+    ),
+    re_path(
+        "(?P<pk>\d+)/storages/rbd_create/?$", 
+        AdminComputeStorageRBDCreateView.as_view(), name="admin_compute_storage_rbd_create"
+    ),
     re_path(
         "(?P<pk>\d+)/storages/(?P<pool>[\w\d\-]+)/?$", 
         AdminComputeStorageView.as_view(), name="admin_compute_storage"
@@ -48,10 +58,12 @@ urlpatterns = [
 
     re_path("(?P<pk>\d+)/networks/?$", AdminComputeNetworksView.as_view(), name="admin_compute_networks"),
     re_path(
-        "(?P<pk>\d+)/networks/create/?$", AdminComputeNetworkCreateView.as_view(), name="admin_compute_network_create"
+        "(?P<pk>\d+)/networks/create/?$", 
+        AdminComputeNetworkCreateView.as_view(), name="admin_compute_network_create"
     ),
     re_path(
-        "(?P<pk>\d+)/networks/(?P<pool>[\w\d\-]+)/?$", AdminComputeNetworkView.as_view(), name="admin_compute_network"
+        "(?P<pk>\d+)/networks/(?P<pool>[\w\d\-]+)/?$", 
+        AdminComputeNetworkView.as_view(), name="admin_compute_network"
     ),
     re_path(
         "(?P<pk>\d+)/networks/(?P<pool>[\w\d\-]+)/delete/?$", 
