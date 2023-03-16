@@ -161,6 +161,21 @@ class WebVirtCompute(object):
         body = self._process_response(response)
         return body
 
+    def create_network(self, name, interface, openvswitch):
+        url = "networks/"
+        payload = {
+            "name": name,
+            "forward": "bridge",
+            "gateway": None,
+            "mask": None,
+            "dhcp": None,
+            "bridge": interface,
+            "openvswitch": openvswitch
+        }
+        response = self._make_post(url, payload)
+        body = self._process_response(response)
+        return body
+
     def get_networks(self):
         url = "networks/"
         response = self._make_get(url)
@@ -185,6 +200,12 @@ class WebVirtCompute(object):
         response = self._make_post(url, action)
         body = self._process_response(response)
         return body
+
+    def get_interfaces(self):
+        url = "interfaces/"
+        response = self._make_get(url)
+        body = self._process_response(response)
+        return body.get("interfaces")
 
     def get_secrets(self):
         url = "secrets/"

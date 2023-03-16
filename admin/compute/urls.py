@@ -1,6 +1,7 @@
 from django.urls import re_path
 from .views import AdminComputeIndexView, AdminComputeCreateView, AdminComputeUpdateView, AdminComputeDeleteView
 from .views import AdminComputeOverviewView
+from .views import AdminComputeNetworkCreateView
 from .views import AdminComputeStoragesView, AdminComputeStorageView, AdminComputeStorageDeleteView
 from .views import AdminComputeStorageVolumeCreateView, AdminComputeStorageVolumeCloneView
 from .views import AdminComputeStorageVolumeResizeView, AdminComputeStorageVolumeDeleteView
@@ -46,6 +47,9 @@ urlpatterns = [
     ),
 
     re_path("(?P<pk>\d+)/networks/?$", AdminComputeNetworksView.as_view(), name="admin_compute_networks"),
+    re_path(
+        "(?P<pk>\d+)/networks/create/?$", AdminComputeNetworkCreateView.as_view(), name="admin_compute_network_create"
+    ),
     re_path(
         "(?P<pk>\d+)/networks/(?P<pool>[\w\d\-]+)/?$", AdminComputeNetworkView.as_view(), name="admin_compute_network"
     ),

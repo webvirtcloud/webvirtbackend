@@ -98,7 +98,14 @@
         </form>
       </div>
       <div class="px-4 py-4 sm:px-6">
-        {% if network_pool.active is False %}
+        {% if network_pool.active is True %}
+        <div class="flex items-center text-sm text-gray-500 mb-1">
+          <span class="font-medium">
+            Open vSwitch
+          </span>
+        </div>
+        <div class="truncate text-sm font-medium">{{ network_pool.openvswitch }}</div>
+        {% else %}
           <a
             href="{% url 'admin_compute_network_delete' compute.id network_pool.name %}"
             class="text-red-600 hover:text-red-900"

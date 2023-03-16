@@ -95,6 +95,18 @@ class FormVolumeResizeAction(forms.Form):
         self.helper.form_tag = False
 
 
+class FormNetworkCreate(forms.Form):
+    name = forms.CharField(label="Name", max_length=100, validators=[RegexValidator("^[a-zA-Z0-9_-]+$")])
+    forward = forms.HiddenInput(attrs={"value": "bridge"})
+    bridge_name = forms.ChoiceField(label="Bridge Interface", choices=[("br-ext", "br-ext"), ("br-int", "br-int")])
+    openvswitch = forms.BooleanField(label="Open vSwitch", required=False)
+
+    def __init__(self, *args, **kwargs):
+        super(FormNetworkCreate, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+
+
 class FormSecretCreateAction(forms.Form):
     ephemeral = forms.ChoiceField(choices=(("no", "no"), ("yes", "yes")))
     private = forms.ChoiceField(choices=(("no", "no"), ("yes", "yes")))

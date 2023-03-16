@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.urls import reverse_lazy, reverse
 from django.shortcuts import redirect, get_object_or_404
 from crispy_forms.helper import FormHelper
+from .forms import FormNetworkCreate
 from .forms import FormCompute, FormStartAction, FormAutostartAction
 from .forms import FormSecretCreateAction, FormSecretValueAction, FormNwfilterCreateAction
 from .forms import FormVolumeCreateAction,FormVolumeCloneAction, FormVolumeResizeAction
@@ -238,6 +239,29 @@ class AdminComputeStorageVolumeDeleteView(AdminView):
         else:
             messages.error(request, res.get("detail"))
         return redirect(reverse('admin_compute_storage', args=[kwargs.get("pk"), kwargs.get("pool")]))
+
+
+class AdminComputeNetworkCreateView(AdminFormView):
+    template_name = 'admin/compute/network_create.html'
+    form_class = FormNetworkCreate
+
+    def form_valid(self, form):
+        self.success_url = reverse('admin_compute_networks', args=[self.kwargs.get("pk")])
+        compute = get_object_or_404(Compute, pk=self.kwargs.get("pk"), is_deleted=False)
+        wvcomp = WebVirtCompute(compute.token, compute.hostname)
+        res = wvcomp.create_network(
+            form.cleaned_data.get("name"), form.cleaned_data.get("bridge_name"), form.cleaned_data.get("openvswitch")
+        )
+        if res.get("detail") is None:
+            return super().form_valid(form)
+        form.add_error("__all__", res.get("detail"))
+        return super().form_invalid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        compute = get_object_or_404(Compute, pk=self.kwargs.get("pk"), is_deleted=False)
+        context["compute"] = compute
+        return context
 
 
 class AdminComputeNetworksView(AdminTemplateView):
