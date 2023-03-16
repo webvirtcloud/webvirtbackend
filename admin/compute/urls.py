@@ -1,10 +1,10 @@
 from django.urls import re_path
 from .views import AdminComputeIndexView, AdminComputeCreateView, AdminComputeUpdateView, AdminComputeDeleteView
 from .views import AdminComputeOverviewView
-from .views import AdminComputeStoragesView, AdminComputeStorageView
+from .views import AdminComputeStoragesView, AdminComputeStorageView, AdminComputeStorageDeleteView
 from .views import AdminComputeStorageVolumeCreateView, AdminComputeStorageVolumeCloneView
 from .views import AdminComputeStorageVolumeResizeView, AdminComputeStorageVolumeDeleteView
-from .views import AdminComputeNetworksView, AdminComputeNetworkView
+from .views import AdminComputeNetworksView, AdminComputeNetworkView, AdminComputeNetworkDeleteView
 from .views import AdminComputeSecretsView, AdminComputeSecretCreateView
 from .views import AdminComputeSecretValueView, AdminComputeSecretDeleteView
 from .views import AdminComputeNwfiltersView, AdminComputeNwfilterCreateView
@@ -23,6 +23,10 @@ urlpatterns = [
     re_path(
         "(?P<pk>\d+)/storages/(?P<pool>[\w\d\-]+)/?$", 
         AdminComputeStorageView.as_view(), name="admin_compute_storage"
+    ),
+    re_path(
+        "(?P<pk>\d+)/storages/(?P<pool>[\w\d\-]+)/delete/?$", 
+        AdminComputeStorageDeleteView.as_view(), name="admin_compute_storage_delete"
     ),
     re_path(
         "(?P<pk>\d+)/storages/(?P<pool>[\w\d\-]+)/volume/create/?$", 
@@ -45,7 +49,11 @@ urlpatterns = [
     re_path(
         "(?P<pk>\d+)/networks/(?P<pool>[\w\d\-]+)/?$", AdminComputeNetworkView.as_view(), name="admin_compute_network"
     ),
-    
+    re_path(
+        "(?P<pk>\d+)/networks/(?P<pool>[\w\d\-]+)/delete/?$", 
+        AdminComputeNetworkDeleteView.as_view(), name="admin_compute_network_delete"
+    ),
+
     re_path("(?P<pk>\d+)/secrets/?$", AdminComputeSecretsView.as_view(), name="admin_compute_secrets"),
     re_path(
         "(?P<pk>\d+)/secrets/create/?$",

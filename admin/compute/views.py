@@ -119,21 +119,34 @@ class AdminComputeStorageView(AdminTemplateView):
             res = wvcomp.set_storage_action(kwargs.get("pool"), form_start.cleaned_data.get("action"))
             if res.get("detail") is None:
                 return redirect(self.request.get_full_path())
-            else:
-                messages.error(self.request, res.get("detail"))
-                context["form_start"] = form_start
+            messages.error(self.request, res.get("detail"))
+            context["form_start"] = form_start
 
         if form_autostart.is_valid():
             compute = get_object_or_404(Compute, pk=kwargs.get("pk"), is_deleted=False)
             wvcomp = WebVirtCompute(compute.token, compute.hostname)
             res = wvcomp.set_storage_action(kwargs.get("pool"), form_autostart.cleaned_data.get("action"))
             if res.get("detail") is None:
-                return redirect(self.request.get_full_path())
-            else:
-                messages.error(self.request, res.get("detail"))
-                context["form_autostart"] = form_autostart
+                return redirect(self.request.get_full_path())            
+            messages.error(self.request, res.get("detail"))
+            context["form_autostart"] = form_autostart
             
         return self.render_to_response(context)
+
+
+class AdminComputeStorageDeleteView(AdminView):
+
+    def get(self, request, *args, **kwargs):
+        succes_url = redirect(request.get_full_path())
+        compute = get_object_or_404(Compute, pk=kwargs.get("pk"), is_deleted=False)
+        wvcomp = WebVirtCompute(compute.token, compute.hostname)
+        res = wvcomp.delete_storage(kwargs.get("pool"))
+        if res.get("detail") is None:
+            messages.success(request, "Storage successfuly deleted.")
+            succes_url = redirect(reverse("admin_compute_storages", args=kwargs.get("pk")))
+        else:
+            messages.error(request, res.get("detail"))
+        return succes_url
 
 
 class AdminComputeStorageVolumeCreateView(AdminFormView):
@@ -169,6 +182,7 @@ class AdminComputeStorageVolumeCloneView(AdminFormView):
     form_class = FormVolumeCloneAction
 
     def form_valid(self, form):
+        self.success_url = reverse("admin_compute_storage", args=[self.kwargs.get("pk"), self.kwargs.get("pool")])
         compute = get_object_or_404(Compute, pk=self.kwargs.get("pk"), is_deleted=False)
         wvcomp = WebVirtCompute(compute.token, compute.hostname)
         res = wvcomp.action_storage_volume(
@@ -177,8 +191,6 @@ class AdminComputeStorageVolumeCloneView(AdminFormView):
         if res.get("detail") is not None:
             form.add_error("__all__", res.get("detail"))
             return super().form_invalid(form)
-            
-        self.success_url = reverse("admin_compute_storage", args=[self.kwargs.get("pk"), self.kwargs.get("pool")])
         return super().form_valid(form)
     
     def get_context_data(self, **kwargs):
@@ -195,6 +207,7 @@ class AdminComputeStorageVolumeResizeView(AdminFormView):
     form_class = FormVolumeResizeAction
 
     def form_valid(self, form):
+        self.success_url = reverse('admin_compute_storage', args=[self.kwargs.get("pk"), self.kwargs.get("pool")])
         compute = get_object_or_404(Compute, pk=self.kwargs.get("pk"), is_deleted=False)
         wvcomp = WebVirtCompute(compute.token, compute.hostname)
         res = wvcomp.action_storage_volume(
@@ -203,8 +216,6 @@ class AdminComputeStorageVolumeResizeView(AdminFormView):
         if res.get("detail") is not None:
             form.add_error("__all__", res.get("detail"))
             return super().form_invalid(form)
-            
-        self.success_url = reverse('admin_compute_storage', args=[self.kwargs.get("pk"), self.kwargs.get("pool")])
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
@@ -267,9 +278,8 @@ class AdminComputeNetworkView(AdminTemplateView):
             res = wvcomp.set_network_action(kwargs.get("pool"), form_start.cleaned_data.get("action"))
             if res.get("detail") is None:
                 return redirect(self.request.get_full_path())
-            else:
-                messages.error(self.request, res.get("detail"))
-                context["form_start"] = form_start
+            messages.error(self.request, res.get("detail"))
+            context["form_start"] = form_start
 
         if form_autostart.is_valid():
             compute = get_object_or_404(Compute, pk=kwargs.get("pk"), is_deleted=False)
@@ -277,11 +287,25 @@ class AdminComputeNetworkView(AdminTemplateView):
             res = wvcomp.set_network_action(kwargs.get("pool"), form_autostart.cleaned_data.get("action"))
             if res.get("detail") is None:
                 return redirect(self.request.get_full_path())
-            else:
-                messages.error(self.request, res.get("detail"))
-                context["form_autostart"] = form_autostart
-            
+            messages.error(self.request, res.get("detail"))
+            context["form_autostart"] = form_autostart
+        
         return self.render_to_response(context)
+
+
+class AdminComputeNetworkDeleteView(AdminView):
+
+    def get(self, request, *args, **kwargs):
+        succes_url = redirect(request.get_full_path())
+        compute = get_object_or_404(Compute, pk=kwargs.get("pk"), is_deleted=False)
+        wvcomp = WebVirtCompute(compute.token, compute.hostname)
+        res = wvcomp.delete_network(kwargs.get("pool"))
+        if res.get("detail") is None:
+            messages.success(request, "Network successfuly deleted.")
+            succes_url = redirect(reverse("admin_compute_networks", args=kwargs.get("pk")))
+        else:
+            messages.error(request, res.get("detail"))
+        return succes_url
 
 
 class AdminComputeSecretsView(AdminTemplateView):
@@ -302,6 +326,7 @@ class AdminComputeSecretCreateView(AdminFormView):
     form_class = FormSecretCreateAction
 
     def form_valid(self, form):
+        self.success_url = reverse("admin_compute_secrets", args=self.kwargs.get("pk"))
         compute = get_object_or_404(Compute, pk=self.kwargs.get("pk"), is_deleted=False)
         wvcomp = WebVirtCompute(compute.token, compute.hostname)
         res = wvcomp.create_secret(
@@ -312,9 +337,7 @@ class AdminComputeSecretCreateView(AdminFormView):
         )
         if res.get("detail") is not None:
             form.add_error("__all__", res.get("detail"))
-            return super().form_invalid(form)
-
-        self.success_url = reverse("admin_compute_secrets", args=self.kwargs.get("pk"))
+            return super().form_invalid(form)        
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
@@ -343,7 +366,6 @@ class AdminComputeSecretValueView(AdminFormView):
         if res.get("detail") is not None:
             form.add_error("__all__", res.get("detail"))
             return super().form_invalid(form)
-
         self.success_url = reverse("admin_compute_secrets", args=self.kwargs.get("pk"))
         return super().form_valid(form)
 
@@ -386,14 +408,13 @@ class AdminComputeNwfilterCreateView(AdminFormView):
     form_class = FormNwfilterCreateAction
 
     def form_valid(self, form):
+        self.success_url = reverse("admin_compute_nwfilters", args=self.kwargs.get("pk"))
         compute = get_object_or_404(Compute, pk=self.kwargs.get("pk"), is_deleted=False)
         wvcomp = WebVirtCompute(compute.token, compute.hostname)
         res = wvcomp.create_nwfilter(form.cleaned_data.get("xml"))
         if res.get("detail") is not None:
             form.add_error("__all__", res.get("detail"))
             return super().form_invalid(form)
-            
-        self.success_url = reverse("admin_compute_nwfilters", args=self.kwargs.get("pk"))
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):

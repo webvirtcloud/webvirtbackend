@@ -124,6 +124,12 @@ class WebVirtCompute(object):
         body = self._process_response(response)
         return body.get("storage")
 
+    def delete_storage(self, pool):
+        url = f"storages/{pool}/"
+        response = self._make_delete(url)
+        body = self._process_response(response)
+        return body
+
     def set_storage_action(self, pool, action):
         url = f"storages/{pool}/"
         action = {"action": action}
@@ -161,11 +167,17 @@ class WebVirtCompute(object):
         body = self._process_response(response)
         return body.get("networks")
 
-    def get_network(self, pool):
-        url = f"networks/{pool}/"
+    def get_network(self, net):
+        url = f"networks/{net}/"
         response = self._make_get(url)
         body = self._process_response(response)
         return body.get("network")
+
+    def delete_network(self, net):
+        url = f"networks/{net}"
+        response = self._make_delete(url)
+        body = self._process_response(response)
+        return body
 
     def set_network_action(self, pool, action):
         url = f"networks/{pool}/"

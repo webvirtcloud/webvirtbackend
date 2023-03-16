@@ -36,7 +36,8 @@
             >
             <a
               href="{% url 'admin_compute_nwfilter' compute.id nwfilter.name %}"
-              >{{ nwfilter.name }}<span class="sr-only">{{ compute.name }}</span></a
+              class="text-blue-600 hover:text-blue-900"
+              >{{ nwfilter.name }}</a
             >
             </td>
             <td
@@ -46,7 +47,7 @@
               href="{% url 'admin_compute_nwfilter_delete' compute.id nwfilter.name %}"
               class="text-red-600 hover:text-red-900"
               onclick="return confirm('Are you sure you would like to deelete this volume?');"
-              >Delete<span class="sr-only">{{ compute.name }}</span></a
+              >Delete</a
             >
             </td>
           </tr>

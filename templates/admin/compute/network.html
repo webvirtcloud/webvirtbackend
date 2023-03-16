@@ -44,18 +44,21 @@
         <form method="post">
           {% csrf_token %}
           <input type="hidden" name="action" value="{% if network_pool.active is True %}stop{% else %}start{% endif %}" />
-          <button type="submit" class="flex items-center justify-center rounded-md w-8 h-8 text-white {% if network_pool.active is True %}bg-red-500{% else %}bg-green-500{% endif %}">
             {% if network_pool.active is True %}
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 7.5A2.25 2.25 0 017.5 5.25h9a2.25 2.25 0 012.25 2.25v9a2.25 2.25 0 01-2.25 2.25h-9a2.25 2.25 0 01-2.25-2.25v-9z" />
-              </svg>
+              <input class="text-red-600 hover:text-red-900" type="submit" value="Stop" />
             {% else %}
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z" />
-              </svg>
+              <input class="text-green-600 hover:text-green-900" type="submit" value="Start" />
             {% endif %}
           </button>
         </form>
+        {% if network_pool.active is False %}
+          <a
+            href="{% url 'admin_compute_network_delete' compute.id network_pool.name %}"
+            class="text-red-600 hover:text-red-900"
+            onclick="return confirm('Are you sure you would like to deelete this pool?');"
+            >Delete</a
+          >
+        {% endif %}
       </div>
       <div class="px-4 py-4 sm:px-6">
         <div class="flex items-center text-sm text-gray-500 mb-1">
