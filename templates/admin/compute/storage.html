@@ -176,7 +176,7 @@
             <td
               class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6 space-x-2"
             >
-              {% if '.iso' not in volume.name or '.ISO' not in volume.name %}
+              {% if 'raw' == volume.type or 'qcow' == volume.type or 'qcow2' == volume.type %}
               <a
                 href="{% url 'admin_compute_storage_volume_resize' compute.id storage_pool.name volume.name %}"
                 class="text-blue-600 hover:text-blue-900"
