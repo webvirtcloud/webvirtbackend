@@ -83,10 +83,30 @@ class FormStorageDirCreate(forms.Form):
         self.helper.form_tag = False
 
 
+class FormStorageRBDCreate(forms.Form):
+    name = forms.CharField(
+        max_length=100,
+        widget=forms.TextInput(attrs={"value": "volumes"}),
+        validators=[RegexValidator("^[a-z0-9]+$")],
+    )
+    type = forms.HiddenInput(attrs={"value": "rbd"})
+    user = forms.CharField(max_length=20, widget=forms.TextInput(attrs={"value": "libvirt"}))
+    host1 = forms.CharField(max_length=100,widget=forms.TextInput(attrs={"value": "192.168.0.1"}))
+    host2 = forms.CharField(max_length=100, required=False)
+    host3 = forms.CharField(max_length=100, required=False)
+    pool = forms.CharField(max_length=50, widget=forms.TextInput(attrs={"value": "volumes"}))
+    secret = forms.ChoiceField(choices=[])
+
+    def __init__(self, *args, **kwargs):
+        super(FormStorageRBDCreate, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+
+
 class FormVolumeCreateAction(forms.Form):
-    name = forms.CharField(label="Name", max_length=100, validators=[RegexValidator("^[a-zA-Z0-9_-]+$")])
-    size = forms.IntegerField(label="Size", min_value=1, initial=20)
-    format = forms.ChoiceField(label="Formate", required=True, choices=(("raw", "raw"), ("qcow2", "qcow2")))
+    name = forms.CharField(max_length=100, validators=[RegexValidator("^[a-zA-Z0-9_-]+$")])
+    size = forms.IntegerField(min_value=1, initial=20)
+    format = forms.ChoiceField(choices=(("raw", "raw"), ("qcow2", "qcow2")))
 
     def __init__(self, *args, **kwargs):
         super(FormVolumeCreateAction, self).__init__(*args, **kwargs)
@@ -96,7 +116,7 @@ class FormVolumeCreateAction(forms.Form):
 
 class FormVolumeCloneAction(forms.Form):
     action = forms.HiddenInput(attrs={"value": "clone"})
-    name = forms.CharField(label="Name", max_length=100, validators=[RegexValidator("^[a-zA-Z0-9_-]+$")])
+    name = forms.CharField(max_length=100, validators=[RegexValidator("^[a-zA-Z0-9_-]+$")])
 
     def __init__(self, *args, **kwargs):
         super(FormVolumeCloneAction, self).__init__(*args, **kwargs)
@@ -106,7 +126,7 @@ class FormVolumeCloneAction(forms.Form):
 
 class FormVolumeResizeAction(forms.Form):
     action = forms.HiddenInput(attrs={"value": "resize"})
-    size = forms.IntegerField(label="Size", min_value=1, initial=1)
+    size = forms.IntegerField(min_value=1, initial=1)
 
     def __init__(self, *args, **kwargs):
         super(FormVolumeResizeAction, self).__init__(*args, **kwargs)
@@ -115,7 +135,7 @@ class FormVolumeResizeAction(forms.Form):
 
 
 class FormNetworkCreate(forms.Form):
-    name = forms.CharField(label="Name", max_length=100, validators=[RegexValidator("^[a-zA-Z0-9_-]+$")])
+    name = forms.CharField(max_length=100, validators=[RegexValidator("^[a-zA-Z0-9_-]+$")])
     forward = forms.HiddenInput(attrs={"value": "bridge"})
     bridge_name = forms.ChoiceField(label="Bridge Interface", choices=[])
     openvswitch = forms.BooleanField(label="Open vSwitch", required=False)

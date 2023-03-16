@@ -114,7 +114,23 @@ class WebVirtCompute(object):
     
     def create_storage_dir(self, name, target):
         url = f"storages/"
-        payload = {"name": name, "target": target, "type": "dir"}
+        payload = {"type": "dir", "name": name, "target": target}
+        response = self._make_post(url, payload)
+        body = self._process_response(response)
+        return body
+
+    def create_storage_rbd(self, name, pool, user, secret, host, host2=None, host3=None):
+        url = f"storages/"
+        payload = {
+            "type": "rbd",
+            "name": name, 
+            "pool": pool, 
+            "user": user,
+            "host": host,
+            "host2": host2,
+            "host3": host3,
+            "secret": secret
+        }
         response = self._make_post(url, payload)
         body = self._process_response(response)
         return body

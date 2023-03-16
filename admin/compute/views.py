@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.urls import reverse_lazy, reverse
 from django.shortcuts import redirect, get_object_or_404
 from crispy_forms.helper import FormHelper
-from .forms import FormNetworkCreate, FormStorageDirCreate
+from .forms import FormNetworkCreate, FormStorageDirCreate, FormStorageRBDCreate
 from .forms import FormCompute, FormStartAction, FormAutostartAction
 from .forms import FormSecretCreateAction, FormSecretValueAction, FormNwfilterCreateAction
 from .forms import FormVolumeCreateAction,FormVolumeCloneAction, FormVolumeResizeAction
@@ -120,14 +120,28 @@ class AdminComputeStorageDirCreateView(AdminFormView):
 
 class AdminComputeStorageRBDCreateView(AdminFormView):
     template_name = 'admin/compute/storage_rbd_create.html'
-    form_class = FormStorageDirCreate
+    form_class = FormStorageRBDCreate
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class=form_class)
+        compute = get_object_or_404(Compute, pk=self.kwargs.get("pk"), is_deleted=False)
+        wvcomp = WebVirtCompute(compute.token, compute.hostname)
+        res = wvcomp.get_secrets()
+        form.fields["secret"].choices = [(secret.get("uuid"), secret.get("uuid")) for secret in res]
+        return form
 
     def form_valid(self, form):
         self.success_url = reverse('admin_compute_storages', args=[self.kwargs.get("pk")])
         compute = get_object_or_404(Compute, pk=self.kwargs.get("pk"), is_deleted=False)
         wvcomp = WebVirtCompute(compute.token, compute.hostname)
-        res = wvcomp.create_storage_dir(
-            form.cleaned_data.get("name"), form.cleaned_data.get("bridge_name"), form.cleaned_data.get("openvswitch")
+        res = wvcomp.create_storage_rbd(
+            form.cleaned_data.get("name"), 
+            form.cleaned_data.get("pool"), 
+            form.cleaned_data.get("user"),
+            form.cleaned_data.get("secret"),
+            form.cleaned_data.get("host"),
+            form.cleaned_data.get("host2"),
+            form.cleaned_data.get("host3"),
         )
         if res.get("detail") is None:
             return super().form_valid(form)
