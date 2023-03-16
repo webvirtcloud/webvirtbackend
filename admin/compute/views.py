@@ -245,6 +245,16 @@ class AdminComputeNetworkCreateView(AdminFormView):
     template_name = 'admin/compute/network_create.html'
     form_class = FormNetworkCreate
 
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class=form_class)
+        compute = get_object_or_404(Compute, pk=self.kwargs.get("pk"), is_deleted=False)
+        wvcomp = WebVirtCompute(compute.token, compute.hostname)
+        res = wvcomp.get_interfaces()
+        form.fields["bridge_name"].choices = [
+            (iface.get("name"), iface.get("name")) for iface in res if iface.get("type") == "bridge"
+        ]
+        return form
+
     def form_valid(self, form):
         self.success_url = reverse('admin_compute_networks', args=[self.kwargs.get("pk")])
         compute = get_object_or_404(Compute, pk=self.kwargs.get("pk"), is_deleted=False)
@@ -375,13 +385,13 @@ class AdminComputeSecretValueView(AdminFormView):
     template_name = "admin/compute/secret_value.html"
     form_class = FormSecretValueAction
 
-    def get_initial(self):
-        initial = super().get_initial()
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class=form_class)
         compute = get_object_or_404(Compute, pk=self.kwargs.get("pk"), is_deleted=False)
         wvcomp = WebVirtCompute(compute.token, compute.hostname)
         res = wvcomp.get_secret(self.kwargs.get("uuid"))
-        initial["value"] = res.get("value")
-        return initial
+        form.fields["value"].initial = res.get("value")
+        return form
 
     def form_valid(self, form):
         compute = get_object_or_404(Compute, pk=self.kwargs.get("pk"), is_deleted=False)
