@@ -51,14 +51,6 @@
             {% endif %}
           </button>
         </form>
-        {% if storage_pool.active is False %}
-          <a
-            href="{% url 'admin_compute_storage_delete' compute.id storage_pool.name %}"
-            class="text-red-600 hover:text-red-900"
-            onclick="return confirm('Are you sure you would like to deelete this pool?');"
-            >Delete</a
-          >
-        {% endif %}
       </div>
       <div class="px-4 py-4 sm:px-6">
         <div class="flex items-center text-sm text-gray-500 mb-1">
@@ -106,12 +98,21 @@
         </form>
       </div>
       <div class="px-4 py-4 sm:px-6">
-        <div class="flex items-center text-sm text-gray-500 mb-1">
-          <span class="font-medium">
-            Path
-          </span>
-        </div>
-        <div class="truncate text-sm font-medium">{{ storage_pool.path }}</div>
+        {% if storage_pool.active is True %}
+          <div class="flex items-center text-sm text-gray-500 mb-1">
+            <span class="font-medium">
+              Path
+            </span>
+          </div>
+          <div class="truncate text-sm font-medium">{{ storage_pool.path }}</div>
+        {% else %}
+          <a
+            href="{% url 'admin_compute_storage_delete' compute.id storage_pool.name %}"
+            class="text-red-600 hover:text-red-900"
+            onclick="return confirm('Are you sure you would like to deelete this pool?');"
+            >Delete</a
+          >
+        {% endif %}
       </div>
     </div>
   </div>
