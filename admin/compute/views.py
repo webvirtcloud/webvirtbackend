@@ -2,8 +2,9 @@ from django.contrib import messages
 from django.urls import reverse_lazy, reverse
 from django.shortcuts import redirect, get_object_or_404
 from crispy_forms.helper import FormHelper
-from .forms import FormCompute, FormStartAction, FormAutostartAction, FormNwfilterCreateAction
-from .forms import FormVolumeCreateAction,FormVolumeCloneAction, FormVolumeResizeAction, FormSecretCreateAction
+from .forms import FormCompute, FormStartAction, FormAutostartAction
+from .forms import FormSecretCreateAction, FormSecretValueAction, FormNwfilterCreateAction
+from .forms import FormVolumeCreateAction,FormVolumeCloneAction, FormVolumeResizeAction
 from compute.models import Compute
 from admin.mixins import AdminView, AdminTemplateView, AdminFormView, AdminUpdateView, AdminDeleteView
 from compute.helper import WebVirtCompute
@@ -319,6 +320,37 @@ class AdminComputeSecretCreateView(AdminFormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         compute = get_object_or_404(Compute, pk=self.kwargs.get("pk"), is_deleted=False)
+        context["compute"] = compute
+        return context
+
+
+class AdminComputeSecretValueView(AdminFormView):
+    template_name = "admin/compute/secret_value.html"
+    form_class = FormSecretValueAction
+
+    def get_initial(self):
+        initial = super().get_initial()
+        compute = get_object_or_404(Compute, pk=self.kwargs.get("pk"), is_deleted=False)
+        wvcomp = WebVirtCompute(compute.token, compute.hostname)
+        res = wvcomp.get_secret(self.kwargs.get("uuid"))
+        initial["value"] = res.get("value")
+        return initial
+
+    def form_valid(self, form):
+        compute = get_object_or_404(Compute, pk=self.kwargs.get("pk"), is_deleted=False)
+        wvcomp = WebVirtCompute(compute.token, compute.hostname)
+        res = wvcomp.update_secret_value(self.kwargs.get("uuid"), form.cleaned_data.get("value"))
+        if res.get("detail") is not None:
+            form.add_error("__all__", res.get("detail"))
+            return super().form_invalid(form)
+
+        self.success_url = reverse("admin_compute_secrets", args=self.kwargs.get("pk"))
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        compute = get_object_or_404(Compute, pk=self.kwargs.get("pk"), is_deleted=False)
+        context["uuid"] = self.kwargs.get("uuid")
         context["compute"] = compute
         return context
 

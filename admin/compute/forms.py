@@ -111,6 +111,15 @@ class FormSecretCreateAction(forms.Form):
         self.helper.form_tag = False
 
 
+class FormSecretValueAction(forms.Form):
+    value = forms.CharField(max_length=100)
+
+    def __init__(self, *args, **kwargs):
+        super(FormSecretValueAction, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+
+
 class FormNwfilterCreateAction(forms.Form):
     xml = forms.CharField(label="XML", widget=forms.Textarea)
 

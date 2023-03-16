@@ -192,6 +192,18 @@ class WebVirtCompute(object):
         body = self._process_response(response)
         return body
 
+    def get_secret(self, uuid):
+        url = f"secrets/{uuid}/"
+        response = self._make_get(url)
+        body = self._process_response(response)
+        return body.get("secret")
+
+    def update_secret_value(self, uuid, value):
+        url = f"secrets/{uuid}"
+        response = self._make_post(url, {"value": value})
+        body = self._process_response(response)
+        return body
+
     def delete_secret(self, uuid):
         url = f"secrets/{uuid}/"
         response = self._make_delete(url)
