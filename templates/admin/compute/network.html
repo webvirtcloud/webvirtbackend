@@ -43,7 +43,6 @@
         </div>
         <form method="post">
           {% csrf_token %}
-          {{ form_start.non_filed_error }}
           <input type="hidden" name="action" value="{% if network_pool.active is True %}stop{% else %}start{% endif %}" />
           <button type="submit" class="flex items-center justify-center rounded-md w-8 h-8 text-white {% if network_pool.active is True %}bg-red-500{% else %}bg-green-500{% endif %}">
             {% if network_pool.active is True %}
@@ -82,7 +81,6 @@
         </div>
         <form method="post">
           {% csrf_token %}
-          {{ form_autostart.non_filed_error }}
           {% if network_pool.autostart is True %}
             <input type="hidden" name="action" value="manualstart" />
           {% else %}

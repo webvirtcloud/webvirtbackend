@@ -120,7 +120,7 @@ class AdminComputeStorageView(AdminTemplateView):
             if res.get("detail") is None:
                 return redirect(self.request.get_full_path())
             else:
-                form_start.add_error("__all__", res.get("detail"))
+                messages.error(self.request, res.get("detail"))
                 context["form_start"] = form_start
 
         if form_autostart.is_valid():
@@ -130,7 +130,7 @@ class AdminComputeStorageView(AdminTemplateView):
             if res.get("detail") is None:
                 return redirect(self.request.get_full_path())
             else:
-                form_autostart.add_error("__all__", res.get("detail"))
+                messages.error(self.request, res.get("detail"))
                 context["form_autostart"] = form_autostart
             
         return self.render_to_response(context)
@@ -268,7 +268,7 @@ class AdminComputeNetworkView(AdminTemplateView):
             if res.get("detail") is None:
                 return redirect(self.request.get_full_path())
             else:
-                form_start.add_error("__all__", res.get("detail"))
+                messages.error(self.request, res.get("detail"))
                 context["form_start"] = form_start
 
         if form_autostart.is_valid():
@@ -278,7 +278,7 @@ class AdminComputeNetworkView(AdminTemplateView):
             if res.get("detail") is None:
                 return redirect(self.request.get_full_path())
             else:
-                form_autostart.add_error("__all__", res.get("detail"))
+                messages.error(self.request, res.get("detail"))
                 context["form_autostart"] = form_autostart
             
         return self.render_to_response(context)
