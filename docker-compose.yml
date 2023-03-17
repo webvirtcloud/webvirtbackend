@@ -28,9 +28,19 @@ services:
       context: .
       dockerfile: Dockerfile
     hostname: novnc
-    image: webvirtbackend:dev
+    image: hubgridbackend:dev
     ports:
       - 6080:6080
+    command: python3 manage.py novncd --verbose
+    environment:
+      DB_HOST: mariadb
+      DB_PORT: 3306
+      DB_NAME: webvirtcloud
+      DB_USER: django
+      DB_PASSWORD: django
+      DJANGO_SETTINGS_MODULE: webvirtcloud.settings.develop
+    depends_on:
+      - mariadb
   celery:
     build:
       context: .
