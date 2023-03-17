@@ -94,6 +94,12 @@ class WebVirtCompute(object):
         body = self._process_response(response)
         return body.get("status")
 
+    def get_virtance_vnc(self, id):
+        url = f"virtances/{vm_name(id)}/vnc/"
+        response = self._make_get(url)
+        body = self._process_response(response)
+        return body
+
     def action_virtance(self, id, action):
         url = f"virtances/{vm_name(id)}/status/"
         response = self._make_post(url, {"action": action})

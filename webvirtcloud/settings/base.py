@@ -169,3 +169,9 @@ COMPUTE_PORT = os.environ.get("COMPUTE_PORT", 8884)
 
 # Virtual machine name prefix
 VM_NAME_PREFIX = os.environ.get("VM_NAME_PREFIX", "Virtance-")
+
+# Websocket settings
+WEBSOCKET_HOST = os.environ.get("WEBSOCKET_HOST", "0.0.0.0")
+WEBSOCKET_PORT = os.environ.get("WEBSOCKET_PORT", 6080)
+WEBSOCKET_CERT = os.environ.get("WEBSOCKET_CERT", None)
+
