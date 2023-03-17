@@ -34,6 +34,10 @@ MIDDLEWARE += [
     "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
+# Websocket settings
+WEBSOCKET_HOST = "localhost"
+WEBSOCKET_PORT = 6080
+
 try:
     from .local import *
 except ImportError:
