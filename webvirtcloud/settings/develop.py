@@ -35,8 +35,7 @@ MIDDLEWARE += [
 ]
 
 # Websocket settings
-WEBSOCKET_HOST = "localhost"
-WEBSOCKET_PORT = 6080
+NOVNC_URL = "localhost"
 
 try:
     from .local import *

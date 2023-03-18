@@ -17,7 +17,7 @@ def get_console_connection(uuid):
     from virtance.models import Virtance
     from compute.helper import WebVirtCompute
 
-    virtance = Virtance.objects.filter(uuid=uuid, deleted=False).first()
+    virtance = Virtance.objects.filter(uuid=uuid, is_deleted=False).first()
 
     if virtance is None or virtance.compute is None:
         logging.error(f"Fail to retrieve console connection info for UUID {uuid}: compute not found")
@@ -31,7 +31,7 @@ def get_console_connection(uuid):
         raise
 
     port = res.get("vnc_port")
-    host = virtance.host.address
+    host = virtance.compute.hostname
 
     return host, port
 
