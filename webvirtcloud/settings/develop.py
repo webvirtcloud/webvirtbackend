@@ -34,6 +34,9 @@ MIDDLEWARE += [
     "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
+# Websocket settings
+NOVNC_URL = "localhost"
+
 try:
     from .local import *
 except ImportError:

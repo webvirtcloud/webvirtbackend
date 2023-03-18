@@ -99,8 +99,8 @@ DATABASES = {
         "ENGINE": "django.db.backends.mysql",
         "CONN_MAX_AGE": 3600,
         "NAME": os.environ.get("DB_NAME", "webvirtcloud"),
-        "USER": os.environ.get("DB_USER", "root"),
-        "PASSWORD": os.environ.get("DB_PASSWORD", "root"),
+        "USER": os.environ.get("DB_USER", "django"),
+        "PASSWORD": os.environ.get("DB_PASSWORD", "django"),
         "HOST": os.environ.get("DB_HOST", "127.0.0.1"),
         "PORT": os.environ.get("DB_PORT", 3306),
         "OPTIONS": {
@@ -169,3 +169,11 @@ COMPUTE_PORT = os.environ.get("COMPUTE_PORT", 8884)
 
 # Virtual machine name prefix
 VM_NAME_PREFIX = os.environ.get("VM_NAME_PREFIX", "Virtance-")
+
+# Websocket settings
+WEBSOCKET_HOST = os.environ.get("WEBSOCKET_HOST", "0.0.0.0")
+WEBSOCKET_PORT = os.environ.get("WEBSOCKET_PORT", 6080)
+WEBSOCKET_CERT = os.environ.get("WEBSOCKET_CERT", None)
+
+# novNC settings
+NOVNC_URL = os.environ.get("NOVNC_URL", "console.webvirt.cloud")
