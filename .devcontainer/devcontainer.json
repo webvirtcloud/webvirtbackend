@@ -1,7 +1,7 @@
 {
 	"name": "Existing Docker Compose (Extend)",
 	"dockerComposeFile": [
-		"../docker-compose.debug.yml"
+		"docker-compose.debug.yml"
 	],
 	"customizations": {
 		"vscode": {
