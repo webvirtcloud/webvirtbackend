@@ -9,8 +9,8 @@ from .utils import MetadataMixin
 class MetadataV1Json(MetadataMixin):
     def get(self, request, *args, **kwargs):
         vendor_data = ""
+        nameservers = []
         public_keys = []
-        nameservers = settings.METADATA_NAMESERVERS.split(",") if settings.METADATA_NAMESERVERS else []
         
         if self.virtance is None:
             return HttpResponse("Not Found", status=404) 
@@ -48,6 +48,11 @@ class MetadataV1Json(MetadataMixin):
                 }
             ]
         }
+
+        nameservers = [
+            ipaddr.filter(network__type=Network.PUBLIC).first().network.dns1,
+            ipaddr.filter(network__type=Network.PUBLIC).first().network.dns2,
+        ]
 
         response = {
             "id": self.virtance.id,
@@ -300,7 +305,8 @@ class MetadataDNS(MetadataMixin):
 
 class MetadataDNSNameservers(MetadataMixin):
     def get(self, request, *args, **kwargs):
-        if self.virtance is None:
+        ipaddr = IPAddress.objects.filter(virtance=self.virtance, network__type=Network.PUBLIC).first()
+        if self.virtance is None or ipaddr is None:
             return HttpResponse("Not Found", status=404)
-        response = "\n".join(settings.METADATA_NAMESERVERS.split(",")) if settings.METADATA_NAMESERVERS else ""
+        response = "\n".join([ipaddr.network.dns1, ipaddr.network.dns2])
         return HttpResponse(response)

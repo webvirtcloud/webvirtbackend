@@ -177,6 +177,3 @@ WEBSOCKET_CERT = os.environ.get("WEBSOCKET_CERT", None)
 
 # novNC settings
 NOVNC_URL = os.environ.get("NOVNC_URL", "console.webvirt.cloud")
-
-# Metadata settings
-METADATA_NAMESERVERS = os.environ.get("METADATA_NAMESERVERS", "1.1.1.1,8.8.8.8")
