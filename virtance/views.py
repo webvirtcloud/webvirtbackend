@@ -11,8 +11,6 @@ from .tasks import delete_virtance
 from .serializers import VirtanceSerializer, CreateVirtanceSerializer, VirtanceActionSerializer
 
 
-
-
 class VirtanceListAPI(APIView):
     class_serializer = VirtanceSerializer
 
