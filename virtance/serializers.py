@@ -111,12 +111,13 @@ class CreateVirtanceSerializer(serializers.Serializer):
         keypairs = attrs.get("keypairs")
         
         # Check if keypairs are active
-        for k_id in keypairs:
-            try:
-                KeyPair.objects.get(id=k_id, user=self.context.get("request").user)
-            except KeyPair.DoesNotExist:
-                raise serializers.ValidationError({"keypairs": ["Invalid keypair ID."]})
-        
+        if keypairs:
+            for k_id in keypairs:
+                try:
+                    KeyPair.objects.get(id=k_id, user=self.context.get("request").user)
+                except KeyPair.DoesNotExist:
+                    raise serializers.ValidationError({"keypairs": ["Invalid keypair ID."]})
+            
         # Check if region is active
         try:
             check_region = Region.objects.get(slug=region, is_deleted=False)
