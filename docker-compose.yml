@@ -9,7 +9,6 @@ services:
     hostname: backend
     ports:
       - 8000:8000
-      - 5678:5678
     volumes:
       - .:/app
     command: python3 manage.py runserver 0:8000

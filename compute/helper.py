@@ -1,6 +1,7 @@
 import requests
 from base64 import b64encode
 from django.conf import settings
+from urllib.parse import urlencode
 
 from virtance.models import Virtance
 from .models import Compute
@@ -293,5 +294,12 @@ class WebVirtCompute(object):
     def delete_nwfilter(self, name):
         url = f"nwfilters/{name}/"
         response = self._make_delete(url)
+        body = self._process_response(response)
+        return body
+
+    def get_metrics(self, query, start, end, step):
+        url = f"metrics/"
+        params = {"query": query, "start": start, "end": end, "step": step}
+        response = self._make_get(f"{url}?{urlencode(params)}")
         body = self._process_response(response)
         return body
