@@ -142,3 +142,77 @@ class VirtanceMetricsCpuAPI(APIView):
             "user": user_value
         }
         return Response({"metrics": {"name": "CPU", "unit": "%", "data": data}})
+
+
+
+class VirtanceMetricsNetAPI(APIView):
+    def get_object(self):
+        return get_object_or_404(
+            Virtance, pk=self.kwargs.get("id"), user=self.request.user, is_deleted=False
+        )
+
+    def get(self, request, *args, **kwargs):
+        in_val = {}
+        out_val = {}
+        net_devs = [0, 1]
+        virtance = self.get_object()
+        vname = f"{settings.VM_NAME_PREFIX}{str(virtance.id)}"
+        today = timezone.now()
+        timestamp_today = time.mktime(today.timetuple())
+        timestamp_yesterday = time.mktime((today - timezone.timedelta(days=1)).timetuple())
+        
+        rx_query = f'(irate(libvirt_domain_info_net_rx_bytes{{domain="{vname}"}}[5m])*8)/(1024*1024)'
+        tx_query = f'(irate(libvirt_domain_info_net_tx_bytes{{domain="{vname}"}}[5m])*8)/(1024*1024)'
+
+        wvcomp = WebVirtCompute(virtance.compute.token, virtance.compute.hostname)
+        in_res = wvcomp.get_metrics(rx_query, timestamp_yesterday, timestamp_today, 300)
+        out_res = wvcomp.get_metrics(tx_query, timestamp_yesterday, timestamp_today, 300)
+
+        for dev in net_devs:
+            try:
+                in_val[dev] = in_res['data']['result'][dev]['values']
+            except KeyError:
+                in_val[dev] = []
+
+            try:
+                out_val[dev] = out_res['data']['result'][dev]['values']
+            except KeyError:
+                out_val[dev] = []
+
+        return Response({"metrics": [
+            {"name": "Pubic Network", "unit": "Mbps", "data": {"inbound": in_val[0], "outbound": in_val[0]}},
+            {"name": "Private Network", "unit": "Mbps", "data": {"inbound": out_val[1], "outbound": out_val[1]}}
+        ]})
+
+
+class VirtanceMetricsDiskAPI(APIView):
+    def get_object(self):
+        return get_object_or_404(
+            Virtance, pk=self.kwargs.get("id"), user=self.request.user, is_deleted=False
+        )
+
+    def get(self, request, *args, **kwargs):
+        virtance = self.get_object()
+        vname = f"{settings.VM_NAME_PREFIX}{str(virtance.id)}"
+        today = timezone.now()
+        timestamp_today = time.mktime(today.timetuple())
+        timestamp_yesterday = time.mktime((today - timezone.timedelta(days=1)).timetuple())
+        
+        r_query = f'irate(libvirt_domain_info_block_read_bytes{{domain="{vname}"}}[5m])/(1024*1024)'
+        w_query = f'irate(libvirt_domain_info_block_write_bytes{{domain="{vname}"}}[5m])/(1024*1024)'
+
+        wvcomp = WebVirtCompute(virtance.compute.token, virtance.compute.hostname)
+        rd_res = wvcomp.get_metrics(r_query, timestamp_yesterday, timestamp_today, 300)
+        wr_res = wvcomp.get_metrics(w_query, timestamp_yesterday, timestamp_today, 300)
+
+        try:
+            rd_val = rd_res['data']['result'][0]['values']
+        except KeyError:
+            rd_val= []
+
+        try:
+            wr_val = wr_res['data']['result'][0]['values']
+        except KeyError:
+            wr_val = []
+
+        return Response({"metrics": [{"name": "Disk", "unit": "MB/s", "data": {"read": rd_val,  "write": wr_val}}]})
