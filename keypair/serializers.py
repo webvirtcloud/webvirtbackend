@@ -21,20 +21,21 @@ class KeyPairSerializer(serializers.ModelSerializer):
         )
 
     def validate_public_key(self, value):
-        if not value.startswith("ssh-rsa"):
-            raise serializers.ValidationError("Invalid public key format.")
-        if len(value.strip().split()) <= 1:
-            raise serializers.ValidationError("Invalid public key format.")
-        try:
-            b64decode(value.strip().split()[1])
-        except (TypeError, binascii.Error):
-            raise serializers.ValidationError("Invalid public key format.")
-        
-        try:
-            KeyPair.objects.get(public_key=value)
-            raise serializers.ValidationError("Key already exists.")
-        except KeyPair.DoesNotExist:
-            pass
+        if getattr(self, 'instance') is None:
+            if not value.startswith("ssh-rsa"):
+                raise serializers.ValidationError("Invalid public key format.")
+            if len(value.strip().split()) <= 1:
+                raise serializers.ValidationError("Invalid public key format.")
+            try:
+                b64decode(value.strip().split()[1])
+            except (TypeError, binascii.Error):
+                raise serializers.ValidationError("Invalid public key format.")
+            
+            try:
+                KeyPair.objects.get(public_key=value)
+                raise serializers.ValidationError("Key already exists.")
+            except KeyPair.DoesNotExist:
+                pass
 
         return value
 
