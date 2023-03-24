@@ -33,17 +33,17 @@ class KeyPairDataAPI(APIView):
         except KeyPair.DoesNotExist:
             raise Http404
 
-    def get(self, request, pk, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         serilizator = self.class_serializer(self.get_queryset(), many=False)
         return Response({"keypair": serilizator.data})
 
-    def put(self, request, pk, *args, **kwargs):
+    def put(self, request, *args, **kwargs):
         serilizator = self.class_serializer(self.get_queryset(), data=request.data)
         serilizator.is_valid(raise_exception=True)
         serilizator.save(user=request.user)
         return Response({"keypair": serilizator.data}, status=status.HTTP_200_OK)
 
-    def delete(self, request, pk, *args, **kwargs):
+    def delete(self, request, *args, **kwargs):
         keypair = self.get_queryset()
         keypair.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
