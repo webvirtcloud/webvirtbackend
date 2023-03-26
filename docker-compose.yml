@@ -30,7 +30,7 @@ services:
       context: .
       dockerfile: Dockerfile
     hostname: novnc
-    image: hubgridbackend:dev
+    image: webvirtbackend:dev
     ports:
       - 6080:6080
     volumes:

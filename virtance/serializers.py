@@ -216,7 +216,20 @@ class VirtanceActionSerializer(serializers.Serializer):
     password = serializers.CharField(required=False)
 
     def validate_action(self, value):
-        actions = ["power_on", "power_off", "shutdown", "reboot", "password_reset", "resize", "rename", "rebuild"]
+        actions = [
+            "power_on", 
+            "power_off", 
+            "shutdown", 
+            "reboot", 
+            "password_reset", 
+            "resize", 
+            "rename", 
+            "rebuild", 
+            "enable_backups", 
+            "disable_backups",  
+            "snapshot", 
+            "restore"
+        ]
         if value not in actions:
             raise serializers.ValidationError({"action": ["Invalid action."]})
         return value
@@ -234,6 +247,12 @@ class VirtanceActionSerializer(serializers.Serializer):
         if attrs.get("action") == "password_reset":
             if attrs.get("password") is None:
                 raise serializers.ValidationError({"password": ["This field is required."]})
+        if attrs.get("action") == "restore":
+            if attrs.get("image") is None:
+                raise serializers.ValidationError({"image": ["This field is required."]})
+        if attrs.get("action") == "snapshot":
+            if attrs.get("name") is None:
+                raise serializers.ValidationError({"name": ["This field is required."]})
         return attrs
     
     def create(self, validated_data):
