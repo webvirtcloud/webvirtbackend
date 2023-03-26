@@ -1,4 +1,4 @@
-from django.urls import include, re_path
+from django.urls import re_path
 
 from region.views import RegionListAPI
 
