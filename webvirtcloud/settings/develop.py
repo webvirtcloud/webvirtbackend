@@ -34,7 +34,10 @@ MIDDLEWARE += [
     "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
-# Websocket settings
+# Static URL
+STATIC_URL = "static/"
+
+# noVNC settings
 NOVNC_URL = "localhost"
 
 try:

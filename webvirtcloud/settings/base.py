@@ -72,8 +72,10 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": ("webvirtcloud.authentication.TokenAuthentication",),
 }
 
+# Root URL definition
 ROOT_URLCONF = "webvirtcloud.urls"
 
+# Templates definition
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -90,10 +92,10 @@ TEMPLATES = [
     },
 ]
 
+# WSGI definition
 WSGI_APPLICATION = "webvirtcloud.wsgi.application"
 
-
-# Database
+# Database settings
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
@@ -141,9 +143,7 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
-STATIC_URL = "static/"
 STATICFILES_DIRS = [os.path.join(os.path.join(BASE_DIR, ".."), 'static')]
 
 # Default primary key field type
@@ -160,6 +160,9 @@ CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
 #
 # WebVirtCloud Settings
 #
+
+# Static URL
+STATIC_URL = os.environ.get("STATIC_URL", "https://cloud-assets.webvirt.cloud/")
 
 # Public images URL (Distributions, Applicatons)
 PUBLIC_IMAGES_URL = os.environ.get("PUBLIC_IMAGES_URL", "https://cloud-images.webvirt.cloud/")
