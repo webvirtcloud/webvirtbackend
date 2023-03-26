@@ -164,6 +164,9 @@ CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
 # Static URL
 STATIC_URL = os.environ.get("STATIC_URL", "https://cloud-assets.webvirt.cloud/")
 
+# CSFR Trusted hosts
+CSRF_TRUSTED_ORIGINS = os.environ.get("CSRF_TRUSTED_ORIGINS", ["https://manage.webvirt.cloud"])
+
 # Public images URL (Distributions, Applicatons)
 PUBLIC_IMAGES_URL = os.environ.get("PUBLIC_IMAGES_URL", "https://cloud-images.webvirt.cloud/")
 
