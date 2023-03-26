@@ -15,7 +15,7 @@ SECRET_KEY = "django-insecure-8gyd_q$%c$(g$#nwqzbgaj2*(r1x8vp_l)-d+pm1+w^w9y9$v&
 DEBUG = True
 
 # Allowed hosts
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # Authentication definition
 AUTH_USER_MODEL = "account.User"
