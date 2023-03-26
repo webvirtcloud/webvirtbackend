@@ -36,5 +36,6 @@ if settings.DEBUG:
         re_path("__debug__/", include("debug_toolbar.urls")),
     ]
 
+handler403 = "webvirtcloud.views.app_exception_handler403"
 handler404 = "webvirtcloud.views.app_exception_handler404"
 handler500 = "webvirtcloud.views.app_exception_handler500"

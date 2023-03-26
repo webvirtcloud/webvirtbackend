@@ -69,6 +69,23 @@ def app_exception_handler(exc, context):
     return response
 
 
+def app_exception_handler403(request, exception):
+    status_code = 403
+    
+    if "api/" in request.META["PATH_INFO"]:
+        response = JsonResponse(
+            {
+                "status_code": status_code,
+                "message": "Forbidden",
+            },
+            content_type="application/json",
+            status=status_code,
+        )
+        return response
+
+    return render(request, "403.html", status=status_code)
+
+
 def app_exception_handler404(request, exception):
     status_code = 404
     
