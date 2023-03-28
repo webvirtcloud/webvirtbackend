@@ -105,7 +105,19 @@ class WebVirtCompute(object):
         url = f"virtances/{vm_name(id)}/status/"
         response = self._make_post(url, {"action": action})
         body = self._process_response(response)
-        return body.get("status")
+        return body
+
+    def resize_virtance(self, id, vcpu, memory, disk_size=None):
+        url = f"virtances/{vm_name(id)}/reset_password/"
+        response = self._make_post(url, {"vcpu": vcpu, "memory": memory, "disk_size": disk_size})
+        body = self._process_response(response)
+        return body
+
+    def reset_password_virtance(self, id, password):
+        url = f"virtances/{vm_name(id)}/reset_password/"
+        response = self._make_post(url, {"password": password})
+        body = self._process_response(response)
+        return body
 
     def delete_virtance(self, id):
         url = f"virtances/{vm_name(id)}/"

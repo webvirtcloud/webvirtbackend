@@ -96,6 +96,18 @@ def action_virtance(virtance_id, action):
     wvcomp.action_virtance(virtance.id, action)
 
 @app.task
+def resize_virtance(virtance_id, vcpu, memory, disk_size):
+    virtance = Virtance.objects.get(id=virtance_id)
+    wvcomp = WebVirtCompute(virtance.compute.token, virtance.compute.hostname)
+    wvcomp.resize_virtance(virtance.id, vcpu, memory, disk_size)
+
+@app.task
+def reset_password_virtance(virtance_id, password):
+    virtance = Virtance.objects.get(id=virtance_id)
+    wvcomp = WebVirtCompute(virtance.compute.token, virtance.compute.hostname)
+    wvcomp.reset_password_virtance(virtance.id, password)
+
+@app.task
 def delete_virtance(virtance_id):
     virtance = Virtance.objects.get(id=virtance_id)
     wvcomp = WebVirtCompute(virtance.compute.token, virtance.compute.hostname)

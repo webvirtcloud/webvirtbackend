@@ -11,7 +11,7 @@ from image.serializers import ImageSerializer
 from region.serializers import RegionSerializer
 from compute.helper import WebVirtCompute
 from .models import Virtance
-from .tasks import create_virtance, action_virtance
+from .tasks import create_virtance, action_virtance, resize_virtance, reset_password_virtance
 
 
 class VirtanceSerializer(serializers.ModelSerializer):
@@ -256,8 +256,23 @@ class VirtanceActionSerializer(serializers.Serializer):
         return attrs
     
     def create(self, validated_data):
+        name = validated_data.get("name")
+        size = validated_data.get("size")
         action = validated_data.get("action")
         virtnace = validated_data.get("virtance")
+        password = validated_data.get("password")
+        
         if action in ["power_on", "power_off", "shutdown", "reboot"]:
             action_virtance.delay(virtnace.id, action)
+    
+        if action == "rename":
+            virtnace.name = name
+            virtnace.save()
+
+        if action == "resize":
+            resize_virtance.delay(virtnace.id, size.vcpus, size.ram, size.disk)
+        
+        if action == "password_reset":
+            reset_password_virtance.delay(virtnace.id, password)
+        
         return validated_data
