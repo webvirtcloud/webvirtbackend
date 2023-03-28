@@ -103,9 +103,10 @@ def resize_virtance(virtance_id, vcpu, memory, disk_size):
 
 @app.task
 def reset_password_virtance(virtance_id, password):
+    password_hash = sha512_crypt.encrypt(password, salt=uuid4().hex[0:8], rounds=5000)
     virtance = Virtance.objects.get(id=virtance_id)
     wvcomp = WebVirtCompute(virtance.compute.token, virtance.compute.hostname)
-    wvcomp.reset_password_virtance(virtance.id, password)
+    wvcomp.reset_password_virtance(virtance.id, password_hash)
 
 @app.task
 def delete_virtance(virtance_id):

@@ -113,9 +113,9 @@ class WebVirtCompute(object):
         body = self._process_response(response)
         return body
 
-    def reset_password_virtance(self, id, password):
+    def reset_password_virtance(self, id, password_hash):
         url = f"virtances/{vm_name(id)}/reset_password/"
-        response = self._make_post(url, {"password": password})
+        response = self._make_post(url, {"password_hash": password_hash})
         body = self._process_response(response)
         return body
 

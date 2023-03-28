@@ -221,7 +221,7 @@ class VirtanceActionSerializer(serializers.Serializer):
             "power_off", 
             "shutdown", 
             "reboot", 
-            "password_reset", 
+            "password_reset",
             "resize", 
             "rename", 
             "rebuild", 
