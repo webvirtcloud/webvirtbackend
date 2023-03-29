@@ -59,9 +59,9 @@ class VirtanceActionAPI(APIView):
 
     def post(self, request, *args, **kwargs):
         virtance = self.get_object()
-        serilizator = self.class_serializer(data=request.data)
+        serilizator = self.class_serializer(data=request.data, context={'virtance': virtance})
         serilizator.is_valid(raise_exception=True)
-        serilizator.save(virtance=virtance)
+        serilizator.save()
         return Response(serilizator.data)
 
 

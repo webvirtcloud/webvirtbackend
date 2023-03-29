@@ -110,7 +110,7 @@ class WebVirtCompute(object):
         return body
 
     def resize_virtance(self, id, vcpu, memory, disk_size=None):
-        url = f"virtances/{vm_name(id)}/reset_password/"
+        url = f"virtances/{vm_name(id)}/resize/"
         response = self._make_post(url, {"vcpu": vcpu, "memory": memory, "disk_size": disk_size})
         body = self._process_response(response)
         return body

@@ -104,7 +104,6 @@ class CreateVirtanceSerializer(serializers.Serializer):
     keypairs = serializers.ListField(required=False, allow_empty=True)
     user_data = serializers.CharField(required=False, allow_blank=True)
 
- 
     def validate(self, attrs):
         image = attrs.get("image")
         size = attrs.get("size")
@@ -238,31 +237,55 @@ class VirtanceActionSerializer(serializers.Serializer):
         return value
 
     def validate(self, attrs):
+        virtance = self.context.get("virtance")
+
         if attrs.get("action") == "resize":
             if attrs.get("size") is None:
                 raise serializers.ValidationError({"size": ["This field is required."]})
+            else:
+                try:
+                    size = Size.objects.get(slug=attrs.get("size"))
+                except Size.DoesNotExist:
+                    raise serializers.ValidationError({"size": ["Invalid size."]})
+
+                if size.is_active is False:                
+                    raise serializers.ValidationError({"size": ["Size is not active."]})
+
+                if virtance.region not in size.regions.all():
+                    raise serializers.ValidationError({"size": ["Size is not available in the region."]})
+                
+                if size.disk < virtance.size.disk or \
+                   size.vcpu < virtance.size.vcpu or \
+                   size.memory < virtance.size.memory:
+                    raise serializers.ValidationError({"size": ["New size is smaller than the current size."]})
+
         if attrs.get("action") == "rename":
             if attrs.get("name") is None:
                 raise serializers.ValidationError({"name": ["This field is required."]})
+        
         if attrs.get("action") == "rebuild":
             if attrs.get("image") is None:
                 raise serializers.ValidationError({"image": ["This field is required."]})
+        
         if attrs.get("action") == "password_reset":
             if attrs.get("password") is None:
                 raise serializers.ValidationError({"password": ["This field is required."]})
+        
         if attrs.get("action") == "restore":
             if attrs.get("image") is None:
                 raise serializers.ValidationError({"image": ["This field is required."]})
+        
         if attrs.get("action") == "snapshot":
             if attrs.get("name") is None:
                 raise serializers.ValidationError({"name": ["This field is required."]})
+        
         return attrs
     
     def create(self, validated_data):
         name = validated_data.get("name")
         size = validated_data.get("size")
         action = validated_data.get("action")
-        virtnace = validated_data.get("virtance")
+        virtnace = self.context.get("virtance")
         password = validated_data.get("password")
         
         if action in ["power_on", "power_off", "shutdown", "reboot"]:
@@ -273,7 +296,8 @@ class VirtanceActionSerializer(serializers.Serializer):
             virtnace.save()
 
         if action == "resize":
-            resize_virtance.delay(virtnace.id, size.vcpus, size.ram, size.disk)
+            resize = Size.objects.get(slug=size)
+            resize_virtance.delay(virtnace.id, resize.vcpu, resize.memory, resize.disk)
         
         if action == "password_reset":
             reset_password_virtance.delay(virtnace.id, password)
