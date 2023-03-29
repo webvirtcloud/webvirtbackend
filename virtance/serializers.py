@@ -12,6 +12,7 @@ from region.serializers import RegionSerializer
 from compute.helper import WebVirtCompute
 from .models import Virtance
 from .tasks import create_virtance, action_virtance, resize_virtance, reset_password_virtance
+from .tasks import enable_recovery_mode_virtance, disable_recovery_mode_virtance
 
 
 class VirtanceSerializer(serializers.ModelSerializer):
@@ -212,7 +213,7 @@ class VirtanceActionSerializer(serializers.Serializer):
     size = serializers.SlugField(required=False)
     name = serializers.CharField(max_length=100, required=False)
     image = serializers.CharField(required=False)
-    action = serializers.CharField(max_length=20)
+    action = serializers.CharField(max_length=30)
     password = serializers.CharField(required=False)
 
     def validate_action(self, value):
@@ -221,14 +222,16 @@ class VirtanceActionSerializer(serializers.Serializer):
             "power_off", 
             "shutdown", 
             "reboot", 
-            "password_reset",
             "resize", 
             "rename", 
             "rebuild", 
-            "enable_backups", 
-            "disable_backups",  
+            "restore",
             "snapshot", 
-            "restore"
+            "password_reset",
+            "enable_backups", 
+            "disable_backups",
+            "enable_recovery_mode",
+            "disable_recovery_mode"
         ]
         if value not in actions:
             raise serializers.ValidationError({"action": ["Invalid action."]})
@@ -275,4 +278,10 @@ class VirtanceActionSerializer(serializers.Serializer):
         if action == "password_reset":
             reset_password_virtance.delay(virtnace.id, password)
         
+        if action == "enable_recovery_mode":
+            enable_recovery_mode_virtance.delay(virtnace.id)
+
+        if action == "disable_recovery_mode":
+            disable_recovery_mode_virtance.delay(virtnace.id)
+
         return validated_data

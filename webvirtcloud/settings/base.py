@@ -183,3 +183,6 @@ WEBSOCKET_CERT = os.environ.get("WEBSOCKET_CERT", None)
 
 # novNC settings
 NOVNC_URL = os.environ.get("NOVNC_URL", "console.webvirt.cloud")
+
+# Recovery image settings
+RECOVERY_ISO_NAME = os.environ.get("RECOVERY_ISO_NAME", "finnix-125.iso")

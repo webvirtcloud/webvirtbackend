@@ -109,11 +109,28 @@ def reset_password_virtance(virtance_id, password):
     wvcomp.reset_password_virtance(virtance.id, password_hash)
 
 @app.task
+def enable_recovery_mode_virtance(virtance_id):
+    virtance = Virtance.objects.get(id=virtance_id)
+    wvcomp = WebVirtCompute(virtance.compute.token, virtance.compute.hostname)
+    res = wvcomp.get_virtance_media(virtance.id)
+    if isinstance(res, list):
+        res = wvcomp.mount_virtance_media(virtance.id, res[0].get("dev"), settings.RECOVERY_ISO_NAME)
+        print(res)
+
+@app.task
+def disable_recovery_mode_virtance(virtance_id):
+    virtance = Virtance.objects.get(id=virtance_id)
+    wvcomp = WebVirtCompute(virtance.compute.token, virtance.compute.hostname)
+    res = wvcomp.get_virtance_media(virtance.id)
+    if isinstance(res, list) and res[0].get("path") is not None:
+        wvcomp.umount_virtance_media(virtance.id, res[0].get("dev"), res[0].get("path"))
+
+@app.task
 def delete_virtance(virtance_id):
     virtance = Virtance.objects.get(id=virtance_id)
     wvcomp = WebVirtCompute(virtance.compute.token, virtance.compute.hostname)
-    deleted = wvcomp.delete_virtance(virtance.id)
-    if deleted is True:
+    error = wvcomp.delete_virtance(virtance.id)
+    if not error:
         ipaddresse = IPAddress.objects.filter(virtance=virtance)
         ipaddresse.delete()
         virtance.delete()

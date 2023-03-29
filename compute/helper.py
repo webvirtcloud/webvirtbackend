@@ -56,8 +56,10 @@ class WebVirtCompute(object):
         response = requests.put(url, headers=self._headers(), json=params, verify=False)
         return response
 
-    def _make_delete(self, url):
+    def _make_delete(self, url, params=None):
         url = self._url() + url
+        if params:
+            response = requests.delete(url, headers=self._headers(), json=params, verify=False)
         response = requests.delete(url, headers=self._headers(), verify=False)
         return response
 
@@ -119,11 +121,29 @@ class WebVirtCompute(object):
         body = self._process_response(response)
         return body
 
+    def get_virtance_media(self, id):
+        url = f"virtances/{vm_name(id)}/media/"
+        response = self._make_get(url)
+        body = self._process_response(response)
+        return body.get("media")
+
+    def mount_virtance_media(self, id, device, image):
+        url = f"virtances/{vm_name(id)}/media/"
+        response = self._make_post(url, {"device": device, "image": image})
+        body = self._process_response(response)
+        return body
+
+    def umount_virtance_media(self, id,  device, path):
+        url = f"virtances/{vm_name(id)}/media/"
+        response = self._make_delete(url, {"device": device, "path": path})
+        body = self._process_response(response)
+        return body
+
     def delete_virtance(self, id):
         url = f"virtances/{vm_name(id)}/"
-        response = self._make_response(url)
+        response = self._make_delete(url)
         body = self._process_response(response)
-        return body.get("virtance")
+        return body
 
     def get_host_overview(self):
         url = "host/"
