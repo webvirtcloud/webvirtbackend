@@ -12,7 +12,7 @@ from region.serializers import RegionSerializer
 from compute.helper import WebVirtCompute
 from .models import Virtance
 from .tasks import create_virtance, action_virtance, resize_virtance, reset_password_virtance
-from .tasks import enable_recovery_mode_virtance, disable_recovery_mode_virtance
+from .tasks import enable_recovery_mode_virtance, disable_recovery_mode_virtance, snapshot_virtance
 
 
 class VirtanceSerializer(serializers.ModelSerializer):
@@ -242,22 +242,21 @@ class VirtanceActionSerializer(serializers.Serializer):
         if attrs.get("action") == "resize":
             if attrs.get("size") is None:
                 raise serializers.ValidationError({"size": ["This field is required."]})
-            else:
-                try:
-                    size = Size.objects.get(slug=attrs.get("size"))
-                except Size.DoesNotExist:
-                    raise serializers.ValidationError({"size": ["Invalid size."]})
+            try:
+                size = Size.objects.get(slug=attrs.get("size"))
+            except Size.DoesNotExist:
+                raise serializers.ValidationError({"size": ["Invalid size."]})
 
-                if size.is_active is False:                
-                    raise serializers.ValidationError({"size": ["Size is not active."]})
+            if size.is_active is False:                
+                raise serializers.ValidationError({"size": ["Size is not active."]})
 
-                if virtance.region not in size.regions.all():
-                    raise serializers.ValidationError({"size": ["Size is not available in the region."]})
-                
-                if size.disk < virtance.size.disk or \
-                   size.vcpu < virtance.size.vcpu or \
-                   size.memory < virtance.size.memory:
-                    raise serializers.ValidationError({"size": ["New size is smaller than the current size."]})
+            if virtance.region not in size.regions.all():
+                raise serializers.ValidationError({"size": ["Size is not available in the region."]})
+            
+            if size.disk < virtance.size.disk or \
+                size.vcpu < virtance.size.vcpu or \
+                size.memory < virtance.size.memory:
+                raise serializers.ValidationError({"size": ["New size is smaller than the current size."]})
 
         if attrs.get("action") == "rename":
             if attrs.get("name") is None:
@@ -278,7 +277,7 @@ class VirtanceActionSerializer(serializers.Serializer):
         if attrs.get("action") == "snapshot":
             if attrs.get("name") is None:
                 raise serializers.ValidationError({"name": ["This field is required."]})
-        
+            
         return attrs
     
     def create(self, validated_data):
@@ -302,6 +301,9 @@ class VirtanceActionSerializer(serializers.Serializer):
         if action == "password_reset":
             reset_password_virtance.delay(virtnace.id, password)
         
+        if action == "snapshot":
+            snapshot_virtance.delay(virtnace.id, name)
+
         if action == "enable_recovery_mode":
             enable_recovery_mode_virtance.delay(virtnace.id)
 

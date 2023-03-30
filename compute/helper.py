@@ -121,6 +121,12 @@ class WebVirtCompute(object):
         body = self._process_response(response)
         return body
 
+    def snapshot_virtance(self, id, image_name):
+        url = f"virtances/{vm_name(id)}/snapshot/"
+        response = self._make_post(url, {"name": image_name})
+        body = self._process_response(response)
+        return body
+
     def get_virtance_media(self, id):
         url = f"virtances/{vm_name(id)}/media/"
         response = self._make_get(url)

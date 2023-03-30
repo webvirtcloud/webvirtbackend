@@ -102,6 +102,12 @@ def resize_virtance(virtance_id, vcpu, memory, disk_size):
     wvcomp.resize_virtance(virtance.id, vcpu, memory, disk_size)
 
 @app.task
+def snapshot_virtance(virtance_id, image_name):
+    virtance = Virtance.objects.get(id=virtance_id)
+    wvcomp = WebVirtCompute(virtance.compute.token, virtance.compute.hostname)
+    wvcomp.snapshot_virtance(virtance.id, image_name)
+
+@app.task
 def reset_password_virtance(virtance_id, password):
     password_hash = sha512_crypt.encrypt(password, salt=uuid4().hex[0:8], rounds=5000)
     virtance = Virtance.objects.get(id=virtance_id)
@@ -115,7 +121,6 @@ def enable_recovery_mode_virtance(virtance_id):
     res = wvcomp.get_virtance_media(virtance.id)
     if isinstance(res, list):
         res = wvcomp.mount_virtance_media(virtance.id, res[0].get("dev"), settings.RECOVERY_ISO_NAME)
-        print(res)
 
 @app.task
 def disable_recovery_mode_virtance(virtance_id):
