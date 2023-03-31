@@ -12,7 +12,7 @@ from region.serializers import RegionSerializer
 from compute.helper import WebVirtCompute
 from .models import Virtance
 from .tasks import create_virtance, action_virtance, resize_virtance, reset_password_virtance
-from .tasks import enable_recovery_mode_virtance, disable_recovery_mode_virtance, snapshot_virtance
+from .tasks import enable_recovery_mode_virtance, disable_recovery_mode_virtance, snapshot_virtance, restore_virtance
 
 
 class VirtanceSerializer(serializers.ModelSerializer):
@@ -273,6 +273,11 @@ class VirtanceActionSerializer(serializers.Serializer):
         if attrs.get("action") == "restore":
             if attrs.get("image") is None:
                 raise serializers.ValidationError({"image": ["This field is required."]})
+            
+            try:
+                Image.objects.get(id=attrs.get("image"))
+            except Image.DoesNotExist:
+                raise serializers.ValidationError({"image": ["Image not found."]})
         
         if attrs.get("action") == "snapshot":
             if attrs.get("name") is None:
@@ -283,6 +288,7 @@ class VirtanceActionSerializer(serializers.Serializer):
     def create(self, validated_data):
         name = validated_data.get("name")
         size = validated_data.get("size")
+        image = validated_data.get("image")
         action = validated_data.get("action")
         virtnace = self.context.get("virtance")
         password = validated_data.get("password")
@@ -303,6 +309,10 @@ class VirtanceActionSerializer(serializers.Serializer):
         
         if action == "snapshot":
             snapshot_virtance.delay(virtnace.id, name)
+
+        if action == "restore":
+            image = Image.objects.get(id=image)
+            restore_virtance.delay(virtnace.id, image, image.disk_size)
 
         if action == "enable_recovery_mode":
             enable_recovery_mode_virtance.delay(virtnace.id)

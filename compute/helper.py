@@ -85,7 +85,20 @@ class WebVirtCompute(object):
             "images": images,
             "network": network,
             "keypairs": keypairs,
-            "root_password": password,
+            "password_hash": password
+        }
+        response = self._make_post(url, data)
+        body = self._process_response(response)
+        return body.get("virtance")
+
+    def rebuild_virtance(self, id, hostname, images, network, keypairs, password):
+        url = f"virtances/{vm_name(id)}/rebuild/"
+        data = {
+            "hostname": hostname,
+            "images": images,
+            "network": network,
+            "keypairs": keypairs,
+            "password_hash": password
         }
         response = self._make_post(url, data)
         body = self._process_response(response)
@@ -124,6 +137,12 @@ class WebVirtCompute(object):
     def snapshot_virtance(self, id, image_name):
         url = f"virtances/{vm_name(id)}/snapshot/"
         response = self._make_post(url, {"name": image_name})
+        body = self._process_response(response)
+        return body
+
+    def restore_virtance(self, id, image_name, disk_size=0):
+        url = f"virtances/{vm_name(id)}/restore/"
+        response = self._make_post(url, {"name": image_name, "disk_size": disk_size})
         body = self._process_response(response)
         return body
 

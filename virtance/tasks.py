@@ -108,6 +108,12 @@ def snapshot_virtance(virtance_id, image_name):
     wvcomp.snapshot_virtance(virtance.id, image_name)
 
 @app.task
+def restore_virtance(virtance_id, image_name, disk_size):
+    virtance = Virtance.objects.get(id=virtance_id)
+    wvcomp = WebVirtCompute(virtance.compute.token, virtance.compute.hostname)
+    wvcomp.restore_virtance(virtance.id, image_name, disk_size)
+
+@app.task
 def reset_password_virtance(virtance_id, password):
     password_hash = sha512_crypt.encrypt(password, salt=uuid4().hex[0:8], rounds=5000)
     virtance = Virtance.objects.get(id=virtance_id)
