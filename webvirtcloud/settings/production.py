@@ -6,7 +6,6 @@ from .base import *
 
 # Django settings
 DEBUG = False
-ADMIN_ENABLED = True
 
 try:
     from .local import *

@@ -9,7 +9,6 @@ from .base import *
 
 # Django settings
 DEBUG = True
-ADMIN_ENABLED = True
 
 # Allowed hosts
 ALLOWED_HOSTS = ["*"]
