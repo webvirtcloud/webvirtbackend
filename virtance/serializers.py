@@ -267,7 +267,10 @@ class VirtanceActionSerializer(serializers.Serializer):
             if attrs.get("image") is None:
                 raise serializers.ValidationError({"image": ["This field is required."]})
             try:
-                Image.objects.get(slug=attrs.get("image"), type=Image.DISTRIBUTION | Image.APPLICATION)
+                Image.objects.get(
+                    Q(type=Image.DISTRIBUTION) | Q(type=Image.APPLICATION), 
+                    slug=attrs.get("image")
+                )
             except Image.DoesNotExist:
                 raise serializers.ValidationError({"image": ["Image not found."]})
         
@@ -279,7 +282,10 @@ class VirtanceActionSerializer(serializers.Serializer):
             if attrs.get("image") is None:
                 raise serializers.ValidationError({"image": ["This field is required."]})
             try:
-                Image.objects.get(id=attrs.get("image"), user=user, type=Image.BACKUP | Image.SNAPSHOT)
+                Image.objects.get(
+                    Q(type=Image.SNAPSHOT) | Q(type=Image.BACKUP), 
+                    id=attrs.get("image"), user=user
+                )
             except Image.DoesNotExist:
                 raise serializers.ValidationError({"image": ["Image not found."]})
         
