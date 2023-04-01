@@ -1,10 +1,10 @@
 from uuid import uuid4
 from django.db import models
+from django.conf import settings
 from django.utils import timezone
 
 
 class Image(models.Model):
-
     CUSTOM = "custom"
     BACKUP = "backup"
     SNAPSHOT = "snapshot"
@@ -17,7 +17,6 @@ class Image(models.Model):
         (APPLICATION, "Application"),
         (DISTRIBUTION, "Distribution"),
     ]
-
     UNKNOWN = "unknown"
     DEBIAN = "debian"
     UBUNTU = "ubuntu"
@@ -34,7 +33,7 @@ class Image(models.Model):
         (ALMALINUX, "AlmaLinux"),
         (ROCKYLINUX, "Rocky Linux"),
     ]
-
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, models.PROTECT, blank=True, null=True)
     uuid = models.UUIDField(unique=True, editable=False, default=uuid4)
     name = models.CharField(max_length=100)
     slug = models.SlugField(max_length=100, unique=True, blank=True, null=True)
