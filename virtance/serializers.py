@@ -237,6 +237,7 @@ class VirtanceActionSerializer(serializers.Serializer):
         return value
 
     def validate(self, attrs):
+        user = self.context.get("user")
         virtance = self.context.get("virtance")
 
         if attrs.get("action") == "resize":
@@ -265,9 +266,8 @@ class VirtanceActionSerializer(serializers.Serializer):
         if attrs.get("action") == "rebuild":
             if attrs.get("image") is None:
                 raise serializers.ValidationError({"image": ["This field is required."]})
-
             try:
-                image = Image.objects.get(id=attrs.get("image"))
+                Image.objects.get(slug=attrs.get("image"), type=Image.DISTRIBUTION | Image.APPLICATION)
             except Image.DoesNotExist:
                 raise serializers.ValidationError({"image": ["Image not found."]})
         
@@ -278,9 +278,8 @@ class VirtanceActionSerializer(serializers.Serializer):
         if attrs.get("action") == "restore":
             if attrs.get("image") is None:
                 raise serializers.ValidationError({"image": ["This field is required."]})
-            
             try:
-                Image.objects.get(id=attrs.get("image"))
+                Image.objects.get(id=attrs.get("image"), user=user, type=Image.BACKUP | Image.SNAPSHOT)
             except Image.DoesNotExist:
                 raise serializers.ValidationError({"image": ["Image not found."]})
         
@@ -312,8 +311,8 @@ class VirtanceActionSerializer(serializers.Serializer):
             rebuild_virtance.delay(virtnace.id)
 
         if action == "resize":
-            resize = Size.objects.get(slug=size)
-            resize_virtance.delay(virtnace.id, resize.vcpu, resize.memory, resize.disk)
+            size = Size.objects.get(slug=size)
+            resize_virtance.delay(virtnace.id, size.vcpu, size.memory, size.disk)
         
         if action == "password_reset":
             reset_password_virtance.delay(virtnace.id, password)
