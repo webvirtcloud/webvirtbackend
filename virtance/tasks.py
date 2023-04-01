@@ -76,6 +76,7 @@ def create_virtance(virtance_id, password):
             },
             "v6": None
         }
+        
         wvcomp = WebVirtCompute(compute.token, compute.hostname)
         wvcomp.create_virtance(
             virtance.id,
@@ -88,6 +89,70 @@ def create_virtance(virtance_id, password):
             keypairs,
             password_hash,
         )
+
+
+@app.task
+def rebuild_virtance(virtance_id):
+    keypairs = []
+    compute = None
+    ipv4_public = None
+    ipv4_compute = None
+    ipv4_private = None
+    virtance = Virtance.objects.get(id=virtance_id)
+    compute = Compute.objects.get(virtance=virtance)
+    ipv4_compute = IPAddress.objects.get(network__type=Network.COMPUTE, virtance=virtance)
+    ipv4_public = IPAddress.objects.get(network__type=Network.PUBLIC, virtance=virtance)
+    ipv4_private = IPAddress.objects.get(network__type=Network.PRIVATE, virtance=virtance)
+    password_hash = sha512_crypt.encrypt(uuid4().hex[0:24], salt=uuid4().hex[0:8], rounds=5000)
+
+    for kpv in KeyPairVirtance.objects.filter(virtance=virtance):
+        keypairs.append(kpv.keypair.public_key)
+        
+    images = [
+        {
+            "name": settings.VM_NAME_PREFIX + str(virtance.id),
+            "size": virtance.size.disk,
+            "url": f"{settings.PUBLIC_IMAGES_URL}{virtance.image.file_name}",
+            "md5sum": virtance.image.md5sum,
+            "primary": True
+        }
+    ]
+    network = {
+        "v4": {
+            "public": {
+                "primary": {
+                    "address": ipv4_public.address,
+                    "gateway": ipv4_public.network.gateway,
+                    "netmask": ipv4_public.network.netmask,
+                    "dns1": ipv4_public.network.dns1,
+                    "dns2": ipv4_public.network.dns2
+                    
+                },
+                "secondary": {
+                    "address": ipv4_compute.address,
+                    "gateway": ipv4_compute.network.gateway,
+                    "netmask": ipv4_compute.network.netmask
+                }
+            },
+            "private": {
+                "address": ipv4_private.address,
+                "gateway": ipv4_private.network.gateway,
+                "netmask": ipv4_private.network.netmask
+            }
+        },
+        "v6": None
+    }
+   
+    wvcomp = WebVirtCompute(compute.token, compute.hostname)
+    wvcomp.rebuild_virtance(
+        virtance.id,
+        virtance.name,
+        images, 
+        network, 
+        keypairs,
+        password_hash,
+    )
+
 
 @app.task
 def action_virtance(virtance_id, action):

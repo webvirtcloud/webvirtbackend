@@ -11,7 +11,7 @@ from image.serializers import ImageSerializer
 from region.serializers import RegionSerializer
 from compute.helper import WebVirtCompute
 from .models import Virtance
-from .tasks import create_virtance, action_virtance, resize_virtance, reset_password_virtance
+from .tasks import create_virtance, action_virtance, resize_virtance, reset_password_virtance, rebuild_virtance
 from .tasks import enable_recovery_mode_virtance, disable_recovery_mode_virtance, snapshot_virtance, restore_virtance
 
 
@@ -265,6 +265,11 @@ class VirtanceActionSerializer(serializers.Serializer):
         if attrs.get("action") == "rebuild":
             if attrs.get("image") is None:
                 raise serializers.ValidationError({"image": ["This field is required."]})
+
+            try:
+                image = Image.objects.get(id=attrs.get("image"))
+            except Image.DoesNotExist:
+                raise serializers.ValidationError({"image": ["Image not found."]})
         
         if attrs.get("action") == "password_reset":
             if attrs.get("password") is None:
@@ -299,6 +304,12 @@ class VirtanceActionSerializer(serializers.Serializer):
         if action == "rename":
             virtnace.name = name
             virtnace.save()
+
+        if action == "rebuild":
+            image = Image.objects.get(id=image)
+            virtnace.image = image
+            virtnace.save()
+            rebuild_virtance.delay(virtnace.id)
 
         if action == "resize":
             resize = Size.objects.get(slug=size)
