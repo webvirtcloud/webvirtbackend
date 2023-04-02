@@ -310,6 +310,11 @@ class VirtanceActionSerializer(serializers.Serializer):
         password = validated_data.get("password")
         
         if action in ["power_on", "power_off", "shutdown", "reboot"]:
+            if action == "power_off" or action == "shutdown":
+               virtnace.status = Virtance.INACTIVE
+            if action == "power_on" or action == "reboot":
+                virtnace.status = Virtance.ACTIVE
+            virtnace.save()
             action_virtance.delay(virtnace.id, action)
     
         if action == "rename":
