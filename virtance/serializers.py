@@ -223,15 +223,14 @@ class VirtanceActionSerializer(serializers.Serializer):
 
     def validate_action(self, value):
         actions = [
-            "power_on", 
-            "power_off", 
-            "shutdown", 
-            "reboot", 
+            "reboot",
             "resize", 
             "rename", 
             "rebuild", 
             "restore",
-            "snapshot", 
+            "snapshot",
+            "power_on", 
+            "power_off",  
             "password_reset",
             "enable_backups", 
             "disable_backups",

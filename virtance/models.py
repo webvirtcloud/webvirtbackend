@@ -5,6 +5,38 @@ from django.utils import timezone
 
 
 class Virtance(models.Model):
+    CREATE = "create"
+    DELETE = "delete"
+    REBOOT = "reboot"
+    RESIZE = "resize"
+    RENAME = "rename"
+    REBUILD = "rebuild"
+    RESTORE = "restore"
+    SNAPSHOT = "snapshot"
+    POWER_ON = "power_on"
+    POWER_OFF = "power_off"
+    PASSWORD_RESET = "password_reset"
+    ENABLE_BACKUPS = "enable_backups"
+    DISABLE_BACKUPS = "disable_backups"
+    ENABLE_RECOVERY_MODE = "enable_recovery_mode"
+    DISABLE_RECOVERY_MODE = "disable_recovery_mode"
+    EVENT_CHOICES = [
+        (CREATE, "Create"),
+        (DELETE, "Delete"),
+        (REBOOT, "Reboot"),
+        (RESIZE, "Resize"),
+        (RENAME, "Rename"),
+        (REBUILD, "Rebuild"),
+        (RESTORE, "Restore"),
+        (SNAPSHOT, "Snapshot"),
+        (POWER_ON, "Power On"),
+        (POWER_OFF, "Power Off"),
+        (PASSWORD_RESET, "Password Reset"),
+        (ENABLE_BACKUPS, "Enable Backups"),
+        (DISABLE_BACKUPS, "Disable Backups"),
+        (ENABLE_RECOVERY_MODE, "Enable Recovery Mode"),
+        (DISABLE_RECOVERY_MODE, "Disable Recovery Mode")
+    ]
     ACTIVE = "active"
     PENDING = "pending"
     INACTIVE = "inactive"
@@ -18,6 +50,7 @@ class Virtance(models.Model):
     image = models.ForeignKey("image.Image", models.PROTECT)
     region = models.ForeignKey("region.Region", models.PROTECT)
     compute = models.ForeignKey("compute.Compute", models.PROTECT, null=True, blank=True)
+    event = models.CharField(max_length=40, choices=EVENT_CHOICES, blank=True, null=True)
     uuid = models.UUIDField(unique=True, editable=False, default=uuid4)
     name = models.CharField(max_length=100)
     disk = models.BigIntegerField()
@@ -45,3 +78,4 @@ class Virtance(models.Model):
 
     def __unicode__(self):
         return self.name
+
