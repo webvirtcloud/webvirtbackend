@@ -24,6 +24,7 @@ class VirtanceSerializer(serializers.ModelSerializer):
     locked = serializers.BooleanField(source="is_locked")
     created_at = serializers.DateTimeField(source="created")
     disk = serializers.SerializerMethodField()
+    event = serializers.SerializerMethodField()
     status = serializers.SerializerMethodField()
     features = serializers.SerializerMethodField()
     networks = serializers.SerializerMethodField()
@@ -38,6 +39,7 @@ class VirtanceSerializer(serializers.ModelSerializer):
             "vcpu",
             "memory",
             "disk",
+            "event",
             "locked",
             "status",
             "created_at",
@@ -53,7 +55,6 @@ class VirtanceSerializer(serializers.ModelSerializer):
     def get_status(self, obj):
         if hasattr(self.root, "many"):
             return obj.status
-        
         status = obj.PENDING
         if obj.compute is not None:
             wvcomp = WebVirtCompute(obj.compute.token, obj.compute.hostname)
@@ -67,6 +68,14 @@ class VirtanceSerializer(serializers.ModelSerializer):
 
     def get_disk(self, obj):
         return obj.disk // (1024 ** 3)
+
+    def get_event(self, obj):
+        if obj.event is None:
+            return None
+        return {
+            "name": obj.event,
+            "description": next((i[1] for i in obj.EVENT_CHOICES if i[0] == obj.event))
+        }
 
     def get_features(self, obj):
         return []
@@ -88,13 +97,12 @@ class VirtanceSerializer(serializers.ModelSerializer):
                     "gateway": ip.network.gateway,
                     "type": ip.network.type,
                 })
-            else:
-                v4.append({
-                    "address": ip.address,
-                    "netmask": ip.network.netmask,
-                    "gateway": ip.network.gateway,
-                    "type": ip.network.type,
-                })
+            v4.append({
+                "address": ip.address,
+                "netmask": ip.network.netmask,
+                "gateway": ip.network.gateway,
+                "type": ip.network.type,
+            })
         return {"v4": v4, "v6": v6}
 
 
