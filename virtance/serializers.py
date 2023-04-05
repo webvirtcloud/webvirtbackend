@@ -338,10 +338,6 @@ class VirtanceActionSerializer(serializers.Serializer):
             
             if action != "shutdown":
                 action_virtance.delay(virtnace.id, action)
-            
-            # Reset task event
-            virtnace.event = None
-            virtnace.save()
 
         if action == "rename":
             virtnace.name = name

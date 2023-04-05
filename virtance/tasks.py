@@ -15,9 +15,8 @@ from keypair.models import KeyPairVirtance
 from .models import Virtance
 
 
-def wvcomp_conn(virtance_id):
-    virtance = Virtance.objects.get(id=virtance_id)
-    return WebVirtCompute(virtance.compute.token, virtance.compute.hostname)
+def wvcomp_conn(compute):
+    return WebVirtCompute(compute.token, compute.hostname)
 
 
 @app.task
@@ -82,7 +81,7 @@ def create_virtance(virtance_id, password):
             "v6": None
         }
         
-        wvcomp = WebVirtCompute(compute.token, compute.hostname)
+        wvcomp = wvcomp_conn(virtance.compute)
         res = wvcomp.create_virtance(
             virtance.id,
             virtance.uuid.hex,
@@ -148,7 +147,7 @@ def rebuild_virtance(virtance_id):
         "v6": None
     }
    
-    wvcomp = WebVirtCompute(virtance.compute.token, virtance.compute.hostname)
+    wvcomp = wvcomp_conn(virtance.compute)
     res = wvcomp.rebuild_virtance(
         virtance.id, virtance.name, images, network, keypairs, password_hash
     )
@@ -158,57 +157,77 @@ def rebuild_virtance(virtance_id):
 
 @app.task
 def action_virtance(virtance_id, action):
-    wvcomp = wvcomp_conn(virtance_id)
-    wvcomp.action_virtance(virtance_id, action)        
+    virtance = Virtance.objects.get(pk=virtance_id)
+    wvcomp = wvcomp_conn(virtance.compute)
+    res = wvcomp.action_virtance(virtance.id, action)
+    if res.get("detail") is None:
+        virtance.reset_event()     
 
 
 @app.task
 def resize_virtance(virtance_id, vcpu, memory, disk_size):
-    wvcomp = wvcomp_conn(virtance_id)
-    wvcomp.resize_virtance(virtance_id, vcpu, memory, disk_size)
+    virtance = Virtance.objects.get(pk=virtance_id)
+    wvcomp = wvcomp_conn(virtance.compute)
+    res = wvcomp.resize_virtance(virtance.id, vcpu, memory, disk_size)
+    if res.get("detail") is None:
+        virtance.reset_event()
 
 
 @app.task
 def snapshot_virtance(virtance_id, image_name):
-    wvcomp = wvcomp_conn(virtance_id)
-    wvcomp.snapshot_virtance(virtance_id, image_name)
+    virtance = Virtance.objects.get(pk=virtance_id)
+    wvcomp = wvcomp_conn(virtance.compute)
+    res = wvcomp.snapshot_virtance(virtance.id, image_name)
+    if res.get("detail") is None:
+        virtance.reset_event()
 
 
 @app.task
 def restore_virtance(virtance_id, image_name, disk_size):
-    wvcomp = wvcomp_conn(virtance_id)
-    wvcomp.restore_virtance(virtance_id, image_name, disk_size)
+    virtance = Virtance.objects.get(pk=virtance_id)
+    wvcomp = wvcomp_conn(virtance.compute)
+    res = wvcomp.restore_virtance(virtance_id, image_name, disk_size)
+    if res.get("detail") is None:
+        virtance.reset_event()
 
 
 @app.task
 def reset_password_virtance(virtance_id, password):
-    wvcomp = wvcomp_conn(virtance_id)
+    virtance = Virtance.objects.get(pk=virtance_id)
+    wvcomp = wvcomp_conn(virtance.compute)
     password_hash = sha512_crypt.encrypt(password, salt=uuid4().hex[0:8], rounds=5000)
-    wvcomp.reset_password_virtance(virtance_id, password_hash)
+    res = wvcomp.reset_password_virtance(virtance.id, password_hash)
+    if res.get("detail") is None:
+        virtance.reset_event()
 
 
 @app.task
 def enable_recovery_mode_virtance(virtance_id):
-    wvcomp = wvcomp_conn(virtance_id)
-    res = wvcomp.get_virtance_media(virtance_id)
+    virtance = Virtance.objects.get(pk=virtance_id)
+    wvcomp = wvcomp_conn(virtance.compute)
+    res = wvcomp.get_virtance_media(virtance.id)
     if isinstance(res, list):
         res = wvcomp.mount_virtance_media(virtance_id, res[0].get("dev"), settings.RECOVERY_ISO_NAME)
-
+        if res.get("detail") is None:
+            virtance.reset_event()
 
 @app.task
 def disable_recovery_mode_virtance(virtance_id):
-    wvcomp = wvcomp_conn(virtance_id)
-    res = wvcomp.get_virtance_media(virtance_id)
+    virtance = Virtance.objects.get(pk=virtance_id)
+    wvcomp = wvcomp_conn(virtance.compute)
+    res = wvcomp.get_virtance_media(virtance.id)
     if isinstance(res, list) and res[0].get("path") is not None:
-        wvcomp.umount_virtance_media(virtance_id, res[0].get("dev"), res[0].get("path"))
+        res = wvcomp.umount_virtance_media(virtance_id, res[0].get("dev"), res[0].get("path"))
+        if res.get("detail") is None:
+            virtance.reset_event()
 
 
 @app.task
 def delete_virtance(virtance_id):
-    wvcomp = wvcomp_conn(virtance_id)
-    res = wvcomp.delete_virtance(virtance_id)
-    if not res:
-        virtance = Virtance.objects.get(id=virtance_id)
+    virtance = Virtance.objects.get(pk=virtance_id)
+    wvcomp = wvcomp_conn(virtance.compute)
+    res = wvcomp.delete_virtance(virtance.id)
+    if res.get("detail") is None:
         ipaddresse = IPAddress.objects.filter(virtance=virtance)
         ipaddresse.delete()
         virtance.delete()
