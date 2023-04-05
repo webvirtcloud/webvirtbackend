@@ -69,6 +69,10 @@ class Virtance(models.Model):
         verbose_name = "Virtance"
         verbose_name_plural = "Virtances"
 
+    def reset_event(self):
+        self.event = None
+        self.save()
+
     def save(self, *args, **kwargs):
         self.updated = timezone.now()
         super(Virtance, self).save(*args, **kwargs)
@@ -76,7 +80,9 @@ class Virtance(models.Model):
     def delete(self, *args, **kwargs):
         self.is_deleted = True
         self.deleted = timezone.now()
+        self.reset_event()
         self.save()
+        super(Virtance, self).delete(*args, **kwargs)
 
     def __unicode__(self):
         return self.name

@@ -83,7 +83,7 @@ def create_virtance(virtance_id, password):
         }
         
         wvcomp = WebVirtCompute(compute.token, compute.hostname)
-        wvcomp.create_virtance(
+        res = wvcomp.create_virtance(
             virtance.id,
             virtance.uuid.hex,
             virtance.name,
@@ -94,6 +94,8 @@ def create_virtance(virtance_id, password):
             keypairs,
             password_hash,
         )
+        if res.get("detail") is None:
+            virtance.reset_event()
 
 
 @app.task
@@ -147,14 +149,11 @@ def rebuild_virtance(virtance_id):
     }
    
     wvcomp = WebVirtCompute(virtance.compute.token, virtance.compute.hostname)
-    wvcomp.rebuild_virtance(
-        virtance.id,
-        virtance.name,
-        images, 
-        network, 
-        keypairs,
-        password_hash,
+    res = wvcomp.rebuild_virtance(
+        virtance.id, virtance.name, images, network, keypairs, password_hash
     )
+    if res.get("detail") is None:
+        virtance.reset_event()
 
 
 @app.task
