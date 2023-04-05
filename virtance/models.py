@@ -13,6 +13,7 @@ class Virtance(models.Model):
     REBUILD = "rebuild"
     RESTORE = "restore"
     SNAPSHOT = "snapshot"
+    SHUTDOWN = "shutdown"
     POWER_ON = "power_on"
     POWER_OFF = "power_off"
     PASSWORD_RESET = "password_reset"
@@ -29,6 +30,7 @@ class Virtance(models.Model):
         (REBUILD, "Rebuild"),
         (RESTORE, "Restore"),
         (SNAPSHOT, "Snapshot"),
+        (SHUTDOWN, "Shutdown"),
         (POWER_ON, "Power On"),
         (POWER_OFF, "Power Off"),
         (PASSWORD_RESET, "Password Reset"),
