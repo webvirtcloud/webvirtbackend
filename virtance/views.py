@@ -1,4 +1,5 @@
 import time
+from django.db.models import Q
 from django.conf import settings
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
@@ -17,7 +18,10 @@ class VirtanceListAPI(APIView):
     class_serializer = VirtanceSerializer
 
     def get(self, request, *args, **kwargs):
-        virtances = Virtance.objects.filter(user=request.user, is_deleted=False)
+        virtances = Virtance.objects.filter(
+            ~Q(event=Virtance.DELETE),
+            user=request.user, is_deleted=False
+        )
         serilizator = self.class_serializer(virtances, many=True)
         return Response({"virtances": serilizator.data})
 
