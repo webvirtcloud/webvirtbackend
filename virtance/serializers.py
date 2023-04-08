@@ -56,14 +56,15 @@ class VirtanceSerializer(serializers.ModelSerializer):
         if hasattr(self.root, "many"):
             return obj.status
         status = obj.PENDING
-        if obj.compute is not None:
-            wvcomp = WebVirtCompute(obj.compute.token, obj.compute.hostname)
-            if wvcomp.status_virtance(obj.id) == "running":
-                status = obj.ACTIVE
-            if wvcomp.status_virtance(obj.id) == "shutoff":
-                status = obj.INACTIVE
-        obj.status = status
-        obj.save()
+        if obj.event is not None:
+            if obj.compute is not None:
+                wvcomp = WebVirtCompute(obj.compute.token, obj.compute.hostname)
+                if wvcomp.status_virtance(obj.id) == "running":
+                    status = obj.ACTIVE
+                if wvcomp.status_virtance(obj.id) == "shutoff":
+                    status = obj.INACTIVE
+            obj.status = status
+            obj.save()
         return status
 
     def get_disk(self, obj):
