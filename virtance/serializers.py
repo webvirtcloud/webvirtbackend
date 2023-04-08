@@ -1,3 +1,4 @@
+import re
 from django.db.models import Q
 from rest_framework import serializers
 
@@ -288,9 +289,13 @@ class VirtanceActionSerializer(serializers.Serializer):
                 raise serializers.ValidationError({"image": ["Image not found."]})
         
         if attrs.get("action") == "password_reset":
-            if attrs.get("password") is None:
-                raise serializers.ValidationError({"password": ["This field is required."]})
-        
+            if attrs.get("password"):
+                if len(attrs.get("password")) == 8:
+                    if not re.match(r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$", attrs.get("password")):
+                        raise serializers.ValidationError({"password": [
+                            "Password must contain at least one uppercase letter, one lowercase letter and one digit."
+                        ]})
+
         if attrs.get("action") == "restore":
             if attrs.get("image") is None:
                 raise serializers.ValidationError({"image": ["This field is required."]})

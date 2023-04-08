@@ -229,7 +229,9 @@ def restore_virtance(virtance_id, image_name, disk_size):
 
 
 @app.task
-def reset_password_virtance(virtance_id, password):
+def reset_password_virtance(virtance_id, password=None):
+    if password is None:
+        password = uuid4().hex[0:16]
     virtance = Virtance.objects.get(pk=virtance_id)
     wvcomp = wvcomp_conn(virtance.compute)
     password_hash = sha512_crypt.encrypt(password, salt=uuid4().hex[0:8], rounds=5000)
