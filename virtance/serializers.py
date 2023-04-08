@@ -56,7 +56,7 @@ class VirtanceSerializer(serializers.ModelSerializer):
         if hasattr(self.root, "many"):
             return obj.status
         status = obj.PENDING
-        if obj.event is not None:
+        if obj.event is None:
             if obj.compute is not None:
                 wvcomp = WebVirtCompute(obj.compute.token, obj.compute.hostname)
                 if wvcomp.status_virtance(obj.id) == "running":
