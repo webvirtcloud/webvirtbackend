@@ -163,7 +163,7 @@ def action_virtance(virtance_id, action):
     reboot = False
     if action == "reboot":
         reboot = True
-        action == "shutdown"
+        action = "shutdown"
     virtance = Virtance.objects.get(pk=virtance_id)
     wvcomp = wvcomp_conn(virtance.compute)
     res = wvcomp.action_virtance(virtance.id, action)
