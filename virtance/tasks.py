@@ -160,6 +160,7 @@ def rebuild_virtance(virtance_id):
 
 @app.task
 def action_virtance(virtance_id, action):
+    error = None
     reboot = False
     if action == "reboot":
         reboot = True
@@ -167,7 +168,8 @@ def action_virtance(virtance_id, action):
     virtance = Virtance.objects.get(pk=virtance_id)
     wvcomp = wvcomp_conn(virtance.compute)
     res = wvcomp.action_virtance(virtance.id, action)
-    if res.get("detail") is None:
+    error = res.get("detail")
+    if error is None:
         if action == "shutdown":
             timeout = 60
             while wvcomp.status_virtance(virtance.id) == "active":
@@ -176,7 +178,8 @@ def action_virtance(virtance_id, action):
                 if timeout == 0:
                     action = "power_off"
                     res = wvcomp.action_virtance(virtance.id, action)
-                    if res.get("detail") is None:
+                    error = res.get("detail")
+                    if error is None:
                         virtance.inactive()
             else:
                 virtance.inactive()
@@ -189,8 +192,10 @@ def action_virtance(virtance_id, action):
         if reboot is True:
             action = "power_on"
             res = wvcomp.action_virtance(virtance.id, action)
-            if res.get("detail") is None:
+            error = res.get("detail")
+            if error is None:
                 virtance.active()
+    if error is None:
         virtance.reset_event()     
 
 
