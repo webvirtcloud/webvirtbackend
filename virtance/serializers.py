@@ -320,29 +320,15 @@ class VirtanceActionSerializer(serializers.Serializer):
         
         # Set new task event
         virtnace.event == action
+        virtnace.status = virtnace.PENDING
         virtnace.save()
 
-        if action in ["power_on", "power_off", "power_cyrcle", "shutdown", "reboot"]:
-            if action == "shutdown":
-                action_virtance.delay(virtnace.id, action)
-                virtnace.status = Virtance.INACTIVE
-
-            if action == "reboot":
-                action = "shutdown"
-                action_virtance.delay(virtnace.id, action)
-                action = "power_on"
-
-            if action == "power_off":
-               virtnace.status = Virtance.INACTIVE
-            
-            if action == "power_on" or action == "power_cyrcle":
-                virtnace.status = Virtance.ACTIVE
-            
-            if action != "shutdown":
-                action_virtance.delay(virtnace.id, action)
+        if action in ["power_on", "power_off", "power_cyrcle", "shutdown", "reboot"]:            
+            action_virtance.delay(virtnace.id, action)
 
         if action == "rename":
             virtnace.name = name
+            virtnace.event = None
             virtnace.save()
 
         if action == "rebuild":

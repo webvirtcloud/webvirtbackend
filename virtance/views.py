@@ -8,6 +8,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from compute.helper import WebVirtCompute
+from webvirtcloud.views import error_message_response
 from .utils import make_vnc_hash
 from .models import Virtance
 from .tasks import delete_virtance
@@ -63,6 +64,10 @@ class VirtanceActionAPI(APIView):
 
     def post(self, request, *args, **kwargs):
         virtance = self.get_object()
+
+        if virtance.event is not None:
+            return error_message_response("The virtance already has event.")
+
         serilizator = self.class_serializer(data=request.data, context={'user': request.user, 'virtance': virtance})
         serilizator.is_valid(raise_exception=True)
         serilizator.save()

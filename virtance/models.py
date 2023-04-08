@@ -69,6 +69,18 @@ class Virtance(models.Model):
         verbose_name = "Virtance"
         verbose_name_plural = "Virtances"
 
+    def active(self):
+        self.status = self.ACTIVE
+        self.save()
+
+    def inactive(self):
+        self.status = self.INACTIVE
+        self.save()
+
+    def pending(self):
+        self.status = self.PENDING
+        self.save()
+
     def reset_event(self):
         self.event = None
         self.save()

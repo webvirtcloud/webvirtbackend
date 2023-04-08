@@ -1,3 +1,4 @@
+import time
 from uuid import uuid4
 from django.conf import settings
 from webvirtcloud.celery import app
@@ -94,6 +95,7 @@ def create_virtance(virtance_id, password):
             password_hash,
         )
         if res.get("detail") is None:
+            virtance.active()
             virtance.reset_event()
 
 
@@ -152,15 +154,41 @@ def rebuild_virtance(virtance_id):
         virtance.id, virtance.name, images, network, keypairs, password_hash
     )
     if res.get("detail") is None:
+        virtance.active()
         virtance.reset_event()
 
 
 @app.task
 def action_virtance(virtance_id, action):
+    reboot = False
+    if action == "reboot":
+        reboot = True
+        action == "shutdown"
     virtance = Virtance.objects.get(pk=virtance_id)
     wvcomp = wvcomp_conn(virtance.compute)
     res = wvcomp.action_virtance(virtance.id, action)
     if res.get("detail") is None:
+        if action == "shutdown":
+            timeout = 60
+            while wvcomp.status_virtance(virtance.id) == "active":
+                timeout -= 1
+                time.sleep(1)
+                if timeout == 0:
+                    action = "power_off"
+                    res = wvcomp.action_virtance(virtance.id, action)
+                    if res.get("detail") is None:
+                        virtance.inactive()
+        if action == "power_on":
+            virtance.active()
+        if action == "power_off":
+            virtance.inactive()
+        if action == "power_cyrcle":
+            virtance.active()
+        if reboot is True:
+            action = "power_on"
+            res = wvcomp.action_virtance(virtance.id, action)
+            if res.get("detail") is None:
+                virtance.active()
         virtance.reset_event()     
 
 
@@ -170,6 +198,7 @@ def resize_virtance(virtance_id, vcpu, memory, disk_size):
     wvcomp = wvcomp_conn(virtance.compute)
     res = wvcomp.resize_virtance(virtance.id, vcpu, memory, disk_size)
     if res.get("detail") is None:
+        virtance.active()
         virtance.reset_event()
 
 
@@ -188,6 +217,7 @@ def restore_virtance(virtance_id, image_name, disk_size):
     wvcomp = wvcomp_conn(virtance.compute)
     res = wvcomp.restore_virtance(virtance_id, image_name, disk_size)
     if res.get("detail") is None:
+        virtance.active()
         virtance.reset_event()
 
 
@@ -198,6 +228,7 @@ def reset_password_virtance(virtance_id, password):
     password_hash = sha512_crypt.encrypt(password, salt=uuid4().hex[0:8], rounds=5000)
     res = wvcomp.reset_password_virtance(virtance.id, password_hash)
     if res.get("detail") is None:
+        virtance.active()
         virtance.reset_event()
 
 
@@ -209,6 +240,7 @@ def enable_recovery_mode_virtance(virtance_id):
     if isinstance(res, list):
         res = wvcomp.mount_virtance_media(virtance_id, res[0].get("dev"), settings.RECOVERY_ISO_NAME)
         if res.get("detail") is None:
+            virtance.active()
             virtance.reset_event()
 
 @app.task
@@ -219,6 +251,7 @@ def disable_recovery_mode_virtance(virtance_id):
     if isinstance(res, list) and res[0].get("path") is not None:
         res = wvcomp.umount_virtance_media(virtance_id, res[0].get("dev"), res[0].get("path"))
         if res.get("detail") is None:
+            virtance.active()
             virtance.reset_event()
 
 
