@@ -178,6 +178,8 @@ def action_virtance(virtance_id, action):
                     res = wvcomp.action_virtance(virtance.id, action)
                     if res.get("detail") is None:
                         virtance.inactive()
+            else:
+                virtance.inactive()
         if action == "power_on":
             virtance.active()
         if action == "power_off":
