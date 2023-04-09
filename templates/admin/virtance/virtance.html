@@ -1,0 +1,71 @@
+{% extends "admin/base.html" %} 
+{% block content %}
+<div class="overflow-hidden bg-white shadow sm:rounded-lg">
+  <div class="px-4 py-5 sm:px-6">
+    <h3 class="text-base font-semibold leading-6 text-gray-900">
+      Virtance
+    </h3>
+    <p class="mt-1 max-w-2xl text-sm text-gray-500">
+      {{ virtance.user.email }}
+    </p>
+  </div>
+  <div class="border-t border-gray-200 px-4 py-5 sm:px-6">
+    <dl
+      class="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-3"
+    >
+      <div class="sm:col-span-1">
+        <dt class="text-sm font-medium text-gray-500">ID</dt>
+        <dd class="mt-1 text-sm text-gray-900">{{ virtance.id }}</dd>
+      </div>
+      <div class="sm:col-span-1">
+        <dt class="text-sm font-medium text-gray-500">UUID</dt>
+        <dd class="mt-1 text-sm text-gray-900">{{ virtance.uuid }}</dd>
+      </div>
+      <div class="sm:col-span-1">
+        <dt class="text-sm font-medium text-gray-500">Locked</dt>
+        <dd class="mt-1 text-sm text-gray-900">{{ virtance.is_locked }}</dd>
+      </div>
+      <div class="sm:col-span-1">
+        <dt class="text-sm font-medium text-gray-500">Name</dt>
+        <dd class="mt-1 text-sm text-gray-900">{{ virtance.name }}</dd>
+      </div>
+      <div class="sm:col-span-1">
+        <dt class="text-sm font-medium text-gray-500">Status</dt>
+        <dd class="mt-1 text-sm text-gray-900">{{ virtance.status|capfirst }} {% if virtance.event %}({{ virtance.event|capfirst }}){% endif %}</dd>
+      </div>
+      <div class="sm:col-span-1">
+        <dt class="text-sm font-medium text-gray-500">Size</dt>
+        <dd class="mt-1 text-sm text-gray-900">{{ virtance.size.slug }}</dd>
+      </div>
+      <div class="sm:col-span-1">
+        <dt class="text-sm font-medium text-gray-500">Region</dt>
+        <dd class="mt-1 text-sm text-gray-900">{{ virtance.region.name }}</dd>
+      </div>
+      <div class="sm:col-span-1">
+        <dt class="text-sm font-medium text-gray-500">Image</dt>
+        <dd class="mt-1 text-sm text-gray-900">{{ virtance.image.description }}</dd>
+      </div>
+      <div class="sm:col-span-1">
+        <dt class="text-sm font-medium text-gray-500">Compute</dt>
+        <dd class="mt-1 text-sm text-gray-900">{% if virtance.compute %}<a class="text-blue-600 hover:text-blue-900" href="{% url 'admin_compute_overview' virtance.compute.id %}">{{ virtance.compute.name }}</a>{% else %}Not assigned{% endif %}</dd>
+      </div>
+      <div class="sm:col-span-1">
+        <dt class="text-sm font-medium text-gray-500">Created</dt>
+        <dd class="mt-1 text-sm text-gray-900">{{ virtance.created }}</dd>
+      </div>
+      <div class="sm:col-span-1">
+        <dt class="text-sm font-medium text-gray-500">IPv4 Public</dt>
+        <dd class="mt-1 text-sm text-gray-900">{{ ipv4public.address }}/{{ ipv4public.network.netmask }}</dd>
+      </div>
+      <div class="sm:col-span-1">
+        <dt class="text-sm font-medium text-gray-500">IPv4 Private</dt>
+        <dd class="mt-1 text-sm text-gray-900">{{ ipv4private.address }}/{{ ipv4private.network.netmask }}</dd>
+      </div>
+      <div class="sm:col-span-1">
+        <dt class="text-sm font-medium text-gray-500">IPv4 Compute</dt>
+        <dd class="mt-1 text-sm text-gray-900">{{ ipv4compute.address }}/{{ ipv4compute.network.netmask }}</dd>
+      </div>
+    </dl>
+  </div>
+</div>
+{% endblock %}

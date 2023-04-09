@@ -18,19 +18,19 @@
                   scope="col"
                   class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
                 >
-                  Name
-                </th>
-                <th
-                  scope="col"
-                  class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                >
-                  Size
+                  ID
                 </th>
                 <th
                   scope="col"
                   class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                 >
                   User
+                </th>
+                <th
+                  scope="col"
+                  class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                >
+                  Size
                 </th>
                 <th
                   scope="col"
@@ -48,6 +48,18 @@
                   scope="col"
                   class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                 >
+                  Status
+                </th>
+                <th
+                  scope="col"
+                  class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                >
+                  Locked
+                </th>
+                <th
+                  scope="col"
+                  class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                >
                   Created
                 </th>
               </tr>
@@ -58,13 +70,17 @@
                 <td
                   class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
                 >
-                  {{ virtance.name }}
-                </td>
-                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                  {{ virtance.size.name }}
+                  <a 
+                    class="text-blue-600 hover:text-blue-900" 
+                    href="{% url 'admin_virtance_data' virtance.id %}"
+                    >{{ virtance.id }}</a
+                  >
                 </td>
                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                   {{ virtance.user.email }}
+                </td>
+                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                  {{ virtance.size.name }}
                 </td>
                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                   {{ virtance.region.name }}
@@ -73,6 +89,12 @@
                   {% if virtance.compute %}
                     {{ virtance.compute.name }}
                   {% endif %}
+                </td>
+                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                  {{ virtance.status|capfirst }} {% if virtance.event %}({{ virtance.event|capfirst }}){% endif %}
+                </td>
+                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                  {{ virtance.is_locked }}
                 </td>
                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                   {{ virtance.created}}

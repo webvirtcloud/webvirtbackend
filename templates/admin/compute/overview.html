@@ -74,90 +74,110 @@
     </div>
   </div>
   
+  <div class="flex items-center justify-between mb-6">
+    <h1 class="text-2xl font-medium">Virtances</h1>
+  </div>
   {% if virtances %}
-    <div
-      class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg "
-    >
-      <table class="min-w-full divide-y divide-gray-300">
-        <thead class="bg-gray-50">
-          <tr>
-            <th
-              scope="col"
-              class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+  <div
+    class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg"
+  >
+    <table class="min-w-full divide-y divide-gray-300">
+      <thead class="bg-gray-50">
+        <tr>
+          <th
+            scope="col"
+            class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+          >
+            ID
+          </th>
+          <th
+            scope="col"
+            class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+          >
+            User
+          </th>
+          <th
+            scope="col"
+            class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+          >
+            Size
+          </th>
+          <th
+            scope="col"
+            class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+          >
+            Region
+          </th>
+          <th
+            scope="col"
+            class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+          >
+            Compute
+          </th>
+          <th
+            scope="col"
+            class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+          >
+            Status
+          </th>
+          <th
+            scope="col"
+            class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+          >
+            Locked
+          </th>
+          <th
+            scope="col"
+            class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+          >
+            Created
+          </th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-200 bg-white">
+        {% for virtance in virtances %}
+        <tr>
+          <td
+            class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
+          >
+            <a 
+              class="text-blue-600 hover:text-blue-900" 
+              href="{% url 'admin_virtance_data' virtance.id %}"
+              >{{ virtance.id }}</a
             >
-              UUID
-            </th>
-            <th
-              scope="col"
-              class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
-            >
-              Type
-            </th>
-            <th
-              scope="col"
-              class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
-            >
-              Usage
-            </th>
-            <th
-              scope="col"
-              class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
-            >
-              Value
-            </th>
-            <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
-              <span class="sr-only">Edit</span>
-            </th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-gray-200 bg-white">
-          {% for virtance in virtances %}
-          <tr>
-            <td
-              class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
-            >
-              {{ virtance.uuid }}
-            </td>
-            <td
-              class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
-            >
-              
-            </td>
-            <td
-              class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
-            >
-              {{ virtance.usage }}
-            </td>
-            <td
-              class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
-            >
-              {{ virtance.value }}
-            </td>
-            <td
-              class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6 space-x-4"
-            >
-              <a
-                href="#"
-                class="text-blue-600 hover:text-blue-900"
-                >Value</a
-              >
-              <a
-                href="{% url 'admin_compute_virtance_delete' compute.id virtance.uuid %}"
-                class="text-red-600 hover:text-red-900"
-                onclick="return confirm('Are you sure you would like to deelete this volume?');"
-                >Delete</a
-              >
           </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-    {% else %}
-    <div class="bg-white border p-4 md:p-8 rounded-lg text-center">
-      <h2 class="text-xl font-medium">No virtances</h2>
-    </div>
+          <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+            {{ virtance.user.email }}
+          </td>
+          <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+            {{ virtance.size.name }}
+          </td>
+          <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+            {{ virtance.region.name }}
+          </td>
+          <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+            {% if virtance.compute %}
+              {{ virtance.compute.name }}
+            {% endif %}
+          </td>
+          <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+            {{ virtance.status|capfirst }} {% if virtance.event %}({{ virtance.event|capfirst }}){% endif %}
+          </td>
+          <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+            {{ virtance.is_locked }}
+          </td>
+          <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+            {{ virtance.created}}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="bg-white border p-4 md:p-8 rounded-lg text-center">
+    <h2 class="text-xl font-medium">No virtances found</h2>
+  </div>
   {% endif %}
-
 </main>
 {% endblock %}

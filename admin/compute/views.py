@@ -7,6 +7,7 @@ from .forms import FormCompute, FormStartAction, FormAutostartAction
 from .forms import FormSecretCreateAction, FormSecretValueAction, FormNwfilterCreateAction
 from .forms import FormVolumeCreateAction,FormVolumeCloneAction, FormVolumeResizeAction
 from compute.models import Compute
+from virtance.models import Virtance
 from admin.mixins import AdminView, AdminTemplateView, AdminFormView, AdminUpdateView, AdminDeleteView
 from compute.helper import WebVirtCompute
 
@@ -75,9 +76,11 @@ class AdminComputeOverviewView(AdminTemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         compute = get_object_or_404(Compute, pk=kwargs.get("pk"), is_deleted=False)
+        virtances = Virtance.objects.filter(compute=compute, is_deleted=False)
         wvcomp = WebVirtCompute(compute.token, compute.hostname)
         host_overview = wvcomp.get_host_overview()
         context['compute'] = compute
+        context['virtances'] = virtances
         context['host_overview'] = host_overview
         return context
 
