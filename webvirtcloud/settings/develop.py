@@ -38,6 +38,7 @@ STATIC_URL = "static/"
 
 # noVNC settings
 NOVNC_URL = "localhost"
+NOVNC_PORT = 6080
 
 try:
     from .local import *

@@ -85,8 +85,8 @@ class VirtanceConsoleAPI(APIView):
         wvcomp = WebVirtCompute(virtance.compute.token, virtance.compute.hostname)
         res = wvcomp.get_virtance_vnc(virtance.id)
         vnc_password = res.get("vnc_password")
-        console_host = settings.WEBSOCKET_HOST
-        console_port = 6080 if console_host == "localhost" else settings.WEBSOCKET_PORT
+        console_host = settings.NOVNC_URL
+        console_port = settings.NOVNC_PORT
         response = Response(
             {
                 "console": {
