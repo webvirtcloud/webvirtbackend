@@ -104,7 +104,8 @@ class VirtanceConsoleAPI(APIView):
             "uuid",
             virtance.uuid,
             secure=True,
-            httponly=True
+            httponly=True,
+            domain=settings.SESSION_COOKIE_DOMAIN
         )
         return response
 

@@ -47,7 +47,8 @@ class AdminVirtanceConsoleView(AdminTemplateView):
         response.set_cookie(
             "uuid",
             virtance.uuid,
-            httponly=True
+            httponly=True,
+            domain=settings.SESSION_COOKIE_DOMAIN
         )
         return response
 

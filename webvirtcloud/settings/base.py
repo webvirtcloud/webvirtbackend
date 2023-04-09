@@ -161,6 +161,9 @@ CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
 # WebVirtCloud Settings
 #
 
+# Security settings
+SESSION_COOKIE_DOMAIN = os.environ.get("SESSION_COOKIE_DOMAIN", ".webvirt.cloud")
+
 # Static URL
 STATIC_URL = os.environ.get("STATIC_URL", "https://cloud-assets.webvirt.cloud/")
 

@@ -23,6 +23,9 @@ INSTALLED_APPS += [
 # CORS settings
 CORS_ORIGIN_ALLOW_ALL = True
 
+# Security settings
+SESSION_COOKIE_DOMAIN = os.environ.get("SESSION_COOKIE_DOMAIN", None)
+
 # DebugToolBar
 hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
 INTERNAL_IPS = [ip[: ip.rfind(".")] + ".1" for ip in ips] + ["127.0.0.1", "localhost"]
