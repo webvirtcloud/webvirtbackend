@@ -25,6 +25,7 @@ class VirtanceSerializer(serializers.ModelSerializer):
     memory = serializers.IntegerField(source="size.memory")
     locked = serializers.BooleanField(source="is_locked")
     created_at = serializers.DateTimeField(source="created")
+    recovery_mode = serializers.BooleanField(source="is_recovery_mode")
     disk = serializers.SerializerMethodField()
     event = serializers.SerializerMethodField()
     status = serializers.SerializerMethodField()
@@ -39,19 +40,20 @@ class VirtanceSerializer(serializers.ModelSerializer):
             "id",
             "name",
             "vcpu",
-            "memory",
+            "size",
             "disk",
+            "image",
             "event",
+            "memory",
+            "region",
             "locked",
             "status",
-            "created_at",
+            "networks",
             "features",
+            "created_at",
             "backup_ids",
             "snapshot_ids",
-            "image",
-            "size",
-            "networks",
-            "region",
+            "recovery_mode",
         )
 
     def get_status(self, obj):

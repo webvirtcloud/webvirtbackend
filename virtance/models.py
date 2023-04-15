@@ -60,6 +60,7 @@ class Virtance(models.Model):
     user_data = models.TextField(blank=True, null=True)
     is_locked = models.BooleanField(default=False)
     is_deleted = models.BooleanField(default=False)
+    is_recovery_mode = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     deleted = models.DateTimeField(null=True, blank=True)
@@ -83,6 +84,14 @@ class Virtance(models.Model):
 
     def reset_event(self):
         self.event = None
+        self.save()
+
+    def enable_recovery_mode(self):
+        self.is_recovery_mode = True
+        self.save()
+
+    def disable_recovery_mode(self):
+        self.is_recovery_mode = False
         self.save()
 
     def save(self, *args, **kwargs):

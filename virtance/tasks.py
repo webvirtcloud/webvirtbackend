@@ -259,6 +259,7 @@ def enable_recovery_mode_virtance(virtance_id):
         res = wvcomp.mount_virtance_media(virtance_id, res[0].get("dev"), settings.RECOVERY_ISO_NAME)
         if res.get("detail") is None:
             virtance.active()
+            virtance.enable_recovery_mode()
             virtance.reset_event()
         else:
             virtance_error(res.get("detail"), "enable_recovery_mode")
@@ -273,6 +274,7 @@ def disable_recovery_mode_virtance(virtance_id):
         res = wvcomp.umount_virtance_media(virtance_id, res[0].get("dev"), res[0].get("path"))
         if res.get("detail") is None:
             virtance.active()
+            virtance.disable_recovery_mode()
             virtance.reset_event()
         else:
             virtance_error(res.get("detail"), "disable_recovery_mode")
