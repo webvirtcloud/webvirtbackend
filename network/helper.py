@@ -70,15 +70,16 @@ def assign_free_ipv6_public(virtance_id):
         region=virtance.region,
         version=Network.IPv6, 
         type=Network.PUBLIC,
-        is_active=True, 
+        is_active=True,
         is_deleted=False
     )
     for net in networks:
-        subnet = IPv6Network(f"{net.cidr}/{net.netmask}")
         step = 16
-        limit = 2 ** step
+        nums = 2 ** step
+        subnet = IPv6Network(f"{net.cidr}/{net.netmask}")
         start = int(subnet.network_address) + step
         end = int(subnet.broadcast_address) + 1
+        limit = nums if nums < end else end - 1 # Check if limit is greater than end
         for i in random.sample(range(start, end, step), k=limit):
             if not IPAddress.objects.filter(network=net, address=str(ip_address(i))).exists():
                 IPAddress.objects.create(network=net, address=str(ip_address(i)), virtance=virtance)
