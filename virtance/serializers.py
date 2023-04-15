@@ -12,6 +12,7 @@ from image.serializers import ImageSerializer
 from region.serializers import RegionSerializer
 from compute.helper import WebVirtCompute
 from .models import Virtance
+from .utils import virtance_error
 from .tasks import create_virtance, action_virtance, resize_virtance, reset_password_virtance, rebuild_virtance
 from .tasks import enable_recovery_mode_virtance, disable_recovery_mode_virtance, snapshot_virtance, restore_virtance
 
@@ -59,10 +60,14 @@ class VirtanceSerializer(serializers.ModelSerializer):
             if obj.event is None:
                 if obj.compute is not None:
                     wvcomp = WebVirtCompute(obj.compute.token, obj.compute.hostname)
-                    if wvcomp.status_virtance(obj.id) == "running":
-                        obj.active()
-                    if wvcomp.status_virtance(obj.id) == "shutoff":
-                        obj.inactive()
+                    res = wvcomp.status_virtance(obj.id)
+                    if res.get("detail") is not None:
+                        if res == "running":
+                            obj.active()
+                        if res == "shutoff":
+                            obj.inactive()
+                    else:
+                        virtance_error(res.get("detail"), event="status")
         return obj.status
 
     def get_disk(self, obj):

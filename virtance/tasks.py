@@ -14,6 +14,7 @@ from compute.models import Compute
 from network.models import Network, IPAddress
 from keypair.models import KeyPairVirtance
 from .models import Virtance
+from .utils import virtance_error
 
 
 def wvcomp_conn(compute):
@@ -207,6 +208,8 @@ def resize_virtance(virtance_id, vcpu, memory, disk_size):
     if res.get("detail") is None:
         virtance.active()
         virtance.reset_event()
+    else:
+        virtance_error(res.get("detail"), "resize")
 
 
 @app.task
@@ -216,6 +219,8 @@ def snapshot_virtance(virtance_id, image_name):
     res = wvcomp.snapshot_virtance(virtance.id, image_name)
     if res.get("detail") is None:
         virtance.reset_event()
+    else:
+        virtance_error(res.get("detail"), "snapshot")
 
 
 @app.task
@@ -226,6 +231,8 @@ def restore_virtance(virtance_id, image_name, disk_size):
     if res.get("detail") is None:
         virtance.active()
         virtance.reset_event()
+    else:
+        virtance_error(res.get("detail"), "restore")
 
 
 @app.task
@@ -239,6 +246,8 @@ def reset_password_virtance(virtance_id, password=None):
     if res.get("detail") is None:
         virtance.active()
         virtance.reset_event()
+    else:
+        virtance_error(res.get("detail"), "reset_password")
 
 
 @app.task
@@ -251,6 +260,9 @@ def enable_recovery_mode_virtance(virtance_id):
         if res.get("detail") is None:
             virtance.active()
             virtance.reset_event()
+        else:
+            virtance_error(res.get("detail"), "enable_recovery_mode")
+
 
 @app.task
 def disable_recovery_mode_virtance(virtance_id):
@@ -262,6 +274,8 @@ def disable_recovery_mode_virtance(virtance_id):
         if res.get("detail") is None:
             virtance.active()
             virtance.reset_event()
+        else:
+            virtance_error(res.get("detail"), "disable_recovery_mode")
 
 
 @app.task
@@ -273,3 +287,5 @@ def delete_virtance(virtance_id):
         ipaddresse = IPAddress.objects.filter(virtance=virtance)
         ipaddresse.delete()
         virtance.delete()
+    else:
+        virtance_error(res.get("detail"), "delete")
