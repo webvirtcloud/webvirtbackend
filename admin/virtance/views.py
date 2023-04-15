@@ -1,8 +1,8 @@
 from django.conf import settings
 from django.shortcuts import get_object_or_404
 
-from virtance.models import Virtance
 from network.models import IPAddress, Network
+from virtance.models import Virtance, VirtanceError
 from admin.mixins import AdminTemplateView
 from compute.helper import WebVirtCompute
 
@@ -25,6 +25,7 @@ class AdminVirtanceDataView(AdminTemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         virtance = self.get_object()
+        virtance_errors = VirtanceError.objects.filter(virtance=virtance)
         ipv4public = IPAddress.objects.filter(virtance=virtance, network__type=Network.PUBLIC).first()
         ipv4private = IPAddress.objects.filter(virtance=virtance, network__type=Network.PRIVATE).first()
         ipv4compute = IPAddress.objects.filter(virtance=virtance, network__type=Network.COMPUTE).first()
@@ -32,6 +33,7 @@ class AdminVirtanceDataView(AdminTemplateView):
         context['ipv4public'] = ipv4public
         context['ipv4private'] = ipv4private
         context['ipv4compute'] = ipv4compute
+        context['virtance_errors'] = virtance_errors
         return context
 
 

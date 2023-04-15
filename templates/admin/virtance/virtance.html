@@ -68,5 +68,25 @@
       </div>
     </dl>
   </div>
+
+  {% if virtance_errors %}
+    <table>
+      <tr>
+        <th>#</th>
+        <th>Event</th>
+        <th>Message</th>
+        <th>Create</th>
+        <tr>
+          {% for error in virtance_errors %}
+          <td>{{ forloop.counter }}</td>
+          <td>{{ error.event }}</td>
+          <td>{{ error.message }}</td>
+          <td>{{ error.created }}</td>
+          {% endfor %}
+        </tr>
+      </tr>
+    </table>
+  {% endif %}
+
 </div>
 {% endblock %}
