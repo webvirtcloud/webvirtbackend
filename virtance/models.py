@@ -99,3 +99,17 @@ class Virtance(models.Model):
     def __unicode__(self):
         return self.name
 
+
+class VirtanceError(models.Model):
+    virtance = models.ForeignKey(Virtance, models.CASCADE)
+    event = models.CharField(max_length=40, blank=True, null=True)
+    message = models.TextField()
+    created = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-id"]
+        verbose_name = "Virtance Error"
+        verbose_name_plural = "Virtance Errors"
+
+    def __unicode__(self):
+        return self.error
