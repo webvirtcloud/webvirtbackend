@@ -63,12 +63,12 @@ class VirtanceSerializer(serializers.ModelSerializer):
                 if obj.compute is not None:
                     wvcomp = WebVirtCompute(obj.compute.token, obj.compute.hostname)
                     res = wvcomp.status_virtance(obj.id)
-                    if res.get("detail") is not None:
+                    if isinstance(res, str):
                         if res == "running":
                             obj.active()
                         if res == "shutoff":
                             obj.inactive()
-                    else:
+                    if isinstance(res, dict) and res.get("detail"):
                         virtance_error(res.get("detail"), event="status")
         return obj.status
 
