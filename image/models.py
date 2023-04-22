@@ -34,6 +34,8 @@ class Image(models.Model):
         (ROCKYLINUX, "Rocky Linux"),
     ]
     user = models.ForeignKey(settings.AUTH_USER_MODEL, models.PROTECT, blank=True, null=True)
+    source = models.ForeignKey("virtance.Virtance", models.PROTECT, blank=True, null=True)
+    regions = models.ManyToManyField("region.Region", blank=True)
     uuid = models.UUIDField(unique=True, editable=False, default=uuid4)
     name = models.CharField(max_length=100)
     slug = models.SlugField(max_length=100, unique=True, blank=True, null=True)
@@ -41,7 +43,6 @@ class Image(models.Model):
     md5sum = models.CharField(max_length=50)
     distribution = models.CharField(max_length=50, choices=DISTRO_CHOICES, default=UNKNOWN)
     description = models.TextField(blank=True, null=True)
-    regions = models.ManyToManyField("region.Region", blank=True)
     file_name = models.CharField(max_length=100)
     file_size = models.BigIntegerField(blank=True, null=True)
     disk_size = models.BigIntegerField(blank=True, null=True)

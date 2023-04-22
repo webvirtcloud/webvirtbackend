@@ -90,6 +90,7 @@ class VirtanceSerializer(serializers.ModelSerializer):
         return []
 
     def get_snapshot_ids(self, obj):
+        images = Image.objects.filter()
         return []
 
     def get_networks(self, obj):
@@ -187,28 +188,30 @@ class CreateVirtanceSerializer(serializers.Serializer):
     def create(self, validated_data):
         ipv6 = validated_data.get("ipv6")
         name = validated_data.get("name")
-        size = validated_data.get("size")
-        region = validated_data.get("region")
+        user = self.context.get("request").user
+        size_slug = validated_data.get("size")
         backups = validated_data.get("backups")
         password = validated_data.get("password")
         keypairs = validated_data.get("keypairs")
+        region_slug = validated_data.get("region")
         user_data = validated_data.get("user_data")
+        image_id_or_slug = validated_data.get("image")
 
-        if validated_data.get("size").isdigit():
-            image = Image.objects.get(id=validated_data.get("image"))
+        if image_id_or_slug.isdigit():
+            template = Image.objects.get(id=image_id_or_slug)
         else:
-            image = Image.objects.get(slug=validated_data.get("image"))
+            template = Image.objects.get(slug=image_id_or_slug)
 
-        size = Size.objects.get(slug=validated_data.get("size"))
-        region = Region.objects.get(slug=validated_data.get("region"))
+        size = Size.objects.get(slug=size_slug)
+        region = Region.objects.get(slug=region_slug)
 
         virtance = Virtance.objects.create(
-            user=self.context.get("request").user,
+            user=user,
             name=name,
             size=size,
-            disk=size.disk,
-            image=image,
             region=region,
+            disk=size.disk,
+            template=template,
             user_data=user_data
         )
 
