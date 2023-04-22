@@ -174,7 +174,7 @@ def action_virtance(virtance_id, action):
     if error is None:
         if action == "shutdown":
             timeout = 60
-            while wvcomp.status_virtance(virtance.id) == "active":
+            while wvcomp.status_virtance(virtance.id) != "shutoff":
                 timeout -= 1
                 time.sleep(1)
                 if timeout == 0:
