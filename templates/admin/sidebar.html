@@ -190,7 +190,7 @@
             </div>
             <div class="space-y-1 px-2">
               <a
-                href="#"
+                href="{% url 'admin_user_index' %}"
                 class="group flex items-center rounded-md px-2 py-2 text-sm font-medium {% if 'user' in request.path %}bg-gray-100 text-gray-900{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900 {% endif %}"
               >
                 <svg
@@ -237,7 +237,7 @@
                   ></path>
                 </svg>
 
-                Issues
+                Errors
               </a>
             </div>
           </div>
