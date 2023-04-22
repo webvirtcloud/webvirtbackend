@@ -69,7 +69,7 @@ class VirtanceSerializer(serializers.ModelSerializer):
                         if res == "shutoff":
                             obj.inactive()
                     if isinstance(res, dict) and res.get("detail"):
-                        virtance_error(res.get("detail"), event="status")
+                        virtance_error(obj.id, res.get("detail"), event="status")
         return obj.status
 
     def get_disk(self, obj):

@@ -209,7 +209,7 @@ def resize_virtance(virtance_id, vcpu, memory, disk_size):
         virtance.active()
         virtance.reset_event()
     else:
-        virtance_error(res.get("detail"), "resize")
+        virtance_error(virtance_id, res.get("detail"), "resize")
 
 
 @app.task
@@ -220,7 +220,7 @@ def snapshot_virtance(virtance_id, image_name):
     if res.get("detail") is None:
         virtance.reset_event()
     else:
-        virtance_error(res.get("detail"), "snapshot")
+        virtance_error(virtance_id, res.get("detail"), "snapshot")
 
 
 @app.task
@@ -232,7 +232,7 @@ def restore_virtance(virtance_id, image_name, disk_size):
         virtance.active()
         virtance.reset_event()
     else:
-        virtance_error(res.get("detail"), "restore")
+        virtance_error(virtance_id, res.get("detail"), "restore")
 
 
 @app.task
@@ -247,7 +247,7 @@ def reset_password_virtance(virtance_id, password=None):
         virtance.active()
         virtance.reset_event()
     else:
-        virtance_error(res.get("detail"), "reset_password")
+        virtance_error(virtance_id, res.get("detail"), "reset_password")
 
 
 @app.task
@@ -262,7 +262,7 @@ def enable_recovery_mode_virtance(virtance_id):
             virtance.enable_recovery_mode()
             virtance.reset_event()
         else:
-            virtance_error(res.get("detail"), "enable_recovery_mode")
+            virtance_error(virtance_id, res.get("detail"), "enable_recovery_mode")
 
 
 @app.task
@@ -277,7 +277,7 @@ def disable_recovery_mode_virtance(virtance_id):
             virtance.disable_recovery_mode()
             virtance.reset_event()
         else:
-            virtance_error(res.get("detail"), "disable_recovery_mode")
+            virtance_error(virtance_id, res.get("detail"), "disable_recovery_mode")
 
 
 @app.task
@@ -290,4 +290,4 @@ def delete_virtance(virtance_id):
         ipaddresse.delete()
         virtance.delete()
     else:
-        virtance_error(res.get("detail"), "delete")
+        virtance_error(virtance_id, res.get("detail"), "delete")
