@@ -349,7 +349,7 @@ class VirtanceActionSerializer(serializers.Serializer):
 
         if action == "resize":
             size = Size.objects.get(slug=size)
-            resize_virtance.delay(virtnace.id, size.vcpu, size.memory, size.disk)
+            resize_virtance.delay(virtnace.id, size.id)
         
         if action == "password_reset":
             reset_password_virtance.delay(virtnace.id, password)

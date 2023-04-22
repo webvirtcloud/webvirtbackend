@@ -10,6 +10,7 @@ from network.helper import (
     assign_free_ipv4_compute,
     assign_free_ipv4_private,
 )
+from size.models import Size
 from compute.models import Compute
 from network.models import Network, IPAddress
 from keypair.models import KeyPairVirtance
@@ -201,13 +202,16 @@ def action_virtance(virtance_id, action):
 
 
 @app.task
-def resize_virtance(virtance_id, vcpu, memory, disk_size):
+def resize_virtance(virtance_id, size_id):
+    size = Size.objects.get(pk=size_id)
     virtance = Virtance.objects.get(pk=virtance_id)
     wvcomp = wvcomp_conn(virtance.compute)
-    res = wvcomp.resize_virtance(virtance.id, vcpu, memory, disk_size)
+    res = wvcomp.resize_virtance(virtance.id, size.vcpu, size.memory, size.disk)
     if res.get("detail") is None:
         virtance.active()
         virtance.reset_event()
+        virtance.size = size
+        virtance.save()
     else:
         virtance_error(virtance_id, res.get("detail"), "resize")
 
