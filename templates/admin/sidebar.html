@@ -44,7 +44,7 @@
 
               <a
                 href="{% url 'admin_region_index' %}"
-                class="group flex items-center rounded-md px-2 py-2 text-sm font-medium {% if 'region' in request.path %}bg-gray-100 text-gray-900{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900 {% endif %}"
+                class="group flex items-center rounded-md px-2 py-2 text-sm font-medium {% if 'admin/region' in request.path %}bg-gray-100 text-gray-900{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900 {% endif %}"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -71,7 +71,7 @@
 
               <a
                 href="{% url 'admin_size_index' %}"
-                class="group flex items-center rounded-md px-2 py-2 text-sm font-medium {% if 'size' in request.path %}bg-gray-100 text-gray-900{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900 {% endif %}"
+                class="group flex items-center rounded-md px-2 py-2 text-sm font-medium {% if 'admin/size' in request.path %}bg-gray-100 text-gray-900{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900 {% endif %}"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -92,7 +92,7 @@
 
               <a
                 href="{% url 'admin_image_index' %}"
-                class="group flex items-center rounded-md px-2 py-2 text-sm font-medium {% if '/image/' in request.path %}bg-gray-100 text-gray-900{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900 {% endif %}"
+                class="group flex items-center rounded-md px-2 py-2 text-sm font-medium {% if 'admin/image/' in request.path %}bg-gray-100 text-gray-900{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900 {% endif %}"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -113,7 +113,7 @@
 
               <a
                 href="{% url 'admin_network_index' %}"
-                class="group flex items-center rounded-md px-2 py-2 text-sm font-medium {% if '/network/' in request.path %}bg-gray-100 text-gray-900{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900 {% endif %}"
+                class="group flex items-center rounded-md px-2 py-2 text-sm font-medium {% if 'admin/network/' in request.path %}bg-gray-100 text-gray-900{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900 {% endif %}"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -134,7 +134,7 @@
 
               <a
                 href="{% url 'admin_compute_index' %}"
-                class="group flex items-center rounded-md px-2 py-2 text-sm font-medium {% if 'compute' in request.path %}bg-gray-100 text-gray-900{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900 {% endif %}"
+                class="group flex items-center rounded-md px-2 py-2 text-sm font-medium {% if 'admin/compute' in request.path %}bg-gray-100 text-gray-900{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900 {% endif %}"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -163,7 +163,7 @@
             <div class="space-y-1 px-2">
               <a
                 href="{% url 'admin_virtance_index' %}"
-                class="group flex items-center rounded-md px-2 py-2 text-sm font-medium {% if 'virtance' in request.path %}bg-gray-100 text-gray-900{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900 {% endif %}"
+                class="group flex items-center rounded-md px-2 py-2 text-sm font-medium {% if 'admin/virtance' in request.path %}bg-gray-100 text-gray-900{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900 {% endif %}"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -191,7 +191,7 @@
             <div class="space-y-1 px-2">
               <a
                 href="{% url 'admin_user_index' %}"
-                class="group flex items-center rounded-md px-2 py-2 text-sm font-medium {% if 'user' in request.path %}bg-gray-100 text-gray-900{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900 {% endif %}"
+                class="group flex items-center rounded-md px-2 py-2 text-sm font-medium {% if 'admin/user' in request.path %}bg-gray-100 text-gray-900{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900 {% endif %}"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -220,7 +220,7 @@
             <div class="space-y-1 px-2">
               <a
                 href="{% url 'admin_issue_index' %}"
-                class="text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center rounded-md px-2 py-2 text-sm font-medium"
+                class="group flex items-center rounded-md px-2 py-2 text-sm font-medium {% if 'admin/issue' in request.path %}bg-gray-100 text-gray-900{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900 {% endif %}"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
