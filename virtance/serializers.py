@@ -19,7 +19,7 @@ from .tasks import enable_recovery_mode_virtance, disable_recovery_mode_virtance
 
 class VirtanceSerializer(serializers.ModelSerializer):
     size = SizeSerializer()
-    image = ImageSerializer()
+    image = ImageSerializer(source="template")
     region = RegionSerializer()
     vcpu = serializers.IntegerField(source="size.vcpu")
     memory = serializers.IntegerField(source="size.memory")
