@@ -18,5 +18,5 @@ class AdminIssueVirtanceView(AdminTemplateView):
     def get_context_data(self, **kwargs):
         thirty_days_ago = timezone.now() - timezone.timedelta(days=30)
         context = super().get_context_data(**kwargs)
-        context["virtaces_errors"] = VirtanceError.objects.filter(created__gte=thirty_days_ago)
+        context["virtances_errors"] = VirtanceError.objects.filter(created__gte=thirty_days_ago)
         return context

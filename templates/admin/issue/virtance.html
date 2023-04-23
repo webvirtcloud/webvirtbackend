@@ -18,6 +18,12 @@
                   scope="col"
                   class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
                 >
+                  #
+                </th>
+                <th
+                  scope="col"
+                  class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+                >
                   ID
                 </th>
                 <th
@@ -46,9 +52,13 @@
                 <td
                   class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
                 >
+                  {{ forloop.counter }}
+                <td
+                  class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
+                >
                   <a 
                     class="text-blue-600 hover:text-blue-900" 
-                    href="{% url 'admin_virtance_data' virtance.id %}"
+                    href="{% url 'admin_virtance_data' error.virtance.id %}"
                     >{{ error.id }}</a
                   >
                 </td>
