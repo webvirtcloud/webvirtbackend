@@ -138,12 +138,12 @@ class VirtanceMetricsCpuAPI(APIView):
 
         try:
             sys_value = cpu_sys_res["data"]["result"][0]["values"]
-        except KeyError:
+        except (KeyError, IndexError):
             sys_value = []
 
         try:
             user_value = cpu_usr_res["data"]["result"][0]["values"]
-        except KeyError:
+        except (KeyError, IndexError):
             user_value = []
 
 
@@ -181,12 +181,12 @@ class VirtanceMetricsNetAPI(APIView):
         for dev in net_devs:
             try:
                 in_val[dev] = in_res["data"]["result"][dev]["values"]
-            except KeyError:
+            except (KeyError, IndexError):
                 in_val[dev] = []
 
             try:
                 out_val[dev] = out_res["data"]["result"][dev]["values"]
-            except KeyError:
+            except (KeyError, IndexError):
                 out_val[dev] = []
 
         return Response({"metrics": [
@@ -217,12 +217,12 @@ class VirtanceMetricsDiskAPI(APIView):
 
         try:
             rd_val = rd_res["data"]["result"][0]["values"]
-        except KeyError:
+        except (KeyError, IndexError):
             rd_val= []
 
         try:
             wr_val = wr_res["data"]["result"][0]["values"]
-        except KeyError:
+        except (KeyError, IndexError):
             wr_val = []
 
         return Response({"metrics": [{"name": "Disk", "unit": "MB/s", "data": {"read": rd_val,  "write": wr_val}}]})
