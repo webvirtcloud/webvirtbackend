@@ -128,8 +128,8 @@ class VirtanceMetricsCpuAPI(APIView):
             f"(count(libvirt_domain_info_vcpu_state{{domain='{vname}'}})by(domain)*1000000000)"
         )
         cpu_usr_query = (
-            f'(irate(libvirt_domain_info_cpu_time_total{{domain="{vname}"}}[5m])*100)/on(domain)'
-            f'(count(libvirt_domain_info_vcpu_state{{domain="{vname}"}})by(domain)*1000000000)'
+            f"(irate(libvirt_domain_info_cpu_time_total{{domain='{vname}'}}[5m])*100)/on(domain)"
+            f"(count(libvirt_domain_info_vcpu_state{{domain='{vname}'}})by(domain)*1000000000)"
         )
 
         wvcomp = WebVirtCompute(virtance.compute.token, virtance.compute.hostname)
@@ -137,12 +137,12 @@ class VirtanceMetricsCpuAPI(APIView):
         cpu_usr_res = wvcomp.get_metrics(cpu_usr_query, timestamp_yesterday, timestamp_today, "1m")
 
         try:
-            sys_value = cpu_sys_res['data']['result'][0]['values']
+            sys_value = cpu_sys_res["data"]["result"][0]["values"]
         except KeyError:
             sys_value = []
 
         try:
-            user_value = cpu_usr_res['data']['result'][0]['values']
+            user_value = cpu_usr_res["data"]["result"][0]["values"]
         except KeyError:
             user_value = []
 
@@ -171,8 +171,8 @@ class VirtanceMetricsNetAPI(APIView):
         timestamp_today = time.mktime(today.timetuple())
         timestamp_yesterday = time.mktime((today - timezone.timedelta(days=1)).timetuple())
         
-        rx_query = f'(irate(libvirt_domain_info_net_rx_bytes{{domain="{vname}"}}[5m])*8)/(1024*1024)'
-        tx_query = f'(irate(libvirt_domain_info_net_tx_bytes{{domain="{vname}"}}[5m])*8)/(1024*1024)'
+        rx_query = f"(irate(libvirt_domain_info_net_rx_bytes{{domain='{vname}'}}[5m])*8)/(1024*1024)"
+        tx_query = f"(irate(libvirt_domain_info_net_tx_bytes{{domain='{vname}'}}[5m])*8)/(1024*1024)"
 
         wvcomp = WebVirtCompute(virtance.compute.token, virtance.compute.hostname)
         in_res = wvcomp.get_metrics(rx_query, timestamp_yesterday, timestamp_today, "1m")
@@ -180,12 +180,12 @@ class VirtanceMetricsNetAPI(APIView):
 
         for dev in net_devs:
             try:
-                in_val[dev] = in_res['data']['result'][dev]['values']
+                in_val[dev] = in_res["data"]["result"][dev]["values"]
             except KeyError:
                 in_val[dev] = []
 
             try:
-                out_val[dev] = out_res['data']['result'][dev]['values']
+                out_val[dev] = out_res["data"]["result"][dev]["values"]
             except KeyError:
                 out_val[dev] = []
 
@@ -208,20 +208,20 @@ class VirtanceMetricsDiskAPI(APIView):
         timestamp_today = time.mktime(today.timetuple())
         timestamp_yesterday = time.mktime((today - timezone.timedelta(days=1)).timetuple())
         
-        r_query = f'irate(libvirt_domain_info_block_read_bytes{{domain="{vname}"}}[5m])/(1024*1024)'
-        w_query = f'irate(libvirt_domain_info_block_write_bytes{{domain="{vname}"}}[5m])/(1024*1024)'
+        r_query = f"irate(libvirt_domain_info_block_read_bytes{{domain='{vname}'}}[5m])/(1024*1024)"
+        w_query = f"irate(libvirt_domain_info_block_write_bytes{{domain='{vname}'}}[5m])/(1024*1024)"
 
         wvcomp = WebVirtCompute(virtance.compute.token, virtance.compute.hostname)
         rd_res = wvcomp.get_metrics(r_query, timestamp_yesterday, timestamp_today, "1m")
         wr_res = wvcomp.get_metrics(w_query, timestamp_yesterday, timestamp_today, "1m")
 
         try:
-            rd_val = rd_res['data']['result'][0]['values']
+            rd_val = rd_res["data"]["result"][0]["values"]
         except KeyError:
             rd_val= []
 
         try:
-            wr_val = wr_res['data']['result'][0]['values']
+            wr_val = wr_res["data"]["result"][0]["values"]
         except KeyError:
             wr_val = []
 
