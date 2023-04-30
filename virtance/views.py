@@ -133,8 +133,8 @@ class VirtanceMetricsCpuAPI(APIView):
         )
 
         wvcomp = WebVirtCompute(virtance.compute.token, virtance.compute.hostname)
-        cpu_sys_res = wvcomp.get_metrics(cpu_sys_query, timestamp_yesterday, timestamp_today, "1m")
-        cpu_usr_res = wvcomp.get_metrics(cpu_usr_query, timestamp_yesterday, timestamp_today, "1m")
+        cpu_sys_res = wvcomp.get_metrics(cpu_sys_query, timestamp_yesterday, timestamp_today, "5m")
+        cpu_usr_res = wvcomp.get_metrics(cpu_usr_query, timestamp_yesterday, timestamp_today, "5m")
 
         try:
             sys_value = cpu_sys_res["data"]["result"][0]["values"]
@@ -175,8 +175,8 @@ class VirtanceMetricsNetAPI(APIView):
         tx_query = f"(irate(libvirt_domain_info_net_tx_bytes{{domain='{vname}'}}[5m])*8)/(1024*1024)"
 
         wvcomp = WebVirtCompute(virtance.compute.token, virtance.compute.hostname)
-        in_res = wvcomp.get_metrics(rx_query, timestamp_yesterday, timestamp_today, "1m")
-        out_res = wvcomp.get_metrics(tx_query, timestamp_yesterday, timestamp_today, "1m")
+        in_res = wvcomp.get_metrics(rx_query, timestamp_yesterday, timestamp_today, "5m")
+        out_res = wvcomp.get_metrics(tx_query, timestamp_yesterday, timestamp_today, "5m")
 
         for dev in net_devs:
             try:
@@ -212,8 +212,8 @@ class VirtanceMetricsDiskAPI(APIView):
         w_query = f"irate(libvirt_domain_info_block_write_bytes{{domain='{vname}'}}[5m])/(1024*1024)"
 
         wvcomp = WebVirtCompute(virtance.compute.token, virtance.compute.hostname)
-        rd_res = wvcomp.get_metrics(r_query, timestamp_yesterday, timestamp_today, "1m")
-        wr_res = wvcomp.get_metrics(w_query, timestamp_yesterday, timestamp_today, "1m")
+        rd_res = wvcomp.get_metrics(r_query, timestamp_yesterday, timestamp_today, "5m")
+        wr_res = wvcomp.get_metrics(w_query, timestamp_yesterday, timestamp_today, "5m")
 
         try:
             rd_val = rd_res["data"]["result"][0]["values"]
