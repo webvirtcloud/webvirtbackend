@@ -109,6 +109,23 @@ class Virtance(models.Model):
         return self.name
 
 
+class VirtanceCounter(models.Model):
+    virtance = models.ForeignKey(Virtance, models.PROTECT)
+    size = models.ForeignKey("size.Size", models.PROTECT)
+    amount = models.DecimalField(max_digits=12, decimal_places=6, default=0.0)
+    started = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+    stopped = models.TextField(blank=True, null=True)
+
+    class Meta:
+        ordering = ["-id"]
+        verbose_name = "Virtance Counter"
+        verbose_name_plural = "Virtance Counters"
+
+    def __unicode__(self):
+        return self.started
+
+
 class VirtanceError(models.Model):
     virtance = models.ForeignKey(Virtance, models.CASCADE)
     event = models.CharField(max_length=40, blank=True, null=True)
