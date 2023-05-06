@@ -1,9 +1,10 @@
 import time
 from uuid import uuid4
 from django.conf import settings
-from webvirtcloud.celery import app
+from django.utils import timezone
 from passlib.hash import sha512_crypt
 
+from webvirtcloud.celery import app
 from compute.helper import assign_free_compute, WebVirtCompute
 from network.helper import (
     assign_free_ipv4_public,
@@ -14,7 +15,7 @@ from size.models import Size
 from compute.models import Compute
 from network.models import Network, IPAddress
 from keypair.models import KeyPairVirtance
-from .models import Virtance
+from .models import Virtance, VirtanceCounter
 from .utils import virtance_error
 
 
@@ -97,6 +98,9 @@ def create_virtance(virtance_id, password):
             password_hash,
         )
         if res.get("detail") is None:
+            VirtanceCounter.objects.create(
+                virtance=virtance, size=virtance.size, amount=virtance.size.price, started=timezone.now()
+            )
             virtance.active()
             virtance.reset_event()
 
@@ -293,5 +297,43 @@ def delete_virtance(virtance_id):
         ipaddresse = IPAddress.objects.filter(virtance=virtance)
         ipaddresse.delete()
         virtance.delete()
+
+        current_time = timezone.now()
+        first_day_month = current_time.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+        try:
+            virtance_counter = VirtanceCounter.objects.get(started__gt=first_day_month, virtance=virtance)
+        except VirtanceCounter.DoesNotExist:
+            virtance_counter = VirtanceCounter.objects.create(
+                virtance=virtance, size=virtance.size, amount=virtance.size.price,
+                started=current_time - timezone.timedelta(hours=1)
+            )
+        virtance_counter.stop()
     else:
         virtance_error(virtance_id, res.get("detail"), "delete")
+
+
+@app.task
+def virtance_counter():
+    current_time = timezone.now()
+    current_day = current_time.day
+    current_hour = current_time.hour
+    first_day_month = current_time.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+    last_day_month = current_time.replace(hour=23, minute=59, second=59, microsecond=0) - timezone.timedelta(days=1)
+
+    for virtance in Virtance.objects.filter(is_deleted=False):
+        try:
+            VirtanceCounter.objects.get(started__gt=first_day_month, virtance=virtance)
+        except VirtanceCounter.DoesNotExist:
+            VirtanceCounter.objects.create(
+                virtance=virtance, size=virtance.size, amount=virtance.size.price,
+                started=current_time - timezone.timedelta(hours=1)
+            )
+
+    virtance_counters = VirtanceCounter.objects.filter(started__gt=first_day_month, stopped__isnull=True)
+
+    if current_day == 1 and current_hour == 0:
+        virtance_counters.update(stopped=last_day_month)
+    else:
+        for virt_count in virtance_counters:
+            virt_count.amount += virt_count.size.price
+            virt_count.save()

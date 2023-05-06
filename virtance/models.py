@@ -122,6 +122,11 @@ class VirtanceCounter(models.Model):
         verbose_name = "Virtance Counter"
         verbose_name_plural = "Virtance Counters"
 
+    def stop(self, *args, **kwargs):
+        self.stopped = timezone.now()
+        self.save()
+        super(Virtance, self).delete(*args, **kwargs)
+
     def __unicode__(self):
         return self.started
 
