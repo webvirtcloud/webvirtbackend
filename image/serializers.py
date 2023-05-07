@@ -1,8 +1,6 @@
-from decimal import Decimal
 from rest_framework import serializers
 
 from .models import Image
-from region.models import Region
 
 
 class ImageSerializer(serializers.ModelSerializer):
@@ -17,6 +15,7 @@ class ImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Image
         fields = (
+            "id",
             "slug",
             "name",
             "distribution",
@@ -31,9 +30,7 @@ class ImageSerializer(serializers.ModelSerializer):
         )
 
     def get_regions(self, obj):
-        if obj.type == obj.DISTRIBUTION or obj.type == obj.APPLICATION:
-            return [region.slug for region in obj.regions.all()]
-        return []
+        return [region.slug for region in obj.regions.all()]
 
     def get_public(self, obj):
         if obj.type == obj.DISTRIBUTION or obj.type == obj.APPLICATION:
@@ -53,9 +50,9 @@ class ImageSerializer(serializers.ModelSerializer):
     def get_min_disk_size(self, obj):
         if obj.type == obj.DISTRIBUTION or obj.type == obj.APPLICATION:
             return 0
-        return obj.disk_size / 1073741824
+        return obj.disk_size // 1073741824
 
     def get_size_gigabytes(self, obj):
         if obj.type == obj.DISTRIBUTION or obj.type == obj.APPLICATION:
             return 0
-        return Decimal(obj.file_size) / Decimal(1073741824)
+        return round(obj.file_size / 1073741824, 2)

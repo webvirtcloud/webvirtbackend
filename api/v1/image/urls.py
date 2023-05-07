@@ -1,7 +1,8 @@
 from django.urls import re_path
 
-from image.views import ImageListAPI
+from image.views import ImageListAPI, ImageDataAPI
 
 urlpatterns = [
     re_path(r"$", ImageListAPI.as_view(), name="image_list_api"),
+    re_path(r"(?P<id>\d+)/?$", ImageDataAPI.as_view(), name="image_data_api"),
 ]
