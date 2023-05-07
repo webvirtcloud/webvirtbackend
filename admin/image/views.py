@@ -1,4 +1,5 @@
 from django import forms
+from django.db.models import Q
 from django.urls import reverse_lazy
 from crispy_forms.layout import Layout
 from crispy_forms.helper import FormHelper
@@ -14,7 +15,10 @@ class AdminImageIndexView(AdminTemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['images'] = Image.objects.filter(is_deleted=False)
+        context['images'] = Image.objects.filter(
+            Q(type=Image.DISTRIBUTION) | Q(type=Image.APPLICATION),
+            is_deleted=False
+        )
         return context
 
 
