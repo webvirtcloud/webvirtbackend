@@ -84,9 +84,9 @@ class VirtanceConsoleAPI(APIView):
         virtance = self.get_object()
         wvcomp = WebVirtCompute(virtance.compute.token, virtance.compute.hostname)
         res = wvcomp.get_virtance_vnc(virtance.id)
-        vnc_password = res.get("vnc_password")
         console_host = settings.NOVNC_URL
         console_port = settings.NOVNC_PORT
+        console_hash = make_vnc_hash(res.get("vnc_password"))
         response = Response(
             {
                 "console": {
@@ -95,7 +95,7 @@ class VirtanceConsoleAPI(APIView):
                     "websocket": {
                         "host": console_host,
                         "port": console_port,
-                        "hash": make_vnc_hash(vnc_password),
+                        "hash": console_hash,
                     },
                 }
             }
