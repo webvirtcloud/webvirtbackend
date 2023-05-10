@@ -15,8 +15,6 @@ def assign_free_compute(virtance_id):
     ).order_by("?")
     
     for compute in computes: # TODO: check if compute is available
-        virtance.compute = compute
-        virtance.save()
         return compute.id
     
     return None

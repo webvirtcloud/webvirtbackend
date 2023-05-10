@@ -41,6 +41,8 @@ def create_virtance(virtance_id, password):
     compute_id = assign_free_compute(virtance_id)
     if compute_id is not None:
         compute = Compute.objects.get(id=compute_id)
+        virtance.compute = compute
+        virtance.save()
 
     ipv4_compute_id = assign_free_ipv4_compute(virtance_id)
     if ipv4_compute_id is not None:
@@ -109,7 +111,7 @@ def create_virtance(virtance_id, password):
             virtance_error(virtance_id, res.get("detail"), "create")
         else:
             virtance.active()
-            virtance.reset_events()
+            virtance.reset_event()
             VirtanceCounter.objects.create(
                 virtance=virtance, size=virtance.size, amount=virtance.size.price, started=timezone.now()
             )
