@@ -21,7 +21,7 @@ class Region(models.Model):
         self.updated = timezone.now()
         super(Region, self).save(*args, **kwargs)
 
-    def delete(self, *args, **kwargs):
+    def delete(self):
         self.is_active = False
         self.is_deleted = True
         self.deleted = timezone.now()

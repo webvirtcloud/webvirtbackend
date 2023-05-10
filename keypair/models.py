@@ -25,13 +25,13 @@ class KeyPair(models.Model):
         fp_plain = hashlib.md5(p_bytes).hexdigest()
         self.fingerprint = ":".join([fp_plain[i : i + 2] for i in range(0, len(fp_plain), 2)])
 
-    def __unicode__(self):
-        return self.name
-
     def save(self, *args, **kwargs):
         self.updated = timezone.now()
         self.make_fingerprint()
         super(KeyPair, self).save(*args, **kwargs)
+
+    def __unicode__(self):
+        return self.name
 
 
 class KeyPairVirtance(models.Model):

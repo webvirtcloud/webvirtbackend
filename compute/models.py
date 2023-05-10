@@ -28,9 +28,6 @@ class Compute(models.Model):
         verbose_name_plural = "Computes"
         ordering = ["-id"]
 
-    def __unicode__(self):
-        return self.name
-
     def save(self, *args, **kwargs):
         self.updated = timezone.now()
         super(Compute, self).save(*args, **kwargs)
@@ -40,3 +37,6 @@ class Compute(models.Model):
         self.deleted_at = timezone.now()
         self.is_deleted = True
         self.save()
+
+    def __unicode__(self):
+        return self.name

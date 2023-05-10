@@ -62,9 +62,9 @@ class IPAddress(models.Model):
         verbose_name_plural = "IP Addresses"
         ordering = ["-id"]
 
-    def __unicode__(self):
-        return self.address
-
     def save(self, *args, **kwargs):
         self.updated = timezone.now()
         super(IPAddress, self).save(*args, **kwargs)
+
+    def __unicode__(self):
+        return self.address

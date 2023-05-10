@@ -20,9 +20,9 @@ class Project(models.Model):
         verbose_name_plural = "Projects"
         ordering = ["-id"]
 
-    def __unicode__(self):
-        return self.name
-
     def save(self, *args, **kwargs):
         self.updated = timezone.now()
         super(Project, self).save(*args, **kwargs)
+
+    def __unicode__(self):
+        return self.name

@@ -94,15 +94,15 @@ class Virtance(models.Model):
         self.is_recovery_mode = False
         self.save()
 
+    def save(self, *args, **kwargs):
+        self.updated = timezone.now()
+        super(Virtance, self).save(*args, **kwargs)
+
     def delete(self):
         self.is_deleted = True
         self.deleted = timezone.now()
         self.reset_event()
         self.save()
-
-    def save(self, *args, **kwargs):
-        self.updated = timezone.now()
-        super().save(*args, **kwargs)
 
     def __unicode__(self):
         return self.name
