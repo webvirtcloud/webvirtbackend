@@ -6,7 +6,10 @@ from passlib.hash import sha512_crypt
 
 from webvirtcloud.celery import app
 from compute.webvirt import WebVirtCompute
-from compute.helper import assign_free_compute
+from compute.helper import (
+    vm_name, 
+    assign_free_compute
+)
 from network.helper import (
     assign_free_ipv4_public,
     assign_free_ipv4_compute,
@@ -31,6 +34,7 @@ def create_virtance(virtance_id, password):
     ipv4_public = None
     ipv4_compute = None
     ipv4_private = None
+    virtance = Virtance.objects.get(id=virtance_id)
     password = password if password else uuid4().hex[0:24]
     password_hash = sha512_crypt.encrypt(password, salt=uuid4().hex[0:8], rounds=5000)
 
@@ -54,11 +58,9 @@ def create_virtance(virtance_id, password):
         keypairs.append(kpv.keypair.public_key)
 
     if compute and ipv4_public and ipv4_compute and ipv4_private:
-        virtance = Virtance.objects.get(id=virtance_id)
-
         images = [
             {
-                "name": settings.VM_NAME_PREFIX + str(virtance.id),
+                "name": vm_name(virtance.id),
                 "size": virtance.size.disk,
                 "url": f"{settings.PUBLIC_IMAGES_URL}{virtance.template.file_name}",
                 "md5sum": virtance.template.md5sum,
@@ -106,11 +108,11 @@ def create_virtance(virtance_id, password):
         if isinstance(res, dict) and res.get("detail"):
             virtance_error(virtance_id, res.get("detail"), "create")
         else:
+            virtance.active()
+            virtance.reset_events()
             VirtanceCounter.objects.create(
                 virtance=virtance, size=virtance.size, amount=virtance.size.price, started=timezone.now()
             )
-            virtance.active()
-            virtance.reset_event()
 
 
 @app.task
@@ -120,8 +122,8 @@ def rebuild_virtance(virtance_id):
     ipv4_compute = None
     ipv4_private = None
     virtance = Virtance.objects.get(id=virtance_id)
-    ipv4_compute = IPAddress.objects.get(network__type=Network.COMPUTE, virtance=virtance)
     ipv4_public = IPAddress.objects.get(network__type=Network.PUBLIC, virtance=virtance)
+    ipv4_compute = IPAddress.objects.get(network__type=Network.COMPUTE, virtance=virtance)
     ipv4_private = IPAddress.objects.get(network__type=Network.PRIVATE, virtance=virtance)
     password_hash = sha512_crypt.encrypt(uuid4().hex[0:24], salt=uuid4().hex[0:8], rounds=5000)
 
