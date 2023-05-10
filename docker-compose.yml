@@ -53,12 +53,13 @@ services:
     hostname: celery
     volumes:
       - .:/app
-    command: celery -A webvirtcloud beat --loglevel=info
+    command: celery -A webvirtcloud beat -l info
     environment:
       DB_HOST: mariadb
-      DB_USER: root
-      DB_PASSWORD: root
-      PYTHONOPTIMIZE: 1
+      DB_PORT: 3306
+      DB_NAME: webvirtcloud
+      DB_USER: django
+      DB_PASSWORD: django
       ANSIBLE_HOST_KEY_CHECKING: 0
       ANSIBLE_PARAMIKO_LOOK_FOR_KEYS: 0
       DJANGO_SETTINGS_MODULE: webvirtcloud.settings.develop
@@ -74,11 +75,13 @@ services:
     hostname: celery
     volumes:
       - .:/app
-    command: celery -A webvirtcloud worker --loglevel=info
+    command: celery -A webvirtcloud worker -l info
     environment:
       DB_HOST: mariadb
-      DB_USER: root
-      DB_PASSWORD: root
+      DB_PORT: 3306
+      DB_NAME: webvirtcloud
+      DB_USER: django
+      DB_PASSWORD: django
       PYTHONOPTIMIZE: 1
       ANSIBLE_HOST_KEY_CHECKING: 0
       ANSIBLE_PARAMIKO_LOOK_FOR_KEYS: 0

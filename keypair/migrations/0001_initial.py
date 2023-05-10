@@ -67,7 +67,7 @@ class Migration(migrations.Migration):
                 (
                     "keypair",
                     models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE,
+                        on_delete=django.db.models.deletion.PROTECT,
                         to="keypair.keypair",
                     ),
                 ),

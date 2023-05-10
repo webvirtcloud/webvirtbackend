@@ -94,16 +94,15 @@ class Virtance(models.Model):
         self.is_recovery_mode = False
         self.save()
 
-    def save(self, *args, **kwargs):
-        self.updated = timezone.now()
-        super(Virtance, self).save(*args, **kwargs)
-
-    def delete(self, *args, **kwargs):
+    def delete(self):
         self.is_deleted = True
         self.deleted = timezone.now()
         self.reset_event()
         self.save()
-        super(Virtance, self).delete(*args, **kwargs)
+
+    def save(self, *args, **kwargs):
+        self.updated = timezone.now()
+        super().save(*args, **kwargs)
 
     def __unicode__(self):
         return self.name
@@ -122,17 +121,16 @@ class VirtanceCounter(models.Model):
         verbose_name = "Virtance Counter"
         verbose_name_plural = "Virtance Counters"
 
-    def stop(self, *args, **kwargs):
+    def stop(self):
         self.stopped = timezone.now()
         self.save()
-        super(Virtance, self).delete(*args, **kwargs)
 
     def __unicode__(self):
         return self.started
 
 
 class VirtanceError(models.Model):
-    virtance = models.ForeignKey(Virtance, models.CASCADE)
+    virtance = models.ForeignKey(Virtance, models.PROTECT)
     event = models.CharField(max_length=40, blank=True, null=True)
     message = models.TextField()
     created = models.DateTimeField(auto_now_add=True)
@@ -143,4 +141,4 @@ class VirtanceError(models.Model):
         verbose_name_plural = "Virtance Errors"
 
     def __unicode__(self):
-        return self.error
+        return self.event

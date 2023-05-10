@@ -5,7 +5,8 @@ from django.utils import timezone
 from passlib.hash import sha512_crypt
 
 from webvirtcloud.celery import app
-from compute.helper import assign_free_compute, WebVirtCompute
+from compute.webvirt import WebVirtCompute
+from compute.helper import assign_free_compute
 from network.helper import (
     assign_free_ipv4_public,
     assign_free_ipv4_compute,
@@ -30,26 +31,31 @@ def create_virtance(virtance_id, password):
     ipv4_public = None
     ipv4_compute = None
     ipv4_private = None
-    virtance = Virtance.objects.get(id=virtance_id)
     password = password if password else uuid4().hex[0:24]
     password_hash = sha512_crypt.encrypt(password, salt=uuid4().hex[0:8], rounds=5000)
 
-    if assign_free_compute(virtance.id) is True:
-        compute = Compute.objects.get(virtance=virtance)
+    compute_id = assign_free_compute(virtance_id)
+    if compute_id is not None:
+        compute = Compute.objects.get(id=compute_id)
 
-    if assign_free_ipv4_compute(virtance.id) is True:
-        ipv4_compute = IPAddress.objects.get(network__type=Network.COMPUTE, virtance=virtance)
+    ipv4_compute_id = assign_free_ipv4_compute(virtance_id)
+    if ipv4_compute_id is not None:
+        ipv4_compute = IPAddress.objects.get(id=ipv4_compute_id)
 
-    if assign_free_ipv4_public(virtance.id) is True:
-        ipv4_public = IPAddress.objects.get(network__type=Network.PUBLIC, virtance=virtance)
+    ipv4_public_id = assign_free_ipv4_public(virtance_id)
+    if ipv4_public_id is not None:
+        ipv4_public = IPAddress.objects.get(id=ipv4_public_id)
+    
+    ipv4_private_id = assign_free_ipv4_private(virtance_id)
+    if ipv4_private_id is not None:
+        ipv4_private = IPAddress.objects.get(id=ipv4_private_id)
 
-    if assign_free_ipv4_private(virtance.id) is True:
-        ipv4_private = IPAddress.objects.get(network__type=Network.PRIVATE, virtance=virtance)
-
-    for kpv in KeyPairVirtance.objects.filter(virtance=virtance):
+    for kpv in KeyPairVirtance.objects.filter(virtance_id=virtance_id):
         keypairs.append(kpv.keypair.public_key)
-        
+
     if compute and ipv4_public and ipv4_compute and ipv4_private:
+        virtance = Virtance.objects.get(id=virtance_id)
+
         images = [
             {
                 "name": settings.VM_NAME_PREFIX + str(virtance.id),
@@ -85,19 +91,21 @@ def create_virtance(virtance_id, password):
             "v6": None
         }
         
-        wvcomp = wvcomp_conn(virtance.compute)
+        wvcomp = wvcomp_conn(compute)
         res = wvcomp.create_virtance(
             virtance.id,
             virtance.uuid.hex,
             virtance.name,
             virtance.size.vcpu,
             virtance.size.memory,
-            images, 
+            images,
             network, 
             keypairs,
             password_hash,
         )
-        if res.get("detail") is None:
+        if isinstance(res, dict) and res.get("detail"):
+            virtance_error(virtance_id, res.get("detail"), "create")
+        else:
             VirtanceCounter.objects.create(
                 virtance=virtance, size=virtance.size, amount=virtance.size.price, started=timezone.now()
             )

@@ -10,7 +10,7 @@ from keypair.models import KeyPair, KeyPairVirtance
 from size.serializers import SizeSerializer
 from image.serializers import ImageSerializer
 from region.serializers import RegionSerializer
-from compute.helper import WebVirtCompute
+from compute.webvirt import WebVirtCompute
 from .models import Virtance
 from .utils import virtance_error
 from .tasks import create_virtance, action_virtance, resize_virtance, reset_password_virtance, rebuild_virtance

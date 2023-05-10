@@ -7,7 +7,7 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from compute.helper import WebVirtCompute
+from compute.webvirt import WebVirtCompute
 from webvirtcloud.views import error_message_response
 from .utils import make_vnc_hash
 from .models import Virtance

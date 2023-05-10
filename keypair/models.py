@@ -35,7 +35,7 @@ class KeyPair(models.Model):
 
 
 class KeyPairVirtance(models.Model):
-    keypair = models.ForeignKey(KeyPair, models.CASCADE)
+    keypair = models.ForeignKey(KeyPair, models.PROTECT)
     virtance = models.ForeignKey("virtance.Virtance", models.PROTECT)
     created = models.DateTimeField(auto_now_add=True)
 

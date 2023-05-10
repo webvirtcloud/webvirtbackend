@@ -55,7 +55,7 @@ class Migration(migrations.Migration):
                 (
                     "virtance",
                     models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE,
+                        on_delete=django.db.models.deletion.PROTECT,
                         to="virtance.virtance",
                     ),
                 ),

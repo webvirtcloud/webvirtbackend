@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404
 from network.models import IPAddress, Network
 from virtance.models import Virtance, VirtanceError
 from admin.mixins import AdminTemplateView
-from compute.helper import WebVirtCompute
+from compute.webvirt import WebVirtCompute
 
 
 class AdminVirtanceIndexView(AdminTemplateView):

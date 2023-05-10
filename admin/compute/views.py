@@ -9,7 +9,7 @@ from .forms import FormVolumeCreateAction,FormVolumeCloneAction, FormVolumeResiz
 from compute.models import Compute
 from virtance.models import Virtance
 from admin.mixins import AdminView, AdminTemplateView, AdminFormView, AdminUpdateView, AdminDeleteView
-from compute.helper import WebVirtCompute
+from compute.webvirt import WebVirtCompute
 
 
 class AdminComputeIndexView(AdminTemplateView):

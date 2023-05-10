@@ -35,7 +35,7 @@ class Compute(models.Model):
         self.updated = timezone.now()
         super(Compute, self).save(*args, **kwargs)
 
-    def deletea(self):
+    def delete(self):
         self.is_active = False
         self.deleted_at = timezone.now()
         self.is_deleted = True

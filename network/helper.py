@@ -23,9 +23,9 @@ def assign_free_ipv4_compute(virtance_id):
     ipaddrs = list(IPv4Network(f"{network.cidr}/{network.netmask}"))[SUBNET_RANGE]
     for ipaddr in random.sample(ipaddrs, k=len(ipaddrs)):
         if str(ipaddr) not in [ip.address for ip in assigned_ipv4_compute]:
-            IPAddress.objects.create(network=network, address=str(ipaddr), virtance=virtance)
-            return True
-    return False
+            ipaddr = IPAddress.objects.create(network=network, address=str(ipaddr), virtance=virtance)
+            return ipaddr.id
+    return None
 
 
 def assign_free_ipv4_public(virtance_id):
@@ -41,9 +41,9 @@ def assign_free_ipv4_public(virtance_id):
         ipaddrs = list(IPv4Network(f"{net.cidr}/{net.netmask}"))[SUBNET_RANGE]
         for ipaddr in random.sample(ipaddrs, k=len(ipaddrs)):
             if not IPAddress.objects.filter(network=net, address=str(ipaddr)).exists():
-                IPAddress.objects.create(network=net, address=str(ipaddr), virtance=virtance)
-                return True
-    return False
+                ipaddr = IPAddress.objects.create(network=net, address=str(ipaddr), virtance=virtance)
+                return ipaddr.id
+    return None
 
 
 def assign_free_ipv4_private(virtance_id):
@@ -59,9 +59,9 @@ def assign_free_ipv4_private(virtance_id):
         ipaddrs = list(IPv4Network(f"{net.cidr}/{net.netmask}"))[SUBNET_RANGE]
         for ipaddr in random.sample(ipaddrs, k=len(ipaddrs)):
             if not IPAddress.objects.filter(network=net, address=str(ipaddr)).exists():
-                IPAddress.objects.create(network=net, address=str(ipaddr), virtance=virtance)
-                return True
-    return False
+                ipaddr = IPAddress.objects.create(network=net, address=str(ipaddr), virtance=virtance)
+                return ipaddr.id
+    return None
 
 
 def assign_free_ipv6_public(virtance_id):
@@ -82,6 +82,6 @@ def assign_free_ipv6_public(virtance_id):
         limit = nums if nums < end else end - 1 # Check if limit is greater than end
         for i in random.sample(range(start, end, step), k=limit):
             if not IPAddress.objects.filter(network=net, address=str(ip_address(i))).exists():
-                IPAddress.objects.create(network=net, address=str(ip_address(i)), virtance=virtance)
-                return True
-    return False
+                ipaddr = IPAddress.objects.create(network=net, address=str(ip_address(i)), virtance=virtance)
+                return ipaddr.id
+    return None
