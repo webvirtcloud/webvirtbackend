@@ -54,8 +54,8 @@ def create_virtance(virtance_id, password):
             {
                 "name": settings.VM_NAME_PREFIX + str(virtance.id),
                 "size": virtance.size.disk,
-                "url": f"{settings.PUBLIC_IMAGES_URL}{virtance.image.file_name}",
-                "md5sum": virtance.image.md5sum,
+                "url": f"{settings.PUBLIC_IMAGES_URL}{virtance.template.file_name}",
+                "md5sum": virtance.template.md5sum,
                 "primary": True
             }
         ]
@@ -124,8 +124,8 @@ def rebuild_virtance(virtance_id):
         {
             "name": settings.VM_NAME_PREFIX + str(virtance.id),
             "size": virtance.size.disk,
-            "url": f"{settings.PUBLIC_IMAGES_URL}{virtance.image.file_name}",
-            "md5sum": virtance.image.md5sum,
+            "url": f"{settings.PUBLIC_IMAGES_URL}{virtance.template.file_name}",
+            "md5sum": virtance.template.md5sum,
             "primary": True
         }
     ]

@@ -241,9 +241,9 @@ class VirtanceActionSerializer(serializers.Serializer):
     def validate_action(self, value):
         actions = [
             "reboot",
-            "resize", 
-            "rename", 
-            "rebuild", 
+            "resize",
+            "rename",
+            "rebuild",
             "restore",
             "snapshot",
             "shutdown",
