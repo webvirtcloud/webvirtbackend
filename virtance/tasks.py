@@ -41,9 +41,7 @@ def create_virtance(virtance_id, password):
     compute_id = assign_free_compute(virtance_id)
     if compute_id is not None:
         compute = Compute.objects.get(id=compute_id)
-        virtance.compute = compute
-        virtance.save()
-
+        
     ipv4_compute_id = assign_free_ipv4_compute(virtance_id)
     if ipv4_compute_id is not None:
         ipv4_compute = IPAddress.objects.get(id=ipv4_compute_id)
@@ -94,7 +92,8 @@ def create_virtance(virtance_id, password):
             },
             "v6": None
         }
-        
+
+        virtance.compute = compute # TODO: race condition
         wvcomp = wvcomp_conn(compute)
         res = wvcomp.create_virtance(
             virtance.id,
