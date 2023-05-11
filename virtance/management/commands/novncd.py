@@ -15,7 +15,7 @@ CERT_PATH = os.path.join(DIR_PATH, "cert.pem")
 def get_console_connection(uuid):
     django.setup()
     from virtance.models import Virtance
-    from compute.helper import WebVirtCompute
+    from compute.webvirt import WebVirtCompute
 
     virtance = Virtance.objects.filter(uuid=uuid, is_deleted=False).first()
 
@@ -127,7 +127,7 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        # Create the WebSocketProxy with NovaProxyRequestHandler handler
+        print("Starting noVNC daemon...\n")
         server = WebSocketProxy(
             RequestHandlerClass=NovaProxyRequestHandler,
             listen_host=options["host"],
