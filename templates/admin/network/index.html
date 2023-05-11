@@ -31,11 +31,11 @@
                   Network
                 </th>
                 <th
-                scope="col"
-                class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-              >
-                Region
-              </th>
+                  scope="col"
+                  class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                >
+                  Region
+                </th>
                 <th
                   scope="col"
                   class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
@@ -55,15 +55,15 @@
                   Active
                 </th>
                 <th
-                scope="col"
-                class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-              >
-                Created
-              </th>
-                <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
-                  <span class="sr-only">Edit</span>
+                  scope="col"
+                  class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                >
+                  Created
                 </th>
-              </tr>
+                  <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
+                    <span class="sr-only">Edit</span>
+                  </th>
+                </tr>
             </thead>
             <tbody class="divide-y divide-gray-200 bg-white">
               {% for network in networks %}
@@ -74,7 +74,11 @@
                   {{ forloop.counter }}
                 </td>
                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                  {{ network.cidr }}/{{ network.netmask }}
+                  <a
+                    href="{% url 'admin_network_list' network.id %}"
+                    class="text-blue-600 hover:text-blue-900"
+                    >{{ network.cidr }}/{{ network.netmask }}<span class="sr-only">{{ network.cidr }}</span></a
+                  >
                 </td>
                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                   {{ network.region.name }}

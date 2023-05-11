@@ -1,7 +1,7 @@
 from django.urls import reverse_lazy
 from crispy_forms.helper import FormHelper
 from .forms import FormNetwork
-from network.models import Network
+from network.models import Network, IPAddress
 from admin.mixins import AdminTemplateView, AdminFormView, AdminUpdateView, AdminDeleteView
 
 
@@ -60,4 +60,16 @@ class AdminNetworkDeleteView(AdminDeleteView):
     def get_context_data(self, **kwargs):
         context = super(AdminNetworkDeleteView, self).get_context_data(**kwargs)
         context['helper'] = self.helper
+        return context
+
+
+class AdminNetworkListView(AdminTemplateView):
+    template_name = 'admin/network/list.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(AdminNetworkListView, self).get_context_data(**kwargs)
+        network = Network.objects.filter(pk=self.kwargs.get("pk")).first()
+        ip_addresses = IPAddress.objects.filter(network=network)
+        context["network"] = network
+        context["ip_addresses"] = ip_addresses
         return context
