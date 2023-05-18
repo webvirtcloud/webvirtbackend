@@ -69,7 +69,6 @@
             "updated": "2023-05-07T17:19:37.468Z",
             "deleted": null,
             "regions": [
-                2,
                 1
             ]
         }
@@ -77,32 +76,6 @@
     {
         "model": "image.image",
         "pk": 4,
-        "fields": {
-            "user": 2,
-            "source": 101,
-            "uuid": "95360f9e-9ed2-4f89-91c3-209bd6402a85",
-            "name": "Test",
-            "slug": null,
-            "type": "snapshot",
-            "md5sum": "36ef40ccb3a23673a6ac396885f97064",
-            "distribution": "centos",
-            "description": "CentOS 8 Stream x64",
-            "file_name": "36ef40ccb3a23673a6ac396885f97064.img",
-            "file_size": 1737418240,
-            "disk_size": 10737418240,
-            "is_active": true,
-            "is_deleted": false,
-            "created": "2022-11-11T18:48:33.848Z",
-            "updated": "2022-11-11T18:48:33.848Z",
-            "deleted": null,
-            "regions": [
-                1
-            ]
-        }
-    },
-    {
-        "model": "image.image",
-        "pk": 5,
         "fields": {
             "user": null,
             "source": null,
@@ -128,7 +101,7 @@
     },
     {
         "model": "image.image",
-        "pk": 6,
+        "pk": 5,
         "fields": {
             "user": null,
             "source": null,
@@ -154,7 +127,7 @@
     },
     {
         "model": "image.image",
-        "pk": 7,
+        "pk": 6,
         "fields": {
             "user": null,
             "source": null,
@@ -180,7 +153,7 @@
     },
     {
         "model": "image.image",
-        "pk": 8,
+        "pk": 7,
         "fields": {
             "user": null,
             "source": null,
@@ -206,7 +179,7 @@
     },
     {
         "model": "image.image",
-        "pk": 9,
+        "pk": 8,
         "fields": {
             "user": null,
             "source": null,
@@ -232,7 +205,7 @@
     },
     {
         "model": "image.image",
-        "pk": 10,
+        "pk": 9,
         "fields": {
             "user": null,
             "source": null,
@@ -258,7 +231,7 @@
     },
     {
         "model": "image.image",
-        "pk": 11,
+        "pk": 10,
         "fields": {
             "user": null,
             "source": null,
