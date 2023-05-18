@@ -3,6 +3,8 @@
         "model": "image.image",
         "pk": 1,
         "fields": {
+            "user": null,
+            "source": null,
             "uuid": "19f34df8-5da9-4966-b7ff-c02c2e889756",
             "name": "20.04 (LTS) x64",
             "slug": "ubuntu-20-04-x64",
@@ -25,6 +27,8 @@
         "model": "image.image",
         "pk": 2,
         "fields": {
+            "user": null,
+            "source": null,
             "uuid": "855a25c7-c5ac-40a5-8ed7-8949fef5b0ce",
             "name": "22.04 (LTS) x64",
             "slug": "ubuntu-22-04-x64",
@@ -47,6 +51,8 @@
         "model": "image.image",
         "pk": 3,
         "fields": {
+            "user": null,
+            "source": null,
             "uuid": "95360f9e-9ed2-4f89-91c3-209bd6402a80",
             "name": "8 Stream x64",
             "slug": "centos-8-stream-x64",
@@ -60,9 +66,220 @@
             "is_active": true,
             "is_deleted": false,
             "created": "2022-11-11T18:48:33.848Z",
+            "updated": "2023-05-07T17:19:37.468Z",
+            "deleted": null,
+            "regions": [
+                2,
+                1
+            ]
+        }
+    },
+    {
+        "model": "image.image",
+        "pk": 4,
+        "fields": {
+            "user": 2,
+            "source": 101,
+            "uuid": "95360f9e-9ed2-4f89-91c3-209bd6402a85",
+            "name": "Test",
+            "slug": null,
+            "type": "snapshot",
+            "md5sum": "36ef40ccb3a23673a6ac396885f97064",
+            "distribution": "centos",
+            "description": "CentOS 8 Stream x64",
+            "file_name": "36ef40ccb3a23673a6ac396885f97064.img",
+            "file_size": 1737418240,
+            "disk_size": 10737418240,
+            "is_active": true,
+            "is_deleted": false,
+            "created": "2022-11-11T18:48:33.848Z",
             "updated": "2022-11-11T18:48:33.848Z",
             "deleted": null,
-            "regions": []
+            "regions": [
+                1
+            ]
+        }
+    },
+    {
+        "model": "image.image",
+        "pk": 5,
+        "fields": {
+            "user": null,
+            "source": null,
+            "uuid": "78929232-9112-4ab2-88f9-f4fe6211c02b",
+            "name": "9 Stream x64",
+            "slug": "centos-9-stream-x64",
+            "type": "distribution",
+            "md5sum": "4d888215a40412b5920fa25c4e40f94b",
+            "distribution": "centos",
+            "description": "CentOS 9 Stream x64",
+            "file_name": "centos-9-stream-x64.qcow2",
+            "file_size": null,
+            "disk_size": null,
+            "is_active": true,
+            "is_deleted": false,
+            "created": "2023-05-18T19:33:35.013Z",
+            "updated": "2023-05-18T19:41:30.305Z",
+            "deleted": null,
+            "regions": [
+                1
+            ]
+        }
+    },
+    {
+        "model": "image.image",
+        "pk": 6,
+        "fields": {
+            "user": null,
+            "source": null,
+            "uuid": "476e8849-dfdb-4048-892c-ce694ac3e3e7",
+            "name": "11 x64",
+            "slug": "debian-11-x64",
+            "type": "distribution",
+            "md5sum": "d1755a7da4f28dc68daed81b20878b14",
+            "distribution": "debian",
+            "description": "Debian 11 x64",
+            "file_name": "debian-11-x64.qcow2",
+            "file_size": null,
+            "disk_size": null,
+            "is_active": true,
+            "is_deleted": false,
+            "created": "2023-05-18T19:35:21.130Z",
+            "updated": "2023-05-18T19:41:25.407Z",
+            "deleted": null,
+            "regions": [
+                1
+            ]
+        }
+    },
+    {
+        "model": "image.image",
+        "pk": 7,
+        "fields": {
+            "user": null,
+            "source": null,
+            "uuid": "b0da86f0-a873-47d8-a51e-9d8a35cbafed",
+            "name": "8 x64",
+            "slug": "almalinux-8-x64",
+            "type": "distribution",
+            "md5sum": "ead74ac69290066707c50f8618b6296c",
+            "distribution": "almalinux",
+            "description": "Almalinux 8 x64",
+            "file_name": "almalinux-8-x64.qcow2",
+            "file_size": null,
+            "disk_size": null,
+            "is_active": true,
+            "is_deleted": false,
+            "created": "2023-05-18T19:36:24.243Z",
+            "updated": "2023-05-18T19:41:22.428Z",
+            "deleted": null,
+            "regions": [
+                1
+            ]
+        }
+    },
+    {
+        "model": "image.image",
+        "pk": 8,
+        "fields": {
+            "user": null,
+            "source": null,
+            "uuid": "06280fd3-21e3-4727-82dc-9e35fa93ad27",
+            "name": "9 x64",
+            "slug": "almalinux-9-x64",
+            "type": "distribution",
+            "md5sum": "0c237bc14bfd17679d3c0cb23ac5a4ec",
+            "distribution": "almalinux",
+            "description": "Almalinux 9 x64",
+            "file_name": "almalinux-9-x64.qcow2",
+            "file_size": null,
+            "disk_size": null,
+            "is_active": true,
+            "is_deleted": false,
+            "created": "2023-05-18T19:37:40.249Z",
+            "updated": "2023-05-18T19:41:19.007Z",
+            "deleted": null,
+            "regions": [
+                1
+            ]
+        }
+    },
+    {
+        "model": "image.image",
+        "pk": 9,
+        "fields": {
+            "user": null,
+            "source": null,
+            "uuid": "25afebbd-1339-4274-8eca-240a463f2087",
+            "name": "8 x64",
+            "slug": "rockylinux-8-x64",
+            "type": "distribution",
+            "md5sum": "245702e4c5025d2bd75c7b8b527362e9",
+            "distribution": "rockylinux",
+            "description": "Rockylinux 8 x64",
+            "file_name": "rockylinux-8-x64.qcow2",
+            "file_size": null,
+            "disk_size": null,
+            "is_active": true,
+            "is_deleted": false,
+            "created": "2023-05-18T19:38:28.501Z",
+            "updated": "2023-05-18T19:41:15.984Z",
+            "deleted": null,
+            "regions": [
+                1
+            ]
+        }
+    },
+    {
+        "model": "image.image",
+        "pk": 10,
+        "fields": {
+            "user": null,
+            "source": null,
+            "uuid": "5d499618-70de-4d20-adf3-e2bad2af5c92",
+            "name": "9 x64",
+            "slug": "rockylinux-9-x64",
+            "type": "distribution",
+            "md5sum": "39c564e75a8684e1256a32fe6daa3d5e",
+            "distribution": "rockylinux",
+            "description": "Rockylinux 9 x64",
+            "file_name": "rockylinux-9-x64.qcow2",
+            "file_size": null,
+            "disk_size": null,
+            "is_active": true,
+            "is_deleted": false,
+            "created": "2023-05-18T19:39:23.119Z",
+            "updated": "2023-05-18T19:41:12.283Z",
+            "deleted": null,
+            "regions": [
+                1
+            ]
+        }
+    },
+    {
+        "model": "image.image",
+        "pk": 11,
+        "fields": {
+            "user": null,
+            "source": null,
+            "uuid": "566be0e8-6225-4831-ba5a-b9bfc49c7ca6",
+            "name": "38 x64",
+            "slug": "fedora-38-x64",
+            "type": "distribution",
+            "md5sum": "41755a7da4a28dc68daed81b20878b24",
+            "distribution": "fedora",
+            "description": "Fedora 38 x64",
+            "file_name": "fedora-38-x64.qcow2",
+            "file_size": null,
+            "disk_size": null,
+            "is_active": false,
+            "is_deleted": false,
+            "created": "2023-05-18T19:40:46.313Z",
+            "updated": "2023-05-18T19:40:46.313Z",
+            "deleted": null,
+            "regions": [
+                1
+            ]
         }
     }
 ]
