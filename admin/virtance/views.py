@@ -20,7 +20,7 @@ class AdminVirtanceDataView(AdminTemplateView):
     template_name = 'admin/virtance/virtance.html'
 
     def get_object(self):
-        return get_object_or_404(Virtance, pk=self.kwargs['pk'])
+        return get_object_or_404(Virtance, pk=self.kwargs['pk'], is_deleted=False)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
