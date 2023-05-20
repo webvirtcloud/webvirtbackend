@@ -209,6 +209,7 @@ class CreateVirtanceSerializer(serializers.Serializer):
             user=user,
             name=name,
             size=size,
+            event=Virtance.CREATE,
             region=region,
             disk=size.disk,
             template=template,
