@@ -333,7 +333,7 @@ class VirtanceActionSerializer(serializers.Serializer):
         password = validated_data.get("password")
         
         # Set new task event
-        virtnace.event == action
+        virtnace.event = action
         virtnace.status = virtnace.PENDING
         virtnace.save()
 
