@@ -239,7 +239,7 @@
             "name": "38 x64",
             "slug": "fedora-38-x64",
             "type": "distribution",
-            "md5sum": "aff98d4c8e808ee18311dc00e1acae02",
+            "md5sum": "8bc91b5d454c9d7ab7a6560d5f19cc4f",
             "distribution": "fedora",
             "description": "Fedora 38 x64",
             "file_name": "fedora-38-x64.qcow2",
