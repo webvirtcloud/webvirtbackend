@@ -73,7 +73,7 @@ class WebVirtCompute(object):
         }
         response = self._make_post(url, data)
         body = self._process_response(response)
-        return body.get("virtance")
+        return body
 
     def rebuild_virtance(self, id, hostname, images, network, keypairs, password):
         url = f"virtances/{vm_name(id)}/rebuild/"

@@ -1,9 +1,10 @@
 from django.conf import settings
-from django.shortcuts import get_object_or_404
+from django.urls import reverse
+from django.shortcuts import redirect, get_object_or_404
 
 from network.models import IPAddress, Network
 from virtance.models import Virtance, VirtanceError
-from admin.mixins import AdminTemplateView
+from admin.mixins import AdminView, AdminTemplateView
 from compute.webvirt import WebVirtCompute
 
 
@@ -68,3 +69,14 @@ class AdminVirtanceConsoleView(AdminTemplateView):
         context['console_host'] = console_host
         context['console_port'] = console_port
         return context
+
+
+class AdminVirtanceResetEventView(AdminView):
+
+    def get_object(self):
+        return get_object_or_404(Virtance, pk=self.kwargs['pk'])
+    
+    def post(self, request, *args, **kwargs):
+        virtance = self.get_object()
+        virtance.reset_event()
+        return redirect(reverse("admin_virtance_data", args=[kwargs.get("pk")]))

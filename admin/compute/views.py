@@ -544,4 +544,4 @@ class AdminComputeNwfilterDeleteView(AdminView):
             messages.success(request, "NwFilter successfuly deleted.")
         else:
             messages.error(request, res.get("detail"))
-        return redirect(reverse("admin_compute_nwfilters", args=kwargs.get("pk")))
+        return redirect(reverse("admin_compute_nwfilters", args=[kwargs.get("pk")]))
