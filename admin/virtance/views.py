@@ -36,9 +36,17 @@ class AdminVirtanceDataView(AdminTemplateView):
 
         virtance_errors = VirtanceError.objects.filter(virtance=virtance)
         ipv4public = IPAddress.objects.filter(virtance=virtance, network__type=Network.PUBLIC).first()
-        ipv4private = IPAddress.objects.filter(virtance=virtance, network__type=Network.PRIVATE).first()
-        ipv4compute = IPAddress.objects.filter(virtance=virtance, network__type=Network.COMPUTE).first()
+        if ipv4public is None:
+            errors.append("No public IP address assigned to this virtance")
         
+        ipv4private = IPAddress.objects.filter(virtance=virtance, network__type=Network.PRIVATE).first()
+        if ipv4private is None:
+            errors.append("No private IP address assigned to this virtance")
+
+        ipv4compute = IPAddress.objects.filter(virtance=virtance, network__type=Network.COMPUTE).first()
+        if ipv4compute is None:
+            errors.append("No compute IP address assigned to this virtance")
+
         context['errors'] = errors
         context['status'] = status
         context['virtance'] = virtance
@@ -68,13 +76,15 @@ class AdminVirtanceConsoleView(AdminTemplateView):
 
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
         virtance = self.get_object()
+        context = super().get_context_data(**kwargs)
+        
         wvcomp = WebVirtCompute(virtance.compute.token, virtance.compute.hostname)
         res = wvcomp.get_virtance_vnc(virtance.id)
         vnc_password = res.get("vnc_password")
         console_host = settings.NOVNC_URL
         console_port = settings.NOVNC_PORT
+        
         context['virtance'] = virtance
         context['vnc_password'] = vnc_password
         context['console_host'] = console_host
