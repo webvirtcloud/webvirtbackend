@@ -24,12 +24,23 @@ class AdminVirtanceDataView(AdminTemplateView):
         return get_object_or_404(Virtance, pk=self.kwargs['pk'], is_deleted=False)
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+        errors = []
         virtance = self.get_object()
+        context = super().get_context_data(**kwargs)
+        
+        wvcomp = WebVirtCompute(virtance.compute.token, virtance.compute.hostname)
+        res_status = wvcomp.status_virtance(virtance.id)
+        status = res_status.get("status")
+        if res_status.get("detail"):
+            errors.append(res_status.get("detail"))
+
         virtance_errors = VirtanceError.objects.filter(virtance=virtance)
         ipv4public = IPAddress.objects.filter(virtance=virtance, network__type=Network.PUBLIC).first()
         ipv4private = IPAddress.objects.filter(virtance=virtance, network__type=Network.PRIVATE).first()
         ipv4compute = IPAddress.objects.filter(virtance=virtance, network__type=Network.COMPUTE).first()
+        
+        context['errors'] = errors
+        context['status'] = status
         context['virtance'] = virtance
         context['ipv4public'] = ipv4public
         context['ipv4private'] = ipv4private

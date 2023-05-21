@@ -86,13 +86,13 @@ class WebVirtCompute(object):
         }
         response = self._make_post(url, data)
         body = self._process_response(response)
-        return body.get("virtance")
+        return body
 
     def status_virtance(self, id):
         url = f"virtances/{vm_name(id)}/status/"
         response = self._make_get(url)
         body = self._process_response(response)
-        return body.get("status")
+        return body
 
     def get_virtance_vnc(self, id):
         url = f"virtances/{vm_name(id)}/vnc/"
@@ -134,7 +134,7 @@ class WebVirtCompute(object):
         url = f"virtances/{vm_name(id)}/media/"
         response = self._make_get(url)
         body = self._process_response(response)
-        return body.get("media")
+        return body
 
     def mount_virtance_media(self, id, device, image):
         url = f"virtances/{vm_name(id)}/media/"
@@ -187,13 +187,13 @@ class WebVirtCompute(object):
         url = "storages/"
         response = self._make_get(url)
         body = self._process_response(response)
-        return body.get("storages")
+        return body
 
     def get_storage(self, pool):
         url = f"storages/{pool}/"
         response = self._make_get(url)
         body = self._process_response(response)
-        return body.get("storage")
+        return body
 
     def delete_storage(self, pool):
         url = f"storages/{pool}/"
@@ -251,13 +251,13 @@ class WebVirtCompute(object):
         url = "networks/"
         response = self._make_get(url)
         body = self._process_response(response)
-        return body.get("networks")
+        return body
 
     def get_network(self, net):
         url = f"networks/{net}/"
         response = self._make_get(url)
         body = self._process_response(response)
-        return body.get("network")
+        return body
 
     def delete_network(self, net):
         url = f"networks/{net}"
@@ -276,13 +276,13 @@ class WebVirtCompute(object):
         url = "interfaces/"
         response = self._make_get(url)
         body = self._process_response(response)
-        return body.get("interfaces")
+        return body
 
     def get_secrets(self):
         url = "secrets/"
         response = self._make_get(url)
         body = self._process_response(response)
-        return body.get("secrets")
+        return body
 
     def create_secret(self, ephemeral, private, type, data):
         url = "secrets/"
@@ -300,7 +300,7 @@ class WebVirtCompute(object):
         url = f"secrets/{uuid}/"
         response = self._make_get(url)
         body = self._process_response(response)
-        return body.get("secret")
+        return body
 
     def update_secret_value(self, uuid, value):
         url = f"secrets/{uuid}"
@@ -318,7 +318,7 @@ class WebVirtCompute(object):
         url = "nwfilters/"
         response = self._make_get(url)
         body = self._process_response(response)
-        return body.get("nwfilters")
+        return body
 
     def create_nwfilter(self, xml):
         url = "nwfilters/"
@@ -330,7 +330,7 @@ class WebVirtCompute(object):
         url = f"nwfilters/{name}/"
         response = self._make_get(url)
         body = self._process_response(response)
-        return body.get("nwfilter")
+        return body
 
     def delete_nwfilter(self, name):
         url = f"nwfilters/{name}/"

@@ -92,9 +92,9 @@ class AdminComputeStoragesView(AdminTemplateView):
         context = super().get_context_data(**kwargs)
         compute = get_object_or_404(Compute, pk=kwargs.get("pk"), is_deleted=False)
         wvcomp = WebVirtCompute(compute.token, compute.hostname)
-        host_storages = wvcomp.get_storages()
+        res = wvcomp.get_storages()
         context['compute'] = compute
-        context['storages'] = host_storages
+        context['storages'] = res.get("storages")
         return context
 
 
@@ -130,7 +130,7 @@ class AdminComputeStorageRBDCreateView(AdminFormView):
         compute = get_object_or_404(Compute, pk=self.kwargs.get("pk"), is_deleted=False)
         wvcomp = WebVirtCompute(compute.token, compute.hostname)
         res = wvcomp.get_secrets()
-        form.fields["secret"].choices = [(secret.get("uuid"), secret.get("uuid")) for secret in res]
+        form.fields["secret"].choices = [(secret.get("uuid"), secret.get("uuid")) for secret in res.get("secrets")]
         return form
 
     def form_valid(self, form):
@@ -165,11 +165,11 @@ class AdminComputeStorageView(AdminTemplateView):
         context = super().get_context_data(**kwargs)
         compute = get_object_or_404(Compute, pk=kwargs.get("pk"), is_deleted=False)
         wvcomp = WebVirtCompute(compute.token, compute.hostname)
-        host_storage_pool = wvcomp.get_storage(kwargs.get("pool"))
+        res = wvcomp.get_storage(kwargs.get("pool"))
         context['compute'] = compute
         context['form_start'] = FormStartAction()
         context['form_autostart'] = FormAutostartAction()
-        context['storage_pool'] = host_storage_pool
+        context['storage_pool'] = res.get("storage")
         return context
 
     def post(self, request, *args, **kwargs):
@@ -314,7 +314,7 @@ class AdminComputeNetworkCreateView(AdminFormView):
         wvcomp = WebVirtCompute(compute.token, compute.hostname)
         res = wvcomp.get_interfaces()
         form.fields["bridge_name"].choices = [
-            (iface.get("name"), iface.get("name")) for iface in res if iface.get("type") == "bridge"
+            (iface.get("name"), iface.get("name")) for iface in res.get("interfaces") if iface.get("type") == "bridge"
         ]
         return form
 
@@ -344,9 +344,9 @@ class AdminComputeNetworksView(AdminTemplateView):
         context = super().get_context_data(**kwargs)
         compute = get_object_or_404(Compute, pk=kwargs.get("pk"), is_deleted=False)
         wvcomp = WebVirtCompute(compute.token, compute.hostname)
-        host_networks = wvcomp.get_networks()
+        res = wvcomp.get_networks()
         context['compute'] = compute
-        context['networks'] = host_networks
+        context['networks'] = res.get("networks")
         return context
 
 
@@ -357,11 +357,11 @@ class AdminComputeNetworkView(AdminTemplateView):
         context = super().get_context_data(**kwargs)
         compute = get_object_or_404(Compute, pk=kwargs.get("pk"), is_deleted=False)
         wvcomp = WebVirtCompute(compute.token, compute.hostname)
-        host_network_pool = wvcomp.get_network(kwargs.get("pool"))
+        res = wvcomp.get_network(kwargs.get("pool"))
         context["compute"] = compute
         context["form_start"] = FormStartAction()
         context["form_autostart"] = FormAutostartAction()
-        context["network_pool"] = host_network_pool
+        context["network_pool"] = res.get("network")
         return context
 
     def post(self, request, *args, **kwargs):
@@ -412,9 +412,9 @@ class AdminComputeSecretsView(AdminTemplateView):
         context = super().get_context_data(**kwargs)
         compute = get_object_or_404(Compute, pk=kwargs.get("pk"), is_deleted=False)
         wvcomp = WebVirtCompute(compute.token, compute.hostname)
-        host_secrets = wvcomp.get_secrets()
+        res = wvcomp.get_secrets()
         context['compute'] = compute
-        context['secrets'] = host_secrets
+        context['secrets'] = res.get("secrets")
         return context
     
 
@@ -453,7 +453,8 @@ class AdminComputeSecretValueView(AdminFormView):
         compute = get_object_or_404(Compute, pk=self.kwargs.get("pk"), is_deleted=False)
         wvcomp = WebVirtCompute(compute.token, compute.hostname)
         res = wvcomp.get_secret(self.kwargs.get("uuid"))
-        form.fields["value"].initial = res.get("value")
+        secret = res.get("secret")
+        form.fields["value"].initial = secret.get("value")
         return form
 
     def form_valid(self, form):
@@ -494,9 +495,9 @@ class AdminComputeNwfiltersView(AdminTemplateView):
         context = super().get_context_data(**kwargs)
         compute = get_object_or_404(Compute, pk=kwargs.get("pk"), is_deleted=False)
         wvcomp = WebVirtCompute(compute.token, compute.hostname)
-        host_nwfilters = wvcomp.get_nwfilters()
+        res = wvcomp.get_nwfilters()
         context['compute'] = compute
-        context['nwfilters'] = host_nwfilters
+        context['nwfilters'] = res.get("nwfilters")
         return context
 
 
@@ -528,9 +529,9 @@ class AdminComputeNwfilterView(AdminTemplateView):
         context = super().get_context_data(**kwargs)
         compute = get_object_or_404(Compute, pk=self.kwargs.get("pk"), is_deleted=False)
         wvcomp = WebVirtCompute(compute.token, compute.hostname)
-        host_nwfilter = wvcomp.view_nwfilter(kwargs.get("nfilter"))
+        res = wvcomp.view_nwfilter(kwargs.get("nfilter"))
         context["compute"] = compute
-        context["nwfilter"] = host_nwfilter
+        context["nwfilter"] = res.get("nwfilter")
         return context
 
 

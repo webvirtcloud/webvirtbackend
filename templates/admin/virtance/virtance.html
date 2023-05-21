@@ -1,6 +1,11 @@
 {% extends "admin/base.html" %} 
 {% block content %}
 <div class="overflow-hidden bg-white shadow sm:rounded-lg">
+  {% for error in errors %}
+  <div>
+    {{ error }}
+  </div>
+  {% endfor %}
   <div class="px-4 py-5 sm:px-6">
     <a class="text-blue-600 hover:text-blue-900" href="{% url 'admin_virtance_console' virtance.id %}">Console</a>
     <h3 class="text-base font-semibold leading-6 text-gray-900">
@@ -43,7 +48,7 @@
       </div>
       <div class="sm:col-span-1">
         <dt class="text-sm font-medium text-gray-500">Status</dt>
-        <dd class="mt-1 text-sm text-gray-900">{{ virtance.status|capfirst }}</dd>
+        <dd class="mt-1 text-sm text-gray-900">{{ status }}</dd>
       </div>
       <div class="sm:col-span-1">
         <dt class="text-sm font-medium text-gray-500">Size</dt>
