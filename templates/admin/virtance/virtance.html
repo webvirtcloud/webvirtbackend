@@ -1,109 +1,337 @@
-{% extends "admin/base.html" %} 
-{% block content %}
-<div class="overflow-hidden bg-white shadow sm:rounded-lg">
-  {% for error in errors %}
-  <div>
-    {{ error }}
-  </div>
-  {% endfor %}
-  <div class="px-4 py-5 sm:px-6">
-    <a class="text-blue-600 hover:text-blue-900" href="{% url 'admin_virtance_console' virtance.id %}">Console</a>
-    <h3 class="text-base font-semibold leading-6 text-gray-900">
-      Virtance
-    </h3>
-    <p class="mt-1 max-w-2xl text-sm text-gray-500">
-      {{ virtance.user.email }}
-    </p>
-    {% if virtance.event %}
-      <div class="text-red-600">Event: {{ virtance.event|capfirst }}</dev>
-    {% endif %}
-    {% if virtance.event %}
-    <div>
-      <form action="{% url 'admin_virtance_reset_event' virtance.id %}" method="post">
-        {% csrf_token %}
-        <button class="block rounded-md bg-red-600 py-2 px-3 text-center text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600" name="reset" onclick="this.form.submit();">Reset Event</button>
-      </form>
+{% extends "admin/base.html" %} {% block content %}
+<div class="space-y-8">
+  <div class="overflow-hidden bg-white shadow sm:rounded-lg">
+    <div class="px-4 py-5 sm:px-6">
+      <div class="mb-4 space-y-1">
+        {% for error in errors %}
+        <div
+          id="error-{{forloop.counter}}"
+          class="bg-red-50 relative p-4 rounded-md flex gap-2"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+            class="w-5 h-5 text-red-400"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z"
+              clip-rule="evenodd"
+            />
+          </svg>
+
+          <p class="text-red-600 text-sm">{{ error }}</p>
+          <button
+            onclick="document.getElementById('error-{{forloop.counter}}').remove()"
+            type="button"
+            class="absolute top-1/2 -translate-y-1/2 right-4 text-red-500"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+              class="w-5 h-5"
+            >
+              <path
+                d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z"
+              />
+            </svg>
+          </button>
+        </div>
+        {% endfor %}
+      </div>
+      <div class="flex justify-between items-center">
+        <div>
+          <div class="flex items-center gap-2">
+            <h3 class="text-2xl font-semibold leading-6 text-gray-900">
+              {{virtance.name}}
+            </h3>
+            {% if virtance.event %}
+            <div
+              class="py-0.5 px-1 rounded-md flex items-center gap-1 border border-yellow-300 bg-yellow-50 text-xs text-yellow-700"
+            >
+              <svg
+                class="animate-spin h-3 w-3"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  class="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  stroke-width="4"
+                ></circle>
+                <path
+                  class="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
+              </svg>
+              {{ virtance.event|capfirst }}...
+            </div>
+            {% endif %} {% if virtance.event %}
+            <div>
+              <form
+                action="{% url 'admin_virtance_reset_event' virtance.id %}"
+                method="post"
+              >
+                {% csrf_token %}
+                <button
+                  class="flex items-center justify-center gap-1 rounded-md bg-gray-200 py-0.5 px-1.5 text-center text-xs font-semibold shadow-sm hover:bg-gray-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
+                  name="reset"
+                  type="submit"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    class="w-3 h-3"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M15.312 11.424a5.5 5.5 0 01-9.201 2.466l-.312-.311h2.433a.75.75 0 000-1.5H3.989a.75.75 0 00-.75.75v4.242a.75.75 0 001.5 0v-2.43l.31.31a7 7 0 0011.712-3.138.75.75 0 00-1.449-.39zm1.23-3.723a.75.75 0 00.219-.53V2.929a.75.75 0 00-1.5 0V5.36l-.31-.31A7 7 0 003.239 8.188a.75.75 0 101.448.389A5.5 5.5 0 0113.89 6.11l.311.31h-2.432a.75.75 0 000 1.5h4.243a.75.75 0 00.53-.219z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+
+                  Reset Event
+                </button>
+              </form>
+            </div>
+            {% endif %}
+          </div>
+          <p class="mt-1 max-w-2xl text-sm text-gray-500">
+            {{ virtance.user.email }}
+          </p>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <a
+            class="text-gray-500 hover:bg-gray-100 block w-9 flex items-center justify-center h-9 rounded-md border"
+            onclick="window.open(`{% url 'admin_virtance_console' virtance.id %}`, 
+              'newwindow', 
+              'width=800,height=600'
+            ); 
+            return false;
+            "
+            href="{% url 'admin_virtance_console' virtance.id %}"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+              class="w-5 h-5"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M3.25 3A2.25 2.25 0 001 5.25v9.5A2.25 2.25 0 003.25 17h13.5A2.25 2.25 0 0019 14.75v-9.5A2.25 2.25 0 0016.75 3H3.25zm.943 8.752a.75.75 0 01.055-1.06L6.128 9l-1.88-1.693a.75.75 0 111.004-1.114l2.5 2.25a.75.75 0 010 1.114l-2.5 2.25a.75.75 0 01-1.06-.055zM9.75 10.25a.75.75 0 000 1.5h2.5a.75.75 0 000-1.5h-2.5z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </a>
+          <button
+            class="text-red-500 hover:bg-gray-100 block w-9 flex items-center justify-center h-9 rounded-md border"
+            onclick="window.open(`{% url 'admin_virtance_console' virtance.id %}`, 
+              'newwindow', 
+              'width=800,height=600'
+            ); 
+            return false;
+            "
+            href="{% url 'admin_virtance_console' virtance.id %}"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+              class="w-5 h-5"
+            >
+              <path
+                d="M5.25 3A2.25 2.25 0 003 5.25v9.5A2.25 2.25 0 005.25 17h9.5A2.25 2.25 0 0017 14.75v-9.5A2.25 2.25 0 0014.75 3h-9.5z"
+              />
+            </svg>
+          </button>
+          <button
+            class="text-green-500 hover:bg-gray-100 block w-9 flex items-center justify-center h-9 rounded-md border"
+            onclick="window.open(`{% url 'admin_virtance_console' virtance.id %}`, 
+              'newwindow', 
+              'width=800,height=600'
+            ); 
+            return false;
+            "
+            href="{% url 'admin_virtance_console' virtance.id %}"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+              class="w-5 h-5"
+            >
+              <path
+                d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"
+              />
+            </svg>
+          </button>
+          <button
+            class="text-gray-500 hover:bg-gray-100 block w-9 flex items-center justify-center h-9 rounded-md border"
+            onclick="window.open(`{% url 'admin_virtance_console' virtance.id %}`, 
+              'newwindow', 
+              'width=800,height=600'
+            ); 
+            return false;
+            "
+            href="{% url 'admin_virtance_console' virtance.id %}"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+              class="w-5 h-5"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M15.312 11.424a5.5 5.5 0 01-9.201 2.466l-.312-.311h2.433a.75.75 0 000-1.5H3.989a.75.75 0 00-.75.75v4.242a.75.75 0 001.5 0v-2.43l.31.31a7 7 0 0011.712-3.138.75.75 0 00-1.449-.39zm1.23-3.723a.75.75 0 00.219-.53V2.929a.75.75 0 00-1.5 0V5.36l-.31-.31A7 7 0 003.239 8.188a.75.75 0 101.448.389A5.5 5.5 0 0113.89 6.11l.311.31h-2.432a.75.75 0 000 1.5h4.243a.75.75 0 00.53-.219z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
     </div>
-    {% endif %}
+    <div class="border-t border-gray-200 px-4 py-5 sm:px-6">
+      <dl
+        class="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-3"
+      >
+        <div class="sm:col-span-1">
+          <dt class="text-sm font-medium text-gray-500">ID</dt>
+          <dd class="mt-1 text-sm text-gray-900">{{ virtance.id }}</dd>
+        </div>
+        <div class="sm:col-span-1">
+          <dt class="text-sm font-medium text-gray-500">UUID</dt>
+          <dd class="mt-1 text-sm text-gray-900">{{ virtance.uuid }}</dd>
+        </div>
+        <div class="sm:col-span-1">
+          <dt class="text-sm font-medium text-gray-500">Locked</dt>
+          <dd class="mt-1 text-sm text-gray-900">{{ virtance.is_locked }}</dd>
+        </div>
+        <div class="sm:col-span-1">
+          <dt class="text-sm font-medium text-gray-500">Name</dt>
+          <dd class="mt-1 text-sm text-gray-900">{{ virtance.name }}</dd>
+        </div>
+        <div class="sm:col-span-1">
+          <dt class="text-sm font-medium text-gray-500">Status</dt>
+          <dd class="mt-1 text-sm text-gray-900">{{ status }}</dd>
+        </div>
+        <div class="sm:col-span-1">
+          <dt class="text-sm font-medium text-gray-500">Size</dt>
+          <dd class="mt-1 text-sm text-gray-900">{{ virtance.size.slug }}</dd>
+        </div>
+        <div class="sm:col-span-1">
+          <dt class="text-sm font-medium text-gray-500">Region</dt>
+          <dd class="mt-1 text-sm text-gray-900">{{ virtance.region.name }}</dd>
+        </div>
+        <div class="sm:col-span-1">
+          <dt class="text-sm font-medium text-gray-500">Template</dt>
+          <dd class="mt-1 text-sm text-gray-900">
+            {{ virtance.template.description }}
+          </dd>
+        </div>
+        <div class="sm:col-span-1">
+          <dt class="text-sm font-medium text-gray-500">Compute</dt>
+          <dd class="mt-1 text-sm text-gray-900">
+            {% if virtance.compute %}<a
+              class="text-blue-600 hover:text-blue-900"
+              href="{% url 'admin_compute_overview' virtance.compute.id %}"
+              >{{ virtance.compute.name }}</a
+            >{% else %}Not assigned{% endif %}
+          </dd>
+        </div>
+        <div class="sm:col-span-1">
+          <dt class="text-sm font-medium text-gray-500">Created</dt>
+          <dd class="mt-1 text-sm text-gray-900">{{ virtance.created }}</dd>
+        </div>
+        <div class="sm:col-span-1">
+          <dt class="text-sm font-medium text-gray-500">IPv4 Public</dt>
+          <dd class="mt-1 text-sm text-gray-900">
+            {{ ipv4public.address }}/{{ ipv4public.network.netmask }}
+          </dd>
+        </div>
+        <div class="sm:col-span-1">
+          <dt class="text-sm font-medium text-gray-500">IPv4 Private</dt>
+          <dd class="mt-1 text-sm text-gray-900">
+            {{ ipv4private.address }}/{{ ipv4private.network.netmask }}
+          </dd>
+        </div>
+        <div class="sm:col-span-1">
+          <dt class="text-sm font-medium text-gray-500">IPv4 Compute</dt>
+          <dd class="mt-1 text-sm text-gray-900">
+            {{ ipv4compute.address }}/{{ ipv4compute.network.netmask }}
+          </dd>
+        </div>
+      </dl>
+    </div>
   </div>
-  <div class="border-t border-gray-200 px-4 py-5 sm:px-6">
-    <dl
-      class="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-3"
-    >
-      <div class="sm:col-span-1">
-        <dt class="text-sm font-medium text-gray-500">ID</dt>
-        <dd class="mt-1 text-sm text-gray-900">{{ virtance.id }}</dd>
-      </div>
-      <div class="sm:col-span-1">
-        <dt class="text-sm font-medium text-gray-500">UUID</dt>
-        <dd class="mt-1 text-sm text-gray-900">{{ virtance.uuid }}</dd>
-      </div>
-      <div class="sm:col-span-1">
-        <dt class="text-sm font-medium text-gray-500">Locked</dt>
-        <dd class="mt-1 text-sm text-gray-900">{{ virtance.is_locked }}</dd>
-      </div>
-      <div class="sm:col-span-1">
-        <dt class="text-sm font-medium text-gray-500">Name</dt>
-        <dd class="mt-1 text-sm text-gray-900">{{ virtance.name }}</dd>
-      </div>
-      <div class="sm:col-span-1">
-        <dt class="text-sm font-medium text-gray-500">Status</dt>
-        <dd class="mt-1 text-sm text-gray-900">{{ status }}</dd>
-      </div>
-      <div class="sm:col-span-1">
-        <dt class="text-sm font-medium text-gray-500">Size</dt>
-        <dd class="mt-1 text-sm text-gray-900">{{ virtance.size.slug }}</dd>
-      </div>
-      <div class="sm:col-span-1">
-        <dt class="text-sm font-medium text-gray-500">Region</dt>
-        <dd class="mt-1 text-sm text-gray-900">{{ virtance.region.name }}</dd>
-      </div>
-      <div class="sm:col-span-1">
-        <dt class="text-sm font-medium text-gray-500">Template</dt>
-        <dd class="mt-1 text-sm text-gray-900">{{ virtance.template.description }}</dd>
-      </div>
-      <div class="sm:col-span-1">
-        <dt class="text-sm font-medium text-gray-500">Compute</dt>
-        <dd class="mt-1 text-sm text-gray-900">{% if virtance.compute %}<a class="text-blue-600 hover:text-blue-900" href="{% url 'admin_compute_overview' virtance.compute.id %}">{{ virtance.compute.name }}</a>{% else %}Not assigned{% endif %}</dd>
-      </div>
-      <div class="sm:col-span-1">
-        <dt class="text-sm font-medium text-gray-500">Created</dt>
-        <dd class="mt-1 text-sm text-gray-900">{{ virtance.created }}</dd>
-      </div>
-      <div class="sm:col-span-1">
-        <dt class="text-sm font-medium text-gray-500">IPv4 Public</dt>
-        <dd class="mt-1 text-sm text-gray-900">{{ ipv4public.address }}/{{ ipv4public.network.netmask }}</dd>
-      </div>
-      <div class="sm:col-span-1">
-        <dt class="text-sm font-medium text-gray-500">IPv4 Private</dt>
-        <dd class="mt-1 text-sm text-gray-900">{{ ipv4private.address }}/{{ ipv4private.network.netmask }}</dd>
-      </div>
-      <div class="sm:col-span-1">
-        <dt class="text-sm font-medium text-gray-500">IPv4 Compute</dt>
-        <dd class="mt-1 text-sm text-gray-900">{{ ipv4compute.address }}/{{ ipv4compute.network.netmask }}</dd>
-      </div>
-    </dl>
-  </div>
-
   {% if virtance_errors %}
-  <h3>Errors</h3>
-    <table>
-      <tr>
-        <th>#</th>
-        <th>Event</th>
-        <th>Message</th>
-        <th>Create</th>
-        <tr>
+  <div>
+    <h2 class="text-2xl font-medium mb-4">Errors</h2>
+    <div
+      class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg"
+    >
+      <table class="min-w-full divide-y divide-gray-300">
+        <thead class="bg-gray-50">
+          <tr>
+            <th
+              scope="col"
+              class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+            >
+              #
+            </th>
+            <th
+              scope="col"
+              class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+            >
+              Event
+            </th>
+            <th
+              scope="col"
+              class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+            >
+              Message
+            </th>
+            <th
+              scope="col"
+              class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+            >
+              Created
+            </th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200 bg-white">
           {% for error in virtance_errors %}
-          <td>{{ forloop.counter }}</td>
-          <td>{{ error.event }}</td>
-          <td>{{ error.message }}</td>
-          <td>{{ error.created }}</td>
+          <tr>
+            <td
+              class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
+            >
+              {{ forloop.counter }}
+            </td>
+            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+              {{ error.event }}
+            </td>
+            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+              {{ error.message }}
+            </td>
+            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+              {{ error.created }}
+            </td>
+          </tr>
           {% endfor %}
-        </tr>
-      </tr>
-    </table>
+        </tbody>
+      </table>
+    </div>
+  </div>
   {% endif %}
-
 </div>
 {% endblock %}
