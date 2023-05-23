@@ -2,45 +2,9 @@
 <div class="space-y-8">
   <div class="overflow-hidden bg-white shadow sm:rounded-lg">
     <div class="px-4 py-5 sm:px-6">
-      <div class="mb-4 space-y-1">
-        {% for error in errors %}
-        <div
-          id="error-{{forloop.counter}}"
-          class="bg-red-50 relative p-4 rounded-md flex gap-2"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-            class="w-5 h-5 text-red-400"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z"
-              clip-rule="evenodd"
-            />
-          </svg>
 
-          <p class="text-red-600 text-sm">{{ error }}</p>
-          <button
-            onclick="document.getElementById('error-{{forloop.counter}}').remove()"
-            type="button"
-            class="absolute top-1/2 -translate-y-1/2 right-4 text-red-500"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-              class="w-5 h-5"
-            >
-              <path
-                d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z"
-              />
-            </svg>
-          </button>
-        </div>
-        {% endfor %}
-      </div>
+      {% include 'admin/alerts.html' %}
+
       <div class="flex justify-between items-center">
         <div>
           <div class="flex items-center gap-2">
@@ -105,7 +69,7 @@
             {% endif %}
           </div>
           <p class="mt-1 max-w-2xl text-sm text-gray-500">
-            {{ virtance.user.email }}
+            Status: <span class="text-{% if status == 'active' %}green{% else %}red{% endif %}-500">{{ status }}</span>
           </p>
         </div>
 
@@ -214,16 +178,8 @@
           <dd class="mt-1 text-sm text-gray-900">{{ virtance.uuid }}</dd>
         </div>
         <div class="sm:col-span-1">
-          <dt class="text-sm font-medium text-gray-500">Locked</dt>
-          <dd class="mt-1 text-sm text-gray-900">{{ virtance.is_locked }}</dd>
-        </div>
-        <div class="sm:col-span-1">
-          <dt class="text-sm font-medium text-gray-500">Name</dt>
-          <dd class="mt-1 text-sm text-gray-900">{{ virtance.name }}</dd>
-        </div>
-        <div class="sm:col-span-1">
-          <dt class="text-sm font-medium text-gray-500">Status</dt>
-          <dd class="mt-1 text-sm text-gray-900">{{ status }}</dd>
+          <dt class="text-sm font-medium text-gray-500">User</dt>
+          <dd class="mt-1 text-sm text-gray-900">{{ virtance.user.email }}</dd>
         </div>
         <div class="sm:col-span-1">
           <dt class="text-sm font-medium text-gray-500">Size</dt>
@@ -232,6 +188,10 @@
         <div class="sm:col-span-1">
           <dt class="text-sm font-medium text-gray-500">Region</dt>
           <dd class="mt-1 text-sm text-gray-900">{{ virtance.region.name }}</dd>
+        </div>
+        <div class="sm:col-span-1">
+          <dt class="text-sm font-medium text-gray-500">Locked</dt>
+          <dd class="mt-1 text-sm text-gray-900">{{ virtance.is_locked }}</dd>
         </div>
         <div class="sm:col-span-1">
           <dt class="text-sm font-medium text-gray-500">Template</dt>

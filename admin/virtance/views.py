@@ -1,5 +1,6 @@
-from django.conf import settings
 from django.urls import reverse
+from django.conf import settings
+from django.contrib import messages
 from django.shortcuts import redirect, get_object_or_404
 
 from network.models import IPAddress, Network
@@ -24,30 +25,30 @@ class AdminVirtanceDataView(AdminTemplateView):
         return get_object_or_404(Virtance, pk=self.kwargs['pk'], is_deleted=False)
 
     def get_context_data(self, **kwargs):
-        errors = []
         virtance = self.get_object()
         context = super().get_context_data(**kwargs)
-        
+        virtance_errors = VirtanceError.objects.filter(virtance=virtance)
+
         wvcomp = WebVirtCompute(virtance.compute.token, virtance.compute.hostname)
         res_status = wvcomp.status_virtance(virtance.id)
         status = res_status.get("status")
+        if res_status.get("error"):
+            messages.error(self.request, res_status.get("error"))
         if res_status.get("detail"):
-            errors.append(res_status.get("detail"))
+            messages.error(self.request, res_status.get("detail"))
 
-        virtance_errors = VirtanceError.objects.filter(virtance=virtance)
         ipv4public = IPAddress.objects.filter(virtance=virtance, network__type=Network.PUBLIC).first()
         if ipv4public is None:
-            errors.append("No public IP address assigned to this virtance")
+            messages.error(self.request, "No public IP address assigned to this virtance")
         
         ipv4private = IPAddress.objects.filter(virtance=virtance, network__type=Network.PRIVATE).first()
         if ipv4private is None:
-            errors.append("No private IP address assigned to this virtance")
+            messages.error(self.request, "No private IP address assigned to this virtance")
 
         ipv4compute = IPAddress.objects.filter(virtance=virtance, network__type=Network.COMPUTE).first()
         if ipv4compute is None:
-            errors.append("No compute IP address assigned to this virtance")
+            messages.error(self.request, "No compute IP address assigned to this virtance")
 
-        context['errors'] = errors
         context['status'] = status
         context['virtance'] = virtance
         context['ipv4public'] = ipv4public
