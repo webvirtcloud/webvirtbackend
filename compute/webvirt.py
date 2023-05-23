@@ -2,7 +2,7 @@ import requests
 from base64 import b64encode
 from django.conf import settings
 from urllib.parse import urlencode
-
+from requests.exceptions import ConnectTimeout
 
 from .helper import vm_name
 
@@ -27,27 +27,41 @@ class WebVirtCompute(object):
 
     def _make_get(self, query, stream=False):
         url = self._url() + query
-        response = requests.get(url, headers=self._headers(), stream=stream, verify=False)
-        return response
+        try:
+            response = requests.get(url, headers=self._headers(), stream=stream, timeout=5, verify=False)
+            return response
+        except ConnectTimeout:
+            return {"error": "Connection to compute timeout."}
 
     def _make_post(self, url, params):
         url = self._url() + url
-        response = requests.post(url, headers=self._headers(), json=params, verify=False)
-        return response
+        try:
+            response = requests.post(url, headers=self._headers(), json=params, verify=False)
+            return response
+        except ConnectTimeout:
+            return {"error": "Connection to compute timeout."}
 
     def _make_put(self, url, params):
         url = self._url() + url
-        response = requests.put(url, headers=self._headers(), json=params, verify=False)
-        return response
+        try:
+            response = requests.put(url, headers=self._headers(), json=params, verify=False)
+            return response
+        except ConnectTimeout:
+            return {"error": "Connection to compute timeout."}
 
     def _make_delete(self, url, params=None):
         url = self._url() + url
-        if params:
-            response = requests.delete(url, headers=self._headers(), json=params, verify=False)
-        response = requests.delete(url, headers=self._headers(), verify=False)
-        return response
+        try:
+            if params:
+                response = requests.delete(url, headers=self._headers(), json=params, verify=False)
+            response = requests.delete(url, headers=self._headers(), verify=False)
+            return response
+        except ConnectTimeout:
+            return {"error": "Connection to compute timeout."}
 
     def _process_response(self, response, json=True):
+        if isinstance(response, dict):
+            return response
         if response.status_code == 204:
             return {}
         if json:
