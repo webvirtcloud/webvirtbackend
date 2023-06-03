@@ -4,7 +4,6 @@
   <div class="overflow-hidden bg-white shadow sm:rounded-lg">
 
     <div class="px-4 py-5 sm:px-6">
-
       {% include 'admin/alerts.html' %}
 
       <div class="flex justify-between items-center">
@@ -71,12 +70,16 @@
             {% endif %}
           </div>
           <p class="mt-1 max-w-2xl text-sm text-gray-500">
-            Status: <span class="text-{% if status == 'running' %}green{% else %}red{% endif %}-500">{{ status }}</span>
+            Status:
+            <span
+              class="text-{% if status == 'running' %}green{% else %}red{% endif %}-500"
+              >{{ status }}</span
+            >
           </p>
         </div>
 
         <div class="flex items-center gap-2">
-          <a
+          <button
             class="text-gray-500 hover:bg-gray-100 block w-9 flex items-center justify-center h-9 rounded-md border"
             onclick="window.open(`{% url 'admin_virtance_console' virtance.id %}`, 
               'newwindow', 
@@ -84,7 +87,6 @@
             ); 
             return false;
             "
-            href="{% url 'admin_virtance_console' virtance.id %}"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -98,16 +100,9 @@
                 clip-rule="evenodd"
               />
             </svg>
-          </a>
+          </button>
           <button
             class="text-red-500 hover:bg-gray-100 block w-9 flex items-center justify-center h-9 rounded-md border"
-            onclick="window.open(`{% url 'admin_virtance_console' virtance.id %}`, 
-              'newwindow', 
-              'width=800,height=600'
-            ); 
-            return false;
-            "
-            href="{% url 'admin_virtance_console' virtance.id %}"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -122,13 +117,6 @@
           </button>
           <button
             class="text-green-500 hover:bg-gray-100 block w-9 flex items-center justify-center h-9 rounded-md border"
-            onclick="window.open(`{% url 'admin_virtance_console' virtance.id %}`, 
-              'newwindow', 
-              'width=800,height=600'
-            ); 
-            return false;
-            "
-            href="{% url 'admin_virtance_console' virtance.id %}"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -143,13 +131,6 @@
           </button>
           <button
             class="text-gray-500 hover:bg-gray-100 block w-9 flex items-center justify-center h-9 rounded-md border"
-            onclick="window.open(`{% url 'admin_virtance_console' virtance.id %}`, 
-              'newwindow', 
-              'width=800,height=600'
-            ); 
-            return false;
-            "
-            href="{% url 'admin_virtance_console' virtance.id %}"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
