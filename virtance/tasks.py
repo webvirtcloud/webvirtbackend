@@ -28,7 +28,7 @@ def wvcomp_conn(compute):
 
 
 @app.task
-def create_virtance(virtance_id, password):
+def create_virtance(virtance_id, password=None):
     keypairs = []
     compute = None
     ipv4_public = None
@@ -93,7 +93,105 @@ def create_virtance(virtance_id, password):
             "v6": None
         }
 
-        virtance.compute = compute # TODO: race condition
+        virtance.compute = compute # TODO: race condition for database commit
+        wvcomp = wvcomp_conn(compute)
+        res = wvcomp.create_virtance(
+            virtance.id,
+            virtance.uuid.hex,
+            virtance.name,
+            virtance.size.vcpu,
+            virtance.size.memory,
+            images,
+            network, 
+            keypairs,
+            password_hash,
+        )
+        if isinstance(res, dict) and res.get("detail"):
+            virtance_error(virtance_id, res.get("detail"), "create")
+        else:
+            virtance.active()
+            virtance.reset_event()
+            VirtanceCounter.objects.create(
+                virtance=virtance, size=virtance.size, amount=virtance.size.price, started=timezone.now()
+            )
+
+
+@app.task
+def recreate_virtance(virtance_id):
+    keypairs = []
+    ipv4_public = None
+    ipv4_compute = None
+    ipv4_private = None
+    virtance = Virtance.objects.get(id=virtance_id)
+    compute = virtance.compute if virtance.compute else None
+    password_hash = sha512_crypt.encrypt(uuid4().hex[0:24], salt=uuid4().hex[0:8], rounds=5000)
+
+    if compute is None:
+        compute_id = assign_free_compute(virtance_id)
+        if compute_id is not None:
+            compute = Compute.objects.get(id=compute_id)
+            virtance.compute = compute
+
+    try:
+        ipv4_compute = IPAddress.objects.get(virtance=virtance, network__type=Network.COMPUTE)
+    except IPAddress.DoesNotExist:
+        ipv4_compute_id = assign_free_ipv4_compute(virtance_id)
+        if ipv4_compute_id is not None:
+            ipv4_compute = IPAddress.objects.get(id=ipv4_compute_id)
+        
+    try:
+        ipv4_public = IPAddress.objects.get(virtance=virtance, network__type=Network.PUBLIC)
+    except IPAddress.DoesNotExist:
+        ipv4_public_id = assign_free_ipv4_public(virtance_id)
+        if ipv4_public_id is not None:
+            ipv4_public = IPAddress.objects.get(id=ipv4_public_id)
+    
+    try:
+        ipv4_private = IPAddress.objects.get(virtance=virtance, network__type=Network.PRIVATE)
+    except IPAddress.DoesNotExist:
+        ipv4_private_id = assign_free_ipv4_private(virtance_id)
+        if ipv4_private_id is not None:
+            ipv4_private = IPAddress.objects.get(id=ipv4_private_id)
+
+    for kpv in KeyPairVirtance.objects.filter(virtance_id=virtance_id):
+        keypairs.append(kpv.keypair.public_key)
+
+    if compute and ipv4_public and ipv4_compute and ipv4_private:
+        images = [
+            {
+                "name": vm_name(virtance.id),
+                "size": virtance.size.disk,
+                "url": f"{settings.PUBLIC_IMAGES_URL}{virtance.template.file_name}",
+                "md5sum": virtance.template.md5sum,
+                "primary": True
+            }
+        ]
+        network = {
+            "v4": {
+                "public": {
+                    "primary": {
+                        "address": ipv4_public.address,
+                        "gateway": ipv4_public.network.gateway,
+                        "netmask": ipv4_public.network.netmask,
+                        "dns1": ipv4_public.network.dns1,
+                        "dns2": ipv4_public.network.dns2
+                        
+                    },
+                    "secondary": {
+                        "address": ipv4_compute.address,
+                        "gateway": ipv4_compute.network.gateway,
+                        "netmask": ipv4_compute.network.netmask
+                    }
+                },
+                "private": {
+                    "address": ipv4_private.address,
+                    "gateway": ipv4_private.network.gateway,
+                    "netmask": ipv4_private.network.netmask
+                }
+            },
+            "v6": None
+        }
+
         wvcomp = wvcomp_conn(compute)
         res = wvcomp.create_virtance(
             virtance.id,
