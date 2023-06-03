@@ -320,7 +320,15 @@ class VirtanceActionSerializer(serializers.Serializer):
         if attrs.get("action") == "snapshot":
             if attrs.get("name") is None:
                 raise serializers.ValidationError({"name": ["This field is required."]})
-            
+    
+        if attrs.get("action") == "enable_recovery_mode":
+            if virtance.is_recovery_mode is True:
+                raise serializers.ValidationError({"name": ["Recovey mode is already enabled."]})
+
+        if attrs.get("action") == "disable_recovery_mode":
+            if virtance.is_recovery_mode is False:
+                raise serializers.ValidationError({"name": ["Recovey mode is already disabled."]})
+
         return attrs
     
     def create(self, validated_data):
@@ -328,46 +336,46 @@ class VirtanceActionSerializer(serializers.Serializer):
         size = validated_data.get("size")
         image = validated_data.get("image")
         action = validated_data.get("action")
-        virtnace = self.context.get("virtance")
+        virtance = self.context.get("virtance")
         password = validated_data.get("password")
         
         # Set new task event
-        virtnace.event = action
-        virtnace.status = virtnace.PENDING
-        virtnace.save()
+        virtance.event = action
+        virtance.status = virtance.PENDING
+        virtance.save()
 
         if action in ["power_on", "power_off", "power_cyrcle", "shutdown", "reboot"]:            
-            action_virtance.delay(virtnace.id, action)
+            action_virtance.delay(virtance.id, action)
 
         if action == "rename":
-            virtnace.name = name
-            virtnace.event = None
-            virtnace.save()
+            virtance.name = name
+            virtance.event = None
+            virtance.save()
 
         if action == "rebuild":
             image = Image.objects.get(slug=image)
-            virtnace.image = image
-            virtnace.save()
-            rebuild_virtance.delay(virtnace.id)
+            virtance.image = image
+            virtance.save()
+            rebuild_virtance.delay(virtance.id)
 
         if action == "resize":
             size = Size.objects.get(slug=size)
-            resize_virtance.delay(virtnace.id, size.id)
+            resize_virtance.delay(virtance.id, size.id)
         
         if action == "password_reset":
-            reset_password_virtance.delay(virtnace.id, password)
+            reset_password_virtance.delay(virtance.id, password)
         
         if action == "snapshot":
-            snapshot_virtance.delay(virtnace.id, name)
+            snapshot_virtance.delay(virtance.id, name)
 
         if action == "restore":
             image = Image.objects.get(id=image)
-            restore_virtance.delay(virtnace.id, image, image.disk_size)
+            restore_virtance.delay(virtance.id, image, image.disk_size)
 
         if action == "enable_recovery_mode":
-            enable_recovery_mode_virtance.delay(virtnace.id)
+            enable_recovery_mode_virtance.delay(virtance.id)
 
         if action == "disable_recovery_mode":
-            disable_recovery_mode_virtance.delay(virtnace.id)
+            disable_recovery_mode_virtance.delay(virtance.id)
 
         return validated_data
