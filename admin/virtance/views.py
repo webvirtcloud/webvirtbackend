@@ -7,6 +7,7 @@ from network.models import IPAddress, Network
 from virtance.models import Virtance, VirtanceError
 from admin.mixins import AdminView, AdminTemplateView
 from compute.webvirt import WebVirtCompute
+from virtance.tasks import recreate_virtance
 
 
 class AdminVirtanceIndexView(AdminTemplateView):
@@ -101,4 +102,17 @@ class AdminVirtanceResetEventView(AdminView):
     def post(self, request, *args, **kwargs):
         virtance = self.get_object()
         virtance.reset_event()
+        return redirect(reverse("admin_virtance_data", args=[kwargs.get("pk")]))
+
+
+class AdminVirtanceRecreateView(AdminView):
+
+    def get_object(self):
+        return get_object_or_404(Virtance, pk=self.kwargs['pk'])
+    
+    def post(self, request, *args, **kwargs):
+        virtance = self.get_object()
+        virtance.event = Virtance.CREATE
+        virtance.save()
+        recreate_virtance.delay(virtance.id)
         return redirect(reverse("admin_virtance_data", args=[kwargs.get("pk")]))
