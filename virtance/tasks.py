@@ -393,11 +393,11 @@ def disable_recovery_mode_virtance(virtance_id):
             res = wvcomp.umount_virtance_media(
                 virtance_id, res.get("media")[0].get("dev"), res.get("media")[0].get("path")
             )
-            if res.get("detail") is None:
+            if not isinstance(res, dict):
                 virtance.active()
                 virtance.disable_recovery_mode()
                 virtance.reset_event()
-    if res.get("detail"):
+    if isinstance(res, dict) and res.get("detail"):
         virtance_error(virtance_id, res.get("detail"), "disable_recovery_mode")
 
 
@@ -406,7 +406,7 @@ def delete_virtance(virtance_id):
     virtance = Virtance.objects.get(pk=virtance_id)
     wvcomp = wvcomp_conn(virtance.compute)
     res = wvcomp.delete_virtance(virtance.id)
-    if res.get("detail") is None:
+    if not isinstance(res, dict):
         ipaddresse = IPAddress.objects.filter(virtance=virtance)
         ipaddresse.delete()
         virtance.delete()
@@ -421,7 +421,7 @@ def delete_virtance(virtance_id):
                 started=current_time - timezone.timedelta(hours=1)
             )
         virtance_counter.stop()
-    else:
+    if isinstance(res, dict) and res.get("detail"):
         virtance_error(virtance_id, res.get("detail"), "delete")
 
 

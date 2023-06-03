@@ -52,9 +52,7 @@ class WebVirtCompute(object):
     def _make_delete(self, url, params=None):
         url = self._url() + url
         try:
-            if params:
-                response = requests.delete(url, headers=self._headers(), json=params, verify=False)
-            response = requests.delete(url, headers=self._headers(), verify=False)
+            response = requests.delete(url, headers=self._headers(), json=params, verify=False)
             return response
         except ConnectTimeout:
             return {"error": "Connection to compute timeout."}
