@@ -144,3 +144,19 @@ class VirtanceError(models.Model):
 
     def __unicode__(self):
         return self.event
+
+
+class VirtanceHistory(models.Model):
+    virtance = models.ForeignKey(Virtance, models.PROTECT)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, models.PROTECT)
+    event = models.CharField(max_length=40, blank=True, null=True)
+    message = models.TextField()
+    created = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-id"]
+        verbose_name = "Virtance History"
+        verbose_name_plural = "Virtance Histories"
+
+    def __unicode__(self):
+        return self.event
