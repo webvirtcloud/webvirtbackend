@@ -128,7 +128,6 @@ class AdminVirtancePowerOnAction(AdminView):
     def post(self, request, *args, **kwargs):
         virtance = self.get_object()
         virtance.event = virtance.POWER_ON
-        virtance.status = virtance.PENDING
         virtance.save()
         action_virtance.delay(virtance.id, "power_on")
         return redirect(reverse("admin_virtance_data", args=[kwargs.get("pk")]))
@@ -142,7 +141,6 @@ class AdminVirtancePowerOffAction(AdminView):
     def post(self, request, *args, **kwargs):
         virtance = self.get_object()
         virtance.event = virtance.POWER_OFF
-        virtance.status = virtance.PENDING
         virtance.save()
         action_virtance.delay(virtance.id, "power_off")
         return redirect(reverse("admin_virtance_data", args=[kwargs.get("pk")]))
@@ -156,7 +154,6 @@ class AdminVirtancePowerCyrcleAction(AdminView):
     def post(self, request, *args, **kwargs):
         virtance = self.get_object()
         virtance.event = virtance.POWER_CYCLE
-        virtance.status = virtance.PENDING
         virtance.save()
         action_virtance.delay(virtance.id, "power_cycle")
         return redirect(reverse("admin_virtance_data", args=[kwargs.get("pk")]))
