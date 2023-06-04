@@ -209,9 +209,12 @@ def recreate_virtance(virtance_id):
         else:
             virtance.active()
             virtance.reset_event()
-            VirtanceCounter.objects.create(
-                virtance=virtance, size=virtance.size, amount=virtance.size.price, started=timezone.now()
-            )
+            try:
+                VirtanceCounter.objects.get(virtance=virtance, ended=None)
+            except VirtanceCounter.DoesNotExist:
+                VirtanceCounter.objects.create(
+                    virtance=virtance, size=virtance.size, amount=virtance.size.price, started=timezone.now()
+                )
 
 
 @app.task
