@@ -16,6 +16,7 @@ class Virtance(models.Model):
     SHUTDOWN = "shutdown"
     POWER_ON = "power_on"
     POWER_OFF = "power_off"
+    POWER_CYCLE = "power_cycle"
     PASSWORD_RESET = "password_reset"
     ENABLE_BACKUPS = "enable_backups"
     DISABLE_BACKUPS = "disable_backups"
@@ -33,6 +34,7 @@ class Virtance(models.Model):
         (SHUTDOWN, "Shutdown"),
         (POWER_ON, "Power On"),
         (POWER_OFF, "Power Off"),
+        (POWER_CYCLE, "Power Cycle"),
         (PASSWORD_RESET, "Password Reset"),
         (ENABLE_BACKUPS, "Enable Backups"),
         (DISABLE_BACKUPS, "Disable Backups"),

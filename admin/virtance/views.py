@@ -7,7 +7,7 @@ from network.models import IPAddress, Network
 from virtance.models import Virtance, VirtanceError
 from admin.mixins import AdminView, AdminTemplateView
 from compute.webvirt import WebVirtCompute
-from virtance.tasks import recreate_virtance
+from virtance.tasks import recreate_virtance, action_virtance
 
 
 class AdminVirtanceIndexView(AdminTemplateView):
@@ -26,17 +26,19 @@ class AdminVirtanceDataView(AdminTemplateView):
         return get_object_or_404(Virtance, pk=self.kwargs['pk'], is_deleted=False)
 
     def get_context_data(self, **kwargs):
+        status = "shutoff"
         virtance = self.get_object()
         context = super().get_context_data(**kwargs)
         virtance_errors = VirtanceError.objects.filter(virtance=virtance)
 
-        wvcomp = WebVirtCompute(virtance.compute.token, virtance.compute.hostname)
-        res_status = wvcomp.status_virtance(virtance.id)
-        status = res_status.get("status")
-        if res_status.get("error"):
-            messages.error(self.request, res_status.get("error"))
-        if res_status.get("detail"):
-            messages.error(self.request, res_status.get("detail"))
+        if virtance.event != Virtance.CREATE:
+            wvcomp = WebVirtCompute(virtance.compute.token, virtance.compute.hostname)
+            res_status = wvcomp.status_virtance(virtance.id)
+            status = res_status.get("status")
+            if res_status.get("error"):
+                messages.error(self.request, res_status.get("error"))
+            if res_status.get("detail"):
+                messages.error(self.request, res_status.get("detail"))
 
         ipv4public = IPAddress.objects.filter(virtance=virtance, network__type=Network.PUBLIC).first()
         if ipv4public is None:
@@ -94,7 +96,7 @@ class AdminVirtanceConsoleView(AdminTemplateView):
         return context
 
 
-class AdminVirtanceResetEventView(AdminView):
+class AdminVirtanceResetEventAction(AdminView):
 
     def get_object(self):
         return get_object_or_404(Virtance, pk=self.kwargs['pk'])
@@ -105,14 +107,56 @@ class AdminVirtanceResetEventView(AdminView):
         return redirect(reverse("admin_virtance_data", args=[kwargs.get("pk")]))
 
 
-class AdminVirtanceRecreateView(AdminView):
+class AdminVirtanceRecreateAction(AdminView):
 
     def get_object(self):
         return get_object_or_404(Virtance, pk=self.kwargs['pk'])
     
     def post(self, request, *args, **kwargs):
         virtance = self.get_object()
-        virtance.event = Virtance.CREATE
+        virtance.event = virtance.CREATE
         virtance.save()
         recreate_virtance.delay(virtance.id)
+        return redirect(reverse("admin_virtance_data", args=[kwargs.get("pk")]))
+
+
+class AdminVirtancePowerOnAction(AdminView):
+
+    def get_object(self):
+        return get_object_or_404(Virtance, pk=self.kwargs['pk'])
+    
+    def post(self, request, *args, **kwargs):
+        virtance = self.get_object()
+        virtance.event = virtance.POWER_ON
+        virtance.status = virtance.PENDING
+        virtance.save()
+        action_virtance.delay(virtance.id, "power_on")
+        return redirect(reverse("admin_virtance_data", args=[kwargs.get("pk")]))
+
+
+class AdminVirtancePowerOffAction(AdminView):
+
+    def get_object(self):
+        return get_object_or_404(Virtance, pk=self.kwargs['pk'])
+    
+    def post(self, request, *args, **kwargs):
+        virtance = self.get_object()
+        virtance.event = virtance.POWER_OFF
+        virtance.status = virtance.PENDING
+        virtance.save()
+        action_virtance.delay(virtance.id, "power_off")
+        return redirect(reverse("admin_virtance_data", args=[kwargs.get("pk")]))
+
+
+class AdminVirtancePowerCyrcleAction(AdminView):
+
+    def get_object(self):
+        return get_object_or_404(Virtance, pk=self.kwargs['pk'])
+    
+    def post(self, request, *args, **kwargs):
+        virtance = self.get_object()
+        virtance.event = virtance.POWER_CYCLE
+        virtance.status = virtance.PENDING
+        virtance.save()
+        action_virtance.delay(virtance.id, "power_cycle")
         return redirect(reverse("admin_virtance_data", args=[kwargs.get("pk")]))

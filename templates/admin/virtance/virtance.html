@@ -80,6 +80,7 @@
 
         <div class="flex items-center gap-2">
           <button
+            title="Console"
             class="text-gray-500 hover:bg-gray-100 block w-9 flex items-center justify-center h-9 rounded-md border"
             onclick="window.open(`{% url 'admin_virtance_console' virtance.id %}`, 
               'newwindow', 
@@ -101,57 +102,84 @@
               />
             </svg>
           </button>
-          <button
-            class="text-red-500 hover:bg-gray-100 block w-9 flex items-center justify-center h-9 rounded-md border"
+          <form
+            action="{% url 'admin_virtance_power_off' virtance.id %}"
+            method="post"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-              class="w-5 h-5"
+            {% csrf_token %}
+            <button {% if event or status == 'shutoff' %}disabled{% endif %}
+              type="submit"
+              name="poweroff"
+              title="Power Off"
+              class="text-red-500 hover:bg-gray-100 block w-9 flex items-center justify-center h-9 rounded-md border"
             >
-              <path
-                d="M5.25 3A2.25 2.25 0 003 5.25v9.5A2.25 2.25 0 005.25 17h9.5A2.25 2.25 0 0017 14.75v-9.5A2.25 2.25 0 0014.75 3h-9.5z"
-              />
-            </svg>
-          </button>
-          <button
-            class="text-green-500 hover:bg-gray-100 block w-9 flex items-center justify-center h-9 rounded-md border"
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                class="w-5 h-5"
+              >
+                <path
+                  d="M5.25 3A2.25 2.25 0 003 5.25v9.5A2.25 2.25 0 005.25 17h9.5A2.25 2.25 0 0017 14.75v-9.5A2.25 2.25 0 0014.75 3h-9.5z"
+                />
+              </svg>
+            </button>
+          </form>
+          <form
+            action="{% url 'admin_virtance_power_on' virtance.id %}"
+            method="post"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-              class="w-5 h-5"
+            {% csrf_token %}
+            <button {% if event or status == 'running' %}disabled{% endif %}
+              type="submit"
+              name="poweron"
+              title="Power On"
+              class="text-green-500 hover:bg-gray-100 block w-9 flex items-center justify-center h-9 rounded-md border"
             >
-              <path
-                d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"
-              />
-            </svg>
-          </button>
-          <button
-            class="text-gray-500 hover:bg-gray-100 block w-9 flex items-center justify-center h-9 rounded-md border"
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                class="w-5 h-5"
+              >
+                <path
+                  d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"
+                />
+              </svg>
+            </button>
+          </form>
+          <form
+            action="{% url 'admin_virtance_power_cyrcle' virtance.id %}"
+            method="post"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-              class="w-5 h-5"
+            {% csrf_token %}
+            <button {% if event %}disabled{% endif %}
+              type="submit"
+              name="reset"
+              title="Reset"
+              class="text-gray-500 hover:bg-gray-100 block w-9 flex items-center justify-center h-9 rounded-md border"
             >
-              <path
-                fill-rule="evenodd"
-                d="M15.312 11.424a5.5 5.5 0 01-9.201 2.466l-.312-.311h2.433a.75.75 0 000-1.5H3.989a.75.75 0 00-.75.75v4.242a.75.75 0 001.5 0v-2.43l.31.31a7 7 0 0011.712-3.138.75.75 0 00-1.449-.39zm1.23-3.723a.75.75 0 00.219-.53V2.929a.75.75 0 00-1.5 0V5.36l-.31-.31A7 7 0 003.239 8.188a.75.75 0 101.448.389A5.5 5.5 0 0113.89 6.11l.311.31h-2.432a.75.75 0 000 1.5h4.243a.75.75 0 00.53-.219z"
-                clip-rule="evenodd"
-              />
-            </svg>
-          </button>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                class="w-5 h-5"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M15.312 11.424a5.5 5.5 0 01-9.201 2.466l-.312-.311h2.433a.75.75 0 000-1.5H3.989a.75.75 0 00-.75.75v4.242a.75.75 0 001.5 0v-2.43l.31.31a7 7 0 0011.712-3.138.75.75 0 00-1.449-.39zm1.23-3.723a.75.75 0 00.219-.53V2.929a.75.75 0 00-1.5 0V5.36l-.31-.31A7 7 0 003.239 8.188a.75.75 0 101.448.389A5.5 5.5 0 0113.89 6.11l.311.31h-2.432a.75.75 0 000 1.5h4.243a.75.75 0 00.53-.219z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+            </button>
+          </form>
           <div class="h-full w-0.5 bg-gray-300"></div>
           <form
             action="{% url 'admin_virtance_recreate' virtance.id %}"
             method="post"
           >
             {% csrf_token %}
-            <button
+            <button {% if event %}disabled{% endif %}
               type="submit"
               name="recreate"
               title="Recreate"
