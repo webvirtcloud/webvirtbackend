@@ -246,7 +246,7 @@
         </nav>
       </div>
       <div class="flex flex-shrink-0 border-t border-gray-200 p-4">
-        <a href="#" class="group block w-full flex-shrink-0">
+        <a href="{% url 'admin_profile' %}" class="group block w-full flex-shrink-0">
           <div class="flex items-center">
             <div>
               <div class="inline-block h-9 w-9 rounded-full bg-gray-200"></div>
@@ -255,7 +255,7 @@
               <p
                 class="text-sm font-medium text-gray-700 group-hover:text-gray-900"
               >
-                Admin
+                {{ request.user.first_name }} {{ request.user.last_name }}
               </p>
               <p
                 class="text-xs font-medium text-gray-500 group-hover:text-gray-700"
