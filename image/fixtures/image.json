@@ -291,7 +291,7 @@
             "name": "12 x64",
             "slug": "debian-12-x64",
             "type": "distribution",
-            "md5sum": "311db9b32414540d987e7631fdb2d912",
+            "md5sum": "a40341bc476fd5a115d9d346fad6b48f",
             "distribution": "debian",
             "description": "Debian 12 x64",
             "file_name": "debian-12-x64.qcow2",
