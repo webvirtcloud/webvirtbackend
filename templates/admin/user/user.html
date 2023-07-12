@@ -1,0 +1,61 @@
+{% extends "admin/base.html" %} {% block content %}
+<div class="space-y-8">
+  <h2 class="text-2xl font-medium mb-4">User</h2>
+  <div class="overflow-hidden bg-white shadow sm:rounded-lg">
+
+    <div class="px-4 py-5 sm:px-6">
+      {% include 'admin/alerts.html' %}
+
+      <div class="flex justify-between items-center">
+        <div>
+          <p class="mt-1 max-w-2xl text-sm text-gray-500">
+            Email:
+            <span
+              class="text-blue-500"
+              >{{ user.email }}</span
+            >
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="border-t border-gray-200 px-4 py-5 sm:px-6">
+      <dl
+        class="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-3"
+      >
+        <div class="sm:col-span-1">
+          <dt class="text-sm font-medium text-gray-500">ID</dt>
+          <dd class="mt-1 text-sm text-gray-900">{{ user.id }}</dd>
+        </div>
+        <div class="sm:col-span-1">
+          <dt class="text-sm font-medium text-gray-500">UUID</dt>
+          <dd class="mt-1 text-sm text-gray-900">{{ user.uuid }}</dd>
+        </div>
+        <div class="sm:col-span-1">
+          <dt class="text-sm font-medium text-gray-500">Active</dt>
+          <dd class="mt-1 text-sm text-gray-900">{{ user.is_active }}</dd>
+        </div>
+        <div class="sm:col-span-1">
+          <dt class="text-sm font-medium text-gray-500">Firtname</dt>
+          <dd class="mt-1 text-sm text-gray-900">{{ user.first_name }}</dd>
+        </div>
+        <div class="sm:col-span-1">
+          <dt class="text-sm font-medium text-gray-500">Lastname</dt>
+          <dd class="mt-1 text-sm text-gray-900">{{ user.last_name }}</dd>
+        </div>
+        <div class="sm:col-span-1">
+          <dt class="text-sm font-medium text-gray-500">Created</dt>
+          <dd class="mt-1 text-sm text-gray-900">{{ user.created }}</dd>
+        </div>
+        <div class="sm:col-span-1">
+          <dt class="text-sm font-medium text-gray-500">Updated</dt>
+          <dd class="mt-1 text-sm text-gray-900">{{ user.updated }}</dd>
+        </div>
+        <div class="sm:col-span-1">
+          <dt class="text-sm font-medium text-gray-500">Confirmed</dt>
+          <dd class="mt-1 text-sm text-gray-900">{{ user.is_email_verified }}</dd>
+        </div>
+      </dl>
+    </div>
+  </div>
+</div>
+{% endblock %}
