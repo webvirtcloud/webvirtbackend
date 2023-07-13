@@ -476,7 +476,7 @@ def delete_virtance(virtance_id):
 
 
 @app.task
-def delete_backup_image(image_id):
+def delete_virtance_image_backup(image_id):
     image = Image.objects.get(pk=image_id)
     wvcomp = wvcomp_conn(image.source.compute)
     res = wvcomp.get_storages()
@@ -550,7 +550,7 @@ def virtance_backup():
                     virtance.event = Virtance.BACKUP
                     virtance.save()
                 if len(backups) > settings.BACKUP_PER_MONTH:
-                    delete_backup_image.delay(backups.last().id)
+                    delete_virtance_image_backup.delay(backups.last().id)
             else:
                 backup_virtance.delay(virtance.id)
                 virtance.event = Virtance.BACKUP
