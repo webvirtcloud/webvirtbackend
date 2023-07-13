@@ -476,6 +476,24 @@ def delete_virtance(virtance_id):
 
 
 @app.task
+def delete_backup_image(image_id):
+    image = Image.objects.get(pk=image_id)
+    wvcomp = wvcomp_conn(image.source.compute)
+    res = wvcomp.get_storages()
+    if res.get("detail") is None:
+        for storage in res.get("storages"):
+            res = wvcomp.get_storage(storage.get("name"))  
+            if res.get("detail") is None:
+                for vol in res.get("volumes"):
+                    if vol.get("name") == image.file_name:
+                        res = wvcomp.delete_storage_volume(storage.get("name"), vol.get("name"))
+                        if res.get("detail") is None:
+                            image.delete()
+    if res.get("detail"):
+        virtance_error(image.source.id, res.get("detail"), "delete_backup")
+
+
+@app.task
 def virtance_counter():
     current_time = timezone.now()
     current_day = current_time.day
@@ -532,7 +550,7 @@ def virtance_backup():
                     virtance.event = Virtance.BACKUP
                     virtance.save()
                 if len(backups) > settings.BACKUP_PER_MONTH:
-                    pass
+                    delete_backup_image.delay(backups.last().id)
             else:
                 backup_virtance.delay(virtance.id)
                 virtance.event = Virtance.BACKUP
