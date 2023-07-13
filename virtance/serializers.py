@@ -1,4 +1,5 @@
 import re
+from uuid import uuid4
 from django.db.models import Q
 from rest_framework import serializers
 
@@ -370,7 +371,7 @@ class VirtanceActionSerializer(serializers.Serializer):
 
         if action == "restore":
             image = Image.objects.get(id=image)
-            restore_virtance.delay(virtance.id, image, image.disk_size)
+            restore_virtance.delay(virtance.id, image.file_name, image.disk_size)
 
         if action == "enable_recovery_mode":
             enable_recovery_mode_virtance.delay(virtance.id)

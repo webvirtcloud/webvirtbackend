@@ -197,3 +197,7 @@ NOVNC_PORT = os.environ.get("NOVNC_PORT", 443)
 
 # Recovery image settings
 RECOVERY_ISO_NAME = os.environ.get("RECOVERY_ISO_NAME", "finnix-125.iso")
+
+# Backup settings
+BACKUP_PER_MONTH = os.environ.get("BACKUP_PER_MONTH", 4)
+BACKUP_PERIOD_DAYS = os.environ.get("BACKUP_PERIOD_DAYS", 7)

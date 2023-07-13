@@ -10,6 +10,7 @@ class Virtance(models.Model):
     REBOOT = "reboot"
     RESIZE = "resize"
     RENAME = "rename"
+    BACKUP = "backup"
     REBUILD = "rebuild"
     RESTORE = "restore"
     SNAPSHOT = "snapshot"
@@ -28,6 +29,7 @@ class Virtance(models.Model):
         (REBOOT, "Reboot"),
         (RESIZE, "Resize"),
         (RENAME, "Rename"),
+        (BACKUP, "Backup"),
         (REBUILD, "Rebuild"),
         (RESTORE, "Restore"),
         (SNAPSHOT, "Snapshot"),
@@ -63,6 +65,7 @@ class Virtance(models.Model):
     is_locked = models.BooleanField(default=False)
     is_deleted = models.BooleanField(default=False)
     is_recovery_mode = models.BooleanField(default=False)
+    is_backup_enabled = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     deleted = models.DateTimeField(null=True, blank=True)

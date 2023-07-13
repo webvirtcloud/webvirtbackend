@@ -16,6 +16,7 @@ from network.helper import (
     assign_free_ipv4_private,
 )
 from size.models import Size
+from image.models import Image
 from compute.models import Compute
 from network.models import Network, IPAddress
 from keypair.models import KeyPairVirtance
@@ -333,14 +334,52 @@ def resize_virtance(virtance_id, size_id):
 
 
 @app.task
-def snapshot_virtance(virtance_id, image_name):
+def snapshot_virtance(virtance_id, display_name):
     virtance = Virtance.objects.get(pk=virtance_id)
     wvcomp = wvcomp_conn(virtance.compute)
-    res = wvcomp.snapshot_virtance(virtance.id, image_name)
+    res = wvcomp.snapshot_virtance(virtance.id, uuid4().hex)
     if res.get("detail") is None:
+        image = Image.objects.create(
+            user=virtance.user,
+            source=virtance,
+            type=Image.SNAPSHOT,
+            name=display_name,
+            distribution=virtance.template.distribution,
+            md5sum=res.get("md5sum"),
+            file_name=res.get("file_name"),
+            file_size=res.get("size"),
+            disk_size=res.get("disk_size"),
+            is_active=True
+        )
+        image.regions.add(virtance.region)
         virtance.reset_event()
     else:
         virtance_error(virtance_id, res.get("detail"), "snapshot")
+
+
+@app.task
+def backup_virtance(virtance_id):
+    file_name = uuid4().hex
+    virtance = Virtance.objects.get(pk=virtance_id)
+    wvcomp = wvcomp_conn(virtance.compute)
+    res = wvcomp.snapshot_virtance(virtance.id, file_name)
+    if res.get("detail") is None:
+        image = Image.objects.create(
+            user=virtance.user,
+            source=virtance,
+            type=Image.BACKUP,
+            name=file_name,
+            distribution=virtance.template.distribution,
+            md5sum=res.get("md5sum"),
+            file_name=res.get("file_name"),
+            file_size=res.get("size"),
+            disk_size=res.get("disk_size"),
+            is_active=True
+        )
+        image.regions.add(virtance.region)
+        virtance.reset_event()
+    else:
+        virtance_error(virtance_id, res.get("detail"), "backup")
 
 
 @app.task
@@ -463,3 +502,38 @@ def virtance_counter():
         for virt_count in virtance_counters:
             virt_count.amount += virt_count.size.price
             virt_count.save()
+
+
+@app.task
+def virtance_backup():
+    compute_event_backup_ids = []
+
+    compute_ids = Virtance.objects.filter(
+        is_backup_enabled=True, 
+        event=Virtance.BACKUP, 
+        is_deleted=False
+    ).values_list('compute_id', flat=True)
+
+    virtances = Virtance.objects.filter(
+        is_backup_enabled=True,
+        event=None,
+        is_deleted=False
+    ).exclude(compute__in=list(set(compute_ids)))
+
+    for virtance in virtances:
+        backups = Image.objects.filter(virtance=virtance, type=Image.BACKUP, is_deleted=False)
+
+        if virtance.compute.id not in compute_event_backup_ids:
+            compute_event_backup_ids.append(virtance.compute.id)
+
+            if backups:
+                if (timezone.now() - backups.first().created).days >= settings.BACKUP_PERIOD_DAYS:
+                    backup_virtance.delay(virtance.id)
+                    virtance.event = Virtance.BACKUP
+                    virtance.save()
+                if len(backups) > settings.BACKUP_PER_MONTH:
+                    pass
+            else:
+                backup_virtance.delay(virtance.id)
+                virtance.event = Virtance.BACKUP
+                virtance.save()
