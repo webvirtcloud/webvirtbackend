@@ -68,3 +68,18 @@ class Image(models.Model):
 
     def __unicode__(self):
         return self.name
+
+
+class ImageError(models.Model):
+    image = models.ForeignKey(Image, models.PROTECT)
+    event = models.CharField(max_length=40, blank=True, null=True)
+    message = models.TextField()
+    created = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-id"]
+        verbose_name = "Image Error"
+        verbose_name_plural = "Image Errors"
+
+    def __unicode__(self):
+        return self.event

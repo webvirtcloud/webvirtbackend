@@ -1,10 +1,12 @@
 from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import get_object_or_404
+from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from .models import Image
+from .tasks import image_delete
 from .serializers import ImageSerializer
 
 
@@ -47,3 +49,9 @@ class ImageDataAPI(APIView):
     def get(self, request, *args, **kwargs):
         serilizator = self.class_serializer(self.get_object(), many=False)
         return Response({"image": serilizator.data})
+
+
+    def delete(self, request, *args, **kwargs):
+        image = self.get_object()
+        image_delete.delay(image.id)
+        return Response(status=status.HTTP_204_NO_CONTENT)
