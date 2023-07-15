@@ -24,4 +24,3 @@ def virtance_history(virtance_id, user_id, message, event=None):
 
 def virtance_error(virtance_id, message, event=None):
     VirtanceError.objects.create(virtance_id=virtance_id, message=message, event=event)
-
