@@ -53,7 +53,7 @@ class ImageDataAPI(APIView):
 
     def delete(self, request, *args, **kwargs):
         image = self.get_object()
-        if image.type != Image.CUSTOM or image.type != Image.SNAPSHOT:
+        if image.type != Image.CUSTOM and image.type != Image.SNAPSHOT:
             raise Http404
         image_delete.delay(image.id)
         return Response(status=status.HTTP_204_NO_CONTENT)
