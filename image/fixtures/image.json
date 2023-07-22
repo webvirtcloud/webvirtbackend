@@ -33,7 +33,7 @@
             "name": "22.04 (LTS) x64",
             "slug": "ubuntu-22-04-x64",
             "type": "distribution",
-            "md5sum": "bb3d3cd40e0237183e39ca3b6b99cf81",
+            "md5sum": "f03e3ad42f4e4f9c1311a822184e4c62",
             "distribution": "ubuntu",
             "description": "Ubuntu 22.04 TLS x64",
             "file_name": "ubuntu-22-04-x64.qcow2",
