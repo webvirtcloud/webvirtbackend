@@ -12,9 +12,14 @@ from webvirtcloud.views import error_message_response
 from image.serializers import ImageSerializer
 from image.models import Image
 from .utils import make_vnc_hash
-from .models import Virtance
+from .models import Virtance, VirtanceHistory
 from .tasks import delete_virtance
-from .serializers import VirtanceSerializer, CreateVirtanceSerializer, VirtanceActionSerializer
+from .serializers import (
+    VirtanceSerializer, 
+    CreateVirtanceSerializer, 
+    VirtanceActionSerializer,
+    VirtanceHistorySerializer,
+)
 
 
 class VirtanceListAPI(APIView):
@@ -102,6 +107,21 @@ class VirtanceSnapshotsAPI(APIView):
         snapshots = self.get_objects()
         serilizator = self.class_serializer(snapshots, many=True)
         return Response({"snapshots": serilizator.data})
+
+
+class VirtanceHistoryAPI(APIView):
+    class_serializer = VirtanceHistorySerializer
+
+    def get_object(self):
+        return get_object_or_404(
+            Virtance, pk=self.kwargs.get("id"), user=self.request.user, is_deleted=False
+        )
+
+    def get(self, request, *args, **kwargs):
+        virtances = self.get_object()
+        virtance_history = VirtanceHistory.objects.filter(virtance=virtances)
+        serilizator = self.class_serializer(virtance_history, many=True)
+        return Response({"virtance": serilizator.data})
 
 
 class VirtanceConsoleAPI(APIView):

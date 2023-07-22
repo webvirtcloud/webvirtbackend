@@ -380,3 +380,14 @@ class VirtanceActionSerializer(serializers.Serializer):
             disable_recovery_mode_virtance.delay(virtance.id)
 
         return validated_data
+
+
+class VirtanceHistorySerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Virtance
+        fields = (
+            "id",
+            "event",
+            "created",
+        )
