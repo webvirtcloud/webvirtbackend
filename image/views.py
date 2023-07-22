@@ -15,20 +15,21 @@ class ImageListAPI(APIView):
 
     def get_queryset(self):
         user = self.request.user
-        query_type = self.request.query_params.get("type", None)
-        if query_type is None:
+        image_type = self.request.query_params.get("type", None)
+        if image_type is None:
             queryset = Image.objects.filter(
-                Q(type=Image.APPLICATION) | Q(type=Image.DISTRIBUTION) | 
-                Q(type=Image.BACKUP, user=self.request.user) | 
-                Q(type=Image.CUSTOM, user=self.request.user) |
-                Q(type=Image.SNAPSHOT, user=self.request.user),
-                is_deleted=False
+                Q(type=Image.APPLICATION) |
+                Q(type=Image.DISTRIBUTION) |
+                Q(type=Image.CUSTOM, user=user) |
+                Q(type=Image.BACKUP, user=user) |
+                Q(type=Image.SNAPSHOT, user=user),
+                is_deleted=False,
             )
         else:
-            if query_type == Image.DISTRIBUTION or query_type == Image.APPLICATION:
+            if image_type in (Image.DISTRIBUTION, Image.APPLICATION):
                 user = None
 
-            queryset = Image.objects.filter(type=query_type, user=user)
+            queryset = Image.objects.filter(type=image_type, user=user, is_deleted=False)
         return queryset
 
     def get(self, request, *args, **kwargs):
