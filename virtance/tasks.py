@@ -212,7 +212,7 @@ def recreate_virtance(virtance_id):
             virtance.active()
             virtance.reset_event()
             try:
-                VirtanceCounter.objects.get(virtance=virtance, ended=None)
+                VirtanceCounter.objects.get(virtance=virtance, stopped=None)
             except VirtanceCounter.DoesNotExist:
                 VirtanceCounter.objects.create(
                     virtance=virtance, size=virtance.size, amount=virtance.size.price, started=timezone.now()
