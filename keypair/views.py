@@ -1,9 +1,9 @@
-from django.http import Http404
+from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from .models import KeyPair
+from .models import KeyPair, KeyPairVirtance
 from .serializers import KeyPairSerializer
 
 
@@ -28,10 +28,8 @@ class KeyPairDataAPI(APIView):
     class_serializer = KeyPairSerializer
 
     def get_queryset(self):
-        try:
-            return KeyPair.objects.get(pk=self.kwargs.get("pk"), user=self.request.user)
-        except KeyPair.DoesNotExist:
-            raise Http404
+        return get_object_or_404(KeyPair, pk=self.kwargs.get("pk"), user=self.request.user)
+
 
     def get(self, request, *args, **kwargs):
         serilizator = self.class_serializer(self.get_queryset(), many=False)
@@ -45,5 +43,7 @@ class KeyPairDataAPI(APIView):
 
     def delete(self, request, *args, **kwargs):
         keypair = self.get_queryset()
+        keypairvirtances = KeyPairVirtance.objects.filter(keypair=keypair)
+        keypairvirtances.delete()
         keypair.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
