@@ -18,9 +18,10 @@ def image_delete(image_id):
                 res = wvcomp.get_storages()
                 if res.get("detail") is None:
                     for storage in res.get("storages"):
-                        res = wvcomp.get_storage(storage.get("name"))  
+                        res = wvcomp.get_storage(storage.get("name"))
                         if res.get("detail") is None:
-                            for vol in res.get("volumes"):
+                            storage = res.get("storage")
+                            for vol in storage.get("volumes"):
                                 if vol.get("name") == image.file_name:
                                     res = wvcomp.delete_storage_volume(storage.get("name"), vol.get("name"))
                                     if res.get("detail") is None:
