@@ -9,6 +9,8 @@ from rest_framework.response import Response
 
 from compute.webvirt import WebVirtCompute
 from webvirtcloud.views import error_message_response
+from image.serializers import ImageSerializer
+from image.models import Image
 from .utils import make_vnc_hash
 from .models import Virtance
 from .tasks import delete_virtance
@@ -72,6 +74,34 @@ class VirtanceActionAPI(APIView):
         serilizator.is_valid(raise_exception=True)
         serilizator.save()
         return Response(serilizator.data)
+
+
+class VirtanceBackupsAPI(APIView):
+    class_serializer = ImageSerializer
+
+    def get_objects(self):
+        return Image.objects.filter(
+            type=Image.BACKUP, source_id=self.kwargs.get("id"), user=self.request.user, is_deleted=False
+        )
+
+    def get(self, request, *args, **kwargs):
+        backups = self.get_objects()
+        serilizator = self.class_serializer(backups, many=True)
+        return Response({"backups": serilizator.data})
+
+
+class VirtanceSnapshotsAPI(APIView):
+    class_serializer = ImageSerializer
+
+    def get_objects(self):
+        return Image.objects.filter(
+            type=Image.SNAPSHOT, source_id=self.kwargs.get("id"), user=self.request.user, is_deleted=False
+        )
+
+    def get(self, request, *args, **kwargs):
+        snapshots = self.get_objects()
+        serilizator = self.class_serializer(snapshots, many=True)
+        return Response({"snapshots": serilizator.data})
 
 
 class VirtanceConsoleAPI(APIView):
