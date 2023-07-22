@@ -40,6 +40,11 @@ class AdminVirtanceDataView(AdminTemplateView):
             if res_status.get("detail"):
                 messages.error(self.request, res_status.get("detail"))
 
+            if status == "running":
+                virtance.active()
+            if status == "shutoff":
+                virtance.inactive()
+
         ipv4public = IPAddress.objects.filter(virtance=virtance, network__type=Network.PUBLIC).first()
         if ipv4public is None:
             messages.error(self.request, "No public IP address assigned to this virtance")
