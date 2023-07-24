@@ -9,6 +9,8 @@ from .utils import image_error
 @app.task
 def image_delete(image_id):
     image = Image.objects.get(pk=image_id)
+    image.event = Image.DELETE
+    image.save()
     
     if image.type == Image.SNAPSHOT or image.type == Image.BACKUP:
         for region in image.regions.all():
