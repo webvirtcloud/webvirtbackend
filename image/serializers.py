@@ -4,6 +4,7 @@ from .models import Image
 
 
 class ImageSerializer(serializers.ModelSerializer):
+    event = serializers.SerializerMethodField()
     status = serializers.SerializerMethodField()
     public = serializers.SerializerMethodField()
     regions = serializers.SerializerMethodField()
@@ -18,12 +19,13 @@ class ImageSerializer(serializers.ModelSerializer):
             "id",
             "slug",
             "name",
-            "distribution",
-            "regions",
-            "public",
-            "created_at",
             "type",
+            "event",
+            "public",
+            "regions",
+            "created_at",
             "description",
+            "distribution",
             "min_disk_size",
             "size_gigabytes",
             "status",
@@ -41,6 +43,14 @@ class ImageSerializer(serializers.ModelSerializer):
         if obj.is_active is True:
             return "available"
         return "unavailable"
+
+    def get_event(self, obj):
+        if obj.event is None:
+            return None
+        return {
+            "name": obj.event,
+            "description": next((i[1] for i in obj.EVENT_CHOICES if i[0] == obj.event))
+        }
 
     def get_distribution(self, obj):
         for distro in obj.DISTRO_CHOICES:

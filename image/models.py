@@ -33,6 +33,18 @@ class Image(models.Model):
         (ALMALINUX, "AlmaLinux"),
         (ROCKYLINUX, "Rocky Linux"),
     ]
+    CREATE = "create"
+    DELETE = "delete"
+    RESTORE = "restore"
+    CONVERT = "convert"
+    TRANSFER = "transfer"
+    EVENT_CHOICES = [
+        (CREATE, "Creating"),
+        (DELETE, "Deleting"),
+        (RESTORE, "Restoring"),
+        (CONVERT, "Converting"),
+        (TRANSFER, "Transfering"),
+    ]
     user = models.ForeignKey(settings.AUTH_USER_MODEL, models.PROTECT, blank=True, null=True)
     source = models.ForeignKey("virtance.Virtance", models.PROTECT, blank=True, null=True)
     regions = models.ManyToManyField("region.Region", blank=True)
@@ -40,6 +52,7 @@ class Image(models.Model):
     name = models.CharField(max_length=100)
     slug = models.SlugField(max_length=100, unique=True, blank=True, null=True)
     type = models.CharField(max_length=50, choices=TYPE_CHOICES, default=SNAPSHOT)
+    event = models.CharField(max_length=40, choices=EVENT_CHOICES, blank=True, null=True)
     md5sum = models.CharField(max_length=50)
     distribution = models.CharField(max_length=50, choices=DISTRO_CHOICES, default=UNKNOWN)
     description = models.TextField(blank=True, null=True)
@@ -57,6 +70,10 @@ class Image(models.Model):
         verbose_name_plural = "Images"
         ordering = ["-id"]
 
+    def reset_event(self):
+        self.event = None
+        self.save()
+
     def save(self, *args, **kwargs):
         self.updated = timezone.now()
         super(Image, self).save(*args, **kwargs)
@@ -64,6 +81,7 @@ class Image(models.Model):
     def delete(self):
         self.is_deleted = True
         self.deleted = timezone.now()
+        self.reset_event()
         self.save()
 
     def __unicode__(self):

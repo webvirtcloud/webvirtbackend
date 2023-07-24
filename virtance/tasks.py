@@ -344,6 +344,7 @@ def snapshot_virtance(virtance_id, display_name):
             user=virtance.user,
             source=virtance,
             type=Image.SNAPSHOT,
+            event=Image.CREATE,
             name=display_name,
             distribution=virtance.template.distribution,
             md5sum=res.get("md5sum"),
@@ -353,6 +354,7 @@ def snapshot_virtance(virtance_id, display_name):
             is_active=True
         )
         image.regions.add(virtance.region)
+        image.reset_event()
         virtance.reset_event()
     else:
         virtance_error(virtance_id, res.get("detail"), "snapshot")
@@ -369,6 +371,7 @@ def backup_virtance(virtance_id):
             user=virtance.user,
             source=virtance,
             type=Image.BACKUP,
+            event=Image.CREATE,
             name=file_name,
             distribution=virtance.template.distribution,
             md5sum=res.get("md5sum"),
@@ -378,6 +381,7 @@ def backup_virtance(virtance_id):
             is_active=True
         )
         image.regions.add(virtance.region)
+        image.reset_event()
         virtance.reset_event()
     else:
         virtance_error(virtance_id, res.get("detail"), "backup")
