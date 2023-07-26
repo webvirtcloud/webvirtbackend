@@ -5,6 +5,7 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
+from webvirtcloud.views import error_message_response
 from .models import Image
 from .tasks import image_delete
 from .serializers import ImageSerializer
@@ -54,6 +55,10 @@ class ImageDataAPI(APIView):
 
     def delete(self, request, *args, **kwargs):
         image = self.get_object()
+
+        if image.event is not None:
+            return error_message_response("The image already has event.")
+
         if image.type != Image.CUSTOM and image.type != Image.SNAPSHOT:
             raise Http404
         image_delete.delay(image.id)

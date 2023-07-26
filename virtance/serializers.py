@@ -370,6 +370,9 @@ class VirtanceActionSerializer(serializers.Serializer):
             snapshot_virtance.delay(virtance.id, name)
 
         if action == "restore":
+            if image.event is not None:
+                raise serializers.ValidationError("The image already has event.")
+
             image = Image.objects.get(id=image)
             image.event = Image.RESTORE
             image.save()
