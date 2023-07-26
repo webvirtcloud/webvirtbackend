@@ -388,11 +388,13 @@ def backup_virtance(virtance_id):
 
 
 @app.task
-def restore_virtance(virtance_id, image_name, disk_size):
+def restore_virtance(virtance_id, image_id, disk_size):
+    image = Image.objects.get(pk=image_id)
     virtance = Virtance.objects.get(pk=virtance_id)
     wvcomp = wvcomp_conn(virtance.compute)
-    res = wvcomp.restore_virtance(virtance_id, image_name, disk_size)
+    res = wvcomp.restore_virtance(virtance_id, image.file_name, image.disk_size)
     if res.get("detail") is None:
+        image.reset_event()
         virtance.active()
         virtance.reset_event()
     else:

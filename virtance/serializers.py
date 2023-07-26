@@ -371,6 +371,8 @@ class VirtanceActionSerializer(serializers.Serializer):
 
         if action == "restore":
             image = Image.objects.get(id=image)
+            image.event = Image.RESTORE
+            image.save()
             restore_virtance.delay(virtance.id, image.file_name, image.disk_size)
 
         if action == "enable_recovery_mode":
