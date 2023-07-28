@@ -388,7 +388,7 @@ def backup_virtance(virtance_id):
 
 
 @app.task
-def restore_virtance(virtance_id, image_id, disk_size):
+def restore_virtance(virtance_id, image_id):
     image = Image.objects.get(pk=image_id)
     virtance = Virtance.objects.get(pk=virtance_id)
     wvcomp = wvcomp_conn(virtance.compute)

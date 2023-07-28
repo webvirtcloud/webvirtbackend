@@ -370,13 +370,14 @@ class VirtanceActionSerializer(serializers.Serializer):
             snapshot_virtance.delay(virtance.id, name)
 
         if action == "restore":
-            if image.event is not None:
+            snapshot = Image.objects.get(id=image)
+
+            if snapshot.event is not None:
                 raise serializers.ValidationError("The image already has event.")
 
-            image = Image.objects.get(id=image)
-            image.event = Image.RESTORE
-            image.save()
-            restore_virtance.delay(virtance.id, image.file_name, image.disk_size)
+            snapshot.event = Image.RESTORE
+            snapshot.save()
+            restore_virtance.delay(virtance.id, snapshot.id)
 
         if action == "enable_recovery_mode":
             enable_recovery_mode_virtance.delay(virtance.id)
