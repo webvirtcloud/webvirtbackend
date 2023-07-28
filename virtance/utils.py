@@ -12,7 +12,7 @@ def make_passwd(length=8):
     return phrase
 
 
-def make_vnc_hash(vnc_password, prefix_length=6, suffix_length=8):
+def make_vnc_hash(vnc_password, prefix_length=7, suffix_length=13):
     return b64encode(
         (f"{make_passwd(prefix_length)}{vnc_password}{make_passwd(suffix_length)}").encode()
     )
