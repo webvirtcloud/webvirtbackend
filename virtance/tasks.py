@@ -347,6 +347,7 @@ def snapshot_virtance(virtance_id, display_name):
             event=Image.CREATE,
             name=display_name,
             distribution=virtance.template.distribution,
+            description=virtance.template.description,
             md5sum=res.get("md5sum"),
             file_name=res.get("file_name"),
             file_size=res.get("size"),
