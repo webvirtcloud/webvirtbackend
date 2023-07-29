@@ -1,11 +1,13 @@
-{% extends "admin/base.html" %} {% load static %} {% load crispy_forms_tags %}
+{% extends "admin/base.html" %} 
+{% load static %} 
+{% load crispy_forms_tags %}
 {% block content %}
 <div
   class="flex min-h-screen items-center justify-center py-12 px-4 sm:px-6 lg:px-8"
 >
   <div class="w-full max-w-2xl space-y-4 bg-white p-4 md:p-8 rounded-lg border">
     <a
-      href="{% url 'admin_image_index' %}"
+      href="{% url 'admin_template_index' %}"
       class="inline-flex items-center text-sm p-2 bg-gray-100 rounded-md space-x-2 hover:bg-gray-200"
       ><svg
         xmlns="http://www.w3.org/2000/svg"
@@ -25,17 +27,17 @@
     </a>
     <div>
       <h2 class="text-2xl font-medium tracking-tight text-gray-900">
-        Update Image
+        Create Image
       </h2>
     </div>
     <form class="mt-8 space-y-6 text-sm" method="post">
-      {% crispy form helper %}
+      {% crispy form %}
       <div>
         <button
           type="submit"
           class="group relative flex w-full justify-center rounded-md bg-blue-600 py-2.5 px-3 text-sm font-semibold text-white hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
         >
-          Update
+          Create
         </button>
       </div>
     </form>

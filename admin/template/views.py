@@ -11,7 +11,7 @@ from admin.mixins import AdminTemplateView, AdminFormView, AdminUpdateView, Admi
 
 
 class AdminImageIndexView(AdminTemplateView):
-    template_name = 'admin/image/index.html'
+    template_name = 'admin/template/index.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -23,9 +23,9 @@ class AdminImageIndexView(AdminTemplateView):
 
 
 class AdminImageCreateView(AdminFormView):
-    template_name = 'admin/image/create.html'
+    template_name = 'admin/template/create.html'
     form_class = FormImage
-    success_url = reverse_lazy('admin_image_index')
+    success_url = reverse_lazy('admin_template_index')
 
     def form_valid(self, form):
         form.save()
@@ -33,10 +33,10 @@ class AdminImageCreateView(AdminFormView):
 
 
 class AdminImageUpdateView(AdminUpdateView):
-    template_name = 'admin/image/update.html'
+    template_name = 'admin/template/update.html'
     template_name_suffix = "_form"
     model = Image
-    success_url = reverse_lazy('admin_image_index')
+    success_url = reverse_lazy('admin_template_index')
     fields = "__all__"
 
     def __init__(self, *args, **kwargs):
@@ -64,9 +64,9 @@ class AdminImageUpdateView(AdminUpdateView):
 
 
 class AdminImageDeleteView(AdminDeleteView):
-    template_name = 'admin/image/delete.html'
+    template_name = 'admin/template/delete.html'
     model = Image
-    success_url = reverse_lazy('admin_image_index')
+    success_url = reverse_lazy('admin_template_index')
 
     def delete(self, request, *args, **kwargs):
         image = self.get_object()
