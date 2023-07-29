@@ -141,6 +141,7 @@ class VirtanceConsoleAPI(APIView):
             {
                 "console": {
                     "id": virtance.id,
+                    "uuid": virtance.uuid,
                     "name": virtance.name,
                     "websocket": {
                         "host": console_host,
