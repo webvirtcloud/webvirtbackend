@@ -2,7 +2,7 @@ from django.db.models import Q
 from django.urls import reverse
 from django.shortcuts import redirect, get_object_or_404
 
-from image.models import Image
+from image.models import Image, ImageError
 from admin.mixins import AdminView, AdminTemplateView
 
 
@@ -25,7 +25,9 @@ class AdminImageDataView(AdminTemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['image'] = self.get_object()
+        iamge = self.get_object()
+        context['image'] = iamge
+        context['image_errors'] = ImageError.objects.filter(image=iamge)
         return context
 
 
