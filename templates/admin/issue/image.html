@@ -54,7 +54,11 @@
                 >
                   {{ forloop.counter }}
                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                  {{ error.image.id }}
+                  <a 
+                    class="text-blue-600 hover:text-blue-900" 
+                    href="{% url 'admin_image_data' error.image.id %}"
+                    >{{ error.image.id }}</a
+                  >
                 </td>
                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                   {{ error.event }}
