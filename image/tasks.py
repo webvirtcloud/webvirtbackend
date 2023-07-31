@@ -2,7 +2,6 @@ from webvirtcloud.celery import app
 from compute.webvirt import WebVirtCompute
 
 from compute.models import Compute
-from virtance.models import Virtance
 from .models import Image
 from .utils import image_error
 
