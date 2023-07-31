@@ -398,6 +398,7 @@ class VirtanceActionSerializer(serializers.Serializer):
         if action == "enable_backups":
             virtance.is_backup_enabled = True
             virtance.save()
+            virtance.reset_event()
         
         if action == "disable_backups":
             backups_delete.delay(virtance.id)

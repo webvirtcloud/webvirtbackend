@@ -559,4 +559,4 @@ def backups_delete(virtance_id):
         backup_images -= 1
     
     if backup_images == 0:
-        virtance.reset_events()
+        virtance.reset_event()
