@@ -21,6 +21,7 @@ from image.models import Image
 from compute.models import Compute
 from network.models import Network, IPAddress
 from keypair.models import KeyPairVirtance
+from image.tasks import image_delete
 from .models import Virtance, VirtanceCounter
 from .utils import virtance_error
 
@@ -545,3 +546,17 @@ def virtance_backup():
                 backup_virtance.delay(virtance.id)
                 virtance.event = Virtance.BACKUP
                 virtance.save()
+
+
+@app.task
+def backups_delete(virtance_id):
+    virtance = Virtance.objects.get(pk=virtance_id)
+    backups = Image.objects.filter(virtance=virtance, type=Image.BACKUP, is_deleted=False)
+
+    backup_images = len(backups)
+    for backup in backups:
+        image_delete(backup.id)
+        backup_images -= 1
+    
+    if backup_images == 0:
+        virtance.reset_events()

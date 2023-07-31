@@ -15,7 +15,8 @@ from compute.webvirt import WebVirtCompute
 from .models import Virtance
 from .utils import virtance_error
 from .tasks import create_virtance, action_virtance, resize_virtance, reset_password_virtance, rebuild_virtance
-from .tasks import enable_recovery_mode_virtance, disable_recovery_mode_virtance, snapshot_virtance, restore_virtance
+from .tasks import enable_recovery_mode_virtance, disable_recovery_mode_virtance
+from .tasks import backups_delete, snapshot_virtance, restore_virtance
 
 
 class VirtanceSerializer(serializers.ModelSerializer):
@@ -27,6 +28,7 @@ class VirtanceSerializer(serializers.ModelSerializer):
     locked = serializers.BooleanField(source="is_locked")
     created_at = serializers.DateTimeField(source="created")
     recovery_mode = serializers.BooleanField(source="is_recovery_mode")
+    backups_enabled = serializers.BooleanField(source="is_backup_enabled")
     disk = serializers.SerializerMethodField()
     event = serializers.SerializerMethodField()
     status = serializers.SerializerMethodField()
@@ -55,6 +57,7 @@ class VirtanceSerializer(serializers.ModelSerializer):
             "backup_ids",
             "snapshot_ids",
             "recovery_mode",
+            "backups_enabled",
         )
 
     def get_status(self, obj):
@@ -87,11 +90,10 @@ class VirtanceSerializer(serializers.ModelSerializer):
         return []
 
     def get_backup_ids(self, obj):
-        return []
+        return [image.id for image in Image.objects.filter(virtance=obj, type=Image.BACKUP, is_deleted=False)]
 
     def get_snapshot_ids(self, obj):
-        images = Image.objects.filter()
-        return []
+        return [image.id for image in Image.objects.filter(virtance=obj, type=Image.SNAPSHOT, is_deleted=False)]
 
     def get_networks(self, obj):
         v4 = []
@@ -322,6 +324,14 @@ class VirtanceActionSerializer(serializers.Serializer):
             if attrs.get("name") is None:
                 raise serializers.ValidationError({"name": ["This field is required."]})
     
+        if attrs.get("action") == "enable_backups":
+            if virtance.is_backup_enabled is True:
+                raise serializers.ValidationError("Backups are already enabled.")
+
+        if attrs.get("action") == "disable_backups":
+            if virtance.is_backup_enabled is False:
+                raise serializers.ValidationError("Backups are already disabled.")
+
         if attrs.get("action") == "enable_recovery_mode":
             if virtance.is_recovery_mode is True:
                 raise serializers.ValidationError({"name": ["Recovey mode is already enabled."]})
@@ -384,6 +394,13 @@ class VirtanceActionSerializer(serializers.Serializer):
 
         if action == "disable_recovery_mode":
             disable_recovery_mode_virtance.delay(virtance.id)
+
+        if action == "enable_backups":
+            virtance.is_backup_enabled = True
+            virtance.save()
+        
+        if action == "disable_backups":
+            backups_delete.delay(virtance.id)
 
         return validated_data
 
