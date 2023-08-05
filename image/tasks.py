@@ -33,6 +33,9 @@ def image_delete(image_id):
                     image_error(
                         image.id, f'Region: {region}, Error:{res.get("detail")}', f"delete_image_{image.type}"
                     )
+                    return False
 
         if image.regions.count() == 0:
             image.delete()
+
+    return True

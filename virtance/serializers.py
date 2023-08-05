@@ -396,8 +396,7 @@ class VirtanceActionSerializer(serializers.Serializer):
             disable_recovery_mode_virtance.delay(virtance.id)
 
         if action == "enable_backups":
-            virtance.is_backup_enabled = True
-            virtance.save()
+            virtance.enable_backups()
             virtance.reset_event()
         
         if action == "disable_backups":

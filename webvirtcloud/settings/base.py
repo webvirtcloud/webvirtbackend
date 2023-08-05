@@ -112,7 +112,7 @@ DATABASES = {
     },
 }
 
-# Celery
+# Celery settings
 CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL", "amqp://guest:guest@127.0.0.1:5672")
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60
@@ -120,6 +120,10 @@ CELERY_RESULT_BACKEND = "django-db"
 CELERY_BEAT_SCHEDULE = {
     "virtance_counter": {
         "task": "virtance.tasks.virtance_counter",
+        "schedule": crontab(minute=0, hour="*/1"),
+    },
+    "virtance_backup": {
+        "task": "virtance.tasks.virtance_backup",
         "schedule": crontab(minute=0, hour="*/1"),
     },
 }

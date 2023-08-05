@@ -91,6 +91,14 @@ class Virtance(models.Model):
         self.event = None
         self.save()
 
+    def enable_backups(self):
+        self.is_backup_enabled = True
+        self.save()
+
+    def disable_backups(self):
+        self.is_backup_enabled = False
+        self.save()
+
     def enable_recovery_mode(self):
         self.is_recovery_mode = True
         self.save()

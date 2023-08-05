@@ -518,15 +518,15 @@ def virtance_backup():
     compute_event_backup_ids = []
 
     compute_ids = Virtance.objects.filter(
-        is_backup_enabled=True, 
         event=Virtance.BACKUP, 
-        is_deleted=False
+        is_deleted=False,
+        is_backup_enabled=True, 
     ).values_list('compute_id', flat=True)
 
     virtances = Virtance.objects.filter(
-        is_backup_enabled=True,
         event=None,
-        is_deleted=False
+        is_deleted=False,
+        is_backup_enabled=True,
     ).exclude(compute__in=list(set(compute_ids)))
 
     for virtance in virtances:
@@ -555,8 +555,9 @@ def backups_delete(virtance_id):
 
     backup_images = len(backups)
     for backup in backups:
-        image_delete(backup.id)
-        backup_images -= 1
+        if image_delete(backup.id) is True:
+            backup_images -= 1
     
     if backup_images == 0:
+        virtance.disable_backups()
         virtance.reset_event()
