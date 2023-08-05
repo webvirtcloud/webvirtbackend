@@ -52,6 +52,15 @@ class ImageDataAPI(APIView):
         serilizator = self.class_serializer(self.get_object(), many=False)
         return Response({"image": serilizator.data})
 
+    def put(self, request, *args, **kwargs):
+        image = self.get_object()
+        if image.type != Image.SNAPSHOT:
+            return error_message_response("Only snapshot image can be updated.")
+        serilizator = self.class_serializer(data=request.data)
+        serilizator.is_valid(raise_exception=True)
+        serilizator.save()
+        serilizator = self.class_serializer(self.get_object(), many=False)
+        return Response({"image": serilizator.data})
 
     def delete(self, request, *args, **kwargs):
         image = self.get_object()

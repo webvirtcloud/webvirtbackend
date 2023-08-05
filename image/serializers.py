@@ -4,14 +4,15 @@ from .models import Image
 
 
 class ImageSerializer(serializers.ModelSerializer):
-    event = serializers.SerializerMethodField()
-    status = serializers.SerializerMethodField()
-    public = serializers.SerializerMethodField()
-    regions = serializers.SerializerMethodField()
-    distribution = serializers.SerializerMethodField()
-    min_disk_size = serializers.SerializerMethodField()
-    size_gigabytes = serializers.SerializerMethodField()
-    created_at = serializers.DateTimeField(source="created")
+    name = serializers.CharField(max_length=255, write_only=True)
+    event = serializers.SerializerMethodField(required=False)
+    status = serializers.SerializerMethodField(required=False)
+    public = serializers.SerializerMethodField(required=False)
+    regions = serializers.SerializerMethodField(required=False)
+    distribution = serializers.SerializerMethodField(required=False)
+    min_disk_size = serializers.SerializerMethodField(required=False)
+    size_gigabytes = serializers.SerializerMethodField(required=False)
+    created_at = serializers.DateTimeField(source="created", required=False)
 
     class Meta:
         model = Image
@@ -66,3 +67,14 @@ class ImageSerializer(serializers.ModelSerializer):
         if obj.type == obj.DISTRIBUTION or obj.type == obj.APPLICATION:
             return 0
         return round(obj.file_size / 1073741824, 2)
+
+    def validate(self, attrs):
+        if attrs.get("name") is None:
+            raise serializers.ValidationError({"name": ["This field is required."]})
+
+        return attrs
+
+    def update(self, instance, validated_data):
+        instance.name = validated_data.get("name", instance.name)
+        instance.save()
+        return instance
