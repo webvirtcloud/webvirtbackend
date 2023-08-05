@@ -226,7 +226,7 @@ class CreateVirtanceSerializer(serializers.Serializer):
             pass
 
         if backups:
-           pass
+           virtance.enable_backups()
 
         create_virtance.delay(virtance.id, password=password)
 
