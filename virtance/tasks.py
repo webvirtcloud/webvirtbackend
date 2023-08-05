@@ -376,6 +376,7 @@ def backup_virtance(virtance_id):
             event=Image.CREATE,
             name=file_name,
             distribution=virtance.template.distribution,
+            description=virtance.template.description,
             md5sum=res.get("md5sum"),
             file_name=res.get("file_name"),
             file_size=res.get("size"),
@@ -530,16 +531,16 @@ def virtance_backup():
     ).exclude(compute__in=list(set(compute_ids)))
 
     for virtance in virtances:
-        backups = Image.objects.filter(virtance=virtance, type=Image.BACKUP, is_deleted=False)
+        backups = Image.objects.filter(source=virtance, type=Image.BACKUP, is_deleted=False)
 
         if virtance.compute.id not in compute_event_backup_ids:
             compute_event_backup_ids.append(virtance.compute.id)
 
             if backups:
                 if (timezone.now() - backups.first().created).days >= settings.BACKUP_PERIOD_DAYS:
-                    backup_virtance.delay(virtance.id)
                     virtance.event = Virtance.BACKUP
                     virtance.save()
+                    backup_virtance.delay(virtance.id)
                 if len(backups) > settings.BACKUP_PER_MONTH:
                     image_delete.delay(backups.last().id)
             else:
@@ -551,7 +552,7 @@ def virtance_backup():
 @app.task
 def backups_delete(virtance_id):
     virtance = Virtance.objects.get(pk=virtance_id)
-    backups = Image.objects.filter(virtance=virtance, type=Image.BACKUP, is_deleted=False)
+    backups = Image.objects.filter(source=virtance, type=Image.BACKUP, is_deleted=False)
 
     backup_images = len(backups)
     for backup in backups:
