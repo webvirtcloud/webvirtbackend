@@ -50,7 +50,7 @@ services:
       context: .
       dockerfile: Dockerfile
     image: webvirtbackend:dev
-    hostname: celery
+    hostname: beat
     volumes:
       - .:/app
     command: celery -A webvirtcloud beat -l info
@@ -72,7 +72,7 @@ services:
       context: .
       dockerfile: Dockerfile
     image: webvirtbackend:dev
-    hostname: celery
+    hostname: worker
     volumes:
       - .:/app
     command: celery -A webvirtcloud worker -l info
@@ -119,3 +119,9 @@ services:
     ports:
       - 8080:8080
     network_mode: host
+  mailhog:
+    image: mailhog/mailhog
+    hostname: mailhog
+    ports:
+      - 8025:8025
+      - 1025:1025
