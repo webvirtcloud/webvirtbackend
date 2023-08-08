@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from webvirtcloud.views import error_message_response
 from .models import Image
 from .tasks import image_delete
-from .serializers import ImageSerializer
+from .serializers import ImageSerializer, ImageActionSerializer
 
 
 class ImageListAPI(APIView):
@@ -72,3 +72,25 @@ class ImageDataAPI(APIView):
             raise Http404
         image_delete.delay(image.id)
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class ImageActionAPI(APIView):
+    class_serializer = ImageActionSerializer
+
+    def get_object(self):
+        image = get_object_or_404(Image, pk=self.kwargs.get("id"), is_deleted=False)
+        if image.type == Image.SNAPSHOT or image.type == Image.BACKUP or image.type == Image.CUSTOM:
+            if image.user != self.request.user:
+                raise Http404
+        return image
+
+    def post(self, request, *args, **kwargs):
+        image = self.get_object()
+
+        if image.event is not None:
+            return error_message_response("The image already has event.")
+
+        serilizator = self.class_serializer(data=request.data, context={'image': image})
+        serilizator.is_valid(raise_exception=True)
+        serilizator.save()
+        return Response(serilizator.data)

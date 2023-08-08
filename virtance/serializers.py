@@ -360,8 +360,8 @@ class VirtanceActionSerializer(serializers.Serializer):
 
         if action == "rename":
             virtance.name = name
-            virtance.event = None
             virtance.save()
+            virtance.reset_event()
 
         if action == "rebuild":
             image = Image.objects.get(slug=image)

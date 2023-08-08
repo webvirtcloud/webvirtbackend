@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from .models import Image
+from region.models import Region
 
 
 class ImageSerializer(serializers.ModelSerializer):
@@ -78,3 +79,62 @@ class ImageSerializer(serializers.ModelSerializer):
         instance.name = validated_data.get("name", instance.name)
         instance.save()
         return instance
+
+
+class ImageActionSerializer(serializers.Serializer):
+    action = serializers.CharField(max_length=30)
+    region = serializers.CharField(max_length=30, required=False)
+
+    def validate_action(self, value):
+        actions = [
+            "convert",
+            "transfer",
+        ]
+        if value not in actions:
+            raise serializers.ValidationError({"action": ["Invalid action."]})
+        return value
+
+    def validate(self, attrs):
+        region = attrs.get("region")
+        image = self.context.get("image")
+
+        if attrs.get("action") == "convert":
+            if image.type != Image.BACKUP:
+                raise serializers.ValidationError({"action": ["Backup image can be converted only."]})
+
+        if attrs.get("action") == "transfer":
+            if image.type != Image.SNAPSHOT:
+                raise serializers.ValidationError({"action": ["Snapshot image can be transferred only."]})
+    
+            # Check if region is active
+            try:
+                check_region = Region.objects.get(slug=region, is_deleted=False)
+                if check_region.is_active is False:
+                    raise serializers.ValidationError({"region": ["Region is not active."]})
+                if check_region in image.regions.all():
+                    raise serializers.ValidationError({"region": ["Image already transferred to the region."]})
+            except Region.DoesNotExist:
+                raise serializers.ValidationError({"region": ["Region not found."]})
+            
+            raise serializers.ValidationError({"image": ["Transfer action is not implemented yet."]})
+
+        return attrs
+    
+    def create(self, validated_data):
+        image = self.context.get("image")
+        action = validated_data.get("action")
+        
+        # Set new task event
+        image.event = action
+        image.save()
+
+        if action == "convet":
+            image.type = Image.SNAPSHOT
+            image.name = f"{image.source.name}-{image.created.strftime('%Y-%m-%d %H:%M:%S')}"
+            image.save()
+            image.reset_event()
+
+        if action == "transfer":
+            pass # TODO: Transfer image to region
+
+        return validated_data
