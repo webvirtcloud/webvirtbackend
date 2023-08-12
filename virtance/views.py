@@ -25,30 +25,33 @@ from .serializers import (
 class VirtanceListAPI(APIView):
     class_serializer = VirtanceSerializer
 
-    def get(self, request, *args, **kwargs):
-        name = request.query_params.get('name')
-        region = request.query_params.get('region')
-        has_backups = request.query_params.get('has_backups')
-        has_snapshots = request.query_params.get('has_snapshots')
+    def get_queryset(self):
+        name = self.request.query_params.get('name')
+        region = self.request.query_params.get('region')
+        has_backups = self.request.query_params.get('has_backups')
+        has_snapshots = self.request.query_params.get('has_snapshots')
 
-        virtances = Virtance.objects.filter(
+        queryset = Virtance.objects.filter(
             ~Q(event=Virtance.DELETE),
-            user=request.user, is_deleted=False
+            user=self.request.user, is_deleted=False
         )
 
         if name:
-            virtances = virtances.filter(name__icontains=name)
+            queryset = queryset.filter(name__icontains=name)
         if region:
-            virtances = virtances.filter(region__slug=region)
+            queryset = queryset.filter(region__slug=region)
         if has_backups:
-            virtances = virtances.filter(is_backup_enabled=True)
+            queryset = queryset.filter(is_backup_enabled=True)
         if has_snapshots:
             virtance_ids = Image.objects.filter(
-                user=request.user, type=Image.SNAPSHOT, source__is_deleted=False, is_deleted=False
+                user=self.request.user, type=Image.SNAPSHOT, source__is_deleted=False, is_deleted=False
             ).values_list("source_id", flat=True)
-            virtances = virtances.filter(id__in=virtance_ids)
+            queryset = queryset.filter(id__in=virtance_ids)
+        
+        return queryset
 
-        serilizator = self.class_serializer(virtances, many=True)
+    def get(self, request, *args, **kwargs):
+        serilizator = self.class_serializer(self.get_queryset(), many=True)
         return Response({"virtances": serilizator.data})
 
     def post(self, request, *args, **kwargs):
