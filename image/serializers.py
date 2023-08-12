@@ -5,7 +5,7 @@ from region.models import Region
 
 
 class ImageSerializer(serializers.ModelSerializer):
-    name = serializers.CharField(max_length=255, write_only=True)
+    name = serializers.CharField(max_length=255, required=False)
     event = serializers.SerializerMethodField(required=False)
     status = serializers.SerializerMethodField(required=False)
     public = serializers.SerializerMethodField(required=False)
@@ -72,7 +72,6 @@ class ImageSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         if attrs.get("name") is None:
             raise serializers.ValidationError({"name": ["This field is required."]})
-
         return attrs
 
     def update(self, instance, validated_data):
