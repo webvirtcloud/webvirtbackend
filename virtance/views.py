@@ -75,6 +75,8 @@ class VirtanceDataAPI(APIView):
 
     def delete(self, request, *args, **kwargs):
         virtance = self.get_object()
+        virtance.event = Virtance.DELETE
+        virtance.save()
         delete_virtance.delay(virtance.id)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
