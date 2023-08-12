@@ -127,13 +127,13 @@ class ImageActionSerializer(serializers.Serializer):
         image.event = action
         image.save()
 
-        if action == "convet":
+        if action == Image.CONVERT:
             image.type = Image.SNAPSHOT
             image.name = f"{image.source.name}-{image.created.strftime('%Y-%m-%d %H:%M:%S')}"
             image.save()
             image.reset_event()
 
-        if action == "transfer":
+        if action == Image.TRANSFER:
             pass # TODO: Transfer image to region
 
         return validated_data
