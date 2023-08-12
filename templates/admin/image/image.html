@@ -2,17 +2,17 @@
 <div class="space-y-8">
   <h2 class="text-2xl font-medium mb-4">Image</h2>
   <div class="overflow-hidden bg-white shadow sm:rounded-lg">
-
     <div class="px-4 py-5 sm:px-6">
       {% include 'admin/alerts.html' %}
 
       <div class="flex justify-between items-center">
-        <div>
-          <p class="mt-1 max-w-2xl text-sm text-gray-500">
-            Name: {{ image.name }}
-          </p>
-        </div>
-        {% if image.event %}
+        <div class="flex items-center gap-2">
+          <div>
+            <p class="font-semibold leading-6 text-gray-900">
+              {{ image.name }}
+            </p>
+          </div>
+          {% if image.event %}
           <div
             class="py-0.5 px-1 rounded-md flex items-center gap-1 border border-yellow-300 bg-yellow-50 text-xs text-yellow-700"
           >
@@ -66,7 +66,8 @@
               </button>
             </form>
           </div>
-        {% endif %}
+          {% endif %}
+        </div>
       </div>
     </div>
     <div class="border-t border-gray-200 px-4 py-5 sm:px-6">
@@ -89,14 +90,12 @@
           <dt class="text-sm font-medium text-gray-500">Virtance</dt>
           <dd class="mt-1 text-sm text-gray-900">
             {% if image.source.is_deleted == False %}
-              <a 
-                class="text-blue-600 hover:text-blue-900" 
-                href="{% url 'admin_virtance_data' image.source.id %}"
-                >{{ image.source.name }}</a
-              >
-            {% else %}
-              {{ image.source.name }}
-            {% endif %}
+            <a
+              class="text-blue-600 hover:text-blue-900"
+              href="{% url 'admin_virtance_data' image.source.id %}"
+              >{{ image.source.name }}</a
+            >
+            {% else %} {{ image.source.name }} {% endif %}
           </dd>
         </div>
         <div class="sm:col-span-1">
@@ -105,11 +104,15 @@
         </div>
         <div class="sm:col-span-1">
           <dt class="text-sm font-medium text-gray-500">File Size</dt>
-          <dd class="mt-1 text-sm text-gray-900">{{ image.file_size|filesizeformat }}</dd>
+          <dd class="mt-1 text-sm text-gray-900">
+            {{ image.file_size|filesizeformat }}
+          </dd>
         </div>
         <div class="sm:col-span-1">
           <dt class="text-sm font-medium text-gray-500">Disk Size</dt>
-          <dd class="mt-1 text-sm text-gray-900">{{ image.disk_size|filesizeformat }}</dd>
+          <dd class="mt-1 text-sm text-gray-900">
+            {{ image.disk_size|filesizeformat }}
+          </dd>
         </div>
         <div class="sm:col-span-1">
           <dt class="text-sm font-medium text-gray-500">Distro</dt>
