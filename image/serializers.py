@@ -155,7 +155,6 @@ class SnapshotsSerializer(serializers.ModelSerializer):
         model = Image
         fields = (
             "id",
-            "slug",
             "name",
             "type",
             "event",
