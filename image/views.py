@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from webvirtcloud.views import error_message_response
 from .models import Image
 from .tasks import image_delete
-from .serializers import ImageSerializer, ImageActionSerializer
+from .serializers import ImageSerializer, ImageActionSerializer, SnapshotsSerializer
 
 
 class ImageListAPI(APIView):
@@ -94,3 +94,14 @@ class ImageActionAPI(APIView):
         serilizator.is_valid(raise_exception=True)
         serilizator.save()
         return Response(serilizator.data)
+
+
+class ImageSnapshotsAPI(APIView):
+    class_serializer = SnapshotsSerializer
+
+    def get_queryset(self):
+        return Image.objects.filter(type=Image.SNAPSHOT, user=self.request.user, is_deleted=False)
+
+    def get(self, request, *args, **kwargs):
+        serilizator = self.class_serializer(self.get_queryset(), many=True)
+        return Response({"snapshots": serilizator.data})
