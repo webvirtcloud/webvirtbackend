@@ -11,7 +11,7 @@ from compute.webvirt import WebVirtCompute
 from webvirtcloud.views import error_message_response
 from image.serializers import ImageSerializer
 from image.models import Image
-from .utils import make_vnc_hash
+from .utils import make_vnc_hash, virtance_history
 from .models import Virtance, VirtanceHistory
 from .tasks import delete_virtance
 from .serializers import (
@@ -60,6 +60,7 @@ class VirtanceListAPI(APIView):
         validated_data = serilizator.save(password=request.data.get("password"))
         virtance = Virtance.objects.get(pk=validated_data.get("id"))
         serilizator = self.class_serializer(virtance, many=False)
+        virtance_history(virtance.id, request.user.id, "virtance.create")
         return Response({"virtance": serilizator.data}, status=status.HTTP_201_CREATED)
 
 
@@ -81,6 +82,7 @@ class VirtanceDataAPI(APIView):
         virtance.event = Virtance.DELETE
         virtance.save()
         delete_virtance.delay(virtance.id)
+        virtance_history(virtance.id, request.user.id, "virtance.delete")
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
@@ -101,6 +103,7 @@ class VirtanceActionAPI(APIView):
         serilizator = self.class_serializer(data=request.data, context={'user': request.user, 'virtance': virtance})
         serilizator.is_valid(raise_exception=True)
         serilizator.save()
+        virtance_history(virtance.id, request.user.id, f"virtance.{serilizator.data.get('action')}")
         return Response(serilizator.data)
 
 
@@ -160,6 +163,7 @@ class VirtanceConsoleAPI(APIView):
         console_host = settings.NOVNC_URL
         console_port = settings.NOVNC_PORT
         console_hash = make_vnc_hash(res.get("vnc_password"))
+        virtance_history(virtance.id, request.user.id, f"virtance.console")
         response = Response(
             {
                 "console": {
