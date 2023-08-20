@@ -160,8 +160,8 @@ class VirtanceError(models.Model):
 class VirtanceHistory(models.Model):
     virtance = models.ForeignKey(Virtance, models.PROTECT)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, models.PROTECT)
-    event = models.CharField(max_length=40, blank=True, null=True)
-    message = models.TextField()
+    event = models.CharField(max_length=40)
+    message = models.TextField(blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
 
     class Meta:
