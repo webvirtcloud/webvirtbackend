@@ -23,7 +23,7 @@ def make_vnc_hash(vnc_password, prefix_length=NOVNC_PASSWD_PREFIX, suffix_length
     )
 
 
-def virtance_history(virtance_id, user_id, message, event=None):
+def virtance_history(virtance_id, user_id, event, message=None):
     VirtanceHistory.objects.create(virtance_id=virtance_id, user_id=user_id, message=message, event=event)
 
 
