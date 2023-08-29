@@ -2,6 +2,7 @@ from rest_framework import serializers
 from django.contrib.auth import authenticate
 
 from .models import User, Token
+from .tasks import email_confirm_register
 from project.models import Project
 
 
@@ -59,9 +60,8 @@ class RegisterSerializer(serializers.Serializer):
 
         token = Token.objects.create(user=user, name="Obtained auth token", scope=Token.WRITE_SCOPE, is_obtained=True)
 
-        user_name = user.email.split("@")[0]
-        project_name = f"{user_name.capitalize()}'s project"
-        project = Project.objects.create(name=project_name, user=user, is_default=True)
+        confirm_url = f"{settings.CLIENT_URL}/account/verify_email/{user.hash}/"
+        email_confirm_register.delay(confirm_url, email)
 
         validated_data["token"] = token.key
         return validated_data

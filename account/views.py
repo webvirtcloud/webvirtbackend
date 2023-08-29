@@ -81,6 +81,11 @@ class VerifyEmail(APIView):
             user.is_email_verified = True
             user.update_hash()
             user.save()
+            
+            user_name = user.email.split("@")[0]
+            project_name = f"{user_name.capitalize()}'s project"
+            project = Project.objects.create(name=project_name, user=user, is_default=True)
+
             return Response(status=status.HTTP_200_OK)
         return error_message_response("Invalid token or email already verified.")
 
