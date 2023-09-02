@@ -14,7 +14,7 @@ class RegionSerializer(serializers.ModelSerializer):
         fields = ("slug", "name", "available", "features", "sizes")
 
     def get_features(self, obj):
-        return []
+        return [obj.name for obj in obj.features.all()]
 
     def get_sizes(self, obj):
         return [size.slug for size in Size.objects.filter(is_deleted=False) if obj in size.regions.all()]

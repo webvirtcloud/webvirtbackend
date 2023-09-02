@@ -2,10 +2,35 @@ from django.db import models
 from django.utils import timezone
 
 
+class Feature(models.Model):
+    FEATURE_CHOICES = (
+        ("ipv6", "IPv6"),
+        ("resize", "Resize"),
+        ("volume", "Volume"),
+        ("backup", "Backup"),
+        ("snapshot", "Snapshot"),
+        ("firewall", "Firewall"),
+        ("one_click", "One-Click"),
+        ("kubernetes", "Kubernetes"),
+        ("load_balancer", "Load Balancer"),
+        ("object_storage", "Object Storage"),
+    )
+    name = models.CharField(choices=FEATURE_CHOICES, unique=True, max_length=100)
+
+    class Meta:
+        verbose_name = "Feature"
+        verbose_name_plural = "Features"
+        ordering = ["-id"]
+
+    def __unicode__(self):
+        return self.name
+
+
 class Region(models.Model):
     name = models.CharField(max_length=100)
     slug = models.SlugField(max_length=100, unique=True)
     description = models.TextField(blank=True, null=True)
+    features = models.ManyToManyField("region.Feature", related_name="features")
     is_active = models.BooleanField("Active", default=False)
     is_deleted = models.BooleanField("Deleted", default=False)
     created = models.DateTimeField(auto_now_add=True)

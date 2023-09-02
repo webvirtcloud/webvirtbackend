@@ -1,7 +1,11 @@
+from django import forms
 from django.urls import reverse_lazy
 from crispy_forms.helper import FormHelper
-from .forms import FormRegion
-from region.models import Region
+from crispy_forms.layout import Layout
+from crispy_forms.bootstrap import InlineCheckboxes
+
+from region.models import Region, Feature
+from .forms import FormRegion, CustomModelMultipleChoiceField
 from admin.mixins import AdminTemplateView, AdminFormView, AdminUpdateView, AdminDeleteView
 
 
@@ -29,12 +33,24 @@ class AdminRegionUpdateView(AdminUpdateView):
     template_name_suffix = "_form"
     model = Region
     success_url = reverse_lazy('admin_region_index')
-    fields = ["name", "slug", "description", "is_active"]
+    fields = "__all__"
 
     def __init__(self, *args, **kwargs):
         super(AdminRegionUpdateView, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_tag = False
+        self.helper.layout = Layout(
+            "name", "slug", "description", "is_active",
+            InlineCheckboxes("features", css_class="checkboxinput"),
+        )
+
+    def get_form(self, form_class=None):
+        form = super(AdminRegionUpdateView, self).get_form(form_class)
+        form.fields["features"] = CustomModelMultipleChoiceField(
+            queryset=Feature.objects.all(), 
+            widget=forms.CheckboxSelectMultiple()
+        )
+        return form
 
     def get_context_data(self, **kwargs):
         context = super(AdminRegionUpdateView, self).get_context_data(**kwargs)
