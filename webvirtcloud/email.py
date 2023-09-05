@@ -1,3 +1,4 @@
+import socket
 from django.conf import settings
 from django.utils.html import strip_tags
 from django.core.mail import EmailMessage
@@ -13,4 +14,7 @@ def send_email(context, subject, recipient, template):
     email.content_subtype = "html"
     email.attach_alternative(html_message, "text/html")
 
-    email.send()
+    try:
+        email.send()
+    except socket.error:
+        pass

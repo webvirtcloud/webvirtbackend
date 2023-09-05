@@ -54,7 +54,7 @@
         <tr>
           <td style="width: 552px; max-width: 100%">
             <div class="sm-my-8" style="margin-top: 48px; margin-bottom: 48px; text-align: center">
-              <a href="https://webvirt.cloud">
+              <a href="{{ site_url }}">
                 <img src="https://cloud-assets.webvirt.cloud/images/webvirtcloud.png" width="50" alt="Maizzle" style="max-width: 100%; vertical-align: middle; line-height: 1; border: 0">
               </a>
             </div>
@@ -65,16 +65,16 @@
                     Deployed,
                   </h1>
                   <p style="margin: 0; line-height: 24px">
-                    Your virtance <span style="font-weight: 700; text-decoration-line: underline">server-o1</span> was
+                    Your virtance <span style="font-weight: 700; text-decoration-line: underline">{{ hostname }}</span> was
                     successfully created,
                     <br>
                     <br>
                     This server was created using
-                    <span style="font-weight: 700; text-decoration-line: underline;">Ubuntu 22.04</span> distribution in
-                    <span style="font-weight: 700; text-decoration-line: underline;">Dallas</span> region.
+                    <span style="font-weight: 700; text-decoration-line: underline;">{{ distribution }}</span> distribution in
+                    <span style="font-weight: 700; text-decoration-line: underline;">{{ region }}</span> region.
                     <br>
                     It got a neat IP address
-                    <span style="font-weight: 700; text-decoration-line: underline;">192.0.0.1</span>.
+                    <span style="font-weight: 700; text-decoration-line: underline;">{{ ipaddr }}</span>.
                     <br>
                     <br>
                     Good luck with it.
