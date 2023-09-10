@@ -48,7 +48,8 @@ class AdminRegionUpdateView(AdminUpdateView):
         form = super(AdminRegionUpdateView, self).get_form(form_class)
         form.fields["features"] = CustomModelMultipleChoiceField(
             queryset=Feature.objects.all(), 
-            widget=forms.CheckboxSelectMultiple()
+            widget=forms.CheckboxSelectMultiple(),
+            required=False
         )
         return form
 

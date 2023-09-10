@@ -29,8 +29,8 @@ class Size(models.Model):
 
     def delete(self):
         self.is_active = False
-        self.deleted = timezone.now()
         self.is_deleted = True
+        self.deleted = timezone.now()
         self.save()
 
     def __unicode__(self):

@@ -50,7 +50,8 @@ class AdminSizeUpdateView(AdminUpdateView):
         form = super(AdminSizeUpdateView, self).get_form(form_class)
         form.fields["regions"] = CustomModelMultipleChoiceField(
             queryset=Region.objects.filter(is_deleted=False), 
-            widget=forms.CheckboxSelectMultiple()
+            widget=forms.CheckboxSelectMultiple(),
+            required=False
         )
         return form
     
