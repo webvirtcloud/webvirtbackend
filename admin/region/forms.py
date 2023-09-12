@@ -21,7 +21,8 @@ class FormRegion(forms.ModelForm):
         super(FormRegion, self).__init__(*args, **kwargs)
         self.fields["features"] = CustomModelMultipleChoiceField(
             queryset=Feature.objects.all(), 
-            widget=forms.CheckboxSelectMultiple()
+            widget=forms.CheckboxSelectMultiple(),
+            required=False
         )
         self.helper = FormHelper(self)
         self.helper.form_tag = False

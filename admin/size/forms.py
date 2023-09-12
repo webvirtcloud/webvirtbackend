@@ -20,7 +20,8 @@ class FormSize(forms.ModelForm):
         super(FormSize, self).__init__(*args, **kwargs)
         self.fields["regions"] = CustomModelMultipleChoiceField(
             queryset=Region.objects.filter(is_deleted=False), 
-            widget=forms.CheckboxSelectMultiple()
+            widget=forms.CheckboxSelectMultiple(),
+            required=False
         )
         self.helper = FormHelper(self)
         self.helper.form_tag = False
