@@ -75,8 +75,16 @@ class User(AbstractBaseUser):
         self.hash = get_random_string(length=40)
         self.save()
 
+    def verify(self):
+        self.is_verified = True
+        self.save()
+
+    def email_verify(self):
+        self.is_verified = True
+        self.save()
+
     def activate(self):
-        self.is_active = True
+        self.is_email_verified = True
         self.save()
 
     class Meta:

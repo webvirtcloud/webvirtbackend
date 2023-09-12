@@ -43,6 +43,7 @@ INSTALLED_APPS += [
     "project",
     "network",
     "virtance",
+    "webvirtcloud",
 ]
 
 # Third party application definition
