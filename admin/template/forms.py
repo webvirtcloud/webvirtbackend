@@ -25,7 +25,8 @@ class FormImage(forms.ModelForm):
         )
         self.fields["regions"] = CustomModelMultipleChoiceField(
             queryset=Region.objects.filter(is_deleted=False), 
-            widget=forms.CheckboxSelectMultiple()
+            widget=forms.CheckboxSelectMultiple(),
+            required=False
         )
         self.helper = FormHelper()
         self.helper.form_tag = False
