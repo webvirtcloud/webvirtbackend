@@ -47,29 +47,6 @@ services:
       DJANGO_SETTINGS_MODULE: webvirtcloud.settings.develop
     depends_on:
       - mariadb
-  beat:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    image: webvirtbackend:dev
-    container_name: webvirtcloud-beat
-    hostname: beat
-    volumes:
-      - .:/app
-    command: celery -A webvirtcloud beat -l info
-    environment:
-      DB_HOST: mariadb
-      DB_PORT: 3306
-      DB_NAME: webvirtcloud
-      DB_USER: django
-      DB_PASSWORD: django
-      ANSIBLE_HOST_KEY_CHECKING: 0
-      ANSIBLE_PARAMIKO_LOOK_FOR_KEYS: 0
-      DJANGO_SETTINGS_MODULE: webvirtcloud.settings.develop
-      CELERY_BROKER_URL: "amqp://guest:guest@rabbitmq:5672"
-    depends_on:
-      - rabbitmq
-      - mariadb
   worker:
     build:
       context: .
@@ -87,6 +64,29 @@ services:
       DB_USER: django
       DB_PASSWORD: django
       PYTHONOPTIMIZE: 1
+      ANSIBLE_HOST_KEY_CHECKING: 0
+      ANSIBLE_PARAMIKO_LOOK_FOR_KEYS: 0
+      DJANGO_SETTINGS_MODULE: webvirtcloud.settings.develop
+      CELERY_BROKER_URL: "amqp://guest:guest@rabbitmq:5672"
+    depends_on:
+      - rabbitmq
+      - mariadb
+  scheduler:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: webvirtbackend:dev
+    container_name: webvirtcloud-scheduler
+    hostname: scheduler
+    volumes:
+      - .:/app
+    command: celery -A webvirtcloud beat -l info
+    environment:
+      DB_HOST: mariadb
+      DB_PORT: 3306
+      DB_NAME: webvirtcloud
+      DB_USER: django
+      DB_PASSWORD: django
       ANSIBLE_HOST_KEY_CHECKING: 0
       ANSIBLE_PARAMIKO_LOOK_FOR_KEYS: 0
       DJANGO_SETTINGS_MODULE: webvirtcloud.settings.develop
