@@ -148,7 +148,7 @@ class CreateVirtanceSerializer(serializers.Serializer):
             check_region = Region.objects.get(slug=region, is_deleted=False)
             if check_region.is_active is False:
                 raise serializers.ValidationError({"region": ["Region is not active."]})
-            if backups is True and "backup" not in check_region.features:
+            if backups is True and check_region.features.filter(name="backup").exists() is False:
                 raise serializers.ValidationError({"region": ["Backups are not supported in this region."]})
         except Region.DoesNotExist:
             raise serializers.ValidationError({"region": ["Region not found."]})
@@ -270,7 +270,7 @@ class VirtanceActionSerializer(serializers.Serializer):
         virtance = self.context.get("virtance")
 
         if attrs.get("action") == "resize":
-            if "resize" not in virtance.region.features:
+            if virtance.region.features.filter(name="resize").exists() is False:
                 raise serializers.ValidationError("Resizing is not supported in this region.")
 
             if attrs.get("size") is None:
@@ -323,13 +323,13 @@ class VirtanceActionSerializer(serializers.Serializer):
                 raise serializers.ValidationError({"image": ["Image not found."]})
 
         if attrs.get("action") == "snapshot":
-            if "snapshot" not in virtance.region.features:
+            if virtance.region.features.filter(name="snapshot").exists() is False:
                 raise serializers.ValidationError("Snapshots are not supported in this region.")
             if attrs.get("name") is None:
                 raise serializers.ValidationError({"name": ["This field is required."]})
 
         if attrs.get("action") == "enable_backups":
-            if "backup" not in virtance.region.features:
+            if virtance.region.features.filter(name="backup").exists() is False:
                 raise serializers.ValidationError("Backups are not supported in this region.")
             if virtance.is_backup_enabled is True:
                 raise serializers.ValidationError("Backups are already enabled.")
