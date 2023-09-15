@@ -1,5 +1,7 @@
+from ipaddress import ip_network
 from django.urls import reverse_lazy
 from crispy_forms.helper import FormHelper
+
 from .forms import FormNetwork
 from network.models import Network, IPAddress
 from admin.mixins import AdminTemplateView, AdminFormView, AdminUpdateView, AdminDeleteView
@@ -35,6 +37,15 @@ class AdminNetworkUpdateView(AdminUpdateView):
         super(AdminNetworkUpdateView, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_tag = False
+
+    def form_valid(self, form):
+        cidr = form.cleaned_data.get("cidr")
+        netmask = form.cleaned_data.get("netmask")
+        subnet = ip_network(f"{cidr}/{netmask}")
+        self.object.gateway = str(subnet[1])
+        self.object.save()
+        form.save()
+        return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super(AdminNetworkUpdateView, self).get_context_data(**kwargs)
