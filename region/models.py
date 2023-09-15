@@ -9,11 +9,7 @@ class Feature(models.Model):
         ("volume", "Volume"),
         ("backup", "Backup"),
         ("snapshot", "Snapshot"),
-        ("firewall", "Firewall"),
         ("one_click", "One-Click"),
-        ("kubernetes", "Kubernetes"),
-        ("load_balancer", "Load Balancer"),
-        ("object_storage", "Object Storage"),
     )
     name = models.CharField(choices=FEATURE_CHOICES, unique=True, max_length=100)
 

@@ -38,35 +38,7 @@
         "model": "region.feature",
         "pk": 6,
         "fields": {
-            "name": "firewall"
-        }
-    },
-    {
-        "model": "region.feature",
-        "pk": 7,
-        "fields": {
             "name": "one_click"
-        }
-    },
-    {
-        "model": "region.feature",
-        "pk": 8,
-        "fields": {
-            "name": "kubernetes"
-        }
-    },
-    {
-        "model": "region.feature",
-        "pk": 9,
-        "fields": {
-            "name": "load_balancer"
-        }
-    },
-    {
-        "model": "region.feature",
-        "pk": 10,
-        "fields": {
-            "name": "object_storage"
         }
     }
 ]
