@@ -270,6 +270,9 @@ class VirtanceActionSerializer(serializers.Serializer):
         virtance = self.context.get("virtance")
 
         if attrs.get("action") == "resize":
+            if "resize" not in virtance.region.features:
+                raise serializers.ValidationError("Resizing is not supported in this region.")
+
             if attrs.get("size") is None:
                 raise serializers.ValidationError({"size": ["This field is required."]})
             try:
@@ -305,7 +308,8 @@ class VirtanceActionSerializer(serializers.Serializer):
                         raise serializers.ValidationError(
                             {
                                 "password": [
-                                    "Password must contain at least one uppercase letter, one lowercase letter and one digit."
+                                    "Password must contain at least one uppercase letter, "
+                                    "one lowercase letter and one digit."
                                 ]
                             }
                         )
