@@ -1,3 +1,5 @@
+from django.conf import settings
+
 from webvirtcloud.celery import app
 from webvirtcloud.email import send_email
 
