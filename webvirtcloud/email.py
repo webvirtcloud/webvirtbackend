@@ -1,20 +1,18 @@
 import socket
 from django.conf import settings
 from django.utils.html import strip_tags
-from django.core.mail import EmailMessage
+from django.core.mail import send_mail
 from django.template.loader import render_to_string
 
 
-def send_email(context, subject, recipient, template):
+def send_email(subject, recipient, context, template):
     subject = "WebVirtCloud confirm registration"
     from_email = settings.EMAIL_FROM
     html_message = render_to_string(template, context)
 
-    email = EmailMessage(subject, strip_tags(html_message), from_email, [recipient])
-    email.content_subtype = "html"
-    email.attach_alternative(html_message, "text/html")
-
     try:
-        email.send()
+        send_mail(
+            subject, strip_tags(html_message), from_email, [recipient], fail_silently=True, html_message=html_message
+        )
     except socket.error:
         pass

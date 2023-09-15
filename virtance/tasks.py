@@ -38,7 +38,7 @@ def email_virtance_created(hostname, ipaddr, region, distro, recipient):
         "distro": distro,
         "site_url": settings.SITE_URL,
     }
-    send_email(context, subject, recipient, "email/virtance-created.html")
+    send_email(subject, recipient, context, "email/virtance-created.html")
 
 
 @app.task

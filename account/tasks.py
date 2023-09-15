@@ -8,4 +8,4 @@ from webvirtcloud.email import send_email
 def email_confirm_register(url, recipient):
     subject = "WebVirtCloud confirm registration"
     context = {"confirm_url": url, "site_url": settings.SITE_URL}
-    send_email(context, subject, recipient, "email/account-registration-confirm.html")
+    send_email(subject, recipient, context, "email/account-registration-confirm.html")
