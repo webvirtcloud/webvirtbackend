@@ -132,6 +132,7 @@ class CreateVirtanceSerializer(serializers.Serializer):
         image = attrs.get("image")
         size = attrs.get("size")
         region = attrs.get("region")
+        backups = attrs.get("backups")
         keypairs = attrs.get("keypairs")
 
         # Check if keypairs are active
@@ -147,6 +148,8 @@ class CreateVirtanceSerializer(serializers.Serializer):
             check_region = Region.objects.get(slug=region, is_deleted=False)
             if check_region.is_active is False:
                 raise serializers.ValidationError({"region": ["Region is not active."]})
+            if backups is True and "backup" not in check_region.features:
+                raise serializers.ValidationError({"region": ["Backups are not supported in this region."]})
         except Region.DoesNotExist:
             raise serializers.ValidationError({"region": ["Region not found."]})
 
@@ -316,10 +319,14 @@ class VirtanceActionSerializer(serializers.Serializer):
                 raise serializers.ValidationError({"image": ["Image not found."]})
 
         if attrs.get("action") == "snapshot":
+            if "snapshot" not in virtance.region.features:
+                raise serializers.ValidationError("Snapshots are not supported in this region.")
             if attrs.get("name") is None:
                 raise serializers.ValidationError({"name": ["This field is required."]})
 
         if attrs.get("action") == "enable_backups":
+            if "backup" not in virtance.region.features:
+                raise serializers.ValidationError("Backups are not supported in this region.")
             if virtance.is_backup_enabled is True:
                 raise serializers.ValidationError("Backups are already enabled.")
 
