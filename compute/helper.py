@@ -11,7 +11,7 @@ def vm_name(virtance_id):
 def assign_free_compute(virtance_id):
     virtance = Virtance.objects.get(id=virtance_id)
     computes = Compute.objects.filter(
-        region=virtance.region, is_active=True, is_deleted=False
+        region=virtance.region, is_active=True, is_deleted=False, arch=virtance.template.arch 
     ).order_by("?")
     
     for compute in computes: # TODO: check if compute is available

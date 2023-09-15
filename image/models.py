@@ -5,6 +5,12 @@ from django.utils import timezone
 
 
 class Image(models.Model):
+    X86_64 = "x86_64"
+    AARCH64 = "aarch64"
+    ARCH_CHOICES = [
+        (X86_64, "X64"),
+        (AARCH64, "ARM64")
+    ]
     CUSTOM = "custom"
     BACKUP = "backup"
     SNAPSHOT = "snapshot"
@@ -51,6 +57,7 @@ class Image(models.Model):
     uuid = models.UUIDField(unique=True, editable=False, default=uuid4)
     name = models.CharField(max_length=100)
     slug = models.SlugField(max_length=100, unique=True, blank=True, null=True)
+    arch = models.CharField(max_length=50, choices=ARCH_CHOICES, default=X86_64)
     type = models.CharField(max_length=50, choices=TYPE_CHOICES, default=SNAPSHOT)
     event = models.CharField(max_length=40, choices=EVENT_CHOICES, blank=True, null=True)
     md5sum = models.CharField(max_length=50)

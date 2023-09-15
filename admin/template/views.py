@@ -44,7 +44,7 @@ class AdminImageUpdateView(AdminUpdateView):
         self.helper = FormHelper()
         self.helper.form_tag = False
         self.helper.layout = Layout(
-            "name", "slug", "type", "description", "md5sum", "distribution", "file_name",
+            "name", "slug", "type", "description", "md5sum", "distribution", "arch", "file_name",
             InlineCheckboxes("regions", css_class="checkboxinput"),
             "is_active"
         )

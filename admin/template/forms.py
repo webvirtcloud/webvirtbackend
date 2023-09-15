@@ -31,9 +31,8 @@ class FormImage(forms.ModelForm):
         self.helper = FormHelper()
         self.helper.form_tag = False
         self.helper.layout = Layout(
-            "name", "slug", "type", "description", "md5sum", "distribution", 
-            InlineCheckboxes("regions", css_class="checkboxinput"),
-            "file_name",
+            "name", "slug", "type", "description", "md5sum", "distribution", "arch", "file_name",
+            InlineCheckboxes("regions", css_class="checkboxinput")           
         )
 
     class Meta:

@@ -5,6 +5,7 @@ from django.utils import timezone
 from passlib.hash import sha512_crypt
 
 from webvirtcloud.celery import app
+from webvirtcloud.email import send_email
 from compute.webvirt import WebVirtCompute
 from compute.helper import (
     vm_name, 
@@ -135,7 +136,7 @@ def create_virtance(virtance_id, password=None):
                 ipv4_public.address,
                 virtance.region.name,
                 virtance.template.description,
-                irtance.user.email
+                virtance.user.email
             )
 
 
