@@ -5,6 +5,7 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from webvirtcloud.views import error_message_response
+from project.models import Project
 from .models import User, Token
 from .serializers import (
     RegisterSerializer,
