@@ -13,14 +13,11 @@ class CustomModelChoiceField(forms.ModelChoiceField):
 
 
 class FormNetwork(forms.ModelForm):
-
     def __init__(self, *args, **kwargs):
         super(FormNetwork, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_tag = False
-        self.fields["region"] = CustomModelChoiceField(
-            queryset=Region.objects.filter(is_deleted=False)
-        )
+        self.fields["region"] = CustomModelChoiceField(queryset=Region.objects.filter(is_deleted=False))
         self.fields["region"].empty_label = None
 
     class Meta:
@@ -34,13 +31,13 @@ class FormNetwork(forms.ModelForm):
         dns2 = self.cleaned_data.get("dns2")
         region = self.cleaned_data.get("region")
         net_type = self.cleaned_data.get("type")
-        
+
         # Validate CIDR
         try:
             ip_network(f"{cidr}/{netmask}")
         except ValueError as err:
             raise forms.ValidationError(err)
-        
+
         # Check if CIDR already exists
         if Network.objects.filter(cidr=cidr, netmask=netmask, region=region, is_deleted=True).exists():
             raise forms.ValidationError("Network already exists in this region")
@@ -49,7 +46,7 @@ class FormNetwork(forms.ModelForm):
         if net_type == "compute":
             if Network.objects.filter(type="compute", region=region).exists():
                 raise forms.ValidationError("Compute network already exists in this region")
-    
+
         # Validate DNS
         if net_type == "public":
             if not dns1 or not dns2:
@@ -63,9 +60,9 @@ class FormNetwork(forms.ModelForm):
                 ip_address(dns2)
             except ValueError as err:
                 raise forms.ValidationError(err)
-        
+
         return self.cleaned_data
-    
+
     def save(self, commit=True):
         cidr = self.cleaned_data.get("cidr")
         netmask = self.cleaned_data.get("netmask")
@@ -83,7 +80,7 @@ class FormNetwork(forms.ModelForm):
             version=subnet.version,
             dns1=dns1,
             dns2=dns2,
-            region=region
+            region=region,
         )
 
         return network

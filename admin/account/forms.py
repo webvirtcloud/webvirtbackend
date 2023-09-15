@@ -6,19 +6,19 @@ class FormChangePasswordAdmin(forms.Form):
     old_password = forms.CharField(
         label=("Old password"),
         strip=False,
-        widget=forms.PasswordInput(attrs={'autocomplete': 'old-password'}),
+        widget=forms.PasswordInput(attrs={"autocomplete": "old-password"}),
     )
     new_password1 = forms.CharField(
         label=("New password"),
         min_length=8,
         strip=False,
-        widget=forms.PasswordInput(attrs={'autocomplete': 'new-password2'}),
+        widget=forms.PasswordInput(attrs={"autocomplete": "new-password2"}),
     )
     new_password2 = forms.CharField(
         label=("Confim password"),
         min_length=8,
         strip=False,
-        widget=forms.PasswordInput(attrs={'autocomplete': 'new-password2'}),
+        widget=forms.PasswordInput(attrs={"autocomplete": "new-password2"}),
     )
 
     def __init__(self, user, *args, **kwargs):
@@ -40,7 +40,7 @@ class FormChangePasswordAdmin(forms.Form):
         # Check if the new passwords match
         if new_password1 and new_password2 and new_password1 != new_password2:
             raise forms.ValidationError("New password and confirm password do not match.")
-        
+
         return cleaned_data
 
     def save(self, *args, **kwargs):

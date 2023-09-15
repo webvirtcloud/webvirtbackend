@@ -81,7 +81,7 @@ class VerifyEmail(APIView):
             user.is_email_verified = True
             user.update_hash()
             user.save()
-            
+
             user_name = user.email.split("@")[0]
             project_name = f"{user_name.capitalize()}'s project"
             project = Project.objects.create(name=project_name, user=user, is_default=True)

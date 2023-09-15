@@ -49,10 +49,7 @@ class ImageSerializer(serializers.ModelSerializer):
     def get_event(self, obj):
         if obj.event is None:
             return None
-        return {
-            "name": obj.event,
-            "description": next((i[1] for i in obj.EVENT_CHOICES if i[0] == obj.event))
-        }
+        return {"name": obj.event, "description": next((i[1] for i in obj.EVENT_CHOICES if i[0] == obj.event))}
 
     def get_distribution(self, obj):
         for distro in obj.DISTRO_CHOICES:
@@ -104,7 +101,7 @@ class ImageActionSerializer(serializers.Serializer):
         if attrs.get("action") == "transfer":
             if image.type != Image.SNAPSHOT:
                 raise serializers.ValidationError({"action": ["Snapshot image can be transferred only."]})
-    
+
             # Check if region is active
             try:
                 check_region = Region.objects.get(slug=region, is_deleted=False)
@@ -114,15 +111,15 @@ class ImageActionSerializer(serializers.Serializer):
                     raise serializers.ValidationError({"region": ["Image already transferred to the region."]})
             except Region.DoesNotExist:
                 raise serializers.ValidationError({"region": ["Region not found."]})
-            
+
             raise serializers.ValidationError({"image": ["Transfer action is not implemented yet."]})
 
         return attrs
-    
+
     def create(self, validated_data):
         image = self.context.get("image")
         action = validated_data.get("action")
-        
+
         # Set new task event
         image.event = action
         image.save()
@@ -134,7 +131,7 @@ class ImageActionSerializer(serializers.Serializer):
             image.reset_event()
 
         if action == Image.TRANSFER:
-            pass # TODO: Transfer image to region
+            pass  # TODO: Transfer image to region
 
         return validated_data
 
@@ -185,10 +182,7 @@ class SnapshotsSerializer(serializers.ModelSerializer):
     def get_event(self, obj):
         if obj.event is None:
             return None
-        return {
-            "name": obj.event,
-            "description": next((i[1] for i in obj.EVENT_CHOICES if i[0] == obj.event))
-        }
+        return {"name": obj.event, "description": next((i[1] for i in obj.EVENT_CHOICES if i[0] == obj.event))}
 
     def get_virtance_id(self, obj):
         if obj.source.is_deleted is True:

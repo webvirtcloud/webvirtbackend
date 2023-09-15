@@ -41,7 +41,7 @@ class Virtance(models.Model):
         (ENABLE_BACKUPS, "Enable Backups"),
         (DISABLE_BACKUPS, "Disable Backups"),
         (ENABLE_RECOVERY_MODE, "Enable Recovery Mode"),
-        (DISABLE_RECOVERY_MODE, "Disable Recovery Mode")
+        (DISABLE_RECOVERY_MODE, "Disable Recovery Mode"),
     ]
     ACTIVE = "active"
     PENDING = "pending"

@@ -19,11 +19,11 @@ class ImageListAPI(APIView):
         image_type = self.request.query_params.get("type", None)
         if image_type is None:
             queryset = Image.objects.filter(
-                Q(type=Image.APPLICATION) |
-                Q(type=Image.DISTRIBUTION) |
-                Q(type=Image.CUSTOM, user=user) |
-                Q(type=Image.BACKUP, user=user) |
-                Q(type=Image.SNAPSHOT, user=user),
+                Q(type=Image.APPLICATION)
+                | Q(type=Image.DISTRIBUTION)
+                | Q(type=Image.CUSTOM, user=user)
+                | Q(type=Image.BACKUP, user=user)
+                | Q(type=Image.SNAPSHOT, user=user),
                 is_deleted=False,
             )
         else:
@@ -90,7 +90,7 @@ class ImageActionAPI(APIView):
         if image.event is not None:
             return error_message_response("The image already has event.")
 
-        serilizator = self.class_serializer(data=request.data, context={'image': image})
+        serilizator = self.class_serializer(data=request.data, context={"image": image})
         serilizator.is_valid(raise_exception=True)
         serilizator.save()
         return Response(serilizator.data)

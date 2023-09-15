@@ -11,21 +11,20 @@ from admin.mixins import AdminTemplateView, AdminFormView, AdminUpdateView, Admi
 
 
 class AdminImageIndexView(AdminTemplateView):
-    template_name = 'admin/template/index.html'
+    template_name = "admin/template/index.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['images'] = Image.objects.filter(
-            Q(type=Image.DISTRIBUTION) | Q(type=Image.APPLICATION),
-            is_deleted=False
+        context["images"] = Image.objects.filter(
+            Q(type=Image.DISTRIBUTION) | Q(type=Image.APPLICATION), is_deleted=False
         )
         return context
 
 
 class AdminImageCreateView(AdminFormView):
-    template_name = 'admin/template/create.html'
+    template_name = "admin/template/create.html"
     form_class = FormImage
-    success_url = reverse_lazy('admin_template_index')
+    success_url = reverse_lazy("admin_template_index")
 
     def form_valid(self, form):
         form.save()
@@ -33,10 +32,10 @@ class AdminImageCreateView(AdminFormView):
 
 
 class AdminImageUpdateView(AdminUpdateView):
-    template_name = 'admin/template/update.html'
+    template_name = "admin/template/update.html"
     template_name_suffix = "_form"
     model = Image
-    success_url = reverse_lazy('admin_template_index')
+    success_url = reverse_lazy("admin_template_index")
     fields = "__all__"
 
     def __init__(self, *args, **kwargs):
@@ -44,30 +43,35 @@ class AdminImageUpdateView(AdminUpdateView):
         self.helper = FormHelper()
         self.helper.form_tag = False
         self.helper.layout = Layout(
-            "name", "slug", "type", "description", "md5sum", "distribution", "arch", "file_name",
+            "name",
+            "slug",
+            "type",
+            "description",
+            "md5sum",
+            "distribution",
+            "arch",
+            "file_name",
             InlineCheckboxes("regions", css_class="checkboxinput"),
-            "is_active"
+            "is_active",
         )
-            
+
     def get_form(self, form_class=None):
         form = super(AdminImageUpdateView, self).get_form(form_class)
         form.fields["regions"] = CustomModelMultipleChoiceField(
-            queryset=Region.objects.filter(is_deleted=False), 
-            widget=forms.CheckboxSelectMultiple(),
-            required=False
+            queryset=Region.objects.filter(is_deleted=False), widget=forms.CheckboxSelectMultiple(), required=False
         )
         return form
-    
+
     def get_context_data(self, **kwargs):
         context = super(AdminImageUpdateView, self).get_context_data(**kwargs)
-        context['helper'] = self.helper
+        context["helper"] = self.helper
         return context
 
 
 class AdminImageDeleteView(AdminDeleteView):
-    template_name = 'admin/template/delete.html'
+    template_name = "admin/template/delete.html"
     model = Image
-    success_url = reverse_lazy('admin_template_index')
+    success_url = reverse_lazy("admin_template_index")
 
     def delete(self, request, *args, **kwargs):
         image = self.get_object()
@@ -81,5 +85,5 @@ class AdminImageDeleteView(AdminDeleteView):
 
     def get_context_data(self, **kwargs):
         context = super(AdminImageDeleteView, self).get_context_data(**kwargs)
-        context['helper'] = self.helper
+        context["helper"] = self.helper
         return context

@@ -11,18 +11,18 @@ from admin.mixins import AdminTemplateView, AdminFormView, AdminUpdateView, Admi
 
 
 class AdminSizeIndexView(AdminTemplateView):
-    template_name = 'admin/size/index.html'
+    template_name = "admin/size/index.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['sizes'] = Size.objects.filter(is_deleted=False)
+        context["sizes"] = Size.objects.filter(is_deleted=False)
         return context
 
 
 class AdminSizeCreateView(AdminFormView):
-    template_name = 'admin/size/create.html'
+    template_name = "admin/size/create.html"
     form_class = FormSize
-    success_url = reverse_lazy('admin_size_index')
+    success_url = reverse_lazy("admin_size_index")
 
     def form_valid(self, form):
         form.save()
@@ -30,10 +30,10 @@ class AdminSizeCreateView(AdminFormView):
 
 
 class AdminSizeUpdateView(AdminUpdateView):
-    template_name = 'admin/size/update.html'
+    template_name = "admin/size/update.html"
     template_name_suffix = "_form"
     model = Size
-    success_url = reverse_lazy('admin_size_index')
+    success_url = reverse_lazy("admin_size_index")
     fields = "__all__"
 
     def __init__(self, *args, **kwargs):
@@ -41,30 +41,35 @@ class AdminSizeUpdateView(AdminUpdateView):
         self.helper = FormHelper()
         self.helper.form_tag = False
         self.helper.layout = Layout(
-            "name", "slug", "description", "vcpu", "disk", "memory", "transfer", "price",
+            "name",
+            "slug",
+            "description",
+            "vcpu",
+            "disk",
+            "memory",
+            "transfer",
+            "price",
             InlineCheckboxes("regions", css_class="checkboxinput"),
-            "is_active"
+            "is_active",
         )
-            
+
     def get_form(self, form_class=None):
         form = super(AdminSizeUpdateView, self).get_form(form_class)
         form.fields["regions"] = CustomModelMultipleChoiceField(
-            queryset=Region.objects.filter(is_deleted=False), 
-            widget=forms.CheckboxSelectMultiple(),
-            required=False
+            queryset=Region.objects.filter(is_deleted=False), widget=forms.CheckboxSelectMultiple(), required=False
         )
         return form
-    
+
     def get_context_data(self, **kwargs):
         context = super(AdminSizeUpdateView, self).get_context_data(**kwargs)
-        context['helper'] = self.helper
+        context["helper"] = self.helper
         return context
 
 
 class AdminSizeDeleteView(AdminDeleteView):
-    template_name = 'admin/size/delete.html'
+    template_name = "admin/size/delete.html"
     model = Size
-    success_url = reverse_lazy('admin_size_index')
+    success_url = reverse_lazy("admin_size_index")
 
     def delete(self, request, *args, **kwargs):
         size = self.get_object()
@@ -75,8 +80,8 @@ class AdminSizeDeleteView(AdminDeleteView):
         super(AdminSizeDeleteView, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_tag = False
-    
+
     def get_context_data(self, **kwargs):
         context = super(AdminSizeDeleteView, self).get_context_data(**kwargs)
-        context['helper'] = self.helper
+        context["helper"] = self.helper
         return context

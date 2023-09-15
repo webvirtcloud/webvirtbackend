@@ -38,7 +38,6 @@ def get_console_connection(uuid):
 
 class CompatibilityMixIn(object):
     def _new_client(self, daemon, socket_factory):
-
         cookie = cookies.SimpleCookie()
         cookie.load(self.headers.get("cookie"))
         if "uuid" not in cookie:

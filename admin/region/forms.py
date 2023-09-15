@@ -16,19 +16,15 @@ class CustomModelMultipleChoiceField(forms.ModelMultipleChoiceField):
 
 
 class FormRegion(forms.ModelForm):
-
     def __init__(self, *args, **kwargs):
         super(FormRegion, self).__init__(*args, **kwargs)
         self.fields["features"] = CustomModelMultipleChoiceField(
-            queryset=Feature.objects.all(), 
-            widget=forms.CheckboxSelectMultiple(),
-            required=False
+            queryset=Feature.objects.all(), widget=forms.CheckboxSelectMultiple(), required=False
         )
         self.helper = FormHelper(self)
         self.helper.form_tag = False
         self.helper.layout = Layout(
-            "name", "slug", "description",
-            InlineCheckboxes("features", css_class="checkboxinput")
+            "name", "slug", "description", InlineCheckboxes("features", css_class="checkboxinput")
         )
 
     class Meta:

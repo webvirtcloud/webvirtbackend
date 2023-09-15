@@ -11,9 +11,9 @@ class MetadataV1Json(MetadataMixin):
         vendor_data = ""
         nameservers = []
         public_keys = []
-        
+
         if self.virtance is None:
-            return HttpResponse("Not Found", status=404) 
+            return HttpResponse("Not Found", status=404)
 
         for i in KeyPairVirtance.objects.filter(virtance=self.virtance):
             public_keys.append(i.keypair.public_key)
@@ -46,7 +46,7 @@ class MetadataV1Json(MetadataMixin):
                     "mac": "00:00:00:00:00:00",
                     "type": "private",
                 }
-            ]
+            ],
         }
 
         nameservers = [
@@ -82,7 +82,7 @@ class MetadataID(MetadataMixin):
     def get(self, request, *args, **kwargs):
         if self.virtance is None:
             return HttpResponse("Not Found", status=404)
-        return HttpResponse( self.virtance.id)
+        return HttpResponse(self.virtance.id)
 
 
 class MetadataHostname(MetadataMixin):

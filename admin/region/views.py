@@ -10,18 +10,18 @@ from admin.mixins import AdminTemplateView, AdminFormView, AdminUpdateView, Admi
 
 
 class AdminRegionIndexView(AdminTemplateView):
-    template_name = 'admin/region/index.html'
+    template_name = "admin/region/index.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['regions'] = Region.objects.filter(is_deleted=False)
+        context["regions"] = Region.objects.filter(is_deleted=False)
         return context
 
 
 class AdminRegionCreateView(AdminFormView):
-    template_name = 'admin/region/create.html'
+    template_name = "admin/region/create.html"
     form_class = FormRegion
-    success_url = reverse_lazy('admin_region_index')
+    success_url = reverse_lazy("admin_region_index")
 
     def form_valid(self, form):
         form.save()
@@ -29,10 +29,10 @@ class AdminRegionCreateView(AdminFormView):
 
 
 class AdminRegionUpdateView(AdminUpdateView):
-    template_name = 'admin/region/update.html'
+    template_name = "admin/region/update.html"
     template_name_suffix = "_form"
     model = Region
-    success_url = reverse_lazy('admin_region_index')
+    success_url = reverse_lazy("admin_region_index")
     fields = "__all__"
 
     def __init__(self, *args, **kwargs):
@@ -40,29 +40,30 @@ class AdminRegionUpdateView(AdminUpdateView):
         self.helper = FormHelper()
         self.helper.form_tag = False
         self.helper.layout = Layout(
-            "name", "slug", "description", "is_active",
+            "name",
+            "slug",
+            "description",
+            "is_active",
             InlineCheckboxes("features", css_class="checkboxinput"),
         )
 
     def get_form(self, form_class=None):
         form = super(AdminRegionUpdateView, self).get_form(form_class)
         form.fields["features"] = CustomModelMultipleChoiceField(
-            queryset=Feature.objects.all(), 
-            widget=forms.CheckboxSelectMultiple(),
-            required=False
+            queryset=Feature.objects.all(), widget=forms.CheckboxSelectMultiple(), required=False
         )
         return form
 
     def get_context_data(self, **kwargs):
         context = super(AdminRegionUpdateView, self).get_context_data(**kwargs)
-        context['helper'] = self.helper
+        context["helper"] = self.helper
         return context
 
 
 class AdminRegionDeleteView(AdminDeleteView):
-    template_name = 'admin/region/delete.html'
+    template_name = "admin/region/delete.html"
     model = Region
-    success_url = reverse_lazy('admin_region_index')
+    success_url = reverse_lazy("admin_region_index")
 
     def delete(self, request, *args, **kwargs):
         region = self.get_object()
@@ -76,5 +77,5 @@ class AdminRegionDeleteView(AdminDeleteView):
 
     def get_context_data(self, **kwargs):
         context = super(AdminRegionDeleteView, self).get_context_data(**kwargs)
-        context['helper'] = self.helper
+        context["helper"] = self.helper
         return context

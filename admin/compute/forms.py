@@ -13,14 +13,11 @@ class CustomModelChoiceField(forms.ModelChoiceField):
 
 
 class FormCompute(forms.ModelForm):
-
     def __init__(self, *args, **kwargs):
         super(FormCompute, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_tag = False
-        self.fields["region"] = CustomModelChoiceField(
-            queryset=Region.objects.filter(is_deleted=False)
-        )
+        self.fields["region"] = CustomModelChoiceField(queryset=Region.objects.filter(is_deleted=False))
         self.fields["region"].empty_label = None
 
     class Meta:
@@ -29,9 +26,7 @@ class FormCompute(forms.ModelForm):
 
 
 class FormStartAction(forms.Form):
-    action = forms.ChoiceField(
-        choices=[("start", "Start"), ("stop", "Stop")]
-    )
+    action = forms.ChoiceField(choices=[("start", "Start"), ("stop", "Stop")])
 
     def __init__(self, *args, **kwargs):
         super(FormStartAction, self).__init__(*args, **kwargs)
@@ -47,9 +42,7 @@ class FormStartAction(forms.Form):
 
 
 class FormAutostartAction(forms.Form):
-    action = forms.ChoiceField(
-        choices=[("autostart", "Autostart"), ("manualstart", "Manualstart")]
-    )
+    action = forms.ChoiceField(choices=[("autostart", "Autostart"), ("manualstart", "Manualstart")])
 
     def __init__(self, *args, **kwargs):
         super(FormAutostartAction, self).__init__(*args, **kwargs)
@@ -91,7 +84,7 @@ class FormStorageRBDCreate(forms.Form):
     )
     type = forms.HiddenInput(attrs={"value": "rbd"})
     user = forms.CharField(max_length=20, widget=forms.TextInput(attrs={"value": "libvirt"}))
-    host1 = forms.CharField(max_length=100,widget=forms.TextInput(attrs={"value": "192.168.0.1"}))
+    host1 = forms.CharField(max_length=100, widget=forms.TextInput(attrs={"value": "192.168.0.1"}))
     host2 = forms.CharField(max_length=100, required=False)
     host3 = forms.CharField(max_length=100, required=False)
     pool = forms.CharField(max_length=50, widget=forms.TextInput(attrs={"value": "volumes"}))

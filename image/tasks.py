@@ -11,7 +11,7 @@ def image_delete(image_id):
     image = Image.objects.get(pk=image_id)
     image.event = Image.DELETE
     image.save()
-    
+
     if image.type == Image.SNAPSHOT or image.type == Image.BACKUP:
         for region in image.regions.all():
             computes = Compute.objects.filter(region=region, is_active=True, is_deleted=False).order_by("?")
@@ -30,9 +30,7 @@ def image_delete(image_id):
                                         image.regions.remove(region)
                                         break
                 if res.get("detail"):
-                    image_error(
-                        image.id, f'Region: {region}, Error:{res.get("detail")}', f"delete_image_{image.type}"
-                    )
+                    image_error(image.id, f'Region: {region}, Error:{res.get("detail")}', f"delete_image_{image.type}")
                     return False
 
         if image.regions.count() == 0:

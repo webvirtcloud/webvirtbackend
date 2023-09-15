@@ -1,0 +1,6 @@
+[tool.black]
+line-length = 120
+target-version = ['py38']
+extend-ignore = ''
+include = '\.pyi?$'
+exclude = '\.run|\.git|.venv|\.mysql|\.vscode|\.devcontainer|migrations|playbooks'

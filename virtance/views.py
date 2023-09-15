@@ -15,8 +15,8 @@ from .utils import make_vnc_hash, virtance_history
 from .models import Virtance, VirtanceHistory
 from .tasks import delete_virtance
 from .serializers import (
-    VirtanceSerializer, 
-    CreateVirtanceSerializer, 
+    VirtanceSerializer,
+    CreateVirtanceSerializer,
     VirtanceActionSerializer,
     VirtanceHistorySerializer,
 )
@@ -26,15 +26,12 @@ class VirtanceListAPI(APIView):
     class_serializer = VirtanceSerializer
 
     def get_queryset(self):
-        name = self.request.query_params.get('name')
-        region = self.request.query_params.get('region')
-        has_backups = self.request.query_params.get('has_backups')
-        has_snapshots = self.request.query_params.get('has_snapshots')
+        name = self.request.query_params.get("name")
+        region = self.request.query_params.get("region")
+        has_backups = self.request.query_params.get("has_backups")
+        has_snapshots = self.request.query_params.get("has_snapshots")
 
-        queryset = Virtance.objects.filter(
-            ~Q(event=Virtance.DELETE),
-            user=self.request.user, is_deleted=False
-        )
+        queryset = Virtance.objects.filter(~Q(event=Virtance.DELETE), user=self.request.user, is_deleted=False)
 
         if name:
             queryset = queryset.filter(name__icontains=name)
@@ -47,7 +44,7 @@ class VirtanceListAPI(APIView):
                 user=self.request.user, type=Image.SNAPSHOT, source__is_deleted=False, is_deleted=False
             ).values_list("source_id", flat=True)
             queryset = queryset.filter(id__in=virtance_ids)
-        
+
         return queryset
 
     def get(self, request, *args, **kwargs):
@@ -55,7 +52,7 @@ class VirtanceListAPI(APIView):
         return Response({"virtances": serilizator.data})
 
     def post(self, request, *args, **kwargs):
-        serilizator = CreateVirtanceSerializer(data=request.data, context={'request': request})
+        serilizator = CreateVirtanceSerializer(data=request.data, context={"request": request})
         serilizator.is_valid(raise_exception=True)
         validated_data = serilizator.save(password=request.data.get("password"))
         virtance = Virtance.objects.get(pk=validated_data.get("id"))
@@ -68,9 +65,7 @@ class VirtanceDataAPI(APIView):
     class_serializer = VirtanceSerializer
 
     def get_object(self):
-        return get_object_or_404(
-            Virtance, pk=self.kwargs.get("id"), user=self.request.user, is_deleted=False
-        )
+        return get_object_or_404(Virtance, pk=self.kwargs.get("id"), user=self.request.user, is_deleted=False)
 
     def get(self, request, *args, **kwargs):
         virtances = self.get_object()
@@ -90,9 +85,7 @@ class VirtanceActionAPI(APIView):
     class_serializer = VirtanceActionSerializer
 
     def get_object(self):
-        return get_object_or_404(
-            Virtance, pk=self.kwargs.get("id"), user=self.request.user, is_deleted=False
-        )
+        return get_object_or_404(Virtance, pk=self.kwargs.get("id"), user=self.request.user, is_deleted=False)
 
     def post(self, request, *args, **kwargs):
         virtance = self.get_object()
@@ -100,7 +93,7 @@ class VirtanceActionAPI(APIView):
         if virtance.event is not None:
             return error_message_response("The virtance already has event.")
 
-        serilizator = self.class_serializer(data=request.data, context={'user': request.user, 'virtance': virtance})
+        serilizator = self.class_serializer(data=request.data, context={"user": request.user, "virtance": virtance})
         serilizator.is_valid(raise_exception=True)
         serilizator.save()
         virtance_history(virtance.id, request.user.id, f"virtance.{serilizator.data.get('action')}")
@@ -139,9 +132,7 @@ class VirtanceHistoryAPI(APIView):
     class_serializer = VirtanceHistorySerializer
 
     def get_object(self):
-        return get_object_or_404(
-            Virtance, pk=self.kwargs.get("id"), user=self.request.user, is_deleted=False
-        )
+        return get_object_or_404(Virtance, pk=self.kwargs.get("id"), user=self.request.user, is_deleted=False)
 
     def get(self, request, *args, **kwargs):
         virtances = self.get_object()
@@ -152,9 +143,7 @@ class VirtanceHistoryAPI(APIView):
 
 class VirtanceConsoleAPI(APIView):
     def get_object(self):
-        return get_object_or_404(
-            Virtance, pk=self.kwargs.get("id"), user=self.request.user, is_deleted=False
-        )
+        return get_object_or_404(Virtance, pk=self.kwargs.get("id"), user=self.request.user, is_deleted=False)
 
     def get(self, request, *args, **kwargs):
         virtance = self.get_object()
@@ -178,21 +167,13 @@ class VirtanceConsoleAPI(APIView):
                 }
             }
         )
-        response.set_cookie(
-            "uuid",
-            virtance.uuid,
-            secure=True,
-            httponly=True,
-            domain=settings.SESSION_COOKIE_DOMAIN
-        )
+        response.set_cookie("uuid", virtance.uuid, secure=True, httponly=True, domain=settings.SESSION_COOKIE_DOMAIN)
         return response
 
 
 class VirtanceMetricsCpuAPI(APIView):
     def get_object(self):
-        return get_object_or_404(
-            Virtance, pk=self.kwargs.get("id"), user=self.request.user, is_deleted=False
-        )
+        return get_object_or_404(Virtance, pk=self.kwargs.get("id"), user=self.request.user, is_deleted=False)
 
     def get(self, request, *args, **kwargs):
         virtance = self.get_object()
@@ -200,7 +181,7 @@ class VirtanceMetricsCpuAPI(APIView):
         today = timezone.now()
         timestamp_today = time.mktime(today.timetuple())
         timestamp_yesterday = time.mktime((today - timezone.timedelta(days=1)).timetuple())
-        
+
         cpu_sys_query = (
             f"(irate(libvirt_domain_info_cpu_time_system{{domain='{vname}'}}[5m])*100)/on(domain)"
             f"(count(libvirt_domain_info_vcpu_state{{domain='{vname}'}})by(domain)*1000000000)"
@@ -224,20 +205,13 @@ class VirtanceMetricsCpuAPI(APIView):
         except (KeyError, IndexError):
             user_value = []
 
-
-        data = {
-            "sys": sys_value, 
-            "user": user_value
-        }
+        data = {"sys": sys_value, "user": user_value}
         return Response({"metrics": {"name": "CPU", "unit": "%", "data": data}})
-
 
 
 class VirtanceMetricsNetAPI(APIView):
     def get_object(self):
-        return get_object_or_404(
-            Virtance, pk=self.kwargs.get("id"), user=self.request.user, is_deleted=False
-        )
+        return get_object_or_404(Virtance, pk=self.kwargs.get("id"), user=self.request.user, is_deleted=False)
 
     def get(self, request, *args, **kwargs):
         in_val = {}
@@ -248,7 +222,7 @@ class VirtanceMetricsNetAPI(APIView):
         today = timezone.now()
         timestamp_today = time.mktime(today.timetuple())
         timestamp_yesterday = time.mktime((today - timezone.timedelta(days=1)).timetuple())
-        
+
         rx_query = f"(irate(libvirt_domain_info_net_rx_bytes{{domain='{vname}'}}[5m])*8)/(1024*1024)"
         tx_query = f"(irate(libvirt_domain_info_net_tx_bytes{{domain='{vname}'}}[5m])*8)/(1024*1024)"
 
@@ -267,17 +241,23 @@ class VirtanceMetricsNetAPI(APIView):
             except (KeyError, IndexError):
                 out_val[dev] = []
 
-        return Response({"metrics": [
-            {"name": "Pubic Network", "unit": "Mbps", "data": {"inbound": in_val[0], "outbound": in_val[0]}},
-            {"name": "Private Network", "unit": "Mbps", "data": {"inbound": out_val[1], "outbound": out_val[1]}}
-        ]})
+        return Response(
+            {
+                "metrics": [
+                    {"name": "Pubic Network", "unit": "Mbps", "data": {"inbound": in_val[0], "outbound": in_val[0]}},
+                    {
+                        "name": "Private Network",
+                        "unit": "Mbps",
+                        "data": {"inbound": out_val[1], "outbound": out_val[1]},
+                    },
+                ]
+            }
+        )
 
 
 class VirtanceMetricsDiskAPI(APIView):
     def get_object(self):
-        return get_object_or_404(
-            Virtance, pk=self.kwargs.get("id"), user=self.request.user, is_deleted=False
-        )
+        return get_object_or_404(Virtance, pk=self.kwargs.get("id"), user=self.request.user, is_deleted=False)
 
     def get(self, request, *args, **kwargs):
         virtance = self.get_object()
@@ -285,7 +265,7 @@ class VirtanceMetricsDiskAPI(APIView):
         today = timezone.now()
         timestamp_today = time.mktime(today.timetuple())
         timestamp_yesterday = time.mktime((today - timezone.timedelta(days=1)).timetuple())
-        
+
         r_query = f"irate(libvirt_domain_info_block_read_bytes{{domain='{vname}'}}[5m])/(1024*1024)"
         w_query = f"irate(libvirt_domain_info_block_write_bytes{{domain='{vname}'}}[5m])/(1024*1024)"
 
@@ -296,11 +276,11 @@ class VirtanceMetricsDiskAPI(APIView):
         try:
             rd_val = rd_res["data"]["result"][0]["values"]
         except (KeyError, IndexError):
-            rd_val= []
+            rd_val = []
 
         try:
             wr_val = wr_res["data"]["result"][0]["values"]
         except (KeyError, IndexError):
             wr_val = []
 
-        return Response({"metrics": [{"name": "Disk", "unit": "MB/s", "data": {"read": rd_val,  "write": wr_val}}]})
+        return Response({"metrics": [{"name": "Disk", "unit": "MB/s", "data": {"read": rd_val, "write": wr_val}}]})

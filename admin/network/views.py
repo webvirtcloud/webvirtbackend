@@ -57,7 +57,7 @@ class AdminNetworkUpdateView(AdminUpdateView):
 
     def get_context_data(self, **kwargs):
         context = super(AdminNetworkUpdateView, self).get_context_data(**kwargs)
-        context['helper'] = self.helper
+        context["helper"] = self.helper
         return context
 
 
@@ -77,14 +77,14 @@ class AdminNetworkDeleteView(AdminDeleteView):
         self.helper.form_tag = False
 
     def dispatch(self, request, *args, **kwargs):
-        if IPAddress.objects.filter(network_id=kwargs.get('pk')).exists():
+        if IPAddress.objects.filter(network_id=kwargs.get("pk")).exists():
             messages.error(self.request, "Network has assigned IP addresses and cannot be deleted")
             return redirect(reverse_lazy("admin_network_index"))
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super(AdminNetworkDeleteView, self).get_context_data(**kwargs)
-        context['helper'] = self.helper
+        context["helper"] = self.helper
         return context
 
 

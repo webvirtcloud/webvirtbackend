@@ -7,10 +7,7 @@ from django.utils import timezone
 class Image(models.Model):
     X86_64 = "x86_64"
     AARCH64 = "aarch64"
-    ARCH_CHOICES = [
-        (X86_64, "X64"),
-        (AARCH64, "ARM64")
-    ]
+    ARCH_CHOICES = [(X86_64, "X64"), (AARCH64, "ARM64")]
     CUSTOM = "custom"
     BACKUP = "backup"
     SNAPSHOT = "snapshot"

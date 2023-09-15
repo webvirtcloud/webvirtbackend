@@ -18,9 +18,7 @@ def make_passwd(length=8):
 
 
 def make_vnc_hash(vnc_password, prefix_length=NOVNC_PASSWD_PREFIX, suffix_length=NOVNC_PASSWD_SUFFIX):
-    return b64encode(
-        (f"{make_passwd(prefix_length)}{vnc_password}{make_passwd(suffix_length)}").encode()
-    )
+    return b64encode((f"{make_passwd(prefix_length)}{vnc_password}{make_passwd(suffix_length)}").encode())
 
 
 def virtance_history(virtance_id, user_id, event, message=None):

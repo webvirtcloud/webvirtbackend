@@ -1,6 +1,6 @@
 from django.urls import re_path
 from .views import AdminVirtanceIndexView, AdminVirtanceDataView, AdminVirtanceConsoleView
-from .views import AdminVirtanceResetEventAction, AdminVirtanceRecreateAction 
+from .views import AdminVirtanceResetEventAction, AdminVirtanceRecreateAction
 from .views import AdminVirtancePowerOnAction, AdminVirtancePowerOffAction, AdminVirtancePowerCyrcleAction
 
 urlpatterns = [

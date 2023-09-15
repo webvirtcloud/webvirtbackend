@@ -11,10 +11,10 @@ class Command(BaseCommand):
     help = "Initialize data for webvirtcloud"
 
     def handle(self, *args, **kwargs):
-        size_json = 'size/fixtures/size.json'
-        image_json = 'image/fixtures/image.json'
-        region_json = 'region/fixtures/region.json'
-        feature_json = 'region/fixtures/feature.json'
+        size_json = "size/fixtures/size.json"
+        image_json = "image/fixtures/image.json"
+        region_json = "region/fixtures/region.json"
+        feature_json = "region/fixtures/feature.json"
 
         # Load regions
         try:

@@ -28,14 +28,18 @@ class LoginRequiredMixin:
 class AdminView(LoginRequiredMixin, View):
     pass
 
+
 class AdminFormView(LoginRequiredMixin, FormView):
     pass
+
 
 class AdminUpdateView(LoginRequiredMixin, UpdateView):
     pass
 
+
 class AdminDeleteView(LoginRequiredMixin, DeleteView):
     pass
+
 
 class AdminTemplateView(LoginRequiredMixin, TemplateView):
     pass

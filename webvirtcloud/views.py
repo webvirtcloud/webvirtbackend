@@ -71,7 +71,7 @@ def app_exception_handler(exc, context):
 
 def app_exception_handler403(request, exception):
     status_code = 403
-    
+
     if "api/" in request.META["PATH_INFO"]:
         response = JsonResponse(
             {
@@ -88,7 +88,7 @@ def app_exception_handler403(request, exception):
 
 def app_exception_handler404(request, exception):
     status_code = 404
-    
+
     if "api/" in request.META["PATH_INFO"]:
         response = JsonResponse(
             {

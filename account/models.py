@@ -97,7 +97,6 @@ class User(AbstractBaseUser):
 
 
 class Token(models.Model):
-
     READ_SCOPE = "read"
     WRITE_SCOPE = "write"
     SCOPE_CHOICES = (

@@ -30,7 +30,6 @@ class KeyPairDataAPI(APIView):
     def get_queryset(self):
         return get_object_or_404(KeyPair, pk=self.kwargs.get("pk"), user=self.request.user)
 
-
     def get(self, request, *args, **kwargs):
         serilizator = self.class_serializer(self.get_queryset(), many=False)
         return Response({"keypair": serilizator.data})

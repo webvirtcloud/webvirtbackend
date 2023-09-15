@@ -69,22 +69,19 @@ class VirtanceSerializer(serializers.ModelSerializer):
                     res = wvcomp.status_virtance(obj.id)
                     if res.get("detail"):
                         virtance_error(obj.id, res.get("detail"), event="status")
-                    if res.get('status') == "running":
+                    if res.get("status") == "running":
                         obj.active()
-                    if res.get('status') == "shutoff":
+                    if res.get("status") == "shutoff":
                         obj.inactive()
         return obj.status
 
     def get_disk(self, obj):
-        return obj.disk // (1024 ** 3)
+        return obj.disk // (1024**3)
 
     def get_event(self, obj):
         if obj.event is None:
             return None
-        return {
-            "name": obj.event,
-            "description": next((i[1] for i in obj.EVENT_CHOICES if i[0] == obj.event))
-        }
+        return {"name": obj.event, "description": next((i[1] for i in obj.EVENT_CHOICES if i[0] == obj.event))}
 
     def get_features(self, obj):
         return []
@@ -100,18 +97,22 @@ class VirtanceSerializer(serializers.ModelSerializer):
         v6 = []
         for ip in IPAddress.objects.filter(virtance=obj):
             if ip.network.version == ip.network.IPv6:
-                v6.append({
+                v6.append(
+                    {
+                        "address": ip.address,
+                        "prefix": ip.network.netmask,
+                        "gateway": ip.network.gateway,
+                        "type": ip.network.type,
+                    }
+                )
+            v4.append(
+                {
                     "address": ip.address,
-                    "prefix": ip.network.netmask,
+                    "netmask": ip.network.netmask,
                     "gateway": ip.network.gateway,
                     "type": ip.network.type,
-                })
-            v4.append({
-                "address": ip.address,
-                "netmask": ip.network.netmask,
-                "gateway": ip.network.gateway,
-                "type": ip.network.type,
-            })
+                }
+            )
         return {"v4": v4, "v6": v6}
 
 
@@ -132,7 +133,7 @@ class CreateVirtanceSerializer(serializers.Serializer):
         size = attrs.get("size")
         region = attrs.get("region")
         keypairs = attrs.get("keypairs")
-        
+
         # Check if keypairs are active
         if keypairs:
             for k_id in keypairs:
@@ -140,7 +141,7 @@ class CreateVirtanceSerializer(serializers.Serializer):
                     KeyPair.objects.get(id=k_id, user=self.context.get("request").user)
                 except KeyPair.DoesNotExist:
                     raise serializers.ValidationError({"keypairs": ["Invalid keypair ID."]})
-            
+
         # Check if region is active
         try:
             check_region = Region.objects.get(slug=region, is_deleted=False)
@@ -161,16 +162,14 @@ class CreateVirtanceSerializer(serializers.Serializer):
         if image.isdigit():
             try:
                 check_image = Image.objects.get(
-                    Q(type=Image.SNAPSHOT) | Q(type=Image.BACKUP) | Q(type=Image.CUSTOM),
-                    id=image, is_deleted=False
+                    Q(type=Image.SNAPSHOT) | Q(type=Image.BACKUP) | Q(type=Image.CUSTOM), id=image, is_deleted=False
                 )
             except Image.DoesNotExist:
                 raise serializers.ValidationError({"image": ["Image not found."]})
         else:
             try:
                 check_image = Image.objects.get(
-                    Q(type=Image.DISTRIBUTION) | Q(type=Image.APPLICATION),
-                    slug=image, is_deleted=False
+                    Q(type=Image.DISTRIBUTION) | Q(type=Image.APPLICATION), slug=image, is_deleted=False
                 )
                 if check_image.is_active is False:
                     raise serializers.ValidationError({"image": ["Image is not active."]})
@@ -180,13 +179,13 @@ class CreateVirtanceSerializer(serializers.Serializer):
         # Check if size is available in region
         if check_region not in check_size.regions.all():
             raise serializers.ValidationError({"size": ["Size is not available in the region."]})
-        
+
         # Check if image is available in region
         if check_region not in check_image.regions.all():
             raise serializers.ValidationError({"image": ["Image is not available in the region."]})
-        
+
         return attrs
-    
+
     def create(self, validated_data):
         ipv6 = validated_data.get("ipv6")
         name = validated_data.get("name")
@@ -215,7 +214,7 @@ class CreateVirtanceSerializer(serializers.Serializer):
             region=region,
             disk=size.disk,
             template=template,
-            user_data=user_data
+            user_data=user_data,
         )
 
         if keypairs:
@@ -226,7 +225,7 @@ class CreateVirtanceSerializer(serializers.Serializer):
             pass
 
         if backups:
-           virtance.enable_backups()
+            virtance.enable_backups()
 
         create_virtance.delay(virtance.id, password=password)
 
@@ -250,14 +249,14 @@ class VirtanceActionSerializer(serializers.Serializer):
             "restore",
             "snapshot",
             "shutdown",
-            "power_on", 
+            "power_on",
             "power_off",
             "power_cyrcle",
             "password_reset",
-            "enable_backups", 
+            "enable_backups",
             "disable_backups",
             "enable_recovery_mode",
-            "disable_recovery_mode"
+            "disable_recovery_mode",
         ]
         if value not in actions:
             raise serializers.ValidationError({"action": ["Invalid action."]})
@@ -275,55 +274,51 @@ class VirtanceActionSerializer(serializers.Serializer):
             except Size.DoesNotExist:
                 raise serializers.ValidationError({"size": ["Invalid size."]})
 
-            if size.is_active is False:                
+            if size.is_active is False:
                 raise serializers.ValidationError({"size": ["Size is not active."]})
 
             if virtance.region not in size.regions.all():
                 raise serializers.ValidationError({"size": ["Size is not available in the region."]})
-            
-            if size.disk < virtance.size.disk or \
-                size.vcpu < virtance.size.vcpu or \
-                size.memory < virtance.size.memory:
+
+            if size.disk < virtance.size.disk or size.vcpu < virtance.size.vcpu or size.memory < virtance.size.memory:
                 raise serializers.ValidationError({"size": ["New size is smaller than the current size."]})
 
         if attrs.get("action") == "rename":
             if attrs.get("name") is None:
                 raise serializers.ValidationError({"name": ["This field is required."]})
-        
+
         if attrs.get("action") == "rebuild":
             if attrs.get("image") is None:
                 raise serializers.ValidationError({"image": ["This field is required."]})
             try:
-                Image.objects.get(
-                    Q(type=Image.DISTRIBUTION) | Q(type=Image.APPLICATION), 
-                    slug=attrs.get("image")
-                )
+                Image.objects.get(Q(type=Image.DISTRIBUTION) | Q(type=Image.APPLICATION), slug=attrs.get("image"))
             except Image.DoesNotExist:
                 raise serializers.ValidationError({"image": ["Image not found."]})
-        
+
         if attrs.get("action") == "password_reset":
             if attrs.get("password"):
                 if len(attrs.get("password")) == 8:
                     if not re.match(r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$", attrs.get("password")):
-                        raise serializers.ValidationError({"password": [
-                            "Password must contain at least one uppercase letter, one lowercase letter and one digit."
-                        ]})
+                        raise serializers.ValidationError(
+                            {
+                                "password": [
+                                    "Password must contain at least one uppercase letter, one lowercase letter and one digit."
+                                ]
+                            }
+                        )
 
         if attrs.get("action") == "restore":
             if attrs.get("image") is None:
                 raise serializers.ValidationError({"image": ["This field is required."]})
             try:
-                Image.objects.get(
-                    Q(type=Image.SNAPSHOT) | Q(type=Image.BACKUP), 
-                    id=attrs.get("image"), user=user
-                )
+                Image.objects.get(Q(type=Image.SNAPSHOT) | Q(type=Image.BACKUP), id=attrs.get("image"), user=user)
             except Image.DoesNotExist:
                 raise serializers.ValidationError({"image": ["Image not found."]})
-        
+
         if attrs.get("action") == "snapshot":
             if attrs.get("name") is None:
                 raise serializers.ValidationError({"name": ["This field is required."]})
-    
+
         if attrs.get("action") == "enable_backups":
             if virtance.is_backup_enabled is True:
                 raise serializers.ValidationError("Backups are already enabled.")
@@ -341,7 +336,7 @@ class VirtanceActionSerializer(serializers.Serializer):
                 raise serializers.ValidationError({"name": ["Recovey mode is already disabled."]})
 
         return attrs
-    
+
     def create(self, validated_data):
         name = validated_data.get("name")
         size = validated_data.get("size")
@@ -349,13 +344,13 @@ class VirtanceActionSerializer(serializers.Serializer):
         action = validated_data.get("action")
         virtance = self.context.get("virtance")
         password = validated_data.get("password")
-        
+
         # Set new task event
         virtance.event = action
         virtance.status = virtance.PENDING
         virtance.save()
 
-        if action in ["power_on", "power_off", "power_cyrcle", "shutdown", "reboot"]:            
+        if action in ["power_on", "power_off", "power_cyrcle", "shutdown", "reboot"]:
             action_virtance.delay(virtance.id, action)
 
         if action == "rename":
@@ -372,10 +367,10 @@ class VirtanceActionSerializer(serializers.Serializer):
         if action == "resize":
             size = Size.objects.get(slug=size)
             resize_virtance.delay(virtance.id, size.id)
-        
+
         if action == "password_reset":
             reset_password_virtance.delay(virtance.id, password)
-        
+
         if action == "snapshot":
             snapshot_virtance.delay(virtance.id, name)
 
@@ -398,7 +393,7 @@ class VirtanceActionSerializer(serializers.Serializer):
         if action == "enable_backups":
             virtance.enable_backups()
             virtance.reset_event()
-        
+
         if action == "disable_backups":
             backups_delete.delay(virtance.id)
 
@@ -406,7 +401,6 @@ class VirtanceActionSerializer(serializers.Serializer):
 
 
 class VirtanceHistorySerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Virtance
         fields = (

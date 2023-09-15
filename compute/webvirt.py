@@ -81,7 +81,7 @@ class WebVirtCompute(object):
             "images": images,
             "network": network,
             "keypairs": keypairs,
-            "password_hash": password
+            "password_hash": password,
         }
         response = self._make_post(url, data)
         body = self._process_response(response)
@@ -94,7 +94,7 @@ class WebVirtCompute(object):
             "images": images,
             "network": network,
             "keypairs": keypairs,
-            "password_hash": password
+            "password_hash": password,
         }
         response = self._make_post(url, data)
         body = self._process_response(response)
@@ -154,7 +154,7 @@ class WebVirtCompute(object):
         body = self._process_response(response)
         return body
 
-    def umount_virtance_media(self, id,  device, path):
+    def umount_virtance_media(self, id, device, path):
         url = f"virtances/{vm_name(id)}/media/"
         response = self._make_delete(url, {"device": device, "path": path})
         body = self._process_response(response)
@@ -171,7 +171,7 @@ class WebVirtCompute(object):
         response = self._make_get(url)
         body = self._process_response(response)
         return body
-    
+
     def create_storage_dir(self, name, target):
         url = f"storages/"
         payload = {"type": "dir", "name": name, "target": target}
@@ -183,13 +183,13 @@ class WebVirtCompute(object):
         url = f"storages/"
         payload = {
             "type": "rbd",
-            "name": name, 
-            "pool": pool, 
+            "name": name,
+            "pool": pool,
             "user": user,
             "host": host,
             "host2": host2,
             "host3": host3,
-            "secret": secret
+            "secret": secret,
         }
         response = self._make_post(url, payload)
         body = self._process_response(response)
@@ -253,7 +253,7 @@ class WebVirtCompute(object):
             "mask": None,
             "dhcp": None,
             "bridge": interface,
-            "openvswitch": openvswitch
+            "openvswitch": openvswitch,
         }
         response = self._make_post(url, payload)
         body = self._process_response(response)
@@ -298,12 +298,7 @@ class WebVirtCompute(object):
 
     def create_secret(self, ephemeral, private, type, data):
         url = "secrets/"
-        payload = {
-            "ephemeral": ephemeral, 
-            "private": private, 
-            "type": type,
-            "data": data
-        }
+        payload = {"ephemeral": ephemeral, "private": private, "type": type, "data": data}
         response = self._make_post(url, payload)
         body = self._process_response(response)
         return body

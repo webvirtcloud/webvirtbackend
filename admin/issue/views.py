@@ -6,7 +6,7 @@ from admin.mixins import AdminTemplateView
 
 
 class AdminIssueIndexView(AdminTemplateView):
-    template_name = 'admin/issue/index.html'
+    template_name = "admin/issue/index.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -14,7 +14,7 @@ class AdminIssueIndexView(AdminTemplateView):
 
 
 class AdminIssueVirtanceView(AdminTemplateView):
-    template_name = 'admin/issue/virtance.html'
+    template_name = "admin/issue/virtance.html"
 
     def get_context_data(self, **kwargs):
         thirty_days_ago = timezone.now() - timezone.timedelta(days=30)
@@ -26,12 +26,10 @@ class AdminIssueVirtanceView(AdminTemplateView):
 
 
 class AdminIssueImageView(AdminTemplateView):
-    template_name = 'admin/issue/image.html'
+    template_name = "admin/issue/image.html"
 
     def get_context_data(self, **kwargs):
         thirty_days_ago = timezone.now() - timezone.timedelta(days=30)
         context = super().get_context_data(**kwargs)
-        context["images_errors"] = ImageError.objects.filter(
-            image__is_deleted=False, created__gte=thirty_days_ago
-        )
+        context["images_errors"] = ImageError.objects.filter(image__is_deleted=False, created__gte=thirty_days_ago)
         return context

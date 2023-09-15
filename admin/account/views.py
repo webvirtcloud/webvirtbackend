@@ -6,11 +6,11 @@ from .forms import FormChangePasswordAdmin
 
 
 class AdminAccountProfileView(AdminUpdateView):
-    template_name = 'admin/account/profile.html'
+    template_name = "admin/account/profile.html"
     template_name_suffix = "_form"
     model = User
-    success_url = reverse_lazy('admin_profile')
-    fields =  ["first_name", "last_name"]
+    success_url = reverse_lazy("admin_profile")
+    fields = ["first_name", "last_name"]
 
     def __init__(self, *args, **kwargs):
         super(AdminAccountProfileView, self).__init__(*args, **kwargs)
@@ -22,14 +22,14 @@ class AdminAccountProfileView(AdminUpdateView):
 
     def get_context_data(self, **kwargs):
         context = super(AdminAccountProfileView, self).get_context_data(**kwargs)
-        context['helper'] = self.helper
+        context["helper"] = self.helper
         return context
 
 
 class AdminAccountChangePasswordView(AdminFormView):
-    template_name = 'admin/account/change_password.html'
+    template_name = "admin/account/change_password.html"
     form_class = FormChangePasswordAdmin
-    success_url = reverse_lazy('admin_index')
+    success_url = reverse_lazy("admin_index")
 
     def get(self, request, *args, **kwargs):
         form = FormChangePasswordAdmin(request.user)

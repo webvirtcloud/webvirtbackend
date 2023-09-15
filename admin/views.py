@@ -9,14 +9,14 @@ from .mixins import AdminTemplateView, AdminView
 class AdminSingInView(LoginView):
     authentication_form = AdminAuthForm
     template_name = "admin/sign_in.html"
-    redirect_authenticated_user=True
+    redirect_authenticated_user = True
 
     def form_valid(self, form):
         user = form.get_user()
         if user.is_admin is True:
             login(self.request, user)
             return HttpResponseRedirect(self.get_success_url())
-        return HttpResponseRedirect(reverse_lazy("admin_sign_in"))        
+        return HttpResponseRedirect(reverse_lazy("admin_sign_in"))
 
 
 class AdminSingOutView(AdminView, LogoutView):

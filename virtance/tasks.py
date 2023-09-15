@@ -7,10 +7,7 @@ from passlib.hash import sha512_crypt
 from webvirtcloud.celery import app
 from webvirtcloud.email import send_email
 from compute.webvirt import WebVirtCompute
-from compute.helper import (
-    vm_name, 
-    assign_free_compute
-)
+from compute.helper import vm_name, assign_free_compute
 from network.helper import (
     assign_free_ipv4_public,
     assign_free_ipv4_compute,
@@ -39,7 +36,7 @@ def email_virtance_created(hostname, ipaddr, region, distro, recipient):
         "ipaddr": ipaddr,
         "region": region,
         "distro": distro,
-        "site_url": settings.SITE_URL    
+        "site_url": settings.SITE_URL,
     }
     send_email(context, subject, recipient, "email/virtance-created.html")
 
@@ -58,7 +55,7 @@ def create_virtance(virtance_id, password=None):
     compute_id = assign_free_compute(virtance_id)
     if compute_id is not None:
         compute = Compute.objects.get(id=compute_id)
-        
+
     ipv4_compute_id = assign_free_ipv4_compute(virtance_id)
     if ipv4_compute_id is not None:
         ipv4_compute = IPAddress.objects.get(id=ipv4_compute_id)
@@ -66,7 +63,7 @@ def create_virtance(virtance_id, password=None):
     ipv4_public_id = assign_free_ipv4_public(virtance_id)
     if ipv4_public_id is not None:
         ipv4_public = IPAddress.objects.get(id=ipv4_public_id)
-    
+
     ipv4_private_id = assign_free_ipv4_private(virtance_id)
     if ipv4_private_id is not None:
         ipv4_private = IPAddress.objects.get(id=ipv4_private_id)
@@ -81,7 +78,7 @@ def create_virtance(virtance_id, password=None):
                 "size": virtance.size.disk,
                 "url": f"{settings.PUBLIC_IMAGES_URL}{virtance.template.file_name}",
                 "md5sum": virtance.template.md5sum,
-                "primary": True
+                "primary": True,
             }
         ]
         network = {
@@ -92,25 +89,24 @@ def create_virtance(virtance_id, password=None):
                         "gateway": ipv4_public.network.gateway,
                         "netmask": ipv4_public.network.netmask,
                         "dns1": ipv4_public.network.dns1,
-                        "dns2": ipv4_public.network.dns2
-                        
+                        "dns2": ipv4_public.network.dns2,
                     },
                     "secondary": {
                         "address": ipv4_compute.address,
                         "gateway": ipv4_compute.network.gateway,
-                        "netmask": ipv4_compute.network.netmask
-                    }
+                        "netmask": ipv4_compute.network.netmask,
+                    },
                 },
                 "private": {
                     "address": ipv4_private.address,
                     "gateway": ipv4_private.network.gateway,
-                    "netmask": ipv4_private.network.netmask
-                }
+                    "netmask": ipv4_private.network.netmask,
+                },
             },
-            "v6": None
+            "v6": None,
         }
 
-        virtance.compute = compute # TODO: race condition for database commit
+        virtance.compute = compute  # TODO: race condition for database commit
         wvcomp = wvcomp_conn(compute)
         res = wvcomp.create_virtance(
             virtance.id,
@@ -119,7 +115,7 @@ def create_virtance(virtance_id, password=None):
             virtance.size.vcpu,
             virtance.size.memory,
             images,
-            network, 
+            network,
             keypairs,
             password_hash,
         )
@@ -136,7 +132,7 @@ def create_virtance(virtance_id, password=None):
                 ipv4_public.address,
                 virtance.region.name,
                 virtance.template.description,
-                virtance.user.email
+                virtance.user.email,
             )
 
 
@@ -162,14 +158,14 @@ def recreate_virtance(virtance_id):
         ipv4_compute_id = assign_free_ipv4_compute(virtance_id)
         if ipv4_compute_id is not None:
             ipv4_compute = IPAddress.objects.get(id=ipv4_compute_id)
-        
+
     try:
         ipv4_public = IPAddress.objects.get(virtance=virtance, network__type=Network.PUBLIC)
     except IPAddress.DoesNotExist:
         ipv4_public_id = assign_free_ipv4_public(virtance_id)
         if ipv4_public_id is not None:
             ipv4_public = IPAddress.objects.get(id=ipv4_public_id)
-    
+
     try:
         ipv4_private = IPAddress.objects.get(virtance=virtance, network__type=Network.PRIVATE)
     except IPAddress.DoesNotExist:
@@ -187,7 +183,7 @@ def recreate_virtance(virtance_id):
                 "size": virtance.size.disk,
                 "url": f"{settings.PUBLIC_IMAGES_URL}{virtance.template.file_name}",
                 "md5sum": virtance.template.md5sum,
-                "primary": True
+                "primary": True,
             }
         ]
         network = {
@@ -198,22 +194,21 @@ def recreate_virtance(virtance_id):
                         "gateway": ipv4_public.network.gateway,
                         "netmask": ipv4_public.network.netmask,
                         "dns1": ipv4_public.network.dns1,
-                        "dns2": ipv4_public.network.dns2
-                        
+                        "dns2": ipv4_public.network.dns2,
                     },
                     "secondary": {
                         "address": ipv4_compute.address,
                         "gateway": ipv4_compute.network.gateway,
-                        "netmask": ipv4_compute.network.netmask
-                    }
+                        "netmask": ipv4_compute.network.netmask,
+                    },
                 },
                 "private": {
                     "address": ipv4_private.address,
                     "gateway": ipv4_private.network.gateway,
-                    "netmask": ipv4_private.network.netmask
-                }
+                    "netmask": ipv4_private.network.netmask,
+                },
             },
-            "v6": None
+            "v6": None,
         }
 
         wvcomp = wvcomp_conn(compute)
@@ -224,7 +219,7 @@ def recreate_virtance(virtance_id):
             virtance.size.vcpu,
             virtance.size.memory,
             images,
-            network, 
+            network,
             keypairs,
             password_hash,
         )
@@ -244,9 +239,8 @@ def recreate_virtance(virtance_id):
                 ipv4_public.address,
                 virtance.region.name,
                 virtance.template.description,
-                virtance.user.email
+                virtance.user.email,
             )
-
 
 
 @app.task
@@ -263,14 +257,14 @@ def rebuild_virtance(virtance_id):
 
     for kpv in KeyPairVirtance.objects.filter(virtance=virtance):
         keypairs.append(kpv.keypair.public_key)
-        
+
     images = [
         {
             "name": settings.VM_NAME_PREFIX + str(virtance.id),
             "size": virtance.size.disk,
             "url": f"{settings.PUBLIC_IMAGES_URL}{virtance.template.file_name}",
             "md5sum": virtance.template.md5sum,
-            "primary": True
+            "primary": True,
         }
     ]
     network = {
@@ -281,28 +275,25 @@ def rebuild_virtance(virtance_id):
                     "gateway": ipv4_public.network.gateway,
                     "netmask": ipv4_public.network.netmask,
                     "dns1": ipv4_public.network.dns1,
-                    "dns2": ipv4_public.network.dns2
-                    
+                    "dns2": ipv4_public.network.dns2,
                 },
                 "secondary": {
                     "address": ipv4_compute.address,
                     "gateway": ipv4_compute.network.gateway,
-                    "netmask": ipv4_compute.network.netmask
-                }
+                    "netmask": ipv4_compute.network.netmask,
+                },
             },
             "private": {
                 "address": ipv4_private.address,
                 "gateway": ipv4_private.network.gateway,
-                "netmask": ipv4_private.network.netmask
-            }
+                "netmask": ipv4_private.network.netmask,
+            },
         },
-        "v6": None
+        "v6": None,
     }
-   
+
     wvcomp = wvcomp_conn(virtance.compute)
-    res = wvcomp.rebuild_virtance(
-        virtance.id, virtance.name, images, network, keypairs, password_hash
-    )
+    res = wvcomp.rebuild_virtance(virtance.id, virtance.name, images, network, keypairs, password_hash)
     if res.get("detail") is None:
         virtance.active()
         virtance.reset_event()
@@ -322,7 +313,7 @@ def action_virtance(virtance_id, action):
     if error is None:
         if action == "shutdown":
             timeout = 60
-            while wvcomp.status_virtance(virtance.id).get('status') != "shutoff":
+            while wvcomp.status_virtance(virtance.id).get("status") != "shutoff":
                 timeout -= 1
                 time.sleep(1)
                 if timeout == 0:
@@ -346,7 +337,7 @@ def action_virtance(virtance_id, action):
             if error is None:
                 virtance.active()
     if error is None:
-        virtance.reset_event()     
+        virtance.reset_event()
 
 
 @app.task
@@ -382,7 +373,7 @@ def snapshot_virtance(virtance_id, display_name):
             file_name=res.get("file_name"),
             file_size=res.get("size"),
             disk_size=res.get("disk_size"),
-            is_active=True
+            is_active=True,
         )
         image.regions.add(virtance.region)
         image.reset_event()
@@ -410,7 +401,7 @@ def backup_virtance(virtance_id):
             file_name=res.get("file_name"),
             file_size=res.get("size"),
             disk_size=res.get("disk_size"),
-            is_active=True
+            is_active=True,
         )
         image.regions.add(virtance.region)
         image.reset_event()
@@ -506,8 +497,10 @@ def delete_virtance(virtance_id):
             virtance_counter = VirtanceCounter.objects.get(started__gt=first_day_month, virtance=virtance)
         except VirtanceCounter.DoesNotExist:
             virtance_counter = VirtanceCounter.objects.create(
-                virtance=virtance, size=virtance.size, amount=virtance.size.price,
-                started=current_time - timezone.timedelta(hours=1)
+                virtance=virtance,
+                size=virtance.size,
+                amount=virtance.size.price,
+                started=current_time - timezone.timedelta(hours=1),
             )
         virtance_counter.stop()
     if res.get("detail"):
@@ -520,15 +513,14 @@ def virtance_counter():
     current_day = current_time.day
     current_hour = current_time.hour
     first_day_current_month = current_time.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
-   
+
     for virtance in Virtance.objects.filter(is_deleted=False):
         try:
             VirtanceCounter.objects.get(started__gt=first_day_current_month, virtance=virtance)
         except VirtanceCounter.DoesNotExist:
             period_start = current_time - timezone.timedelta(hours=1)
             VirtanceCounter.objects.create(
-                virtance=virtance, size=virtance.size, amount=virtance.size.price,
-                started=period_start
+                virtance=virtance, size=virtance.size, amount=virtance.size.price, started=period_start
             )
 
     virtance_counters = VirtanceCounter.objects.filter(started__gt=first_day_current_month, stopped__isnull=True)
@@ -548,10 +540,10 @@ def virtance_backup():
     compute_event_backup_ids = []
 
     compute_ids = Virtance.objects.filter(
-        event=Virtance.BACKUP, 
+        event=Virtance.BACKUP,
         is_deleted=False,
-        is_backup_enabled=True, 
-    ).values_list('compute_id', flat=True)
+        is_backup_enabled=True,
+    ).values_list("compute_id", flat=True)
 
     virtances = Virtance.objects.filter(
         event=None,
@@ -587,7 +579,7 @@ def backups_delete(virtance_id):
     for backup in backups:
         if image_delete(backup.id) is True:
             backup_images -= 1
-    
+
     if backup_images == 0:
         virtance.disable_backups()
         virtance.reset_event()
