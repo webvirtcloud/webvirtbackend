@@ -83,8 +83,7 @@ class VerifyResendEmail(APIView):
         if request.user.is_email_verified:
             return error_message_response("Account already verified.")
         request.user.update_hash()
-        confirm_url = f"{settings.CLIENT_URL}/account/verify_email/{request.user.hash}/"
-        email_confirm_register.delay(confirm_url, request.user.email)
+        email_confirm_register.delay(request.user.email, request.user.hash)
         return Response(status=status.HTTP_200_OK)
 
 

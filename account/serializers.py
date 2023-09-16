@@ -58,12 +58,11 @@ class RegisterSerializer(serializers.Serializer):
         password = validated_data.get("password")
 
         user = User.objects.create_user(email=email, password=password)
-
-        token = Token.objects.create(user=user, name="Obtained auth token", scope=Token.WRITE_SCOPE, is_obtained=True)
-
-        confirm_url = f"{settings.CLIENT_URL}/account/verify_email/{user.hash}/"
-        email_confirm_register.delay(confirm_url, email)
-
+        token = Token.objects.create(
+            user=user, name="Obtained auth token", scope=Token.WRITE_SCOPE, is_obtained=True
+        )
+        email_confirm_register.delay(email, user.hash)
+        
         validated_data["token"] = token.key
         return validated_data
 
