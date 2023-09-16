@@ -212,7 +212,7 @@ WEBSOCKET_HOST = os.environ.get("WEBSOCKET_HOST", "0.0.0.0")
 WEBSOCKET_PORT = os.environ.get("WEBSOCKET_PORT", 6080)
 WEBSOCKET_CERT = os.environ.get("WEBSOCKET_CERT", None)
 
-# novNC settings
+# noVNC settings
 NOVNC_URL = os.environ.get("NOVNC_URL", "console.webvirt.cloud")
 NOVNC_PORT = os.environ.get("NOVNC_PORT", 443)
 NOVNC_PASSWD_PREFIX_LENGHT = os.environ.get("NOVNC_PASSWD_PREFIX_LENGHT", 6)
@@ -224,3 +224,9 @@ RECOVERY_ISO_NAME = os.environ.get("RECOVERY_ISO_NAME", "finnix-125.iso")
 # Backup settings
 BACKUP_PER_MONTH = os.environ.get("BACKUP_PER_MONTH", 4)
 BACKUP_PERIOD_DAYS = os.environ.get("BACKUP_PERIOD_DAYS", 7)
+
+# Verification settings
+VERIFICATION_ENABLED = os.environ.get("VERIFICATION_ENABLED", False)
+
+# Registration settings
+REGISTRATION_ENABLED = os.environ.get("REGISTRATION_ENABLED", False)

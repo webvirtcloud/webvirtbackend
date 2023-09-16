@@ -1,9 +1,9 @@
+from django.conf import settings
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from django.conf import settings
 
 from webvirtcloud.views import error_message_response
 from project.models import Project
@@ -44,6 +44,8 @@ class Register(APIView):
     serializer_class = RegisterSerializer
 
     def post(self, request, *args, **kwargs):
+        if settings.REGISTRATION_ENABLED is False:
+            return error_message_response("Sorry, registration is disabled.")
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         data = serializer.save()
@@ -93,10 +95,10 @@ class VerifyHashEmail(APIView):
     def get(self, request, *args, **kwargs):
         if User.objects.filter(hash=kwargs.get("hash"), is_email_verified=False, is_active=True).exists():
             user = User.objects.get(hash=kwargs.get("hash"))
-            user.is_email_verified = True
+            user.email_verify()
+            if settings.VERIFICATION_ENABLED is False:
+                user.verify()
             user.update_hash()
-            user.save()
-
             user_name = user.email.split("@")[0]
             project_name = f"{user_name.capitalize()}'s project"
             Project.objects.create(name=project_name, user=user, is_default=True)
