@@ -7,10 +7,10 @@ class IsAuthenticatedAndVerified(permissions.BasePermission):
     def has_permission(self, request, view):
         if request.user.is_authenticated:
             if request.user.is_email_verified is False:
-                self.message = "Please verify your email address."
+                self.message = "Please confirm your email address."
                 return False
             elif request.user.is_verified is False:
-                self.message = "Please verify your payment method."
+                self.message = "Please verify your account"
                 return False
 
             method = request.method
