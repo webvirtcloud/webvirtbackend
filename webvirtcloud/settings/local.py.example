@@ -1,0 +1,42 @@
+"""
+Django local settings for webvirtcloud project. 
+Just copy this file to local.py and edit it.
+
+WARNING: install sentry-sdk before using it 
+
+$ docker compose exec novnc pip3 install sentry-sdk
+$ docker compose exec worker pip3 install sentry-sdk
+$ docker compose exec backend pip3 install sentry-sdk
+$ docker compose exec scheduler pip3 install sentry-sdk
+$ docker compose restart backend novnc worker scheduler
+
+"""
+
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+from sentry_sdk.integrations.celery import CeleryIntegration
+
+sentry_sdk.init(
+    dsn="<PUT DSN HTTPS URL HERE>",
+    integrations=[
+        DjangoIntegration(),
+        CeleryIntegration(),
+    ],
+
+    # Set traces_sample_rate to 1.0 to capture 100%
+    # of transactions for performance monitoring.
+    # We recommend adjusting this value in production.
+    traces_sample_rate=1.0,
+
+    # If you wish to associate users to errors (assuming you are using
+    # django.contrib.auth) you may enable sending PII data.
+    send_default_pii=True
+)
+
+# Email settings
+EMAIL_HOST = "smtp.example.com"
+EMAIL_PORT = 587
+EMAIL_HOST_USER = "user"
+EMAIL_HOST_PASSWORD = "password"
+EMAIL_USE_TLS = True
+EMAIL_FROM = "WebVirtCloud <noreply@example.com>"
