@@ -45,8 +45,12 @@ class FirewallDataAPI(APIView):
         return get_object_or_404(Firewall, uuid=self.kwargs.get("uuid"), user=self.request.user, is_deleted=False)
 
     def get(self, request, *args, **kwargs):
+        serilizator = self.class_serializer(self.get_object(), many=False)
+        return Response({"firewall": serilizator.data})
+
+    def put(self, request, *args, **kwargs):
         firewall = self.get_object()
-        serilizator = self.class_serializer(firewall, many=False)
+        serilizator = self.class_serializer(firewall, data=request.data)
         return Response({"firewall": serilizator.data})
 
     def delete(self, request, *args, **kwargs):

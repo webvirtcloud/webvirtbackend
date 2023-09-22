@@ -99,23 +99,23 @@ class FirewallSerializer(serializers.ModelSerializer):
             return None
         return {"name": obj.event, "description": next((i[1] for i in obj.EVENT_CHOICES if i[0] == obj.event))}
 
-    def validate_virtance_ids(self, value):
-        value_ids = list(set(value))
+    def validate(self, attrs):
+        virtance_ids = list(set(attrs.get("virtance_ids")))
 
-        for v_id in value_ids:
+        for v_id in virtance_ids:
             if not isinstance(v_id, int):
                 raise serializers.ValidationError({"virtance_ids": ["This field must be a list of integers."]})
 
-        virtances_ids = Virtance.objects.filter(user=self.instance.user, id__in=value_ids).values_list("id", flat=True)
-        for v_id in value_ids:
-            if v_id not in virtances_ids:
+        list_ids = Virtance.objects.filter(user=self.instance.user, id__in=virtance_ids).values_list("id", flat=True)
+        for v_id in virtance_ids:
+            if v_id not in list_ids:
                 raise serializers.ValidationError(f"Virtance with ID {v_id} does not exist.")
 
-        for v_id in value_ids:
+        for v_id in virtance_ids:
             if FirewallVirtance.objects.filter(firewall=self.instance, virance_id=v_id).exists():
                 raise serializers.ValidationError(f"Virtance with ID {v_id} is already assigned firewall.")
-
-        return value
+        
+        return attrs
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
@@ -137,7 +137,7 @@ class FirewallSerializer(serializers.ModelSerializer):
         return data
 
     def update(self, instance, validated_data):
-        return instance
+        return validated_data
 
     def create(self, validated_data):
         user = validated_data.get("user")
