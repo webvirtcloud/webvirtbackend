@@ -59,7 +59,10 @@ def app_exception_handler(exc, context):
                     error_fileds.append({key: value[0]})
                 if isinstance(value, dict):
                     for k, v in value.items():
-                        error_fileds.append({key: v[0]})
+                        if isinstance(v, list):
+                            error_fileds.append({k: v[0]})
+                        else:
+                            error_fileds.append({k: v})
             error_payload["errors"] = error_fileds
             error_message = HTTPStatus(status_code).description
 
