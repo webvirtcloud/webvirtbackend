@@ -21,6 +21,8 @@ class Virtance(models.Model):
     PASSWORD_RESET = "password_reset"
     ENABLE_BACKUPS = "enable_backups"
     DISABLE_BACKUPS = "disable_backups"
+    FIREWALL_ATTACH = "firewall_attach"
+    FIREWALL_DETACH = "firewall_detach"
     ENABLE_RECOVERY_MODE = "enable_recovery_mode"
     DISABLE_RECOVERY_MODE = "disable_recovery_mode"
     EVENT_CHOICES = [
@@ -40,6 +42,8 @@ class Virtance(models.Model):
         (PASSWORD_RESET, "Password Reset"),
         (ENABLE_BACKUPS, "Enable Backups"),
         (DISABLE_BACKUPS, "Disable Backups"),
+        (FIREWALL_ATTACH, "Attach Firewall"),
+        (FIREWALL_DETACH, "Detach Firewall"),
         (ENABLE_RECOVERY_MODE, "Enable Recovery Mode"),
         (DISABLE_RECOVERY_MODE, "Disable Recovery Mode"),
     ]
