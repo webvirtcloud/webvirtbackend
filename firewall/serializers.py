@@ -114,7 +114,7 @@ class FirewallSerializer(serializers.ModelSerializer):
         for v_id in virtance_ids:
             if FirewallVirtance.objects.filter(firewall=self.instance, virance_id=v_id).exists():
                 raise serializers.ValidationError(f"Virtance with ID {v_id} is already assigned firewall.")
-        
+
         return attrs
 
     def to_representation(self, instance):
@@ -304,16 +304,16 @@ class FirewallAddRuleSerializer(serializers.Serializer):
     def validate(self, data):
         if not data.get("inbound_rules") and not data.get("outbound_rules"):
             raise serializers.ValidationError("You must specify at least one rule.")
-        
+
         if data.get("inbound_rules"):
             for in_rule in data.get("inbound_rules"):
                 try:
                     Rule.objects.get(
-                        firewall=self.instance, 
-                        direction=Rule.INBOUND, 
+                        firewall=self.instance,
+                        direction=Rule.INBOUND,
                         protocol=in_rule.get("protocol"),
                         action=Rule.ACCEPT,
-                        ports=in_rule.get("ports")
+                        ports=in_rule.get("ports"),
                     )
                     raise serializers.ValidationError("The rule already exists.")
                 except Rule.DoesNotExist:
@@ -323,18 +323,18 @@ class FirewallAddRuleSerializer(serializers.Serializer):
             for out_rule in data.get("outbound_rules"):
                 try:
                     Rule.objects.get(
-                        firewall=self.instance, 
-                        direction=Rule.OUTBOUND, 
+                        firewall=self.instance,
+                        direction=Rule.OUTBOUND,
                         protocol=out_rule.get("protocol"),
                         action=Rule.ACCEPT,
-                        ports=out_rule.get("ports")
+                        ports=out_rule.get("ports"),
                     )
                     raise serializers.ValidationError("The rule already exists.")
                 except Rule.DoesNotExist:
                     pass
-        
+
         return data
-    
+
     def update(self, instance, validated_data):
         if validated_data.get("inbound_rules"):
             for in_rule in validated_data.get("inbound_rules"):
@@ -357,7 +357,7 @@ class FirewallAddRuleSerializer(serializers.Serializer):
                         address=address,
                         prefix=prefix,
                     )
-        
+
         if validated_data.get("outbound_rules"):
             for out_rule in validated_data.get("outbound_rules"):
                 rule = Rule.objects.create(
@@ -390,16 +390,16 @@ class FirewallDelRuleSerializer(serializers.Serializer):
     def validate(self, data):
         if not data.get("inbound_rules") and not data.get("outbound_rules"):
             raise serializers.ValidationError("You must specify at least one rule.")
-        
+
         if data.get("inbound_rules"):
             for in_rule in data.get("inbound_rules"):
                 try:
                     Rule.objects.get(
-                        firewall=self.instance, 
-                        direction=Rule.INBOUND, 
+                        firewall=self.instance,
+                        direction=Rule.INBOUND,
                         protocol=in_rule.get("protocol"),
                         action=Rule.ACCEPT,
-                        ports=in_rule.get("ports")
+                        ports=in_rule.get("ports"),
                     )
                 except Rule.DoesNotExist:
                     raise serializers.ValidationError("The rules does not exist.")
@@ -408,26 +408,26 @@ class FirewallDelRuleSerializer(serializers.Serializer):
             for out_rule in data.get("outbound_rules"):
                 try:
                     Rule.objects.get(
-                        firewall=self.instance, 
-                        direction=Rule.OUTBOUND, 
+                        firewall=self.instance,
+                        direction=Rule.OUTBOUND,
                         protocol=out_rule.get("protocol"),
                         action=Rule.ACCEPT,
-                        ports=out_rule.get("ports")
+                        ports=out_rule.get("ports"),
                     )
                 except Rule.DoesNotExist:
                     raise serializers.ValidationError("The rules does not exist.")
-        
+
         return data
-    
+
     def update(self, instance, validated_data):
         if validated_data.get("inbound_rules"):
             for in_rule in validated_data.get("inbound_rules"):
                 rule = Rule.objects.get(
-                    firewall=instance, 
-                    direction=Rule.INBOUND, 
+                    firewall=instance,
+                    direction=Rule.INBOUND,
                     protocol=in_rule.get("protocol"),
                     action=Rule.ACCEPT,
-                    ports=in_rule.get("ports")
+                    ports=in_rule.get("ports"),
                 )
                 Cidr.objects.filter(rule=rule).delete()
                 rule.delete()
@@ -435,11 +435,11 @@ class FirewallDelRuleSerializer(serializers.Serializer):
         if validated_data.get("outbound_rules"):
             for out_rule in validated_data.get("outbound_rules"):
                 rule = Rule.objects.get(
-                    firewall=instance, 
-                    direction=Rule.OUTBOUND, 
+                    firewall=instance,
+                    direction=Rule.OUTBOUND,
                     protocol=out_rule.get("protocol"),
                     action=Rule.ACCEPT,
-                    ports=out_rule.get("ports")
+                    ports=out_rule.get("ports"),
                 )
                 Cidr.objects.filter(rule=rule).delete()
                 rule.delete()
@@ -465,7 +465,7 @@ class FirewallAddVirtanceSerializer(serializers.Serializer):
         for v_id in virtance_ids:
             if FirewallVirtance.objects.filter(firewall=self.instance, virance_id=v_id).exists():
                 raise serializers.ValidationError(f"Virtance with ID {v_id} is already assigned firewall.")
-        
+
         return attrs
 
     def update(self, instance, validated_data):
@@ -473,8 +473,9 @@ class FirewallAddVirtanceSerializer(serializers.Serializer):
 
         for v_id in virtance_ids:
             FirewallVirtance.create(firewall=instance, virance_id=v_id)
-        
+
         return validated_data
+
 
 class FirewallDelVirtanceSerializer(serializers.Serializer):
     virtance_ids = serializers.ListField(required=True)
@@ -489,7 +490,7 @@ class FirewallDelVirtanceSerializer(serializers.Serializer):
         for v_id in virtance_ids:
             if not FirewallVirtance.objects.filter(firewall=self.instance, virance_id=v_id).exists():
                 raise serializers.ValidationError(f"Virtance with ID {v_id} deos not have assigned firewall.")
-        
+
         return attrs
 
     def update(self, instance, validated_data):
@@ -497,5 +498,5 @@ class FirewallDelVirtanceSerializer(serializers.Serializer):
 
         for v_id in virtance_ids:
             FirewallVirtance.objects.get(firewall=instance, virance_id=v_id).delete()
-        
+
         return validated_data

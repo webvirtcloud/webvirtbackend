@@ -351,3 +351,27 @@ class WebVirtCompute(object):
         response = self._make_get(f"{url}?{urlencode(params)}")
         body = self._process_response(response)
         return body
+
+    def firewall_attach(self, fw_id, ipv4_public, ipv4_private, inbound, outbound):
+        url = "firewall/"
+        payload = {
+            "id": fw_id,
+            "ipv4_public": ipv4_public,
+            "ipv4_private": ipv4_private,
+            "inbound": inbound,
+            "outbound": outbound,
+        }
+        response = self._make_post(url, payload)
+        body = self._process_response(response)
+        return body
+
+    def firewall_detach(self, fw_id, ipv4_public, ipv4_private):
+        url = "firewall/"
+        payload = {
+            "id": fw_id,
+            "ipv4_public": ipv4_public,
+            "ipv4_private": ipv4_private,
+        }
+        response = self._make_delete(url, payload)
+        body = self._process_response(response)
+        return body

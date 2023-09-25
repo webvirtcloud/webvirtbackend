@@ -6,11 +6,11 @@ from rest_framework.response import Response
 
 from .models import Firewall, FirewallVirtance
 from .serializers import (
-    FirewallSerializer, 
+    FirewallSerializer,
     FirewallAddRuleSerializer,
     FirewallDelRuleSerializer,
-    FirewallAddVirtanceSerializer, 
-    FirewallDelVirtanceSerializer
+    FirewallAddVirtanceSerializer,
+    FirewallDelVirtanceSerializer,
 )
 
 
