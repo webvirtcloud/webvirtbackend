@@ -7,6 +7,7 @@
 	"customizations": {
 		"vscode": {
 			"extensions": [
+				"ms-python.isort",
 				"ms-python.python",
 				"GitHub.copilot"
 		  	]

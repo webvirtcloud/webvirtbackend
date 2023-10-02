@@ -1,0 +1,12 @@
+{
+    "editor.defaultFormatter": null,
+    "[python]": {
+      "editor.formatOnSave": true,
+      "editor.defaultFormatter": "ms-python.black-formatter"
+    },
+    "isort.args": ["--profile", "black", "--filter-files"],
+    "python.formatting.provider": "none",
+    "python.testing.pytestArgs": ["${workspaceFolder}/metering_billing"],
+    "python.linting.pylintEnabled": false,
+    "python.linting.enabled": false,
+  }
