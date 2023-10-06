@@ -366,9 +366,8 @@ class WebVirtCompute(object):
         return body
 
     def firewall_detach(self, fw_id, ipv4_public, ipv4_private):
-        url = "firewall/"
+        url = f"firewall/{fw_id}/"
         payload = {
-            "id": fw_id,
             "ipv4_public": ipv4_public,
             "ipv4_private": ipv4_private,
         }

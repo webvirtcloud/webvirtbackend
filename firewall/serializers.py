@@ -3,7 +3,7 @@ import ipaddress
 from rest_framework import serializers
 
 from virtance.models import Virtance
-from .tasks import firewall_attach
+from .tasks import firewall_attach, firewall_detach
 from .models import Firewall, Rule, Cidr, FirewallVirtance
 
 
@@ -506,8 +506,13 @@ class FirewallDelVirtanceSerializer(serializers.Serializer):
 
     def update(self, instance, validated_data):
         virtance_ids = list(set(validated_data.get("virtance_ids")))
-
-        for v_id in virtance_ids:
-            FirewallVirtance.objects.get(firewall=instance, virtance_id=v_id).delete()
+        
+        for virtance_id in virtance_ids:
+            instance.event = Firewall.DETACH
+            instance.save()
+            virtance = Virtance.objects.get(id=virtance_id)
+            virtance.event = Virtance.FIREWALL_DETACH
+            virtance.save()
+            firewall_detach.delay(instance.id, virtance.id)
 
         return validated_data

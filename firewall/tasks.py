@@ -2,7 +2,7 @@ from webvirtcloud.celery import app
 
 from compute.webvirt import WebVirtCompute
 from virtance.utils import virtance_error
-from .models import Firewall, Rule, Cidr
+from .models import Firewall, FirewallVirtance, Rule, Cidr
 from network.models import Network, IPAddress
 from virtance.models import Virtance
 
@@ -59,5 +59,7 @@ def firewall_detach(firewall_id, virtance_id):
     if isinstance(res, dict) and res.get("detail"):
         virtance_error(virtance_id, res.get("detail"), "firewall_detach")
     else:
-        virtance.reset_events()
-        firewall.reset_events()
+        fw_to_virt = FirewallVirtance.objects.filter(firewall=firewall, virtance=virtance).first()
+        fw_to_virt.delete()
+        virtance.reset_event()
+        firewall.reset_event()
