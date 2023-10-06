@@ -458,14 +458,16 @@ class FirewallAddVirtanceSerializer(serializers.Serializer):
             if not isinstance(v_id, int):
                 raise serializers.ValidationError({"virtance_ids": ["This field must be a list of integers."]})
 
-        list_ids = Virtance.objects.filter(user=self.instance.user, id__in=virtance_ids).values_list("id", flat=True)
+        list_ids = Virtance.objects.filter(
+            user=self.instance.user, id__in=virtance_ids, is_deleted=False
+        ).values_list("id", flat=True)
         for v_id in virtance_ids:
             if v_id not in list_ids:
-                raise serializers.ValidationError(f"Virtance with ID {v_id} does not exist.")
+                raise serializers.ValidationError(f"Virtance with ID {v_id} not found.")
 
         for v_id in virtance_ids:
-            if FirewallVirtance.objects.filter(firewall=self.instance, virance_id=v_id).exists():
-                raise serializers.ValidationError(f"Virtance with ID {v_id} is already assigned firewall.")
+            if FirewallVirtance.objects.filter(firewall=self.instance, virtance_id=v_id).exists():
+                raise serializers.ValidationError(f"Virtance with ID {v_id} has already assigned firewall.")
 
         return attrs
 
@@ -473,7 +475,15 @@ class FirewallAddVirtanceSerializer(serializers.Serializer):
         virtance_ids = list(set(validated_data.get("virtance_ids")))
 
         for v_id in virtance_ids:
-            FirewallVirtance.create(firewall=instance, virance_id=v_id)
+            FirewallVirtance.objects.create(firewall=instance, virtance_id=v_id)
+
+        for virtance_id in virtance_ids:
+            instance.event = Firewall.ATTACH
+            instance.save()
+            virtance = Virtance.objects.get(id=virtance_id)
+            virtance.event = Virtance.FIREWALL_ATTACH
+            virtance.save()
+            firewall_attach.delay(instance.id, virtance.id)
 
         return validated_data
 
@@ -489,8 +499,8 @@ class FirewallDelVirtanceSerializer(serializers.Serializer):
                 raise serializers.ValidationError({"virtance_ids": ["This field must be a list of integers."]})
 
         for v_id in virtance_ids:
-            if not FirewallVirtance.objects.filter(firewall=self.instance, virance_id=v_id).exists():
-                raise serializers.ValidationError(f"Virtance with ID {v_id} deos not have assigned firewall.")
+            if not FirewallVirtance.objects.filter(firewall=self.instance, virtance_id=v_id).exists():
+                raise serializers.ValidationError(f"Virtance with ID {v_id} doesn't have assigned firewall.")
 
         return attrs
 
@@ -498,6 +508,6 @@ class FirewallDelVirtanceSerializer(serializers.Serializer):
         virtance_ids = list(set(validated_data.get("virtance_ids")))
 
         for v_id in virtance_ids:
-            FirewallVirtance.objects.get(firewall=instance, virance_id=v_id).delete()
+            FirewallVirtance.objects.get(firewall=instance, virtance_id=v_id).delete()
 
         return validated_data

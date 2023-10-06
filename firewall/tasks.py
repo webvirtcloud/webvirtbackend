@@ -25,7 +25,7 @@ def firewall_attach(firewall_id, virtance_id):
                     "protocol": rule.protocol,
                     "action": rule.action,
                     "ports": rule.ports,
-                    "addresess": [f"{i.address}/{i.prefix}" for i in cidrs],
+                    "addresses": [f"{i.address}/{i.prefix}" for i in cidrs],
                 }
             )
         if rule.direction == Rule.OUTBOUND:
@@ -34,7 +34,7 @@ def firewall_attach(firewall_id, virtance_id):
                     "protocol": rule.protocol,
                     "action": rule.action,
                     "ports": rule.ports,
-                    "addresess": [f"{i.address}/{i.prefix}" for i in cidrs],
+                    "addresses": [f"{i.address}/{i.prefix}" for i in cidrs],
                 }
             )
 
@@ -43,8 +43,8 @@ def firewall_attach(firewall_id, virtance_id):
     if isinstance(res, dict) and res.get("detail"):
         virtance_error(virtance_id, res.get("detail"), "firewall_attach")
     else:
-        virtance.reset_events()
-        firewall.reset_events()
+        virtance.reset_event()
+        firewall.reset_event()
 
 
 @app.task
