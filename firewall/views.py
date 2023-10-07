@@ -34,9 +34,9 @@ class FirewallListAPI(APIView):
         return Response({"firewalls": serilizator.data})
 
     def post(self, request, *args, **kwargs):
-        serializer = self.class_serializer(data=request.data)
+        serializer = self.class_serializer(data=request.data, context={"user": request.user})
         serializer.is_valid(raise_exception=True)
-        serializer.save(user=request.user)
+        serializer.save()
         return Response({"firewall": serializer.data}, status=status.HTTP_201_CREATED)
 
 
@@ -51,8 +51,9 @@ class FirewallDataAPI(APIView):
         return Response({"firewall": serilizator.data})
 
     def put(self, request, *args, **kwargs):
-        firewall = self.get_object()
-        serilizator = self.class_serializer(firewall, data=request.data)
+        serilizator = self.class_serializer(self.get_object(), data=request.data)
+        serilizator.is_valid(raise_exception=True)
+        serilizator.save()
         return Response({"firewall": serilizator.data})
 
     def delete(self, request, *args, **kwargs):

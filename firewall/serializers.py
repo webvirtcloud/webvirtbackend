@@ -138,10 +138,16 @@ class FirewallSerializer(serializers.ModelSerializer):
         return data
 
     def update(self, instance, validated_data):
-        return validated_data
+        name = validated_data.get("name")
+
+        if name:
+            instance.name = name
+            instance.save()
+
+        return instance
 
     def create(self, validated_data):
-        user = validated_data.get("user")
+        user = self.context.get("user")
         name = validated_data.get("name")
         virtance_ids = validated_data.get("virtance_ids", [])
         inbound_rules = validated_data.get("inbound_rules", [])
