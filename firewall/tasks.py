@@ -8,7 +8,7 @@ from virtance.models import Virtance
 
 
 @app.task
-def firewall_attach(firewall_id, virtance_id):
+def firewall_attach(firewall_id, virtance_id, reset_event=True):
     inbound_rules = []
     outbound_rules = []
     virtance = Virtance.objects.get(id=virtance_id)
@@ -43,12 +43,13 @@ def firewall_attach(firewall_id, virtance_id):
     if isinstance(res, dict) and res.get("detail"):
         virtance_error(virtance_id, res.get("detail"), "firewall_attach")
     else:
-        virtance.reset_event()
-        firewall.reset_event()
+        if reset_event is True:
+            virtance.reset_event()
+            firewall.reset_event()
 
 
 @app.task
-def firewall_detach(firewall_id, virtance_id):
+def firewall_detach(firewall_id, virtance_id, reset_event=True):
     virtance = Virtance.objects.get(id=virtance_id)
     firewall = Firewall.objects.get(id=firewall_id)
     ipv4_public = IPAddress.objects.filter(virtance=virtance, network__type=Network.PUBLIC).first()
@@ -61,5 +62,15 @@ def firewall_detach(firewall_id, virtance_id):
     else:
         fw_to_virt = FirewallVirtance.objects.filter(firewall=firewall, virtance=virtance).first()
         fw_to_virt.delete()
-        virtance.reset_event()
-        firewall.reset_event()
+        if reset_event is True:
+            virtance.reset_event()
+            firewall.reset_event()
+
+
+@app.task
+def firewall_update(firewall_id, virtance_id):
+    # Detach firewall first
+    firewall_detach(firewall_id, virtance_id, reset_event=False)
+    
+    # Attach firewall with new rules
+    firewall_attach(firewall_id, virtance_id)

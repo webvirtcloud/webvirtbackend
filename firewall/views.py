@@ -4,6 +4,8 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
+from virtance.models import Virtance
+from .tasks import firewall_detach
 from .models import Firewall, FirewallVirtance
 from .serializers import (
     FirewallSerializer,
@@ -55,7 +57,17 @@ class FirewallDataAPI(APIView):
 
     def delete(self, request, *args, **kwargs):
         firewall = self.get_object()
+
+        for fw_to_virt in FirewallVirtance.objects.filter(firewall=firewall):
+            firewall.event = Firewall.DELETE
+            firewall.save()
+            virtance = Virtance.objects.get(id=fw_to_virt.virtance.id)
+            virtance.event = Virtance.FIREWALL_DETACH
+            virtance.save()
+            firewall_detach.delay(firewall.id, virtance.id)
+
         firewall.delete()
+
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
