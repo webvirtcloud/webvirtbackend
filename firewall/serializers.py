@@ -100,14 +100,16 @@ class FirewallSerializer(serializers.ModelSerializer):
         return {"name": obj.event, "description": next((i[1] for i in obj.EVENT_CHOICES if i[0] == obj.event))}
 
     def validate(self, attrs):
-        user = attrs.get("user")
+        user = self.context.get("user")
         virtance_ids = list(set(attrs.get("virtance_ids", [])))
 
         for v_id in virtance_ids:
             if not isinstance(v_id, int):
                 raise serializers.ValidationError({"virtance_ids": ["This field must be a list of integers."]})
 
-        list_ids = Virtance.objects.filter(user=user, id__in=virtance_ids).values_list("id", flat=True)
+        list_ids = Virtance.objects.filter(
+            user=user, id__in=virtance_ids, is_deleted=False
+        ).values_list("id", flat=True)
         for v_id in virtance_ids:
             if v_id not in list_ids:
                 raise serializers.ValidationError(f"Virtance with ID {v_id} does not exist.")
