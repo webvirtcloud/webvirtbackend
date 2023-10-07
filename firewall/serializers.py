@@ -141,10 +141,78 @@ class FirewallSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         name = validated_data.get("name")
+        inbound_rules = validated_data.get("inbound_rules")
+        outbound_rules = validated_data.get("outbound_rules")
 
         if name:
             instance.name = name
             instance.save()
+
+        # Inbound rules
+        if inbound_rules:
+            # Delete old inbound rules
+            for in_rule in Rule.objects.filter(firewall=instance, direction=Rule.INBOUND, is_system=False):
+                Cidr.objects.filter(rule=in_rule).delete()
+                in_rule.delete()
+
+            # Create new inbound rules
+            for in_rule in inbound_rules:
+                rule = Rule.objects.create(
+                    firewall=instance,
+                    direction=Rule.INBOUND,
+                    protocol=in_rule.get("protocol"),
+                    action=Rule.ACCEPT,
+                    ports=in_rule.get("ports", 0),
+                )
+                for cidr in list(set(in_rule.get("sources").get("addresses"))):
+                    if "/" in cidr:
+                        address = cidr.split("/")[0]
+                        prefix = cidr.split("/")[1]
+                    else:
+                        address = cidr
+                        prefix = 32
+                    Cidr.objects.create(
+                        rule=rule,
+                        address=address,
+                        prefix=prefix,
+                    )
+
+        if outbound_rules:
+            # Delete old outbound rules
+            for out_rule in Rule.objects.filter(firewall=instance, direction=Rule.OUTBOUND, is_system=False):
+                Cidr.objects.filter(rule=out_rule).delete()
+                out_rule.delete()
+
+            # Create new outbound rules
+            for in_rule in inbound_rules:
+                rule = Rule.objects.create(
+                    firewall=instance,
+                    direction=Rule.OUTBOUND,
+                    protocol=in_rule.get("protocol"),
+                    action=Rule.ACCEPT,
+                    ports=in_rule.get("ports", 0),
+                )
+                for cidr in list(set(in_rule.get("sources").get("addresses"))):
+                    if "/" in cidr:
+                        address = cidr.split("/")[0]
+                        prefix = cidr.split("/")[1]
+                    else:
+                        address = cidr
+                        prefix = 32
+                    Cidr.objects.create(
+                        rule=rule,
+                        address=address,
+                        prefix=prefix,
+                    )
+
+        # Update rules for virtances
+        for fw_to_virt in FirewallVirtance.objects.filter(firewall=instance):
+            instance.event = Firewall.UPDATE
+            instance.save()
+            virtance = Virtance.objects.get(id=fw_to_virt.virtance.id)
+            virtance.event = Virtance.FIREWALL_ATTACH
+            virtance.save()
+            firewall_update.delay(instance.id, virtance.id)
 
         return instance
 
@@ -194,7 +262,7 @@ class FirewallSerializer(serializers.ModelSerializer):
                 direction=Rule.INBOUND,
                 protocol=in_rule.get("protocol"),
                 action=Rule.ACCEPT,
-                ports=in_rule.get("ports"),
+                ports=in_rule.get("ports", 0),
             )
             for cidr in list(set(in_rule.get("sources").get("addresses"))):
                 if "/" in cidr:
@@ -273,7 +341,7 @@ class FirewallSerializer(serializers.ModelSerializer):
                 direction=Rule.OUTBOUND,
                 protocol=out_rule.get("protocol"),
                 action=Rule.ACCEPT,
-                ports=out_rule.get("ports"),
+                ports=out_rule.get("ports", 0),
             )
             for cidr in list(set(out_rule.get("destinations").get("addresses"))):
                 if "/" in cidr:
@@ -352,7 +420,7 @@ class FirewallAddRuleSerializer(serializers.Serializer):
                     direction=Rule.INBOUND,
                     protocol=in_rule.get("protocol"),
                     action=Rule.ACCEPT,
-                    ports=in_rule.get("ports"),
+                    ports=in_rule.get("ports", 0),
                 )
                 for cidr in list(set(in_rule.get("sources").get("addresses"))):
                     if "/" in cidr:
@@ -374,7 +442,7 @@ class FirewallAddRuleSerializer(serializers.Serializer):
                     direction=Rule.OUTBOUND,
                     protocol=out_rule.get("protocol"),
                     action=Rule.ACCEPT,
-                    ports=out_rule.get("ports"),
+                    ports=out_rule.get("ports", 0),
                 )
                 for cidr in list(set(out_rule.get("destinations").get("addresses"))):
                     if "/" in cidr:
@@ -417,7 +485,7 @@ class FirewallDelRuleSerializer(serializers.Serializer):
                         direction=Rule.INBOUND,
                         protocol=in_rule.get("protocol"),
                         action=Rule.ACCEPT,
-                        ports=in_rule.get("ports"),
+                        ports=in_rule.get("ports", 0),
                     )
                 except Rule.DoesNotExist:
                     raise serializers.ValidationError("The rules does not exist.")
@@ -430,7 +498,7 @@ class FirewallDelRuleSerializer(serializers.Serializer):
                         direction=Rule.OUTBOUND,
                         protocol=out_rule.get("protocol"),
                         action=Rule.ACCEPT,
-                        ports=out_rule.get("ports"),
+                        ports=out_rule.get("ports", 0),
                     )
                 except Rule.DoesNotExist:
                     raise serializers.ValidationError("The rules does not exist.")
@@ -445,7 +513,7 @@ class FirewallDelRuleSerializer(serializers.Serializer):
                     direction=Rule.INBOUND,
                     protocol=in_rule.get("protocol"),
                     action=Rule.ACCEPT,
-                    ports=in_rule.get("ports"),
+                    ports=in_rule.get("ports", 0),
                 )
                 Cidr.objects.filter(rule=rule).delete()
                 rule.delete()
@@ -457,7 +525,7 @@ class FirewallDelRuleSerializer(serializers.Serializer):
                     direction=Rule.OUTBOUND,
                     protocol=out_rule.get("protocol"),
                     action=Rule.ACCEPT,
-                    ports=out_rule.get("ports"),
+                    ports=out_rule.get("ports", 0),
                 )
                 Cidr.objects.filter(rule=rule).delete()
                 rule.delete()
