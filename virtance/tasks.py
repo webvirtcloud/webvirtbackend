@@ -14,11 +14,13 @@ from network.helper import (
     assign_free_ipv4_private,
 )
 from image.tasks import image_delete
+from firewall.tasks import firewall_detach
 from size.models import Size
 from image.models import Image
 from compute.models import Compute
-from network.models import Network, IPAddress
 from keypair.models import KeyPairVirtance
+from network.models import Network, IPAddress
+from firewall.models import FirewallVirtance
 from image.tasks import image_delete
 from .models import Virtance, VirtanceCounter
 from .utils import virtance_error
@@ -484,6 +486,21 @@ def disable_recovery_mode_virtance(virtance_id):
 @app.task
 def delete_virtance(virtance_id):
     virtance = Virtance.objects.get(pk=virtance_id)
+
+    # Check if virtance attached to firewall and detach it if so
+    if FirewallVirtance.objects.filter(virtance=virtance).exists():
+        firewall = FirewallVirtance.objects.get(virtance=virtance).firewall
+        firewall.event = firewall.DETACH
+        firewall.save()
+        virtance.event = Virtance.FIREWALL_DETACH
+        virtance.save()
+        firewall_detach(firewall.id, virtance.id)
+        
+        # Return task for virtance delete
+        virtance.event = Virtance.DELETE
+        virtance.save()
+
+    # Delete virtance
     wvcomp = wvcomp_conn(virtance.compute)
     res = wvcomp.delete_virtance(virtance.id)
     if res.get("detail") is None:
