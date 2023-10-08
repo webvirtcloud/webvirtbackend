@@ -101,12 +101,48 @@ class FirewallSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         user = self.context.get("user")
+        inbound_rules = attrs.get("inbound_rules", [])
+        outbound_rules = attrs.get("outbound_rules", [])
         virtance_ids = list(set(attrs.get("virtance_ids", [])))
 
+        # Check inbound_rules duplicates
+        if inbound_rules:
+            in_rule_checked = set()
+            for in_rule in inbound_rules:
+                # Check sources duplicates
+                cidr_src_checked = set()
+                for cidr in in_rule.get("sources").get("addresses"):
+                    if cidr in cidr_src_checked:
+                        raise serializers.ValidationError("Please check duplication in sources.")
+                    cidr_src_checked.add(cidr)
+
+                in_rule_data = (in_rule.get('protocol'), in_rule.get('ports'))
+                if in_rule_data in in_rule_checked:
+                    raise serializers.ValidationError("Please check duplicate in inbound rules.")
+                in_rule_checked.add(in_rule_data)
+
+        # Check outbound_rules duplicates
+        if outbound_rules:
+            out_rule_checked = set()
+            for out_rule in outbound_rules:
+                # Check destinations duplicates
+                cidr_dest_checked = set()
+                for cidr in out_rule.get("destinations").get("addresses"):
+                    if cidr in cidr_dest_checked:
+                        raise serializers.ValidationError("Please check duplication in destinations.")
+                    cidr_dest_checked.add(cidr)
+               
+                out_rule_data = (out_rule.get('protocol'), out_rule.get('ports'))
+                if out_rule_data in out_rule_checked:
+                    raise serializers.ValidationError("Please check duplicate in outbound rules.")
+                out_rule_checked.add(out_rule_data)
+
+        # Check integer list in virtance_ids
         for v_id in virtance_ids:
             if not isinstance(v_id, int):
                 raise serializers.ValidationError({"virtance_ids": ["This field must be a list of integers."]})
 
+        # Check virtance exists
         list_ids = Virtance.objects.filter(
             user=user, id__in=virtance_ids, is_deleted=False
         ).values_list("id", flat=True)
@@ -114,6 +150,7 @@ class FirewallSerializer(serializers.ModelSerializer):
             if v_id not in list_ids:
                 raise serializers.ValidationError(f"Virtance with ID {v_id} does not exist.")
 
+        # Check virtance already assigned
         for v_id in virtance_ids:
             if FirewallVirtance.objects.filter(firewall=self.instance, virance_id=v_id).exists():
                 raise serializers.ValidationError(f"Virtance with ID {v_id} is already assigned firewall.")
