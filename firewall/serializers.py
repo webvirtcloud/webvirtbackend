@@ -109,9 +109,16 @@ class FirewallSerializer(serializers.ModelSerializer):
         if inbound_rules:
             in_rule_checked = set()
             for in_rule in inbound_rules:
+                # Check 0.0.0.0/0 in sources
+                src_addrs = in_rule.get("sources").get("addresses")
+                if "0.0.0.0/0" in src_addrs and len(src_addrs) > 1:
+                    raise serializers.ValidationError(
+                        "Source '0.0.0.0/0' are allowed. Please remove other sources."
+                    )
+
                 # Check sources duplicates
                 cidr_src_checked = set()
-                for cidr in in_rule.get("sources").get("addresses"):
+                for cidr in src_addrs:
                     if cidr in cidr_src_checked:
                         raise serializers.ValidationError("Please check duplication in sources.")
                     cidr_src_checked.add(cidr)
@@ -125,9 +132,16 @@ class FirewallSerializer(serializers.ModelSerializer):
         if outbound_rules:
             out_rule_checked = set()
             for out_rule in outbound_rules:
+                # Check 0.0.0.0/0 in destinations
+                dest_addrs = out_rule.get("destinations").get("addresses")
+                if "0.0.0.0/0" in dest_addrs and len(dest_addrs) > 1:
+                    raise serializers.ValidationError(
+                        "Destination '0.0.0.0/0' are allowed. Please remove other destinations."
+                    )
+
                 # Check destinations duplicates
                 cidr_dest_checked = set()
-                for cidr in out_rule.get("destinations").get("addresses"):
+                for cidr in dest_addrs:
                     if cidr in cidr_dest_checked:
                         raise serializers.ValidationError("Please check duplication in destinations.")
                     cidr_dest_checked.add(cidr)
