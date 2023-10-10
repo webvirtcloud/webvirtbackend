@@ -34,8 +34,8 @@ class PortsField(serializers.Field):
         if match:
             start_port = int(match.group(1))
             end_port = int(match.group(2)) if match and match.group(2) else None
-            if not end_port and (start_port < 1 or start_port > 65535):
-                raise serializers.ValidationError("Invalid port number. Use number from 1 to 65535.")
+            if not end_port and (start_port < -1 or start_port > 65535):
+                raise serializers.ValidationError("Invalid port number. Use number from 0 to 65535.")
             if (start_port < 1 or start_port > 65535) and end_port and (end_port < 1 or end_port > 65535):
                 raise serializers.ValidationError("Invalid ports range. Use 1-65535.")
             return data
@@ -208,6 +208,9 @@ class FirewallSerializer(serializers.ModelSerializer):
 
             # Create new inbound rules
             for in_rule in inbound_rules:
+                if in_rule.get("protocol") == Rule.ICMP:
+                    in_rule["ports"] = 0
+
                 rule = Rule.objects.create(
                     firewall=instance,
                     direction=Rule.INBOUND,
@@ -236,6 +239,9 @@ class FirewallSerializer(serializers.ModelSerializer):
 
             # Create new outbound rules
             for in_rule in inbound_rules:
+                if in_rule.get("protocol") == Rule.ICMP:
+                    in_rule["ports"] = 0
+
                 rule = Rule.objects.create(
                     firewall=instance,
                     direction=Rule.OUTBOUND,
@@ -308,6 +314,9 @@ class FirewallSerializer(serializers.ModelSerializer):
 
         # Create user rules for inbound
         for in_rule in inbound_rules:
+            if in_rule.get("protocol") == Rule.ICMP:
+                in_rule["ports"] = 0
+
             rule = Rule.objects.create(
                 firewall=firewall,
                 direction=Rule.INBOUND,
@@ -387,6 +396,9 @@ class FirewallSerializer(serializers.ModelSerializer):
 
         # Create user rules for outbound
         for out_rule in outbound_rules:
+            if out_rule.get("protocol") == Rule.ICMP:
+                out_rule["ports"] = 0
+
             rule = Rule.objects.create(
                 firewall=firewall,
                 direction=Rule.OUTBOUND,
@@ -466,6 +478,9 @@ class FirewallAddRuleSerializer(serializers.Serializer):
     def update(self, instance, validated_data):
         if validated_data.get("inbound_rules"):
             for in_rule in validated_data.get("inbound_rules"):
+                if in_rule.get("protocol") == Rule.ICMP:
+                    in_rule["ports"] = 0
+
                 rule = Rule.objects.create(
                     firewall=instance,
                     direction=Rule.INBOUND,
@@ -488,6 +503,9 @@ class FirewallAddRuleSerializer(serializers.Serializer):
 
         if validated_data.get("outbound_rules"):
             for out_rule in validated_data.get("outbound_rules"):
+                if out_rule.get("protocol") == Rule.ICMP:
+                    out_rule["ports"] = 0
+
                 rule = Rule.objects.create(
                     firewall=instance,
                     direction=Rule.OUTBOUND,
