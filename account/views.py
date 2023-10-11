@@ -77,7 +77,6 @@ class ResetPasswordHash(APIView):
         return error_message_response("User not found or hash is invalid.")
 
 
-
 class VerifyResendEmail(APIView):
     permission_classes = (IsAuthenticated,)
 

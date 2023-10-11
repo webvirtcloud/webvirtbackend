@@ -95,9 +95,7 @@ class FirewallVirtanceAPI(APIView):
         return get_object_or_404(Firewall, uuid=self.kwargs.get("uuid"), user=self.request.user, is_deleted=False)
 
     def get(self, request, *args, **kwargs):
-        virtance_ids = FirewallVirtance.objects.filter(
-            firewall=self.get_object()
-        ).values_list("virtance_id", flat=True)
+        virtance_ids = FirewallVirtance.objects.filter(firewall=self.get_object()).values_list("virtance_id", flat=True)
         virtances = Virtance.objects.filter(id__in=virtance_ids)
         serilizator = VirtanceSerializer(virtances, many=True)
         return Response({"virtances": serilizator.data})

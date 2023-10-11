@@ -71,6 +71,6 @@ def firewall_detach(firewall_id, virtance_id, reset_event=True, unlink_db=True):
 def firewall_update(firewall_id, virtance_id):
     # Detach firewall first
     firewall_detach(firewall_id, virtance_id, reset_event=False, unlink_db=False)
-    
+
     # Attach firewall with new rules
     firewall_attach(firewall_id, virtance_id)

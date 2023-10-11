@@ -495,7 +495,7 @@ def delete_virtance(virtance_id):
         virtance.event = Virtance.FIREWALL_DETACH
         virtance.save()
         firewall_detach(firewall.id, virtance.id)
-        
+
         # Return task for virtance delete
         virtance.event = Virtance.DELETE
         virtance.save()

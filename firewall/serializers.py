@@ -112,9 +112,7 @@ class FirewallSerializer(serializers.ModelSerializer):
                 # Check 0.0.0.0/0 in sources
                 src_addrs = in_rule.get("sources").get("addresses")
                 if "0.0.0.0/0" in src_addrs and len(src_addrs) > 1:
-                    raise serializers.ValidationError(
-                        "Source '0.0.0.0/0' are allowed. Please remove other sources."
-                    )
+                    raise serializers.ValidationError("Source '0.0.0.0/0' are allowed. Please remove other sources.")
 
                 # Check sources duplicates
                 cidr_src_checked = set()
@@ -123,7 +121,7 @@ class FirewallSerializer(serializers.ModelSerializer):
                         raise serializers.ValidationError("Please check duplication in sources.")
                     cidr_src_checked.add(cidr)
 
-                in_rule_data = (in_rule.get('protocol'), in_rule.get('ports'))
+                in_rule_data = (in_rule.get("protocol"), in_rule.get("ports"))
                 if in_rule_data in in_rule_checked:
                     raise serializers.ValidationError("Please check duplicate in inbound rules.")
                 in_rule_checked.add(in_rule_data)
@@ -145,8 +143,8 @@ class FirewallSerializer(serializers.ModelSerializer):
                     if cidr in cidr_dest_checked:
                         raise serializers.ValidationError("Please check duplication in destinations.")
                     cidr_dest_checked.add(cidr)
-               
-                out_rule_data = (out_rule.get('protocol'), out_rule.get('ports'))
+
+                out_rule_data = (out_rule.get("protocol"), out_rule.get("ports"))
                 if out_rule_data in out_rule_checked:
                     raise serializers.ValidationError("Please check duplicate in outbound rules.")
                 out_rule_checked.add(out_rule_data)
@@ -157,9 +155,9 @@ class FirewallSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError({"virtance_ids": ["This field must be a list of integers."]})
 
         # Check virtance exists
-        list_ids = Virtance.objects.filter(
-            user=user, id__in=virtance_ids, is_deleted=False
-        ).values_list("id", flat=True)
+        list_ids = Virtance.objects.filter(user=user, id__in=virtance_ids, is_deleted=False).values_list(
+            "id", flat=True
+        )
         for v_id in virtance_ids:
             if v_id not in list_ids:
                 raise serializers.ValidationError(f"Virtance with ID {v_id} does not exist.")
@@ -614,16 +612,16 @@ class FirewallDelRuleSerializer(serializers.Serializer):
 class FirewallAddVirtanceSerializer(serializers.Serializer):
     virtance_ids = serializers.ListField(required=True)
 
-    def validate(self, attrs):        
+    def validate(self, attrs):
         virtance_ids = list(set(attrs.get("virtance_ids")))
 
         for v_id in virtance_ids:
             if not isinstance(v_id, int):
                 raise serializers.ValidationError({"virtance_ids": ["This field must be a list of integers."]})
 
-        list_ids = Virtance.objects.filter(
-            user=self.instance.user, id__in=virtance_ids, is_deleted=False
-        ).values_list("id", flat=True)
+        list_ids = Virtance.objects.filter(user=self.instance.user, id__in=virtance_ids, is_deleted=False).values_list(
+            "id", flat=True
+        )
         for v_id in virtance_ids:
             if v_id not in list_ids:
                 raise serializers.ValidationError(f"Virtance with ID {v_id} not found.")
@@ -669,7 +667,7 @@ class FirewallDelVirtanceSerializer(serializers.Serializer):
 
     def update(self, instance, validated_data):
         virtance_ids = list(set(validated_data.get("virtance_ids")))
-        
+
         for virtance_id in virtance_ids:
             instance.event = Firewall.UPDATE
             instance.save()
