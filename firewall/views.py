@@ -5,6 +5,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from virtance.models import Virtance
+from virtance.serializers import VirtanceSerializer
 from .tasks import firewall_detach
 from .models import Firewall, FirewallVirtance
 from .serializers import (
@@ -92,6 +93,14 @@ class FirewallRuleAPI(APIView):
 class FirewallVirtanceAPI(APIView):
     def get_object(self):
         return get_object_or_404(Firewall, uuid=self.kwargs.get("uuid"), user=self.request.user, is_deleted=False)
+
+    def get(self, request, *args, **kwargs):
+        virtance_ids = FirewallVirtance.objects.filter(
+            firewall=self.get_object()
+        ).values_list("virtance_id", flat=True)
+        virtances = Virtance.objects.filter(id__in=virtance_ids)
+        serilizator = VirtanceSerializer(virtances, many=True)
+        return Response({"virtances": serilizator.data})
 
     def post(self, request, *args, **kwargs):
         serializer = FirewallAddVirtanceSerializer(self.get_object(), data=request.data)
