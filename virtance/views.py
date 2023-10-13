@@ -11,6 +11,7 @@ from compute.webvirt import WebVirtCompute
 from webvirtcloud.views import error_message_response
 from image.serializers import ImageSerializer
 from image.models import Image
+from firewall.models import FirewallVirtance
 from .utils import make_vnc_hash, virtance_history
 from .models import Virtance, VirtanceHistory
 from .tasks import delete_virtance
@@ -30,6 +31,7 @@ class VirtanceListAPI(APIView):
         region = self.request.query_params.get("region")
         has_backups = self.request.query_params.get("has_backups")
         has_snapshots = self.request.query_params.get("has_snapshots")
+        has_firewall = self.request.query_params.get("has_firewall")
 
         queryset = Virtance.objects.filter(~Q(event=Virtance.DELETE), user=self.request.user, is_deleted=False)
 
@@ -37,13 +39,23 @@ class VirtanceListAPI(APIView):
             queryset = queryset.filter(name__icontains=name)
         if region:
             queryset = queryset.filter(region__slug=region)
-        if has_backups:
+        if has_backups == "true":
             queryset = queryset.filter(is_backup_enabled=True)
-        if has_snapshots:
+        if has_snapshots == "true":
             virtance_ids = Image.objects.filter(
                 user=self.request.user, type=Image.SNAPSHOT, source__is_deleted=False, is_deleted=False
             ).values_list("source_id", flat=True)
             queryset = queryset.filter(id__in=virtance_ids)
+        if has_firewall == "true":
+            virtance_ids = FirewallVirtance.objects.filter(
+                virtance__user=self.request.user
+            ).values_list("virtance_id", flat=True)
+            queryset = queryset.filter(id__in=virtance_ids)
+        if has_firewall == "false":
+            virtance_ids = FirewallVirtance.objects.filter(
+                virtance__user=self.request.user
+            ).values_list("virtance_id", flat=True)
+            queryset = queryset.filter(id__not_in=virtance_ids)
 
         return queryset
 
