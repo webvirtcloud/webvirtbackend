@@ -55,7 +55,7 @@ class VirtanceListAPI(APIView):
             virtance_ids = FirewallVirtance.objects.filter(
                 virtance__user=self.request.user
             ).values_list("virtance_id", flat=True)
-            queryset = queryset.filter(id__not_in=virtance_ids)
+            queryset = queryset.filter(~Q(id__in=virtance_ids))
 
         return queryset
 
