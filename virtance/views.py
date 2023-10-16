@@ -9,6 +9,7 @@ from rest_framework.response import Response
 
 from compute.webvirt import WebVirtCompute
 from webvirtcloud.views import error_message_response
+from firewall.serializers import FirewallSerializer
 from image.serializers import ImageSerializer
 from image.models import Image
 from firewall.models import FirewallVirtance
@@ -116,8 +117,9 @@ class VirtanceBackupsAPI(APIView):
     class_serializer = ImageSerializer
 
     def get_objects(self):
+        virtance = get_object_or_404(Virtance, pk=self.kwargs.get("id"), user=self.request.user, is_deleted=False)
         return Image.objects.filter(
-            type=Image.BACKUP, source_id=self.kwargs.get("id"), user=self.request.user, is_deleted=False
+            type=Image.BACKUP, source_id=virtance.id, user=self.request.user, is_deleted=False
         )
 
     def get(self, request, *args, **kwargs):
@@ -126,12 +128,28 @@ class VirtanceBackupsAPI(APIView):
         return Response({"backups": serilizator.data})
 
 
+class VirtanceFirewallAPI(APIView):
+    class_serializer = FirewallSerializer
+
+    def get_object(self):
+        virtance = get_object_or_404(Virtance, pk=self.kwargs.get("id"), user=self.request.user, is_deleted=False)
+        firewallinstance = FirewallVirtance.objects.filter(virtance=virtance).first()
+        return firewallinstance.firewall if firewallinstance else None
+
+    def get(self, request, *args, **kwargs):
+        if not self.get_object():
+            return Response({"firewall": None})
+        serilizator = self.class_serializer(self.get_object(), many=False)
+        return Response({"firewall": serilizator.data})
+
+
 class VirtanceSnapshotsAPI(APIView):
     class_serializer = ImageSerializer
 
     def get_objects(self):
+        virtance = get_object_or_404(Virtance, pk=self.kwargs.get("id"), user=self.request.user, is_deleted=False)
         return Image.objects.filter(
-            type=Image.SNAPSHOT, source_id=self.kwargs.get("id"), user=self.request.user, is_deleted=False
+            type=Image.SNAPSHOT, source_id=virtance.id, user=self.request.user, is_deleted=False
         )
 
     def get(self, request, *args, **kwargs):
