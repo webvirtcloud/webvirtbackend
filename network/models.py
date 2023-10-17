@@ -52,8 +52,9 @@ class Network(models.Model):
 
 class IPAddress(models.Model):
     network = models.ForeignKey(Network, models.PROTECT)
-    virtance = models.ForeignKey("virtance.Virtance", models.PROTECT)
+    virtance = models.ForeignKey("virtance.Virtance", models.PROTECT, null=True, blank=True)
     address = models.GenericIPAddressField()
+    is_float = models.BooleanField(default=False)
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
 
