@@ -10,4 +10,5 @@ urlpatterns = [
     re_path(r"^keypairs/?", include("api.v1.keypair.urls")),
     re_path(r"^virtances/?", include("api.v1.virtance.urls")),
     re_path(r"^firewalls/?", include("api.v1.firewall.urls")),
+    re_path(r"^floating_ips/?", include("api.v1.floating_ip.urls")),
 ]

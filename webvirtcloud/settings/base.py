@@ -23,7 +23,7 @@ AUTH_USER_MODEL = "account.User"
 
 # Application definition
 INSTALLED_APPS = [
-    "django.contrib.auth",
+    "django.contrib.auth", 
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
@@ -44,6 +44,7 @@ INSTALLED_APPS += [
     "network",
     "virtance",
     "firewall",
+    "floating_ip",
     "webvirtcloud",
 ]
 

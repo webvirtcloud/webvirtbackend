@@ -24,7 +24,7 @@ def assign_free_ipv4_compute(virtance_id):
     return None
 
 
-def assign_free_ipv4_public(virtance_id):
+def assign_free_ipv4_public(virtance_id, is_float=False):
     virtance = Virtance.objects.get(id=virtance_id)
     networks = Network.objects.filter(
         region=virtance.region, version=Network.IPv4, type=Network.PUBLIC, is_active=True, is_deleted=False
@@ -33,7 +33,9 @@ def assign_free_ipv4_public(virtance_id):
         ipaddrs = list(IPv4Network(f"{net.cidr}/{net.netmask}"))[SUBNET_RANGE]
         for ipaddr in random.sample(ipaddrs, k=len(ipaddrs)):
             if not IPAddress.objects.filter(network=net, address=str(ipaddr)).exists():
-                ipaddr = IPAddress.objects.create(network=net, address=str(ipaddr), virtance=virtance)
+                ipaddr = IPAddress.objects.create(
+                    network=net, address=str(ipaddr), virtance=virtance, is_float=is_float
+                )
                 return ipaddr.id
     return None
 

@@ -1,0 +1,45 @@
+from django.db import models
+from django.utils import timezone
+
+
+class FloatIP(models.Model):
+    CREATE = "create"
+    DELETE = "delete"
+    ASSIGN = "assign"
+    UNASSIGN = "unassign"
+    EVENT_CHOICES = [
+        (DELETE, "Deleting"),
+        (ASSIGN, "Assigning"),
+        (UNASSIGN, "Unassigning"),
+    ]
+    user = models.ForeignKey("account.User", models.PROTECT)
+    event = models.CharField(max_length=40, choices=EVENT_CHOICES, blank=True, null=True)
+    ipaddress = models.ForeignKey("network.IPAddress", models.PROTECT)
+
+    class Meta:
+        ordering = ["-id"]
+        verbose_name = "FloatingIP"
+        verbose_name_plural = "FloatingIPs"
+
+    def __unicode__(self):
+        return self.ipaddress.address
+
+
+class FloatIPCounter(models.Model):
+    floatip = models.ForeignKey(FloatIP, models.PROTECT)
+    amount = models.DecimalField(max_digits=12, decimal_places=6, default=0.0)
+    started = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+    stopped = models.TextField(blank=True, null=True)
+
+    class Meta:
+        ordering = ["-id"]
+        verbose_name = "FloatingIP Counter"
+        verbose_name_plural = "FloatingIPs Counters"
+
+    def stop(self):
+        self.stopped = timezone.now()
+        self.save()
+
+    def __unicode__(self):
+        return self.started
