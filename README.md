@@ -38,7 +38,7 @@ docker-compose exec backend python3 manage.py migrate
 
 6. Load the initial data:
 ```bash
-docker compose exec backend sh -c "python3 manage.py loaddata */fixtures/*.json"
+docker compose exec backend python3 manage.py loaddata initial_data
 ```
 
 7. Access the admin site:
