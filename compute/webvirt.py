@@ -374,3 +374,27 @@ class WebVirtCompute(object):
         response = self._make_delete(url, payload)
         body = self._process_response(response)
         return body
+
+    def float_ip_assign(self, fixed_ip, floating_ip, floating_prefix, floating_gateway):
+        url = "floating_ip/"
+        payload = {
+            "fixed_id": fixed_ip,
+            "floating_ip": floating_ip,
+            "floating_prefix": floating_prefix,
+            "floating_gateway": floating_gateway
+        }
+        response = self._make_post(url, payload)
+        body = self._process_response(response)
+        return body
+
+    def float_ip_unassign(self, fixed_ip, floating_ip, floating_prefix, floating_gateway):
+        url = "floating_ip/"
+        payload = {
+            "fixed_id": fixed_ip,
+            "floating_ip": floating_ip,
+            "floating_prefix": floating_prefix,
+            "floating_gateway": floating_gateway
+        }
+        response = self._make_delete(url, payload)
+        body = self._process_response(response)
+        return body
