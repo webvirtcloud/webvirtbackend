@@ -23,22 +23,22 @@ cd webvirtbackend
 
 3. Build the Docker image:
 ```bash
-docker-compose build
+docker compose build
 ```
 
 4. Run the Docker container:
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 
 5. Run the database migrations:
 ```bash
-docker-compose exec backend python3 manage.py migrate
+docker compose exec backend python3 manage.py migrate
 ```
 
 6. Load the initial data:
 ```bash
-docker compose exec backend sh -c "python3 manage.py loaddata */fixtures/*.json"
+docker compose exec backend python3 manage.py loaddata initial_data
 ```
 
 7. Access the admin site:

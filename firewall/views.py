@@ -24,7 +24,7 @@ class FirewallListAPI(APIView):
         virtance_id = self.request.query_params.get("virtance_id", None)
         queryset = Firewall.objects.filter(user=self.request.user, is_deleted=False)
 
-        if virtance_id:
+        if virtance_id and virtance_id.isdigit():
             firewallvirtance = FirewallVirtance.objects.filter(virtance_id=virtance_id).first()
             queryset = queryset.filter(id=firewallvirtance.firewall.id) if firewallvirtance else []
 
