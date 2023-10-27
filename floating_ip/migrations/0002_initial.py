@@ -9,24 +9,22 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ("virtance", "0001_initial"),
+        ("floating_ip", "0001_initial"),
+        ("network", "0001_initial"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ("image", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name="image",
-            name="source",
+            model_name="floatip",
+            name="ipaddress",
             field=models.ForeignKey(
-                blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to="virtance.virtance"
+                blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to="network.ipaddress"
             ),
         ),
         migrations.AddField(
-            model_name="image",
+            model_name="floatip",
             name="user",
-            field=models.ForeignKey(
-                blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to=settings.AUTH_USER_MODEL
-            ),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to=settings.AUTH_USER_MODEL),
         ),
     ]
