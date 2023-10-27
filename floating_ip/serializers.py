@@ -12,6 +12,7 @@ from virtance.serializers import VirtanceSerializer
 
 class FloatIPSerializer(serializers.ModelSerializer):
     ip = serializers.CharField(source="ipaddress.address", read_only=True)
+    event = serializers.SerializerMethodField(read_only=True)
     region = RegionSerializer(source="ipaddress.network.region", read_only=True)
     virtance = VirtanceSerializer(source="ipaddress.virtance", read_only=True)
     virtance_id = serializers.IntegerField(write_only=True)
@@ -20,10 +21,16 @@ class FloatIPSerializer(serializers.ModelSerializer):
         model = FloatIP
         fields = (
             "ip",
-            "virtance",
+            "event",
             "region",
+            "virtance",
             "virtance_id"
         )
+
+    def get_event(self, obj):
+        if obj.event is None:
+            return None
+        return {"name": obj.event, "description": next((i[1] for i in obj.EVENT_CHOICES if i[0] == obj.event))}
 
     def validate(self, attrs):
         user = self.context["user"]

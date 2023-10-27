@@ -8,6 +8,7 @@ class FloatIP(models.Model):
     ASSIGN = "assign"
     UNASSIGN = "unassign"
     EVENT_CHOICES = [
+        (CREATE, "Creating"),
         (DELETE, "Deleting"),
         (ASSIGN, "Assigning"),
         (UNASSIGN, "Unassigning"),
@@ -35,6 +36,8 @@ class FloatIP(models.Model):
         super(FloatIP, self).save(*args, **kwargs)
     
     def delete(self, *args, **kwargs):
+        self.event = None
+        self.ipaddress = None
         self.is_deleted = True
         self.deleted = timezone.now()
         self.save()

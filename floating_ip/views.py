@@ -38,10 +38,11 @@ class FloatingIPDataAPI(APIView):
         return Response({"floating_ip": serializer.data})
 
     def delete(self, request, *args, **kwargs):
-        floating_ip = self.get_queryset()
-        floating_ip.event = FloatIP.DELETE
-        floating_ip.save()
+        floatip = self.get_queryset()
+        floatip.event = FloatIP.DELETE
+        floatip.save()
 
-        delete_floating_ip.delay(floating_ip.id)
+        delete_floating_ip.delay(floatip.id)
 
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
