@@ -95,7 +95,7 @@ class VirtanceSerializer(serializers.ModelSerializer):
     def get_networks(self, obj):
         v4 = []
         v6 = []
-        for ip in IPAddress.objects.filter(virtance=obj):
+        for ip in IPAddress.objects.filter(virtance=obj, is_float=False):
             if ip.network.version == ip.network.IPv6:
                 v6.append(
                     {

@@ -64,7 +64,7 @@ def create_virtance(virtance_id, password=None):
 
     ipv4_public_id = assign_free_ipv4_public(virtance_id)
     if ipv4_public_id is not None:
-        ipv4_public = IPAddress.objects.get(id=ipv4_public_id)
+        ipv4_public = IPAddress.objects.get(id=ipv4_public_id, is_float=False)
 
     ipv4_private_id = assign_free_ipv4_private(virtance_id)
     if ipv4_private_id is not None:
@@ -162,7 +162,7 @@ def recreate_virtance(virtance_id):
             ipv4_compute = IPAddress.objects.get(id=ipv4_compute_id)
 
     try:
-        ipv4_public = IPAddress.objects.get(virtance=virtance, network__type=Network.PUBLIC)
+        ipv4_public = IPAddress.objects.get(virtance=virtance, is_float=False, network__type=Network.PUBLIC)
     except IPAddress.DoesNotExist:
         ipv4_public_id = assign_free_ipv4_public(virtance_id)
         if ipv4_public_id is not None:
@@ -252,7 +252,7 @@ def rebuild_virtance(virtance_id):
     ipv4_compute = None
     ipv4_private = None
     virtance = Virtance.objects.get(id=virtance_id)
-    ipv4_public = IPAddress.objects.get(network__type=Network.PUBLIC, virtance=virtance)
+    ipv4_public = IPAddress.objects.get(network__type=Network.PUBLIC, virtance=virtance, is_float=False)
     ipv4_compute = IPAddress.objects.get(network__type=Network.COMPUTE, virtance=virtance)
     ipv4_private = IPAddress.objects.get(network__type=Network.PRIVATE, virtance=virtance)
     password_hash = sha512_crypt.encrypt(uuid4().hex[0:24], salt=uuid4().hex[0:8], rounds=5000)

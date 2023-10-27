@@ -378,7 +378,7 @@ class WebVirtCompute(object):
     def float_ip_assign(self, fixed_ip, floating_ip, floating_prefix, floating_gateway):
         url = "floating_ip/"
         payload = {
-            "fixed_id": fixed_ip,
+            "fixed_ip": fixed_ip,
             "floating_ip": floating_ip,
             "floating_prefix": floating_prefix,
             "floating_gateway": floating_gateway
@@ -390,7 +390,7 @@ class WebVirtCompute(object):
     def float_ip_unassign(self, fixed_ip, floating_ip, floating_prefix, floating_gateway):
         url = "floating_ip/"
         payload = {
-            "fixed_id": fixed_ip,
+            "fixed_ip": fixed_ip,
             "floating_ip": floating_ip,
             "floating_prefix": floating_prefix,
             "floating_gateway": floating_gateway

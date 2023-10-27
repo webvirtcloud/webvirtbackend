@@ -14,7 +14,7 @@ def firewall_attach(firewall_id, virtance_id, reset_event=True):
     virtance = Virtance.objects.get(id=virtance_id)
     firewall = Firewall.objects.get(id=firewall_id)
     firewall_rules = Rule.objects.filter(firewall=firewall)
-    ipv4_public = IPAddress.objects.filter(virtance=virtance, network__type=Network.PUBLIC).first()
+    ipv4_public = IPAddress.objects.filter(virtance=virtance, network__type=Network.PUBLIC, is_float=False).first()
     ipv4_private = IPAddress.objects.filter(virtance=virtance, network__type=Network.PRIVATE).first()
 
     for rule in firewall_rules:
@@ -52,7 +52,7 @@ def firewall_attach(firewall_id, virtance_id, reset_event=True):
 def firewall_detach(firewall_id, virtance_id, reset_event=True, unlink_db=True):
     virtance = Virtance.objects.get(id=virtance_id)
     firewall = Firewall.objects.get(id=firewall_id)
-    ipv4_public = IPAddress.objects.filter(virtance=virtance, network__type=Network.PUBLIC).first()
+    ipv4_public = IPAddress.objects.filter(virtance=virtance, network__type=Network.PUBLIC, is_float=False).first()
     ipv4_private = IPAddress.objects.filter(virtance=virtance, network__type=Network.PRIVATE).first()
 
     wvcomp = WebVirtCompute(virtance.compute.token, virtance.compute.hostname)

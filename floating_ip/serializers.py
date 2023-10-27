@@ -1,7 +1,10 @@
+from ipaddress import IPv4Network
 from rest_framework import serializers
 
-from .models import FloatIP
+from .models import FloatIP, FloatIPCounter
 from .tasks import assign_floating_ip
+from network.helper import assign_free_ipv4_public
+from network.models import IPAddress
 from virtance.models import Virtance
 from region.serializers import RegionSerializer
 from virtance.serializers import VirtanceSerializer
@@ -41,5 +44,23 @@ class FloatIPSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         virtance_id = validated_data.get("virtance_id")
-        assign_floating_ip.delay(virtance_id)
-        return FloatIP.objects.filter(ipaddress__virtance_id=virtance_id, ipaddress__is_float=True).first()
+        virtance = Virtance.objects.get(id=virtance_id)
+        floatip = FloatIP.objects.create(user=virtance.user, event=FloatIP.CREATE)
+
+        virtance.event = Virtance.ASSIGN_FLOATING_IP
+        virtance.save()
+
+        ipaddress_id = assign_free_ipv4_public(virtance.id, is_float=True)
+        if ipaddress_id:
+            ipaddress = IPAddress.objects.get(id=ipaddress_id)
+            ipv4_subnet = IPv4Network(f"{ipaddress.address}/{ipaddress.network.netmask}", strict=False)
+
+            floatip.ipaddress = ipaddress
+            floatip.cidr = f"{ipaddress.address}/{ipv4_subnet.prefixlen}"
+            floatip.save()
+
+            FloatIPCounter.objects.create(floatip=floatip, amount=0.0)
+
+        assign_floating_ip.delay(floatip.id, virtance.id)
+        
+        return floatip

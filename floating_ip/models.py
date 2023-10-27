@@ -14,12 +14,30 @@ class FloatIP(models.Model):
     ]
     user = models.ForeignKey("account.User", models.PROTECT)
     event = models.CharField(max_length=40, choices=EVENT_CHOICES, blank=True, null=True)
-    ipaddress = models.ForeignKey("network.IPAddress", models.PROTECT)
+    cidr = models.CharField(max_length=32, blank=True, null=True)
+    ipaddress = models.ForeignKey("network.IPAddress", models.PROTECT, blank=True, null=True)
+    is_deleted = models.BooleanField(default=False)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField()
+    deleted = models.DateTimeField(null=True, blank=True)
 
     class Meta:
         ordering = ["-id"]
         verbose_name = "FloatingIP"
         verbose_name_plural = "FloatingIPs"
+
+    def reset_event(self):
+        self.event = None
+        self.save()
+
+    def save(self, *args, **kwargs):
+        self.updated = timezone.now()
+        super(FloatIP, self).save(*args, **kwargs)
+    
+    def delete(self, *args, **kwargs):
+        self.is_deleted = True
+        self.deleted = timezone.now()
+        self.save()
 
     def __unicode__(self):
         return self.ipaddress.address

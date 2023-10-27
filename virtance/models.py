@@ -23,6 +23,8 @@ class Virtance(models.Model):
     DISABLE_BACKUPS = "disable_backups"
     FIREWALL_ATTACH = "firewall_attach"
     FIREWALL_DETACH = "firewall_detach"
+    ASSIGN_FLOATING_IP = "assign_floating_ip"
+    UNASSIGN_FLOATING_IP = "unassign_floating_ip"
     ENABLE_RECOVERY_MODE = "enable_recovery_mode"
     DISABLE_RECOVERY_MODE = "disable_recovery_mode"
     EVENT_CHOICES = [
@@ -44,6 +46,8 @@ class Virtance(models.Model):
         (DISABLE_BACKUPS, "Disable Backups"),
         (FIREWALL_ATTACH, "Attach Firewall"),
         (FIREWALL_DETACH, "Detach Firewall"),
+        (ASSIGN_FLOATING_IP, "Assign Floating IP"),
+        (UNASSIGN_FLOATING_IP, "Unassign Floating IP"),
         (ENABLE_RECOVERY_MODE, "Enable Recovery Mode"),
         (DISABLE_RECOVERY_MODE, "Disable Recovery Mode"),
     ]
