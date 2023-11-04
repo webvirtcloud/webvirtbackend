@@ -2,7 +2,7 @@ from ipaddress import IPv4Network
 from rest_framework import serializers
 
 from .models import FloatIP, FloatIPCounter
-from .tasks import assign_floating_ip
+from .tasks import assign_floating_ip, reassign_floating_ip, unassign_floating_ip
 from network.helper import assign_free_ipv4_public
 from network.models import IPAddress
 from virtance.models import Virtance
@@ -37,9 +37,12 @@ class FloatIPSerializer(serializers.ModelSerializer):
         virtance_id = attrs.get("virtance_id")
 
         try:
-            Virtance.objects.get(id=virtance_id, user=user, is_deleted=False)
+            virtance = Virtance.objects.get(id=virtance_id, user=user, is_deleted=False)
         except Virtance.DoesNotExist:
             raise serializers.ValidationError("Virtance ID does not exist")
+        
+        if virtance.region.features.filter(name="floating_ip").exists() is False:
+            raise serializers.ValidationError("Floating IP is not supported in this region.")
 
         try:
             FloatIP.objects.get(ipaddress__virtance_id=virtance_id, ipaddress__is_float=True)
@@ -71,3 +74,58 @@ class FloatIPSerializer(serializers.ModelSerializer):
         assign_floating_ip.delay(floatip.id, virtance.id)
         
         return floatip
+
+
+class FloatIPActionSerializer(serializers.Serializer):
+    action = serializers.CharField(max_length=30)
+    virtance_id = serializers.IntegerField(required=False)
+
+    def validate_action(self, value):
+        actions = [
+            "assign",
+            "unassign",
+        ]
+        if value not in actions:
+            raise serializers.ValidationError({"action": ["Invalid action."]})
+        return value
+
+    def validate(self, attrs):
+        floatip = self.context.get("floatip")
+
+        if attrs.get("action") == "unassign":
+            if floatip.ipaddress.virtance is None:
+                raise serializers.ValidationError("This floating IP is not assigned to a Virtance.")
+
+        if attrs.get("action") == "assign":
+            if floatip.ipaddress.virtance is not None:
+                raise serializers.ValidationError("This floating IP is already assigned to a Virtance.")
+            if attrs.get("virtance_id") is None:
+                raise serializers.ValidationError({"virtance_id": ["This field is required."]})
+
+        return attrs
+
+    def create(self, validated_data):
+        floatip = self.context.get("floatip")
+        action = validated_data.get("action")
+        virtance_id = validated_data.get("virtance_id")
+
+        if action == "assign":
+            virtance = Virtance.objects.get(id=virtance_id)
+            floatip.event = FloatIP.ASSIGN
+            floatip.save()
+
+            virtance.event = Virtance.ASSIGN_FLOATING_IP
+            virtance.save()
+
+            if floatip.ipaddress.virtance is not None:
+                assign_floating_ip.delay(floatip.id, virtance.id)
+            else:
+                reassign_floating_ip.delay(floatip.id, virtance.id)
+        
+        if action == "unassign":
+            floatip.event = FloatIP.UNASSIGN
+            floatip.save()
+
+            unassign_floating_ip.delay(floatip.id)
+
+        return validated_data

@@ -56,6 +56,45 @@ def unassign_floating_ip(floating_ip_id):
 
 
 @app.task
+def reassign_floating_ip(floating_ip_id, virtance_id):
+    floatip = FloatIP.objects.get(id=floating_ip_id)
+    virtance_old = floatip.ipaddress.virtance
+    virtance_new = Virtance.objects.get(id=virtance_id)
+    ipv4_float = IPAddress.objects.get(id=floatip.ipaddress.id)
+
+    floatip.event = FloatIP.UNASSIGN
+    floatip.save()
+
+    virtance_old.event = Virtance.UNASSIGN_FLOATING_IP
+    virtance_old.save()
+
+    ipv4_compute = IPAddress.objects.filter(virtance=virtance_old, network__type=Network.COMPUTE).first()
+    wvcomp = WebVirtCompute(virtance_old.compute.token, virtance_old.compute.hostname)
+    ipv4_compute_prefix = IPv4Network(f"{ipv4_float.address}/{ipv4_float.network.netmask}", strict=False).prefixlen
+    res = wvcomp.float_ip_unassign(
+        ipv4_compute.address, ipv4_float.address, ipv4_compute_prefix, ipv4_float.network.gateway
+    )
+    if isinstance(res, dict) and res.get("detail"):
+        virtance_error(virtance_old.id, res.get("detail"), "unassign_floating_ip")
+    else:
+        floatip.event = FloatIP.ASSIGN
+        floatip.save()
+
+        virtance_old.reset_event()
+        
+        wvcomp = WebVirtCompute(virtance_new.compute.token, virtance_new.compute.hostname)
+        ipv4_compute_prefix = IPv4Network(f"{ipv4_float.address}/{ipv4_float.network.netmask}", strict=False).prefixlen
+        res = wvcomp.float_ip_assign(
+            ipv4_compute.address, ipv4_float.address, ipv4_compute_prefix, ipv4_float.network.gateway
+        )
+        if isinstance(res, dict) and res.get("detail"):
+            virtance_error(virtance_new.id, res.get("detail"), "assign_floating_ip")
+        else:
+            virtance_new.reset_event()
+            floatip.reset_event()
+
+
+@app.task
 def delete_floating_ip(floating_ip_id):
     floatip = FloatIP.objects.get(id=floating_ip_id)
     virtance = floatip.ipaddress.virtance
