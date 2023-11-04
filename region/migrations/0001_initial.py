@@ -23,6 +23,7 @@ class Migration(migrations.Migration):
                             ("backup", "Backup"),
                             ("snapshot", "Snapshot"),
                             ("one_click", "One-Click"),
+                            ("floating_ip", "Floating IP"),
                         ],
                         max_length=100,
                         unique=True,

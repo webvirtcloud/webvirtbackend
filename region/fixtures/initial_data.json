@@ -54,5 +54,12 @@
         "fields": {
             "name": "one_click"
         }
+    },
+    {
+        "model": "region.feature",
+        "pk": 7,
+        "fields": {
+            "name": "floating_ip"
+        }
     }
 ]

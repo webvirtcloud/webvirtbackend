@@ -10,13 +10,14 @@ class Feature(models.Model):
         ("backup", "Backup"),
         ("snapshot", "Snapshot"),
         ("one_click", "One-Click"),
+        ("floating_ip", "Floating-IP"),
     )
     name = models.CharField(choices=FEATURE_CHOICES, unique=True, max_length=100)
 
     class Meta:
         verbose_name = "Feature"
         verbose_name_plural = "Features"
-        ordering = ["-id"]
+        ordering = ["id"]
 
     def __unicode__(self):
         return self.name
