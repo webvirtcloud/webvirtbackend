@@ -14,6 +14,8 @@ urlpatterns = [
     re_path("network/", include("admin.network.urls")),
     re_path("compute/", include("admin.compute.urls")),
     re_path("virtance/", include("admin.virtance.urls")),
+    re_path("firewall/", include("admin.firewall.urls")),
+    re_path("floating_ip/", include("admin.floating_ip.urls")),
     re_path("user/", include("admin.user.urls")),
     re_path("issue/", include("admin.issue.urls")),
 ]
