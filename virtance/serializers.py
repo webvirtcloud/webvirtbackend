@@ -28,7 +28,7 @@ class VirtanceSerializer(serializers.ModelSerializer):
     created_at = serializers.DateTimeField(source="created")
     recovery_mode = serializers.BooleanField(source="is_recovery_mode")
     backups_enabled = serializers.BooleanField(source="is_backup_enabled")
-    disk = serializers.SerializerMethodField()\
+    disk = serializers.SerializerMethodField()
     event = serializers.SerializerMethodField()
     memory = serializers.SerializerMethodField()
     status = serializers.SerializerMethodField()
