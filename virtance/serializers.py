@@ -24,13 +24,13 @@ class VirtanceSerializer(serializers.ModelSerializer):
     image = ImageSerializer(source="template")
     region = RegionSerializer()
     vcpu = serializers.IntegerField(source="size.vcpu")
-    memory = serializers.IntegerField(source="size.memory")
     locked = serializers.BooleanField(source="is_locked")
     created_at = serializers.DateTimeField(source="created")
     recovery_mode = serializers.BooleanField(source="is_recovery_mode")
     backups_enabled = serializers.BooleanField(source="is_backup_enabled")
-    disk = serializers.SerializerMethodField()
+    disk = serializers.SerializerMethodField()\
     event = serializers.SerializerMethodField()
+    memory = serializers.SerializerMethodField()
     status = serializers.SerializerMethodField()
     features = serializers.SerializerMethodField()
     networks = serializers.SerializerMethodField()
@@ -76,12 +76,15 @@ class VirtanceSerializer(serializers.ModelSerializer):
         return obj.status
 
     def get_disk(self, obj):
-        return obj.disk // (1024**3)
+        return obj.disk // 1073741824
 
     def get_event(self, obj):
         if obj.event is None:
             return None
         return {"name": obj.event, "description": next((i[1] for i in obj.EVENT_CHOICES if i[0] == obj.event))}
+
+    def get_memory(self, obj):
+        return obj.size.memory // 1048576
 
     def get_features(self, obj):
         return []
