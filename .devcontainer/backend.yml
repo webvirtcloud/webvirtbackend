@@ -5,8 +5,8 @@ services:
     image: webvirtbackend:dev
     hostname: backend
     ports:
-      - 8000:8000
-      - 5678:5678
+      - 127.0.0.1:8000:8000
+      - 127.0.0.1:5678:5678
     volumes:
       - .:/app
     command: ["sh", "-c", "python3 -m pip install debugpy && python3 -m debugpy --wait-for-client --listen 0.0.0.0:5678 manage.py runserver 0.0.0.0:8000 --nothreading --noreload"]
