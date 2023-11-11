@@ -1,4 +1,6 @@
 from django.contrib import messages
+from django.forms.models import BaseModelForm
+from django.http import HttpResponse
 from django.urls import reverse_lazy, reverse
 from django.shortcuts import redirect, get_object_or_404
 from crispy_forms.helper import FormHelper
@@ -8,6 +10,7 @@ from .forms import FormSecretCreateAction, FormSecretValueAction, FormNwfilterCr
 from .forms import FormVolumeCreateAction, FormVolumeCloneAction, FormVolumeResizeAction
 from compute.models import Compute
 from virtance.models import Virtance
+from network.models import Network
 from admin.mixins import AdminView, AdminTemplateView, AdminFormView, AdminUpdateView, AdminDeleteView
 from compute.webvirt import WebVirtCompute
 
@@ -42,6 +45,22 @@ class AdminComputeUpdateView(AdminUpdateView):
         super(AdminComputeUpdateView, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_tag = False
+
+    def form_valid(self, form):
+        if form.has_changed():
+            if form.cleaned_data.get("is_active") is True:
+                compute = self.get_object()
+                network = Network.objects.filter(region=compute.region, is_deleted=False)
+                if not network.filter(type=Network.COMPUTE).exists():
+                    form.add_error("__all__", "There is no COMPUTE network in the region.")
+                    return super().form_invalid(form)
+                if not network.filter(type=Network.PRIVATE).exists():
+                    form.add_error("__all__", "There is no PRIVATE network in the region.")
+                    return super().form_invalid(form)
+                if not network.filter(type=Network.PUBLIC).exists():
+                    form.add_error("__all__", "There is no PUBLIC network in the region.")
+                    return super().form_invalid(form)
+        return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super(AdminComputeUpdateView, self).get_context_data(**kwargs)
