@@ -181,26 +181,39 @@ EMAIL_USE_SSL = os.environ.get("EMAIL_USE_SSL", False)
 EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "")
 EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "")
 
-#
 # WebVirtCloud Settings
+
 #
+# Domain and URL settings
+#
+# Base domain
+BASE_DOMAIN = os.environ.get("BASE_DOMAIN", "webvirt.cloud")
+
+# NoVNC domain
+NOVNC_DOMAIN = os.environ.get("NOVNC_DOMAIN", f"console.{BASE_DOMAIN}")
 
 # Site URL
-SITE_URL = os.environ.get("SITE_URL", "https://webvirt.cloud")
+SITE_URL = os.environ.get("SITE_URL", f"https://www.{BASE_DOMAIN}")
+
+# Admin URL
+ADMIN_URL = os.environ.get("ADMIN_URL", f"https://manage.{BASE_DOMAIN}")
 
 # Panel URL
-CLIENT_URL = os.environ.get("CLIENT_URL", "https://client.webvirt.cloud")
-
-# Security settings
-SESSION_COOKIE_DOMAIN = os.environ.get("SESSION_COOKIE_DOMAIN", ".webvirt.cloud")
+CLIENT_URL = os.environ.get("CLIENT_URL", f"https://client.{BASE_DOMAIN}")
 
 # Static URL
-STATIC_URL = os.environ.get("STATIC_URL", "https://cloud-assets.webvirt.cloud/")
+STATIC_URL = os.environ.get("STATIC_URL", f"https://assets.{BASE_DOMAIN}/")
+
+# Security settings
+SESSION_COOKIE_DOMAIN = os.environ.get("SESSION_COOKIE_DOMAIN", f".{BASE_DOMAIN}")
 
 # CSFR Trusted hosts
-CSRF_TRUSTED_ORIGINS = os.environ.get("CSRF_TRUSTED_ORIGINS", ["https://manage.webvirt.cloud"])
+CSRF_TRUSTED_ORIGINS = os.environ.get("CSRF_TRUSTED_ORIGINS", [ADMIN_URL])
 
-# Public images URL (Distributions, Applicatons)
+#
+# Panel settings
+#
+# Public images URL storage (Distributions, Applicatons)
 PUBLIC_IMAGES_URL = os.environ.get("PUBLIC_IMAGES_URL", "https://cloud-images.webvirt.cloud/")
 
 # Compute settings
@@ -215,7 +228,7 @@ WEBSOCKET_PORT = os.environ.get("WEBSOCKET_PORT", 6080)
 WEBSOCKET_CERT = os.environ.get("WEBSOCKET_CERT", None)
 
 # noVNC settings
-NOVNC_URL = os.environ.get("NOVNC_URL", "console.webvirt.cloud")
+NOVNC_URL = os.environ.get("NOVNC_URL", NOVNC_DOMAIN)
 NOVNC_PORT = os.environ.get("NOVNC_PORT", 443)
 NOVNC_PASSWD_PREFIX_LENGHT = os.environ.get("NOVNC_PASSWD_PREFIX_LENGHT", 6)
 NOVNC_PASSWD_SUFFIX_LENGHT = os.environ.get("NOVNC_PASSWD_SUFFIX_LENGHT", 12)
