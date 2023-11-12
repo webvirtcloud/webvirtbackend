@@ -2,6 +2,7 @@ from webvirtcloud.celery import app
 
 from compute.webvirt import WebVirtCompute
 from virtance.utils import virtance_error
+from .utils import firewall_error
 from .models import Firewall, FirewallVirtance, Rule, Cidr
 from network.models import Network, IPAddress
 from virtance.models import Virtance
@@ -41,6 +42,7 @@ def firewall_attach(firewall_id, virtance_id, reset_event=True):
     wvcomp = WebVirtCompute(virtance.compute.token, virtance.compute.hostname)
     res = wvcomp.firewall_attach(firewall.id, ipv4_public.address, ipv4_private.address, inbound_rules, outbound_rules)
     if isinstance(res, dict) and res.get("detail"):
+        firewall_error(firewall_id, res.get("detail"), "firewall_attach")
         virtance_error(virtance_id, res.get("detail"), "firewall_attach")
     else:
         if reset_event is True:
@@ -58,6 +60,7 @@ def firewall_detach(firewall_id, virtance_id, reset_event=True, unlink_db=True):
     wvcomp = WebVirtCompute(virtance.compute.token, virtance.compute.hostname)
     res = wvcomp.firewall_detach(firewall.id, ipv4_public.address, ipv4_private.address)
     if isinstance(res, dict) and res.get("detail"):
+        firewall_error(firewall_id, res.get("detail"), "firewall_detach")
         virtance_error(virtance_id, res.get("detail"), "firewall_detach")
     else:
         if unlink_db is True:
