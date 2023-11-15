@@ -38,6 +38,7 @@ INSTALLED_APPS += [
     "image",
     "region",
     "account",
+    "billing",
     "compute",
     "keypair",
     "project",
