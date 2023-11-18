@@ -12,6 +12,7 @@ from webvirtcloud.views import error_message_response
 from firewall.serializers import FirewallSerializer
 from image.serializers import ImageSerializer
 from image.models import Image
+from floating_ip.models import FloatIP
 from firewall.models import FirewallVirtance
 from .utils import make_vnc_hash, virtance_history
 from .models import Virtance, VirtanceHistory
@@ -33,6 +34,7 @@ class VirtanceListAPI(APIView):
         has_backups = self.request.query_params.get("has_backups")
         has_snapshots = self.request.query_params.get("has_snapshots")
         has_firewall = self.request.query_params.get("has_firewall")
+        has_floating_ip = self.request.query_params.get("has_floating_ip")
 
         queryset = Virtance.objects.filter(~Q(event=Virtance.DELETE), user=self.request.user, is_deleted=False)
 
@@ -57,7 +59,16 @@ class VirtanceListAPI(APIView):
                 virtance__user=self.request.user
             ).values_list("virtance_id", flat=True)
             queryset = queryset.filter(~Q(id__in=virtance_ids))
-
+        if has_floating_ip == "true":
+            virtance_ids = FloatIP.objects.filter(
+                virtance__user=self.request.user, virtance__is_deleted=False
+            ).values_list("virtance_id", flat=True)
+            queryset = queryset.filter(id__in=virtance_ids)
+        if has_floating_ip == "false":
+            virtance_ids = FloatIP.objects.filter(
+                virtance__user=self.request.user, virtance__is_deleted=False
+            ).values_list("virtance_id", flat=True)
+            queryset = queryset.filter(~Q(id__in=virtance_ids))
         return queryset
 
     def get(self, request, *args, **kwargs):
