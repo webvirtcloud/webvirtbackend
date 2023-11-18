@@ -4,6 +4,7 @@ from django.utils import timezone
 from webvirtcloud.celery import app
 from compute.webvirt import WebVirtCompute
 from virtance.utils import virtance_error
+from .utils import floatip_error
 from .models import FloatIP, FloatIPCounter
 from network.models import Network, IPAddress
 from virtance.models import Virtance
@@ -26,6 +27,7 @@ def assign_floating_ip(floating_ip_id, virtance_id):
         ipv4_compute.address, ipv4_float.address, ipv4_compute_prefix, ipv4_float.network.gateway
     )
     if isinstance(res, dict) and res.get("detail"):
+        floatip_error(floatip.id, res.get("detail"), "assign_floating_ip")
         virtance_error(virtance.id, res.get("detail"), "assign_floating_ip")
     else:
         virtance.reset_event()
@@ -45,6 +47,7 @@ def unassign_floating_ip(floating_ip_id):
         ipv4_compute.address, ipv4_float.address, ipv4_compute_prefix, ipv4_float.network.gateway
     )
     if isinstance(res, dict) and res.get("detail"):
+        floatip_error(floatip.id, res.get("detail"), "unassign_floating_ip")
         virtance_error(virtance.id, res.get("detail"), "unassign_floating_ip")
     else:
         virtance.reset_event()
@@ -75,7 +78,8 @@ def reassign_floating_ip(floating_ip_id, virtance_id):
         ipv4_compute.address, ipv4_float.address, ipv4_compute_prefix, ipv4_float.network.gateway
     )
     if isinstance(res, dict) and res.get("detail"):
-        virtance_error(virtance_old.id, res.get("detail"), "unassign_floating_ip")
+        floatip_error(floatip.id, res.get("detail"), "reassign_floating_ip")
+        virtance_error(virtance_old.id, res.get("detail"), "reassign_floating_ip")
     else:
         floatip.event = FloatIP.ASSIGN
         floatip.save()
@@ -88,7 +92,8 @@ def reassign_floating_ip(floating_ip_id, virtance_id):
             ipv4_compute.address, ipv4_float.address, ipv4_compute_prefix, ipv4_float.network.gateway
         )
         if isinstance(res, dict) and res.get("detail"):
-            virtance_error(virtance_new.id, res.get("detail"), "assign_floating_ip")
+            floatip_error(floatip.id, res.get("detail"), "reassign_floating_ip")
+            virtance_error(virtance_new.id, res.get("detail"), "reassign_floating_ip")
         else:
             virtance_new.reset_event()
             floatip.reset_event()
@@ -113,6 +118,7 @@ def delete_floating_ip(floating_ip_id):
             ipv4_compute.address, ipv4_float.address, ipv4_compute_prefix, ipv4_float.network.gateway
         )
         if isinstance(res, dict) and res.get("detail"):
+            floatip_error(floatip.id, res.get("detail"), "delete_floating_ip")
             virtance_error(virtance.id, res.get("detail"), "delete_floating_ip")
         else:
             ipaddress = floatip.ipaddress

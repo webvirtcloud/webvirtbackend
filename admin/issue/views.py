@@ -1,7 +1,9 @@
 from django.utils import timezone
 
 from image.models import ImageError
+from firewall.models import FirewallError
 from virtance.models import VirtanceError
+from floating_ip.models import FloatIPError
 from admin.mixins import AdminTemplateView
 
 
@@ -32,4 +34,28 @@ class AdminIssueImageView(AdminTemplateView):
         thirty_days_ago = timezone.now() - timezone.timedelta(days=30)
         context = super().get_context_data(**kwargs)
         context["images_errors"] = ImageError.objects.filter(image__is_deleted=False, created__gte=thirty_days_ago)
+        return context
+
+
+class AdminIssueFirewallView(AdminTemplateView):
+    template_name = "admin/issue/firewall.html"
+
+    def get_context_data(self, **kwargs):
+        thirty_days_ago = timezone.now() - timezone.timedelta(days=30)
+        context = super().get_context_data(**kwargs)
+        context["firewalls_errors"] = FirewallError.objects.filter(
+            firewall__is_deleted=False, created__gte=thirty_days_ago
+            )
+        return context
+
+
+class AdminIssueFloatIPView(AdminTemplateView):
+    template_name = "admin/issue/floatip.html"
+
+    def get_context_data(self, **kwargs):
+        thirty_days_ago = timezone.now() - timezone.timedelta(days=30)
+        context = super().get_context_data(**kwargs)
+        context["floatips_errors"] = FloatIPError.objects.filter(
+            floatip__is_deleted=False, created__gte=thirty_days_ago
+            )
         return context

@@ -9,7 +9,7 @@ services:
     container_name: webvirtcloud-backend
     hostname: backend
     ports:
-      - 8000:8000
+      - 127.0.0.1:8000:8000
     volumes:
       - .:/app
     command: python3 manage.py runserver 0:8000
@@ -34,7 +34,7 @@ services:
     image: webvirtbackend:dev
     container_name: webvirtcloud-novnc
     ports:
-      - 6080:6080
+      - 127.0.0.1:6080:6080
     volumes:
       - .:/app
     command: python3 manage.py novncd --verbose
@@ -69,8 +69,8 @@ services:
       DJANGO_SETTINGS_MODULE: webvirtcloud.settings.develop
       CELERY_BROKER_URL: "amqp://guest:guest@rabbitmq:5672"
     depends_on:
-      - rabbitmq
       - mariadb
+      - rabbitmq
   scheduler:
     build:
       context: .
@@ -92,8 +92,9 @@ services:
       DJANGO_SETTINGS_MODULE: webvirtcloud.settings.develop
       CELERY_BROKER_URL: "amqp://guest:guest@rabbitmq:5672"
     depends_on:
-      - rabbitmq
+      - worker
       - mariadb
+      - rabbitmq
   mariadb:
     image: mariadb:10.6.10
     container_name: webvirtcloud-mariadb
@@ -101,7 +102,7 @@ services:
     volumes:
       - ./.mysql:/var/lib/mysql
     ports:
-      - 3306:3306
+      - 127.0.0.1:3306:3306
     environment:
       MARIADB_DATABASE: webvirtcloud
       MARIADB_USER: django
@@ -111,9 +112,6 @@ services:
     image: rabbitmq:3.10.13
     container_name: webvirtcloud-rabbitmq
     hostname: rabbitmq
-    ports:
-      - 5672:5672
-      - 15672:15672
     environment:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
@@ -131,5 +129,4 @@ services:
     container_name: webvirtcloud-mailhog
     hostname: mailhog
     ports:
-      - 8025:8025
-      - 1025:1025
+      - 127.0.0.1:8025:8025

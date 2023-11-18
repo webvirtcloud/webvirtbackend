@@ -43,12 +43,12 @@ class FormNetwork(forms.ModelForm):
             raise forms.ValidationError("Network already exists in this region")
 
         # Check if CIDR compute already exists in the region
-        if net_type == "compute":
-            if Network.objects.filter(type="compute", region=region).exists():
-                raise forms.ValidationError("Compute network already exists in this region")
+        if net_type == Network.COMPUTE:
+            if cidr != "10.255.0.0" and netmask != "255.255.0.0":
+                raise forms.ValidationError("Compute network must be '10.255.0.0/255.255.0.0'")
 
         # Validate DNS
-        if net_type == "public":
+        if net_type == Network.PUBLIC:
             if not dns1 or not dns2:
                 raise forms.ValidationError("DNS1 and DNS2 are required for public network")
             if dns1 == dns2:

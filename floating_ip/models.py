@@ -64,3 +64,18 @@ class FloatIPCounter(models.Model):
 
     def __unicode__(self):
         return self.started
+
+
+class FloatIPError(models.Model):
+    floatip = models.ForeignKey(FloatIP, models.PROTECT)
+    event = models.CharField(max_length=40, blank=True, null=True)
+    message = models.TextField()
+    created = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-id"]
+        verbose_name = "Floating IP Error"
+        verbose_name_plural = "Floating IPs Errors"
+
+    def __unicode__(self):
+        return self.event

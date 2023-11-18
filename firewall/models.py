@@ -123,3 +123,18 @@ class FirewallVirtance(models.Model):
 
     def __unicode__(self):
         return self.virtance.id
+
+
+class FirewallError(models.Model):
+    firewall = models.ForeignKey(Firewall, models.PROTECT)
+    event = models.CharField(max_length=40, blank=True, null=True)
+    message = models.TextField()
+    created = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-id"]
+        verbose_name = "Firewall Error"
+        verbose_name_plural = "Firewalls Errors"
+
+    def __unicode__(self):
+        return self.event
