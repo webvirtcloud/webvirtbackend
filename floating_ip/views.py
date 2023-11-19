@@ -13,7 +13,14 @@ class FloatingIPListAPI(APIView):
     class_serializer = FloatIPSerializer
 
     def get_queryset(self):
-        return FloatIP.objects.filter(user=self.request.user, is_deleted=False)
+        virtance_id = self.request.query_params.get("virtance_id")
+
+        queryset = FloatIP.objects.filter(user=self.request.user, is_deleted=False)
+        
+        if virtance_id:
+            queryset = queryset.filter(ipaddress__virtance_id=virtance_id)
+
+        return queryset
 
     def get(self, request, *args, **kwargs):
         serializer = self.class_serializer(self.get_queryset(), many=True)
