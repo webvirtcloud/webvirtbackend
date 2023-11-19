@@ -31,6 +31,10 @@ def assign_floating_ip(floating_ip_id, virtance_id):
         virtance_error(virtance.id, res.get("detail"), "assign_floating_ip")
     else:
         virtance.reset_event()
+        if floatip.ipaddress.virtance is None:        
+            ipaddress = floatip.ipaddress
+            ipaddress.virtance = virtance
+            ipaddress.save()
         floatip.reset_event()
 
 
@@ -107,6 +111,18 @@ def delete_floating_ip(floating_ip_id):
     ipv4_float = IPAddress.objects.get(id=floatip.ipaddress.id)
     ipv4_compute = IPAddress.objects.filter(virtance=virtance, network__type=Network.COMPUTE).first()
     
+    current_time = timezone.now()
+    first_day_month = current_time.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+    try:
+        floatip_counter = FloatIPCounter.objects.get(started__gt=first_day_month, floatip=floatip)
+    except FloatIPCounter.DoesNotExist:
+        floatip_counter = FloatIPCounter.objects.create(
+            floatip=floatip,
+            amount=0.0,
+            started=current_time - timezone.timedelta(hours=1),
+        )
+    floatip_counter.stop()
+
     if floatip.ipaddress.virtance:
         virtance = floatip.ipaddress.virtance
         virtance.event = Virtance.UNASSIGN_FLOATING_IP
@@ -124,18 +140,5 @@ def delete_floating_ip(floating_ip_id):
             ipaddress = floatip.ipaddress
             virtance.reset_event()
 
-            floatip.delete()
-
-            ipaddress.delete()
-
-            current_time = timezone.now()
-            first_day_month = current_time.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
-            try:
-                floatip_counter = FloatIPCounter.objects.get(started__gt=first_day_month, floatip=floatip)
-            except FloatIPCounter.DoesNotExist:
-                floatip_counter = FloatIPCounter.objects.create(
-                    floatip=floatip,
-                    amount=0.0,
-                    started=current_time - timezone.timedelta(hours=1),
-                )
-            floatip_counter.stop()
+    floatip.delete()
+    ipaddress.delete()

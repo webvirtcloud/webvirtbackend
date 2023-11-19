@@ -117,7 +117,7 @@ class FloatIPActionSerializer(serializers.Serializer):
             virtance.event = Virtance.ASSIGN_FLOATING_IP
             virtance.save()
 
-            if floatip.ipaddress.virtance is not None:
+            if floatip.ipaddress.virtance is None:
                 assign_floating_ip.delay(floatip.id, virtance.id)
             else:
                 reassign_floating_ip.delay(floatip.id, virtance.id)
