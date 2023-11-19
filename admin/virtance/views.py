@@ -31,7 +31,7 @@ class AdminVirtanceDataView(AdminTemplateView):
         context = super().get_context_data(**kwargs)
         virtance_errors = VirtanceError.objects.filter(virtance=virtance)
 
-        if virtance.event != Virtance.CREATE:
+        if virtance.compute and virtance.event != Virtance.CREATE:
             wvcomp = WebVirtCompute(virtance.compute.token, virtance.compute.hostname)
             res_status = wvcomp.status_virtance(virtance.id)
             status = res_status.get("status")

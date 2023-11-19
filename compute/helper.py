@@ -1,6 +1,7 @@
 from django.conf import settings
 
 from virtance.models import Virtance
+from virtance.utils import virtance_error
 from .models import Compute
 
 
@@ -19,4 +20,5 @@ def assign_free_compute(virtance_id):
         virtance.save()
         return compute.id
 
+    virtance_error(virtance.id, f"No compute found", event="assign_free_compute")
     return None
