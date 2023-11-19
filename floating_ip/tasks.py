@@ -15,6 +15,7 @@ from virtance.models import Virtance
 def assign_floating_ip(floating_ip_id, virtance_id):
     floatip = FloatIP.objects.get(id=floating_ip_id)
     virtance = Virtance.objects.get(id=virtance_id)
+    ipaddress = floatip.ipaddress
     ipv4_float = IPAddress.objects.get(id=floatip.ipaddress.id)
     ipv4_compute = IPAddress.objects.filter(virtance=virtance, network__type=Network.COMPUTE).first()
 
@@ -30,11 +31,11 @@ def assign_floating_ip(floating_ip_id, virtance_id):
         floatip_error(floatip.id, res.get("detail"), "assign_floating_ip")
         virtance_error(virtance.id, res.get("detail"), "assign_floating_ip")
     else:
-        virtance.reset_event()
-        if floatip.ipaddress.virtance is None:        
-            ipaddress = floatip.ipaddress
+        if ipaddress.virtance is None:        
             ipaddress.virtance = virtance
             ipaddress.save()
+
+        virtance.reset_event()
         floatip.reset_event()
 
 
@@ -42,6 +43,7 @@ def assign_floating_ip(floating_ip_id, virtance_id):
 def unassign_floating_ip(floating_ip_id):
     floatip = FloatIP.objects.get(id=floating_ip_id)
     virtance = floatip.ipaddress.virtance
+    ipaddress = floatip.ipaddress
     ipv4_float = IPAddress.objects.get(id=floatip.ipaddress.id)
     ipv4_compute = IPAddress.objects.filter(virtance=virtance, network__type=Network.COMPUTE).first()
     
@@ -54,17 +56,17 @@ def unassign_floating_ip(floating_ip_id):
         floatip_error(floatip.id, res.get("detail"), "unassign_floating_ip")
         virtance_error(virtance.id, res.get("detail"), "unassign_floating_ip")
     else:
-        virtance.reset_event()
-        floatip.reset_event()
-
-        ipaddress = floatip.ipaddress
         ipaddress.virtance = None
         ipaddress.save()
+
+        virtance.reset_event()
+        floatip.reset_event()
 
 
 @app.task
 def reassign_floating_ip(floating_ip_id, virtance_id):
     floatip = FloatIP.objects.get(id=floating_ip_id)
+    ipaddress = floatip.ipaddress
     virtance_old = floatip.ipaddress.virtance
     virtance_new = Virtance.objects.get(id=virtance_id)
     ipv4_float = IPAddress.objects.get(id=floatip.ipaddress.id)
@@ -85,6 +87,9 @@ def reassign_floating_ip(floating_ip_id, virtance_id):
         floatip_error(floatip.id, res.get("detail"), "reassign_floating_ip")
         virtance_error(virtance_old.id, res.get("detail"), "reassign_floating_ip")
     else:
+        ipaddress.virtance = None
+        ipaddress.save()
+
         floatip.event = FloatIP.ASSIGN
         floatip.save()
 
@@ -99,14 +104,19 @@ def reassign_floating_ip(floating_ip_id, virtance_id):
             floatip_error(floatip.id, res.get("detail"), "reassign_floating_ip")
             virtance_error(virtance_new.id, res.get("detail"), "reassign_floating_ip")
         else:
-            virtance_new.reset_event()
+            ipaddress.virtance = virtance_new
+            ipaddress.save()
+
+            virtance_new.reset_event()            
             floatip.reset_event()
 
 
 @app.task
 def delete_floating_ip(floating_ip_id):
+    error = False
     floatip = FloatIP.objects.get(id=floating_ip_id)
     virtance = floatip.ipaddress.virtance
+    ipaddress = floatip.ipaddress
     floatip_counter = FloatIPCounter.objects.get(floatip=floatip)
     ipv4_float = IPAddress.objects.get(id=floatip.ipaddress.id)
     ipv4_compute = IPAddress.objects.filter(virtance=virtance, network__type=Network.COMPUTE).first()
@@ -121,8 +131,7 @@ def delete_floating_ip(floating_ip_id):
             amount=0.0,
             started=current_time - timezone.timedelta(hours=1),
         )
-    floatip_counter.stop()
-
+    
     if floatip.ipaddress.virtance:
         virtance = floatip.ipaddress.virtance
         virtance.event = Virtance.UNASSIGN_FLOATING_IP
@@ -134,11 +143,13 @@ def delete_floating_ip(floating_ip_id):
             ipv4_compute.address, ipv4_float.address, ipv4_compute_prefix, ipv4_float.network.gateway
         )
         if isinstance(res, dict) and res.get("detail"):
+            error = True
             floatip_error(floatip.id, res.get("detail"), "delete_floating_ip")
             virtance_error(virtance.id, res.get("detail"), "delete_floating_ip")
         else:
-            ipaddress = floatip.ipaddress
             virtance.reset_event()
 
-    floatip.delete()
-    ipaddress.delete()
+    if error is False:
+        floatip_counter.stop()
+        floatip.delete()
+        ipaddress.delete()
