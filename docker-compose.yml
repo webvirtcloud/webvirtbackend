@@ -121,8 +121,6 @@ services:
     hostname: cloudinit-proxy
     volumes:
       - ./.devcontainer/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
-    ports:
-      - 8080:8080
     network_mode: host
   mailhog:
     image: mailhog/mailhog
