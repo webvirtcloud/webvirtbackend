@@ -61,13 +61,13 @@ class VirtanceListAPI(APIView):
             queryset = queryset.filter(~Q(id__in=virtance_ids))
         if has_floating_ip == "true":
             virtance_ids = FloatIP.objects.filter(
-                virtance__user=self.request.user, virtance__is_deleted=False
-            ).values_list("virtance_id", flat=True)
+                ~Q(ipaddress__virtance=None), user=self.request.user, is_deleted=False
+            ).values_list("ipaddress__virtance_id", flat=True)
             queryset = queryset.filter(id__in=virtance_ids)
         if has_floating_ip == "false":
             virtance_ids = FloatIP.objects.filter(
-                virtance__user=self.request.user, virtance__is_deleted=False
-            ).values_list("virtance_id", flat=True)
+                ipaddress__virtance=None, user=self.request.user, is_deleted=False
+            ).values_list("ipaddress__virtance_id", flat=True)
             queryset = queryset.filter(~Q(id__in=virtance_ids))
         return queryset
 
