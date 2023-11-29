@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Invoice</title>
+  <style>
+    body {
+      font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+      margin: 0;
+      width: 100%;
+      background-color: #fafafa;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+      word-break: break-word;
+    }
+  </style>
+</head>
+
+<body>
+  <div style="max-width: 552px; margin: 0 auto; padding: 60px 24px;">
+    <a href="{{ site_url }}" style="margin: 0 auto; display: block; width: 50px; margin-bottom: 24px;">
+      <img src="https://cloud-assets.webvirt.cloud/images/webvirtcloud.png" width="50" alt="webvirtcloud">
+    </a>
+    <div
+      style="margin-bottom: 16px; border-radius: 12px; background-color: #fff; padding: 48px; font-size: 16px; color: #3f3f46; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05)">
+      <h1 style="margin: 0 0 24px; font-size: 24px; font-weight: 600; color: #000">
+        Thanks for using WebVirtCloud,
+      </h1>
+      <p>Your <span style="font-weight: 600; text-decoration: underline;">{{ period }}</span> invoice is now available.</p>
+      <table style="width: 100%; border-collapse: collapse;">
+        <tbody>
+          <tr>
+            <td style="padding: 12px 0; font-size: 14px; color: #52525b">Usage charges for {{ period }}</td>
+            <td style="padding: 12px 0; font-size: 14px; color: #52525b; text-align: right;">${{ amount }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="text-align: center; font-size: 12px; color: #52525b">
+      <a href="https://webvirt.cloud" target="_blank" class="hover-important-text-decoration-underline"
+        style="color: #4338ca; text-decoration: none">About us</a>
+      &bull;
+      <a href="https://github.com/webvirtcloud" target="_blank" class="hover-important-text-decoration-underline"
+        style="color: #4338ca; text-decoration: none;">Github</a>
+      &bull;
+      <a href="https://x.com/webvirtcloud" target="_blank" class="hover-important-text-decoration-underline"
+        style="color: #4338ca; text-decoration: none;">X</a>
+      &bull;
+      <a href="https://t.me/webvirtcloud" target="_blank" class="hover-important-text-decoration-underline"
+        style="color: #4338ca; text-decoration: none;">Telegram</a>
+    </div>
+  </div>
+</body>
+
+</html>
