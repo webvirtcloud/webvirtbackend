@@ -16,13 +16,13 @@ from network.helper import (
 from image.tasks import image_delete
 from firewall.tasks import firewall_detach
 from size.models import Size
-from image.models import Image
 from compute.models import Compute
 from keypair.models import KeyPairVirtance
 from network.models import Network, IPAddress
 from firewall.models import FirewallVirtance
-from image.tasks import image_delete
+from image.models import Image, SnapshotCounter
 from .models import Virtance, VirtanceCounter
+from image.tasks import image_delete
 from .utils import virtance_error
 
 
@@ -126,9 +126,7 @@ def create_virtance(virtance_id, password=None):
         else:
             virtance.active()
             virtance.reset_event()
-            VirtanceCounter.objects.create(
-                virtance=virtance, size=virtance.size, amount=virtance.size.price, started=timezone.now()
-            )
+            VirtanceCounter.objects.create(virtance=virtance, size=virtance.size, amount=virtance.size.price)
             email_virtance_created(
                 virtance.user.email,
                 virtance.name,
@@ -233,9 +231,7 @@ def recreate_virtance(virtance_id):
             try:
                 VirtanceCounter.objects.get(virtance=virtance, stopped=None)
             except VirtanceCounter.DoesNotExist:
-                VirtanceCounter.objects.create(
-                    virtance=virtance, size=virtance.size, amount=virtance.size.price, started=timezone.now()
-                )
+                VirtanceCounter.objects.create(virtance=virtance, size=virtance.size, amount=virtance.size.price)
             email_virtance_created(
                 virtance.user.email,
                 virtance.name,
@@ -377,6 +373,7 @@ def snapshot_virtance(virtance_id, display_name):
             disk_size=res.get("disk_size"),
             is_active=True,
         )
+        SnapshotCounter.objects.create(image=image, amount=0.0)
         image.regions.add(virtance.region)
         image.reset_event()
         virtance.reset_event()
@@ -544,7 +541,7 @@ def virtance_counter():
 
     if current_day == 1 and current_hour == 0:
         previous_month = current_time - timezone.timedelta(days=1)
-        period_end = previous_month.replace(hour=23, minute=59, second=59, microsecond=0)
+        period_end = previous_month.replace(hour=23, minute=59, second=59, microsecond=999999)
         virtance_counters.update(stopped=period_end)
     else:
         for virt_count in virtance_counters:
