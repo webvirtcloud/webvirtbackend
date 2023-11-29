@@ -43,6 +43,15 @@ STATIC_URL = "static/"
 NOVNC_URL = "localhost"
 NOVNC_PORT = 6080
 
+# Email settings
+EMAIL_PORT = os.environ.get("EMAIL_PORT", 1025)
+EMAIL_HOST = os.environ.get("EMAIL_HOST", "mailhog")
+EMAIL_FROM = os.environ.get("EMAIL_FROM", "WebVirtCloud <noreply@webvirt.cloud>")
+EMAIL_USE_TLS = os.environ.get("EMAIL_USE_TLS", False)
+EMAIL_USE_SSL = os.environ.get("EMAIL_USE_SSL", False)
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "")
+
 try:
     from .local import *
 except ImportError:

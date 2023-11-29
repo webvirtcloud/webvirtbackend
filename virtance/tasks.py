@@ -31,7 +31,7 @@ def wvcomp_conn(compute):
 
 
 @app.task
-def email_virtance_created(hostname, ipaddr, region, distro, recipient):
+def email_virtance_created(recipient, hostname, ipaddr, region, distro):
     subject = "WebVirtCloud virtance created"
     context = {
         "hostname": hostname,
@@ -130,11 +130,11 @@ def create_virtance(virtance_id, password=None):
                 virtance=virtance, size=virtance.size, amount=virtance.size.price, started=timezone.now()
             )
             email_virtance_created(
+                virtance.user.email,
                 virtance.name,
                 ipv4_public.address,
                 virtance.region.name,
                 virtance.template.description,
-                virtance.user.email,
             )
 
 
@@ -237,11 +237,11 @@ def recreate_virtance(virtance_id):
                     virtance=virtance, size=virtance.size, amount=virtance.size.price, started=timezone.now()
                 )
             email_virtance_created(
+                virtance.user.email,
                 virtance.name,
                 ipv4_public.address,
                 virtance.region.name,
                 virtance.template.description,
-                virtance.user.email,
             )
 
 

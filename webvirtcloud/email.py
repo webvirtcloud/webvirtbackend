@@ -6,7 +6,7 @@ from django.template.loader import render_to_string
 
 
 def send_email(subject, recipient, context, template):
-    subject = "WebVirtCloud confirm registration"
+    subject = subject if subject else "WebVirtCloud"
     from_email = settings.EMAIL_FROM
     html_message = render_to_string(template, context)
 
