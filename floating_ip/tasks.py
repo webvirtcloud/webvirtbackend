@@ -153,3 +153,31 @@ def delete_floating_ip(floating_ip_id):
         floatip_counter.stop()
         floatip.delete()
         ipaddress.delete()
+
+
+@app.task
+def floating_ip_counter():
+    current_time = timezone.now()
+    current_day = current_time.day
+    current_hour = current_time.hour
+    first_day_current_month = current_time.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+
+    for floatip in FloatIP.objects.filter(is_deleted=False):
+        try:
+            FloatIPCounter.objects.get(started__gt=first_day_current_month, floatip=floatip)
+        except FloatIPCounter.DoesNotExist:
+            period_start = current_time - timezone.timedelta(hours=1)
+            FloatIPCounter.objects.create(
+                floatip=floatip, amount=0.0, started=period_start
+            )
+
+    floating_ip_counters = FloatIPCounter.objects.filter(started__gt=first_day_current_month, stopped__isnull=True)
+
+    if current_day == 1 and current_hour == 0:
+        previous_month = current_time - timezone.timedelta(days=1)
+        period_end = previous_month.replace(hour=23, minute=59, second=59, microsecond=999999)
+        floating_ip_counters.update(stopped=period_end)
+    else:
+        for floatip_count in floating_ip_counters:
+            floatip_count.amount += 0.0
+            floatip_count.save()

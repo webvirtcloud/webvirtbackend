@@ -130,6 +130,14 @@ CELERY_BEAT_SCHEDULE = {
         "task": "virtance.tasks.virtance_backup",
         "schedule": crontab(minute=0, hour="*/1"),
     },
+    "snapshot_counter": {
+        "task": "image.tasks.snapshot_counter",
+        "schedule": crontab(minute=0, hour="*/1"),
+    },
+    "floating_ip_counter": {
+        "task": "floating_ip.tasks.floating_ip_counter",
+        "schedule": crontab(minute=0, hour="*/1"),
+    },
 }
 
 # Password validation
