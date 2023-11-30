@@ -1,3 +1,4 @@
+from decimal import Decimal
 from ipaddress import IPv4Network
 from django.utils import timezone
 
@@ -179,5 +180,5 @@ def floating_ip_counter():
         floating_ip_counters.update(stopped=period_end)
     else:
         for floatip_count in floating_ip_counters:
-            floatip_count.amount += 0.0
+            floatip_count.amount += Decimal(0.0)
             floatip_count.save()

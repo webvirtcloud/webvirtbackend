@@ -1,3 +1,4 @@
+from decimal import Decimal
 from django.utils import timezone
 
 from webvirtcloud.celery import app
@@ -64,5 +65,5 @@ def snapshot_counter():
         snapshot_counters.update(stopped=period_end)
     else:
         for snap_count in snapshot_counters:
-            snap_count.amount += 0.0
+            snap_count.amount += Decimal(0.0)
             snap_count.save()
