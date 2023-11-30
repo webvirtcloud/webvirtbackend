@@ -50,8 +50,9 @@
                   {{ forloop.counter }}
                 </td>
                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                  <a href="{% url 'admin_network_list' network.id %}" class="text-blue-600 hover:text-blue-900">{{
-                    network.cidr }}/{{ network.netmask }}<span class="sr-only">{{ network.cidr }}</span></a>
+                  <a href="{% url 'admin_network_list' network.id %}" class="text-blue-600 hover:text-blue-900">
+                    {{ network.cidr }}/{{ network.netmask }}<span class="sr-only">{{ network.cidr }}</span>
+                  </a>
                 </td>
                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                   {{ network.region.name }}
