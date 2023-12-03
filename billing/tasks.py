@@ -5,7 +5,7 @@ from django.utils import timezone
 from webvirtcloud.celery import app
 from webvirtcloud.email import send_email
 from account.models import User
-from billing.models import Invoice
+from billing.models import Invoice, Balance
 from image.models import SnapshotCounter
 from virtance.models import VirtanceCounter
 from floating_ip.models import FloatIPCounter
@@ -74,6 +74,11 @@ def make_monthly_invoice():
 
             # Create invoice
             invoice = Invoice.objects.create(user=user, amount=total_usage)
+
+            # Update user balance
+            Balance.objects.create(
+                user=user, amount=-invoice.amount, invoice=invoice, description=f"Period: {now.year}-{now.month}"
+            )
 
             # Send invoice to user
             email_send_invoice(user.email, invoice.amount, f"{now.year}-{now.month}")
