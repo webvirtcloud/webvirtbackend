@@ -128,7 +128,7 @@ class MetadataInterfaces(MetadataMixin):
         return HttpResponse(response)
 
 
-class MetadataInterfacePublic(MetadataMixin):
+class MetadataInterfacesPublic(MetadataMixin):
     def get(self, request, *args, **kwargs):
         if self.virtance is None:
             return HttpResponse("Not Found", status=404)
@@ -137,7 +137,7 @@ class MetadataInterfacePublic(MetadataMixin):
         return HttpResponse(response)
 
 
-class MetadataInterfacesPublic(MetadataMixin):
+class MetadataInterfacesPublicData(MetadataMixin):
     def get(self, request, *args, **kwargs):
         if self.virtance is None:
             return HttpResponse("Not Found", status=404)
@@ -236,7 +236,7 @@ class MetadataInterfacesPrivate(MetadataMixin):
         return HttpResponse(response)
 
 
-class MetadataInterfacePrivate(MetadataMixin):
+class MetadataInterfacesPrivateData(MetadataMixin):
     def get(self, request, *args, **kwargs):
         if self.virtance is None:
             return HttpResponse("Not Found", status=404)
