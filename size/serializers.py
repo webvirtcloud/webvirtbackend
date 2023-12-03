@@ -1,8 +1,6 @@
-from decimal import Decimal
 from rest_framework import serializers
 
 from .models import Size
-from region.models import Region
 
 
 class SizeSerializer(serializers.ModelSerializer):

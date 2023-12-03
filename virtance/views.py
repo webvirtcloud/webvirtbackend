@@ -191,7 +191,7 @@ class VirtanceConsoleAPI(APIView):
         console_host = settings.NOVNC_URL
         console_port = settings.NOVNC_PORT
         console_hash = make_vnc_hash(res.get("vnc_password"))
-        virtance_history(virtance.id, request.user.id, f"virtance.console")
+        virtance_history(virtance.id, request.user.id, "virtance.console")
         response = Response(
             {
                 "console": {

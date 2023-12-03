@@ -22,7 +22,6 @@ from network.models import Network, IPAddress
 from firewall.models import FirewallVirtance
 from image.models import Image, SnapshotCounter
 from .models import Virtance, VirtanceCounter
-from image.tasks import image_delete
 from .utils import virtance_error
 
 

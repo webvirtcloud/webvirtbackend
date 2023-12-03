@@ -1,5 +1,4 @@
 import re
-from uuid import uuid4
 from django.db.models import Q
 from rest_framework import serializers
 

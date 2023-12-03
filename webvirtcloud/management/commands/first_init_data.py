@@ -25,7 +25,7 @@ class Command(BaseCommand):
                         pk=item.get("pk"),
                         defaults=item.get("fields"),
                     )
-                self.stdout.write(self.style.SUCCESS(f"Regions successfully loaded"))
+                self.stdout.write(self.style.SUCCESS("Regions successfully loaded"))
         except FileNotFoundError:
             self.stderr.write(self.style.ERROR(f"File not found: {region_json}"))
         except json.JSONDecodeError as e:
@@ -42,7 +42,7 @@ class Command(BaseCommand):
                         pk=item.get("pk"),
                         defaults=item.get("fields"),
                     )
-                self.stdout.write(self.style.SUCCESS(f"Features successfully loaded"))
+                self.stdout.write(self.style.SUCCESS("Features successfully loaded"))
         except FileNotFoundError:
             self.stderr.write(self.style.ERROR(f"File not found: {feature_json}"))
         except json.JSONDecodeError as e:
@@ -59,7 +59,7 @@ class Command(BaseCommand):
                         pk=item.get("pk"),
                         defaults=item.get("fields"),
                     )
-                self.stdout.write(self.style.SUCCESS(f"Sizes successfully loaded"))
+                self.stdout.write(self.style.SUCCESS("Sizes successfully loaded"))
         except FileNotFoundError:
             self.stderr.write(self.style.ERROR(f"File not found: {size_json}"))
         except json.JSONDecodeError as e:
@@ -79,7 +79,7 @@ class Command(BaseCommand):
                         defaults=item.get("fields"),
                     )
                     image.regions.set(regions)
-                self.stdout.write(self.style.SUCCESS(f"Images successfully loaded"))
+                self.stdout.write(self.style.SUCCESS("Images successfully loaded"))
         except FileNotFoundError:
             self.stderr.write(self.style.ERROR(f"File not found: {image_json}"))
         except json.JSONDecodeError as e:
@@ -102,4 +102,4 @@ class Command(BaseCommand):
             user.is_email_verified = True
             user.save()
             user.update_hash()
-        self.stdout.write(self.style.SUCCESS(f"User 'admin@localdomain' with password 'admin' successfully created"))
+        self.stdout.write(self.style.SUCCESS("User 'admin@localdomain' with password 'admin' successfully created"))

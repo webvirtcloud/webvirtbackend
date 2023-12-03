@@ -13,7 +13,7 @@ from floating_ip.models import FloatIPCounter
 
 @app.task
 def email_send_invoice(recipient, amount, period):
-    subject = f"WebVirtCloud Invoice"
+    subject = "WebVirtCloud Invoice"
     site_url = f"{settings.CLIENT_URL}"
     context = {"amount": amount, "period": period, "site_url": site_url}
     send_email(subject, recipient, context, "email/invoice.html")

@@ -20,5 +20,5 @@ def assign_free_compute(virtance_id):
         virtance.save()
         return compute.id
 
-    virtance_error(virtance.id, f"No compute found", event="assign_free_compute")
+    virtance_error(virtance.id, "No compute found", event="assign_free_compute")
     return None

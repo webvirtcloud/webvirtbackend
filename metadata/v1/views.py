@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.http import HttpResponse, JsonResponse
 
 from network.models import Network, IPAddress
@@ -129,7 +128,7 @@ class MetadataInterfaces(MetadataMixin):
         return HttpResponse(response)
 
 
-class MetadataInterfacesPublic(MetadataMixin):
+class MetadataInterfacePublic(MetadataMixin):
     def get(self, request, *args, **kwargs):
         if self.virtance is None:
             return HttpResponse("Not Found", status=404)
@@ -237,7 +236,7 @@ class MetadataInterfacesPrivate(MetadataMixin):
         return HttpResponse(response)
 
 
-class MetadataInterfacesPrivate(MetadataMixin):
+class MetadataInterfacePrivate(MetadataMixin):
     def get(self, request, *args, **kwargs):
         if self.virtance is None:
             return HttpResponse("Not Found", status=404)

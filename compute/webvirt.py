@@ -173,14 +173,14 @@ class WebVirtCompute(object):
         return body
 
     def create_storage_dir(self, name, target):
-        url = f"storages/"
+        url = "storages/"
         payload = {"type": "dir", "name": name, "target": target}
         response = self._make_post(url, payload)
         body = self._process_response(response)
         return body
 
     def create_storage_rbd(self, name, pool, user, secret, host, host2=None, host3=None):
-        url = f"storages/"
+        url = "storages/"
         payload = {
             "type": "rbd",
             "name": name,
@@ -346,7 +346,7 @@ class WebVirtCompute(object):
         return body
 
     def get_metrics(self, query, start, end, step):
-        url = f"metrics/"
+        url = "metrics/"
         params = {"query": query, "start": start, "end": end, "step": step}
         response = self._make_get(f"{url}?{urlencode(params)}")
         body = self._process_response(response)

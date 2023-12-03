@@ -7,7 +7,7 @@ from crispy_forms.bootstrap import InlineCheckboxes
 from .forms import FormImage, CustomModelMultipleChoiceField
 from image.models import Image
 from region.models import Region
-from admin.mixins import AdminTemplateView, AdminFormView, AdminUpdateView, AdminDeleteView, AdminTemplateView
+from admin.mixins import AdminFormView, AdminUpdateView, AdminDeleteView, AdminTemplateView
 
 
 class AdminImageIndexView(AdminTemplateView):

@@ -1,5 +1,5 @@
 from django import forms
-from crispy_forms.layout import Layout, Field
+from crispy_forms.layout import Layout
 from crispy_forms.helper import FormHelper
 from region.models import Region, Feature
 from crispy_forms.bootstrap import InlineCheckboxes
