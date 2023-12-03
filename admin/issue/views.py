@@ -45,7 +45,7 @@ class AdminIssueFirewallView(AdminTemplateView):
         context = super().get_context_data(**kwargs)
         context["firewalls_errors"] = FirewallError.objects.filter(
             firewall__is_deleted=False, created__gte=thirty_days_ago
-            )
+        )
         return context
 
 
@@ -57,5 +57,5 @@ class AdminIssueFloatIPView(AdminTemplateView):
         context = super().get_context_data(**kwargs)
         context["floatips_errors"] = FloatIPError.objects.filter(
             floatip__is_deleted=False, created__gte=thirty_days_ago
-            )
+        )
         return context

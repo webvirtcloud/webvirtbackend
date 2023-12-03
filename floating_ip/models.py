@@ -34,7 +34,7 @@ class FloatIP(models.Model):
     def save(self, *args, **kwargs):
         self.updated = timezone.now()
         super(FloatIP, self).save(*args, **kwargs)
-    
+
     def delete(self, *args, **kwargs):
         self.event = None
         self.ipaddress = None

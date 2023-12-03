@@ -16,16 +16,10 @@ class FloatIPSerializer(serializers.ModelSerializer):
     region = RegionSerializer(source="ipaddress.network.region", read_only=True)
     virtance = VirtanceSerializer(source="ipaddress.virtance", read_only=True)
     virtance_id = serializers.IntegerField(write_only=True)
-    
+
     class Meta:
         model = FloatIP
-        fields = (
-            "ip",
-            "event",
-            "region",
-            "virtance",
-            "virtance_id"
-        )
+        fields = ("ip", "event", "region", "virtance", "virtance_id")
 
     def get_event(self, obj):
         if obj.event is None:
@@ -40,7 +34,7 @@ class FloatIPSerializer(serializers.ModelSerializer):
             virtance = Virtance.objects.get(id=virtance_id, user=user, is_deleted=False)
         except Virtance.DoesNotExist:
             raise serializers.ValidationError("Virtance ID does not exist")
-        
+
         if virtance.region.features.filter(name="floating_ip").exists() is False:
             raise serializers.ValidationError("Floating IP is not supported in this region.")
 
@@ -72,7 +66,7 @@ class FloatIPSerializer(serializers.ModelSerializer):
             FloatIPCounter.objects.create(floatip=floatip, amount=0.0)
 
         assign_floating_ip.delay(floatip.id, virtance.id)
-        
+
         return floatip
 
 
@@ -121,7 +115,7 @@ class FloatIPActionSerializer(serializers.Serializer):
                 assign_floating_ip.delay(floatip.id, virtance.id)
             else:
                 reassign_floating_ip.delay(floatip.id, virtance.id)
-        
+
         if action == "unassign":
             floatip.event = FloatIP.UNASSIGN
             floatip.save()

@@ -381,7 +381,7 @@ class WebVirtCompute(object):
             "fixed_ip": fixed_ip,
             "floating_ip": floating_ip,
             "floating_prefix": floating_prefix,
-            "floating_gateway": floating_gateway
+            "floating_gateway": floating_gateway,
         }
         response = self._make_post(url, payload)
         body = self._process_response(response)
@@ -393,7 +393,7 @@ class WebVirtCompute(object):
             "fixed_ip": fixed_ip,
             "floating_ip": floating_ip,
             "floating_prefix": floating_prefix,
-            "floating_gateway": floating_gateway
+            "floating_gateway": floating_gateway,
         }
         response = self._make_delete(url, payload)
         body = self._process_response(response)

@@ -53,9 +53,7 @@ def snapshot_counter():
             SnapshotCounter.objects.get(started__gt=first_day_current_month, image=image)
         except SnapshotCounter.DoesNotExist:
             period_start = current_time - timezone.timedelta(hours=1)
-            SnapshotCounter.objects.create(
-                image=image, amount=0.0, started=period_start
-            )
+            SnapshotCounter.objects.create(mage=image, amount=0.0, started=period_start)
 
     snapshot_counters = SnapshotCounter.objects.filter(started__gt=first_day_current_month, stopped__isnull=True)
 

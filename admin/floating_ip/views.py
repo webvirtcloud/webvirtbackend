@@ -2,7 +2,6 @@ from floating_ip.models import FloatIP
 from admin.mixins import AdminTemplateView
 
 
-
 class AdminFloatIPIndexView(AdminTemplateView):
     template_name = "admin/floating_ip/index.html"
 

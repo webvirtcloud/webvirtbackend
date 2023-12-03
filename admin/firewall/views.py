@@ -2,7 +2,6 @@ from firewall.models import Firewall
 from admin.mixins import AdminTemplateView
 
 
-
 class AdminFirewallIndexView(AdminTemplateView):
     template_name = "admin/firewall/index.html"
 

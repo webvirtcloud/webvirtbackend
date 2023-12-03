@@ -30,7 +30,7 @@ class FloatingIPListAPI(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response({"floating_ip": serializer.data}, status=status.HTTP_201_CREATED)
-  
+
 
 class FloatingIPDataAPI(APIView):
     class_serializer = FloatIPSerializer
@@ -50,7 +50,6 @@ class FloatingIPDataAPI(APIView):
         if floatip.event is not None:
             return error_message_response("The floating ip already has event.")
 
-
         floatip.event = FloatIP.DELETE
         floatip.save()
 
@@ -66,7 +65,7 @@ class FloatingIPActionAPI(APIView):
         return get_object_or_404(
             FloatIP, ipaddress__address=self.kwargs.get("ip"), user=self.request.user, is_deleted=False
         )
-    
+
     def post(self, request, *args, **kwargs):
         floatip = self.get_object()
 

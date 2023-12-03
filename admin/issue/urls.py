@@ -1,10 +1,10 @@
 from django.urls import re_path
 from .views import (
-    AdminIssueIndexView, 
-    AdminIssueVirtanceView, 
-    AdminIssueImageView, 
-    AdminIssueFirewallView, 
-    AdminIssueFloatIPView
+    AdminIssueIndexView,
+    AdminIssueVirtanceView,
+    AdminIssueImageView,
+    AdminIssueFirewallView,
+    AdminIssueFloatIPView,
 )
 
 

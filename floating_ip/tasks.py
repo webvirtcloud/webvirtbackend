@@ -11,7 +11,6 @@ from network.models import Network, IPAddress
 from virtance.models import Virtance
 
 
-
 @app.task
 def assign_floating_ip(floating_ip_id, virtance_id):
     floatip = FloatIP.objects.get(id=floating_ip_id)
@@ -22,7 +21,7 @@ def assign_floating_ip(floating_ip_id, virtance_id):
 
     floatip.event = FloatIP.ASSIGN
     floatip.save()
-    
+
     wvcomp = WebVirtCompute(virtance.compute.token, virtance.compute.hostname)
     ipv4_compute_prefix = IPv4Network(f"{ipv4_float.address}/{ipv4_float.network.netmask}", strict=False).prefixlen
     res = wvcomp.float_ip_assign(
@@ -32,7 +31,7 @@ def assign_floating_ip(floating_ip_id, virtance_id):
         floatip_error(floatip.id, res.get("detail"), "assign_floating_ip")
         virtance_error(virtance.id, res.get("detail"), "assign_floating_ip")
     else:
-        if ipaddress.virtance is None:        
+        if ipaddress.virtance is None:
             ipaddress.virtance = virtance
             ipaddress.save()
 
@@ -47,7 +46,7 @@ def unassign_floating_ip(floating_ip_id):
     ipaddress = floatip.ipaddress
     ipv4_float = IPAddress.objects.get(id=floatip.ipaddress.id)
     ipv4_compute = IPAddress.objects.filter(virtance=virtance, network__type=Network.COMPUTE).first()
-    
+
     wvcomp = WebVirtCompute(virtance.compute.token, virtance.compute.hostname)
     ipv4_compute_prefix = IPv4Network(f"{ipv4_float.address}/{ipv4_float.network.netmask}", strict=False).prefixlen
     res = wvcomp.float_ip_unassign(
@@ -95,7 +94,7 @@ def reassign_floating_ip(floating_ip_id, virtance_id):
         floatip.save()
 
         virtance_old.reset_event()
-        
+
         wvcomp = WebVirtCompute(virtance_new.compute.token, virtance_new.compute.hostname)
         ipv4_compute_prefix = IPv4Network(f"{ipv4_float.address}/{ipv4_float.network.netmask}", strict=False).prefixlen
         res = wvcomp.float_ip_assign(
@@ -108,7 +107,7 @@ def reassign_floating_ip(floating_ip_id, virtance_id):
             ipaddress.virtance = virtance_new
             ipaddress.save()
 
-            virtance_new.reset_event()            
+            virtance_new.reset_event()
             floatip.reset_event()
 
 
@@ -121,7 +120,7 @@ def delete_floating_ip(floating_ip_id):
     floatip_counter = FloatIPCounter.objects.get(floatip=floatip)
     ipv4_float = IPAddress.objects.get(id=floatip.ipaddress.id)
     ipv4_compute = IPAddress.objects.filter(virtance=virtance, network__type=Network.COMPUTE).first()
-    
+
     current_time = timezone.now()
     first_day_month = current_time.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
     try:
@@ -132,7 +131,7 @@ def delete_floating_ip(floating_ip_id):
             amount=0.0,
             started=current_time - timezone.timedelta(hours=1),
         )
-    
+
     if floatip.ipaddress.virtance:
         virtance = floatip.ipaddress.virtance
         virtance.event = Virtance.UNASSIGN_FLOATING_IP
@@ -168,9 +167,7 @@ def floating_ip_counter():
             FloatIPCounter.objects.get(started__gt=first_day_current_month, floatip=floatip)
         except FloatIPCounter.DoesNotExist:
             period_start = current_time - timezone.timedelta(hours=1)
-            FloatIPCounter.objects.create(
-                floatip=floatip, amount=0.0, started=period_start
-            )
+            FloatIPCounter.objects.create(floatip=floatip, amount=0.0, started=period_start)
 
     floating_ip_counters = FloatIPCounter.objects.filter(started__gt=first_day_current_month, stopped__isnull=True)
 

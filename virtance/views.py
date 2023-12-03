@@ -50,14 +50,14 @@ class VirtanceListAPI(APIView):
             ).values_list("source_id", flat=True)
             queryset = queryset.filter(id__in=virtance_ids)
         if has_firewall == "true":
-            virtance_ids = FirewallVirtance.objects.filter(
-                virtance__user=self.request.user
-            ).values_list("virtance_id", flat=True)
+            virtance_ids = FirewallVirtance.objects.filter(virtance__user=self.request.user).values_list(
+                "virtance_id", flat=True
+            )
             queryset = queryset.filter(id__in=virtance_ids)
         if has_firewall == "false":
-            virtance_ids = FirewallVirtance.objects.filter(
-                virtance__user=self.request.user
-            ).values_list("virtance_id", flat=True)
+            virtance_ids = FirewallVirtance.objects.filter(virtance__user=self.request.user).values_list(
+                "virtance_id", flat=True
+            )
             queryset = queryset.filter(~Q(id__in=virtance_ids))
         if has_floating_ip == "true":
             virtance_ids = FloatIP.objects.filter(
@@ -129,9 +129,7 @@ class VirtanceBackupsAPI(APIView):
 
     def get_objects(self):
         virtance = get_object_or_404(Virtance, pk=self.kwargs.get("id"), user=self.request.user, is_deleted=False)
-        return Image.objects.filter(
-            type=Image.BACKUP, source_id=virtance.id, user=self.request.user, is_deleted=False
-        )
+        return Image.objects.filter(type=Image.BACKUP, source_id=virtance.id, user=self.request.user, is_deleted=False)
 
     def get(self, request, *args, **kwargs):
         backups = self.get_objects()
