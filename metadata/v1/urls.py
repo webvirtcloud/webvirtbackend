@@ -3,30 +3,30 @@ from django.urls import re_path
 from .views import MetadataIndex, MetadataID, MetadataHostname, MetadataUserData, MetadataVendorData
 from .views import MetadataPublicKeys, MetadataInterfaces, MetadataDNS, MetadataDNSNameservers
 from .views import (
-    MetadataInterfacesPublicComputeIPv4, 
-    MetadataInterfacesPublicComputeIPv4Address, 
-    MetadataInterfacesPublicComputeIPv4Netmask, 
-    MetadataInterfacesPublicComputeIPv4Gateway
+    MetadataInterfacesPublicComputeIPv4,
+    MetadataInterfacesPublicComputeIPv4Address,
+    MetadataInterfacesPublicComputeIPv4Netmask,
+    MetadataInterfacesPublicComputeIPv4Gateway,
 )
 from .views import (
     MetadataInterfacesPublic,
     MetadataInterfacesPublicData,
     MetadataInterfacesPublicMAC,
-    MetadataInterfacesPublicType, 
+    MetadataInterfacesPublicType,
     MetadataInterfacesPublicIPv4,
     MetadataInterfacesPublicIPv4Address,
-    MetadataInterfacesPublicIPv4Netmask, 
-    MetadataInterfacesPublicIPv4Gateway
+    MetadataInterfacesPublicIPv4Netmask,
+    MetadataInterfacesPublicIPv4Gateway,
 )
 from .views import (
-    MetadataInterfacesPrivate, 
-    MetadataInterfacesPrivateData, 
-    MetadataInterfacesPrivateMAC, 
-    MetadataInterfacesPrivateType, 
-    MetadataInterfacesPrivateIPv4, 
+    MetadataInterfacesPrivate,
+    MetadataInterfacesPrivateData,
+    MetadataInterfacesPrivateMAC,
+    MetadataInterfacesPrivateType,
+    MetadataInterfacesPrivateIPv4,
     MetadataInterfacesPrivateIPv4Address,
-    MetadataInterfacesPrivateIPv4Netmask, 
-    MetadataInterfacesPrivateIPv4Gateway
+    MetadataInterfacesPrivateIPv4Netmask,
+    MetadataInterfacesPrivateIPv4Gateway,
 )
 
 
@@ -95,9 +95,9 @@ urlpatterns = [
         r"interfaces/private/0/mac$", MetadataInterfacesPrivateMAC.as_view(), name="metadata_v1_interfaces_private_mac"
     ),
     re_path(
-        r"interfaces/private/0/type$", 
-        MetadataInterfacesPrivateType.as_view(), 
-        name="metadata_v1_interfaces_private_type"
+        r"interfaces/private/0/type$",
+        MetadataInterfacesPrivateType.as_view(),
+        name="metadata_v1_interfaces_private_type",
     ),
     re_path(
         r"interfaces/private/0/ipv4/$",
