@@ -3,6 +3,6 @@ from .views import AdminAccountProfileView, AdminAccountChangePasswordView
 
 
 urlpatterns = [
-    re_path("profile/?$", AdminAccountProfileView.as_view(), name="admin_profile"),
-    re_path("change_password/?$", AdminAccountChangePasswordView.as_view(), name="admin_change_password"),
+    re_path(r"profile/?$", AdminAccountProfileView.as_view(), name="admin_profile"),
+    re_path(r"change_password/?$", AdminAccountChangePasswordView.as_view(), name="admin_change_password"),
 ]
