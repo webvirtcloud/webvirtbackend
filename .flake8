@@ -1,0 +1,14 @@
+[flake8]
+ignore = E203, E501, W503
+exclude =
+    .git,
+    .venv,
+    venv,
+    scripts,
+    admin.py,
+    manage.py,
+    migrations,
+    __pycache__,
+    webvirtcloud/settings,
+max-line-length = 120
+statistics = True
