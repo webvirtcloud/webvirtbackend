@@ -62,7 +62,7 @@ def make_monthly_invoice():
             # Get floating ip usage
             floating_ips_usage = (
                 FloatIPCounter.objects.filter(
-                    floating_ip__user=user,
+                    floatip__user=user,
                     started__gte=start_of_month,
                     stopped__lte=end_of_month,
                 ).aggregate(total_amount=Sum("amount"))["total_amount"]

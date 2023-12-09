@@ -138,6 +138,10 @@ CELERY_BEAT_SCHEDULE = {
         "task": "floating_ip.tasks.floating_ip_counter",
         "schedule": crontab(minute=0, hour="*/1"),
     },
+    "make_monthly_invoice": {
+        "task": "billing.tasks.make_monthly_invoice",
+        "schedule": crontab(minute=0, hour=0, day_of_month=1),
+    },
 }
 
 # Password validation
