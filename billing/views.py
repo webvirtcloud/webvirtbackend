@@ -1,15 +1,15 @@
-from django.db.models import Sum
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from .models import Balance
+from .serializers import BalanceSerilizer
 
 
 class BalanceAPI(APIView):
+    serializer_class = BalanceSerilizer
+
     def get(self, request, *args, **kwargs):
-        balance = Balance.objects.filter(user=self.request.user).aggregate(balance=Sum("balance"))["balacne"] or 0
-        response = {"account_balance": balance, "month_to_date_usage": "0.00"}
-        return Response(response)
+        serializer = self.serializer_class(request.user)
+        return Response(serializer.data)
 
 
 class InvoiceHistoryAPI(APIView):
