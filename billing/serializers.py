@@ -75,3 +75,17 @@ class BalanceSerilizer(serializers.Serializer):
 
     def get_month_to_date_balance(self, obj):
         return Decimal(self.get_month_to_date_usage(obj) + self.get_account_balance(obj))
+
+
+class InvoiceSerializer(serializers.Serializer):
+    uuid = serializers.UUIDField()
+    period = serializers.SerializerMethodField()
+    amount = serializers.DecimalField(max_digits=10, decimal_places=2)
+
+    class Meta:
+        model = Invoice
+        fields = ("uuid", "period", "amount")
+
+    def get_period(self, obj):
+        previous_month = obj.create.month - 1
+        return previous_month.strftime("%Y-%m")
