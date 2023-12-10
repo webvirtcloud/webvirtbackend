@@ -18,4 +18,16 @@ class InvoiceListAPI(APIView):
 
     def get(self, request, *args, **kwargs):
         invoices = Invoice.objects.filter(user=request.user)
+        serializer = self.serializer_class(invoices, many=True)
         return Response({"invoices": serializer.data})
+
+
+class InvoiceDataAPI(APIView):
+    serializer_class = InvoiceSerializer
+
+    def get_object(self):
+        return get_object_or_404(Invoice, uuid=self.kwargs.get("uuid"), user=self.request.user)
+
+    def get(self, request, *args, **kwargs):
+        serializer = self.serializer_class(self.get_object(), many=False)
+        return Response({"invoice": serializer.data})

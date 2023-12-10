@@ -1,8 +1,9 @@
 from django.urls import re_path
 
-from billing.views import BalanceAPI, InvoiceHistoryAPI
+from billing.views import BalanceAPI, InvoiceListAPI, InvoiceDataAPI
 
 urlpatterns = [
     re_path(r"balance/?$", BalanceAPI.as_view(), name="balance_api"),
-    re_path(r"history/?$", InvoiceHistoryAPI.as_view(), name="invoice_history_api"),
+    re_path(r"invoices/?$", InvoiceListAPI.as_view(), name="invoice_list_api"),
+    re_path(r"invoices/(?P<uuid>[0-9a-f-]+)/?$", InvoiceDataAPI.as_view(), name="invoice_data_api"),
 ]
