@@ -1,8 +1,9 @@
+from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from .models import Invoice
-from .serializers import BalanceSerilizer, InvoiceSerializer
+from .models import Balance, Invoice
+from .serializers import BalanceSerilizer, BillingHistorySerilizer, InvoiceSerializer
 
 
 class BalanceAPI(APIView):
@@ -11,6 +12,17 @@ class BalanceAPI(APIView):
     def get(self, request, *args, **kwargs):
         serializer = self.serializer_class(request.user)
         return Response(serializer.data)
+
+
+class BillingHistoryListAPI(APIView):
+    serializer_class = BillingHistorySerilizer
+
+    def get_object(self):
+        return Balance.objects.filter(user=self.request.user)
+
+    def get(self, request, *args, **kwargs):
+        serializer = self.serializer_class(self.get_object(), many=True)
+        return Response({"billing_history": serializer.data})
 
 
 class InvoiceListAPI(APIView):
