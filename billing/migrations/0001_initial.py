@@ -33,7 +33,7 @@ class Migration(migrations.Migration):
             name="Balance",
             fields=[
                 ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
-                ("balance", models.DecimalField(decimal_places=2, default=0.0, max_digits=10)),
+                ("amount", models.DecimalField(decimal_places=2, default=0.0, max_digits=10)),
                 ("description", models.TextField(blank=True, null=True)),
                 ("create", models.DateTimeField(auto_now_add=True)),
                 (
