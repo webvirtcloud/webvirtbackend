@@ -4,6 +4,7 @@ celery==5.2.7
 passlib==1.7.4
 requests==2.28.2
 gunicorn==20.1.0
+weasyprint==60.2
 websockify==0.10.0
 mysqlclient==2.1.1
 crispy-tailwind==0.5.0

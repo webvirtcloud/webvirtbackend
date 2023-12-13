@@ -33,10 +33,12 @@ class BalanceSerilizer(serializers.Serializer):
             VirtanceCounter.objects.filter(
                 virtance__user=obj,
                 started__gte=start_of_month,
-                stopped__lte=now,
-            ).aggregate(total_amount=Sum("amount"))["total_amount"]
+                stopped=None,
+            ).aggregate(total_amount=Sum("amount"))["total_amount"] 
             or 0
         )
+
+        print(virtances_usage)
 
         # Calculate total usage
         month_to_date_usage += virtances_usage
@@ -46,7 +48,7 @@ class BalanceSerilizer(serializers.Serializer):
             SnapshotCounter.objects.filter(
                 image__user=obj,
                 started__gte=start_of_month,
-                stopped__lte=now,
+                stopped=None,
             ).aggregate(
                 total_amount=Sum("amount")
             )["total_amount"]
@@ -61,7 +63,7 @@ class BalanceSerilizer(serializers.Serializer):
             FloatIPCounter.objects.filter(
                 floatip__user=obj,
                 started__gte=start_of_month,
-                stopped__lte=now,
+                stopped=None,
             ).aggregate(
                 total_amount=Sum("amount")
             )["total_amount"]
