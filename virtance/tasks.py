@@ -587,12 +587,12 @@ def virtance_backup():
 def backups_delete(virtance_id):
     virtance = Virtance.objects.get(pk=virtance_id)
     backups = Image.objects.filter(source=virtance, type=Image.BACKUP, is_deleted=False)
+    number_of_backups = len(backups)
 
-    backup_images = len(backups)
     for backup in backups:
         if image_delete(backup.id) is True:
-            backup_images -= 1
+            number_of_backups -= 1
 
-    if backup_images == 0:
+    if number_of_backups == 0:
         virtance.disable_backups()
         virtance.reset_event()
