@@ -595,4 +595,5 @@ def backups_delete(virtance_id):
 
     if number_of_backups == 0:
         virtance.disable_backups()
+        virtance.active()
         virtance.reset_event()

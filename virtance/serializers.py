@@ -405,6 +405,7 @@ class VirtanceActionSerializer(serializers.Serializer):
 
         if action == "enable_backups":
             virtance.enable_backups()
+            virtance.active()
             virtance.reset_event()
 
         if action == "disable_backups":
