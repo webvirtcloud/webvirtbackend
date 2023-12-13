@@ -34,11 +34,11 @@ class BalanceSerilizer(serializers.Serializer):
                 virtance__user=obj,
                 started__gte=start_of_month,
                 stopped=None,
-            ).aggregate(total_amount=Sum("amount"))["total_amount"] 
+            ).aggregate(
+                total_amount=Sum("amount")
+            )["total_amount"]
             or 0
         )
-
-        print(virtances_usage)
 
         # Calculate total usage
         month_to_date_usage += virtances_usage
