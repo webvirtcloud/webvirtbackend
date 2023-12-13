@@ -373,7 +373,7 @@ class VirtanceActionSerializer(serializers.Serializer):
 
         if action == "rebuild":
             image = Image.objects.get(slug=image)
-            virtance.image = image
+            virtance.template = image
             virtance.save()
             rebuild_virtance.delay(virtance.id)
 
