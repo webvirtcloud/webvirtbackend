@@ -103,10 +103,11 @@ class InvoiceSerializer(serializers.Serializer):
     uuid = serializers.UUIDField()
     period = serializers.SerializerMethodField()
     amount = serializers.DecimalField(max_digits=10, decimal_places=2)
+    created_at = serializers.DateTimeField(source="create")
 
     class Meta:
         model = Invoice
-        fields = ("uuid", "period", "amount")
+        fields = ("uuid", "period", "amount", "created_at")
 
     def get_period(self, obj):
         previous_month = obj.create.month - 1
