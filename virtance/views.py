@@ -174,10 +174,10 @@ class VirtanceHistoryAPI(APIView):
         return get_object_or_404(Virtance, pk=self.kwargs.get("id"), user=self.request.user, is_deleted=False)
 
     def get(self, request, *args, **kwargs):
-        virtances = self.get_object()
-        virtance_history = VirtanceHistory.objects.filter(virtance=virtances)
+        virtance = self.get_object()
+        virtance_history = VirtanceHistory.objects.filter(virtance=virtance)
         serilizator = self.class_serializer(virtance_history, many=True)
-        return Response({"virtance": serilizator.data})
+        return Response({"history": serilizator.data})
 
 
 class VirtanceConsoleAPI(APIView):
