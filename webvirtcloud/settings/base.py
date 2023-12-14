@@ -236,9 +236,6 @@ COMPUTE_CPU_RATIO_OVERCOMMIT = os.environ.get("COMPUTE_CPU_RATIO_OVERCOMMIT", 2)
 COMPUTE_MEMORY_PERCENTAGE_USAGE = os.environ.get("COMPUTE_MEMORY_PERCENTAGE_USAGE", 85)
 COMPUTE_STORAGE_PERCENTAGE_USAGE = os.environ.get("COMPUTE_STORAGE_PERCENTAGE_USAGE", 85)
 
-# Ratio usage of RAM
-RAM_RATIO_USAGE = os.environ.get("RAM_RATIO_USAGE", 2)
-
 # Virtual machine name prefix
 VM_NAME_PREFIX = os.environ.get("VM_NAME_PREFIX", "Virtance-")
 
@@ -259,6 +256,7 @@ RECOVERY_ISO_NAME = os.environ.get("RECOVERY_ISO_NAME", "finnix-125.iso")
 # Backup settings
 BACKUP_PER_MONTH = os.environ.get("BACKUP_PER_MONTH", 4)
 BACKUP_PERIOD_DAYS = os.environ.get("BACKUP_PERIOD_DAYS", 7)
+BACKUP_COST_PERCENTAGE = os.environ.get("BACKUP_COST_PERCENTAGE", 20)
 
 # Verification settings
 VERIFICATION_ENABLED = os.environ.get("VERIFICATION_ENABLED", False)
