@@ -7,6 +7,11 @@ from .models import Compute
 from .webvirt import WebVirtCompute
 
 
+CPU_USAGE_RATIO = settings.COMPUTE_CPU_RATIO_OVERCOMMIT
+MEMORY_USAGE_RATIO = settings.COMPUTE_MEMORY_PERCENTAGE_USAGE / 100
+STORAGE_USAGE_RATIO = settings.COMPUTE_STORAGE_PERCENTAGE_USAGE / 100
+
+
 def assign_free_compute(virtance_id):
     virtance = Virtance.objects.get(id=virtance_id)
     computes = Compute.objects.filter(
@@ -14,14 +19,14 @@ def assign_free_compute(virtance_id):
     ).order_by("?")
 
     for compute in computes:
-        compute_cpu_used = (
+        cpu_used = (
             Virtance.objects.filter(compute=compute, is_deleted=False).aggregate(cpus=Sum("size__vcpu"))["cpus"] or 0
         )
-        compute_memory_used = (
+        memory_used = (
             Virtance.objects.filter(compute=compute, is_deleted=False).aggregate(memory=Sum("size__memory"))["memory"]
             or 0
         )
-        compute_storage_used = (
+        storage_used = (
             Virtance.objects.filter(compute=compute, is_deleted=False).aggregate(storage=Sum("size__disk"))["storage"]
             or 0
         )
@@ -32,15 +37,10 @@ def assign_free_compute(virtance_id):
 
         # Something checking for free resources :-)
         if host_res is not None and storage_res is not None:
-            cpu_free = (
-                (host_res["host"]["cpus"] * settings.COMPUTE_CPU_RATIO_OVERCOMMIT) - compute_cpu_used
-            ) > virtance.size.vcpu
-            memory_free = (
-                (host_res["host"]["memory"] * settings.COMPUTE_MEMORY_PERCENTAGE_USAGE) - compute_memory_used
-            ) > virtance.size.memory
+            cpu_free = ((host_res["host"]["cpus"] * CPU_USAGE_RATIO) - cpu_used) > virtance.size.vcpu
+            memory_free = ((host_res["host"]["memory"] * MEMORY_USAGE_RATIO) - memory_used) > virtance.size.memory
             storage_free = (
-                (storage_res["storage"]["size"]["total"] * settings.COMPUTE_STORAGE_PERCENTAGE_USAGE)
-                - compute_storage_used
+                (storage_res["storage"]["size"]["total"] * STORAGE_USAGE_RATIO) - storage_used
             ) > virtance.size.disk
 
             if cpu_free is True and memory_free is True and storage_free is True:
