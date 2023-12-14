@@ -4,7 +4,9 @@ from django.conf import settings
 from urllib.parse import urlencode
 from requests.exceptions import ConnectTimeout
 
-from .helper import vm_name
+
+def vm_name(virtance_id):
+    return f"{settings.VM_NAME_PREFIX}{str(virtance_id)}"
 
 
 class WebVirtCompute(object):

@@ -231,6 +231,13 @@ PUBLIC_IMAGES_URL = os.environ.get("PUBLIC_IMAGES_URL", "https://cloud-images.we
 
 # Compute settings
 COMPUTE_PORT = os.environ.get("COMPUTE_PORT", 8884)
+COMPUTE_VM_IMAGES_POOL = os.environ.get("COMPUTE_VM_IMAGES_POOL", "images")
+COMPUTE_CPU_RATIO_OVERCOMMIT = os.environ.get("COMPUTE_CPU_RATIO_OVERCOMMIT", 2)
+COMPUTE_MEMORY_PERCENTAGE_USAGE = os.environ.get("COMPUTE_MEMORY_PERCENTAGE_USAGE", 85)
+COMPUTE_STORAGE_PERCENTAGE_USAGE = os.environ.get("COMPUTE_STORAGE_PERCENTAGE_USAGE", 85)
+
+# Ratio usage of RAM
+RAM_RATIO_USAGE = os.environ.get("RAM_RATIO_USAGE", 2)
 
 # Virtual machine name prefix
 VM_NAME_PREFIX = os.environ.get("VM_NAME_PREFIX", "Virtance-")

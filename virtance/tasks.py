@@ -6,8 +6,8 @@ from passlib.hash import sha512_crypt
 
 from webvirtcloud.celery import app
 from webvirtcloud.email import send_email
-from compute.webvirt import WebVirtCompute
-from compute.helper import vm_name, assign_free_compute
+from compute.webvirt import WebVirtCompute, vm_name
+from compute.helper import assign_free_compute
 from network.helper import (
     assign_free_ipv4_public,
     assign_free_ipv4_compute,
