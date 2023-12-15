@@ -83,6 +83,26 @@ class InvoicePdfAPI(APIView):
                     "hour": (virtance_count.stopped - virtance_count.started).total_seconds() / 3600,
                 }
             )
+            if virtance_count.backup_amount > 0:
+                virtance_list.append(
+                    {
+                        "name": f"{virtance_count.virtance.name} (Backup)",
+                        "start_at": virtance_count.started,
+                        "end_at": virtance_count.stopped,
+                        "amount": virtance_count.backup_amount,
+                        "hour": (virtance_count.stopped - virtance_count.started).total_seconds() / 3600,
+                    }
+                )
+            if virtance_count.license_amount > 0:
+                virtance_list.append(
+                    {
+                        "name": f"{virtance_count.virtance.name} (License)",
+                        "start_at": virtance_count.started,
+                        "end_at": virtance_count.stopped,
+                        "amount": virtance_count.license_amount,
+                        "hour": (virtance_count.stopped - virtance_count.started).total_seconds() / 3600,
+                    }
+                )
 
         # Get snapshots usage
         snapshots_counters = SnapshotCounter.objects.filter(
