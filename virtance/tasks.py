@@ -356,8 +356,10 @@ def action_virtance(virtance_id, action):
 
 @app.task
 def resize_virtance(virtance_id, size_id):
-    size = Size.objects.get(pk=size_id)
     virtance = Virtance.objects.get(pk=virtance_id)
+    size = Size.objects.get(pk=size_id)
+    old_size = virtance.size
+
     wvcomp = wvcomp_conn(virtance.compute)
     res = wvcomp.resize_virtance(virtance.id, size.vcpu, size.memory, size.disk)
     if res.get("detail") is None:
@@ -365,6 +367,29 @@ def resize_virtance(virtance_id, size_id):
         virtance.reset_event()
         virtance.size = size
         virtance.save()
+
+        try:
+            VirtanceCounter.objects.get(virtance=virtance, stopped__isnull=True).stop()
+        except VirtanceCounter.DoesNotExist:
+            current_time = timezone.now()
+            started = current_time - timezone.timedelta(hours=1)
+            backup_amount = virtance.size.price * BACKUP_COST_RATIO if virtance.is_backup_enabled else 0
+            VirtanceCounter.objects.create(
+                virtance=virtance,
+                size=old_size,
+                amount=virtance.size.price,
+                backup_amount=backup_amount,
+                started=started,
+                stopped=current_time,
+            )
+
+        VirtanceCounter.objects.create(
+            virtance=virtance,
+            size=virtance.size,
+            amount=virtance.size.price,
+            backup_amount=virtance.size.price * BACKUP_COST_RATIO if virtance.is_backup_enabled else 0,
+            started=current_time,
+        )
     else:
         virtance_error(virtance_id, res.get("detail"), "resize")
 
@@ -524,15 +549,19 @@ def delete_virtance(virtance_id):
         current_time = timezone.now()
         first_day_month = current_time.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
         try:
-            virtance_counter = VirtanceCounter.objects.get(started__gt=first_day_month, virtance=virtance)
+            VirtanceCounter.objects.get(started__gt=first_day_month, virtance=virtance, stopped__isnull=True).stop()
         except VirtanceCounter.DoesNotExist:
-            virtance_counter = VirtanceCounter.objects.create(
+            started = current_time - timezone.timedelta(hours=1)
+            backup_amount = virtance.size.price * BACKUP_COST_RATIO if virtance.is_backup_enabled else 0
+            VirtanceCounter.objects.create(
                 virtance=virtance,
                 size=virtance.size,
                 amount=virtance.size.price,
-                started=current_time - timezone.timedelta(hours=1),
+                backup_amount=backup_amount,
+                started=started,
+                stopped=current_time,
             )
-        virtance_counter.stop()
+
     if res.get("detail"):
         virtance_error(virtance_id, res.get("detail"), "delete")
 
