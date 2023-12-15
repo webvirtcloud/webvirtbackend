@@ -25,6 +25,9 @@ from .models import Virtance, VirtanceCounter
 from .utils import virtance_error
 
 
+BACKUP_COST_RATIO = settings.BACKUP_COST_PERCENTAGE / 100
+
+
 def wvcomp_conn(compute):
     return WebVirtCompute(compute.token, compute.hostname)
 
@@ -49,6 +52,8 @@ def create_virtance(virtance_id, password=None):
     ipv4_public = None
     ipv4_compute = None
     ipv4_private = None
+    backup_amount = 0
+
     virtance = Virtance.objects.get(id=virtance_id)
     password = password if password else uuid4().hex[0:24]
     password_hash = sha512_crypt.encrypt(password, salt=uuid4().hex[0:8], rounds=5000)
@@ -125,7 +130,12 @@ def create_virtance(virtance_id, password=None):
         else:
             virtance.active()
             virtance.reset_event()
-            VirtanceCounter.objects.create(virtance=virtance, size=virtance.size, amount=virtance.size.price)
+
+            backup_amount = virtance.size.price * BACKUP_COST_RATIO if virtance.is_backup_enabled else 0
+            VirtanceCounter.objects.create(
+                virtance=virtance, size=virtance.size, amount=virtance.size.price, backup_amount=backup_amount
+            )
+
             email_virtance_created(
                 virtance.user.email,
                 virtance.name,
@@ -141,6 +151,8 @@ def recreate_virtance(virtance_id):
     ipv4_public = None
     ipv4_compute = None
     ipv4_private = None
+    backup_amount = 0
+
     virtance = Virtance.objects.get(id=virtance_id)
     compute = virtance.compute if virtance.compute else None
     password_hash = sha512_crypt.encrypt(uuid4().hex[0:24], salt=uuid4().hex[0:8], rounds=5000)
@@ -227,10 +239,15 @@ def recreate_virtance(virtance_id):
         else:
             virtance.active()
             virtance.reset_event()
+
             try:
                 VirtanceCounter.objects.get(virtance=virtance, stopped=None)
             except VirtanceCounter.DoesNotExist:
-                VirtanceCounter.objects.create(virtance=virtance, size=virtance.size, amount=virtance.size.price)
+                backup_amount = virtance.size.price * BACKUP_COST_RATIO if virtance.is_backup_enabled else 0
+                VirtanceCounter.objects.create(
+                    virtance=virtance, size=virtance.size, amount=virtance.size.price, backup_amount=backup_amount
+                )
+
             email_virtance_created(
                 virtance.user.email,
                 virtance.name,
@@ -532,8 +549,13 @@ def virtance_counter():
             VirtanceCounter.objects.get(started__gt=first_day_current_month, virtance=virtance)
         except VirtanceCounter.DoesNotExist:
             period_start = current_time - timezone.timedelta(hours=1)
+            backup_amount = virtance.size.price * BACKUP_COST_RATIO if virtance.is_backup_enabled else 0
             VirtanceCounter.objects.create(
-                virtance=virtance, size=virtance.size, amount=virtance.size.price, started=period_start
+                virtance=virtance,
+                size=virtance.size,
+                amount=virtance.size.price,
+                backup_amount=backup_amount,
+                started=period_start,
             )
 
     virtance_counters = VirtanceCounter.objects.filter(started__gt=first_day_current_month, stopped__isnull=True)
@@ -545,6 +567,9 @@ def virtance_counter():
     else:
         for virt_count in virtance_counters:
             virt_count.amount += virt_count.size.price
+            virt_count.backup_amount += (
+                virt_count.size.price * BACKUP_COST_RATIO if virt_count.virtance.is_backup_enabled else 0
+            )
             virt_count.save()
 
 
