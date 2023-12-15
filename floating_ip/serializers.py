@@ -63,7 +63,7 @@ class FloatIPSerializer(serializers.ModelSerializer):
             floatip.cidr = f"{ipaddress.address}/{ipv4_subnet.prefixlen}"
             floatip.save()
 
-            FloatIPCounter.objects.create(floatip=floatip, amount=0.0)
+            FloatIPCounter.objects.create(floatip=floatip, ipaddress=ipaddress.address, amount=0.0)
 
         assign_floating_ip.delay(floatip.id, virtance.id)
 

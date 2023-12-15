@@ -108,7 +108,7 @@ class InvoicePdfAPI(APIView):
         for floating_ip_count in floating_ips_counters:
             products.append(
                 {
-                    "name": f"Floating IP: {floating_ip_count.floatip.name}",
+                    "name": f"Floating IP: {floating_ip_count.ipaddress}",
                     "start_at": floating_ip_count.started,
                     "end_at": floating_ip_count.stopped,
                     "amount": floating_ip_count.amount,
@@ -120,7 +120,7 @@ class InvoicePdfAPI(APIView):
             "invoice": invoice,
             "products": products,
         }
-        template = get_template("invoice_pdf.html")
+        template = get_template("pdf/invoice.html")
         html_content = template.render(context)
 
         response = HttpResponse(content_type="application/pdf")

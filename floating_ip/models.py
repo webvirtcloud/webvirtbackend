@@ -48,6 +48,7 @@ class FloatIP(models.Model):
 
 class FloatIPCounter(models.Model):
     floatip = models.ForeignKey(FloatIP, models.PROTECT)
+    ipaddress = models.GenericIPAddressField()
     amount = models.DecimalField(max_digits=12, decimal_places=6, default=0.0)
     started = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
