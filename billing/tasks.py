@@ -30,11 +30,10 @@ def make_monthly_invoice():
     # Get all verified users
     for user in User.objects.filter(is_email_verified=True):
         invoice_exist = Invoice.objects.filter(user=user, create__gte=first_day_of_month).exists()
-        
+
         if invoice_exist is False:
             total_usage = 0
 
-            # Get virtance usage
             virtances_usage = (
                 VirtanceCounter.objects.filter(
                     virtance__user=user,
@@ -43,11 +42,8 @@ def make_monthly_invoice():
                 ).aggregate(total_amount=Sum("amount"))["total_amount"]
                 or 0
             )
-
-            # Calculate total usage
             total_usage += virtances_usage
 
-            # Get snapshots usage
             snapshots_usage = (
                 SnapshotCounter.objects.filter(
                     image__user=user,
@@ -56,11 +52,8 @@ def make_monthly_invoice():
                 ).aggregate(total_amount=Sum("amount"))["total_amount"]
                 or 0
             )
-
-            # Calculate total usage
             total_usage += snapshots_usage
 
-            # Get floating ip usage
             floating_ips_usage = (
                 FloatIPCounter.objects.filter(
                     floatip__user=user,
@@ -69,8 +62,6 @@ def make_monthly_invoice():
                 ).aggregate(total_amount=Sum("amount"))["total_amount"]
                 or 0
             )
-
-            # Calculate total usage
             total_usage += floating_ips_usage
 
             # Create invoice
@@ -78,7 +69,7 @@ def make_monthly_invoice():
 
             # Update user balance
             Balance.objects.create(
-                user=user, amount=-invoice.amount, invoice=invoice, description=f"Period: {now.year}-{now.month}"
+                user=user, amount=-invoice.amount, invoice=invoice, description=f"Invoice for {now.year}-{now.month}"
             )
 
             # Send invoice to user

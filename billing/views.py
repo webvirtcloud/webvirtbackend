@@ -59,7 +59,9 @@ class InvoicePdfAPI(APIView):
         return get_object_or_404(Invoice, uuid=self.kwargs.get("uuid"), user=self.request.user)
 
     def get(self, request, *args, **kwargs):
-        products = []
+        virtance_list = []
+        snapshot_list = []
+        floating_ip_list = []
         invoice = self.get_object()
         prev_month = invoice.create - timezone.timedelta(days=1)
         start_of_month = prev_month.replace(day=1, hour=0, minute=0, second=0)
@@ -72,9 +74,9 @@ class InvoicePdfAPI(APIView):
             stopped__lte=end_of_month,
         )
         for virtance_count in virtances_counters:
-            products.append(
+            virtance_list.append(
                 {
-                    "name": f"Virtance: {virtance_count.virtance.name}",
+                    "name": f"{virtance_count.virtance.name} ({virtance_count.virtance.size.name})",
                     "start_at": virtance_count.started,
                     "end_at": virtance_count.stopped,
                     "amount": virtance_count.amount,
@@ -89,9 +91,9 @@ class InvoicePdfAPI(APIView):
             stopped__lte=end_of_month,
         )
         for snapshot_count in snapshots_counters:
-            products.append(
+            snapshot_list.append(
                 {
-                    "name": f"Snapshot: {snapshot_count.image.name}",
+                    "name": f"{snapshot_count.image.name} ({snapshot_count.image.file_size / 1073741824}GB)",
                     "start_at": snapshot_count.started,
                     "end_at": snapshot_count.stopped,
                     "amount": snapshot_count.amount,
@@ -106,9 +108,9 @@ class InvoicePdfAPI(APIView):
             stopped__lte=end_of_month,
         )
         for floating_ip_count in floating_ips_counters:
-            products.append(
+            floating_ip_list.append(
                 {
-                    "name": f"Floating IP: {floating_ip_count.ipaddress}",
+                    "name": f"{floating_ip_count.ipaddress}",
                     "start_at": floating_ip_count.started,
                     "end_at": floating_ip_count.stopped,
                     "amount": floating_ip_count.amount,
@@ -118,12 +120,16 @@ class InvoicePdfAPI(APIView):
 
         context = {
             "invoice": invoice,
-            "products": products,
+            "virtances": virtance_list,
+            "snapshots": snapshot_list,
+            "floating_ips": floating_ip_list,
         }
         template = get_template("pdf/invoice.html")
         html_content = template.render(context)
 
         response = HttpResponse(content_type="application/pdf")
-        response["Content-Disposition"] = f"attachment; filename='{invoice.uuid}.pdf'"
+        response[
+            "Content-Disposition"
+        ] = f"attachment; filename='inovoice-{invoice.create.year}-{invoice.create.month}.pdf'"
         HTML(string=html_content).write_pdf(response)
         return response
