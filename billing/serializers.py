@@ -21,7 +21,8 @@ class BalanceSerilizer(serializers.Serializer):
         fields = ("account_balance", "month_to_date_usage", "month_to_date_balance", "generated_at")
 
     def get_account_balance(self, obj):
-        return Decimal(Balance.objects.filter(user=obj).aggregate(balance=Sum("amount"))["balance"] or 0)
+        balance = Balance.objects.filter(user=obj).aggregate(balance=Sum("amount"))["balance"] or 0
+        return f"{balance:.2f}"
 
     def get_month_to_date_usage(self, obj):
         month_to_date_usage = 0
@@ -73,16 +74,20 @@ class BalanceSerilizer(serializers.Serializer):
         # Calculate total usage
         month_to_date_usage += floating_ips_usage
 
-        return Decimal(month_to_date_usage)
+        return f"{month_to_date_usage:.2f}"
 
     def get_month_to_date_balance(self, obj):
-        return Decimal(self.get_month_to_date_usage(obj) + self.get_account_balance(obj))
+        balance = Balance.objects.filter(user=obj).aggregate(balance=Sum("amount"))["balance"] or 0
+        result = Decimal(balance) + Decimal(self.get_month_to_date_usage(obj))
+        return f"{result:.2f}"
 
 
 class BillingHistorySerilizer(serializers.Serializer):
     date = serializers.DateTimeField(source="create")
     type = serializers.SerializerMethodField()
     invoice = serializers.SerializerMethodField()
+    description = serializers.CharField()
+    amount = serializers.DecimalField(max_digits=10, decimal_places=2)
 
     class Meta:
         model = Balance
@@ -110,5 +115,5 @@ class InvoiceSerializer(serializers.Serializer):
         fields = ("uuid", "period", "amount", "created_at")
 
     def get_period(self, obj):
-        previous_month = obj.create.month - 1
-        return previous_month.strftime("%Y-%m")
+        first_day_previous_month = obj.create.replace(day=1) - timezone.timedelta(days=1)
+        return first_day_previous_month.strftime("%Y-%m")
