@@ -52,7 +52,6 @@ def create_virtance(virtance_id, password=None):
     ipv4_public = None
     ipv4_compute = None
     ipv4_private = None
-    backup_amount = 0
 
     virtance = Virtance.objects.get(id=virtance_id)
     password = password if password else uuid4().hex[0:24]
@@ -131,9 +130,11 @@ def create_virtance(virtance_id, password=None):
             virtance.active()
             virtance.reset_event()
 
-            backup_amount = virtance.size.price * BACKUP_COST_RATIO if virtance.is_backup_enabled else 0
             VirtanceCounter.objects.create(
-                virtance=virtance, size=virtance.size, amount=virtance.size.price, backup_amount=backup_amount
+                virtance=virtance,
+                size=virtance.size,
+                amount=virtance.size.price,
+                backup_amount=virtance.size.price * BACKUP_COST_RATIO if virtance.is_backup_enabled else 0,
             )
 
             email_virtance_created(
@@ -151,7 +152,6 @@ def recreate_virtance(virtance_id):
     ipv4_public = None
     ipv4_compute = None
     ipv4_private = None
-    backup_amount = 0
 
     virtance = Virtance.objects.get(id=virtance_id)
     compute = virtance.compute if virtance.compute else None
@@ -243,9 +243,11 @@ def recreate_virtance(virtance_id):
             try:
                 VirtanceCounter.objects.get(virtance=virtance, stopped=None)
             except VirtanceCounter.DoesNotExist:
-                backup_amount = virtance.size.price * BACKUP_COST_RATIO if virtance.is_backup_enabled else 0
                 VirtanceCounter.objects.create(
-                    virtance=virtance, size=virtance.size, amount=virtance.size.price, backup_amount=backup_amount
+                    virtance=virtance,
+                    size=virtance.size,
+                    amount=virtance.size.price,
+                    backup_amount=virtance.size.price * BACKUP_COST_RATIO if virtance.is_backup_enabled else 0,
                 )
 
             email_virtance_created(
@@ -368,18 +370,18 @@ def resize_virtance(virtance_id, size_id):
         virtance.size = size
         virtance.save()
 
+        current_time = timezone.now()
+        first_day_month = current_time.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
         try:
-            VirtanceCounter.objects.get(virtance=virtance, stopped__isnull=True).stop()
+            VirtanceCounter.objects.get(started__gt=first_day_month, virtance=virtance, stopped__isnull=True).stop()
         except VirtanceCounter.DoesNotExist:
-            current_time = timezone.now()
-            started = current_time - timezone.timedelta(hours=1)
-            backup_amount = virtance.size.price * BACKUP_COST_RATIO if virtance.is_backup_enabled else 0
+            # If not found counter, just create on 1 hour earlier
             VirtanceCounter.objects.create(
                 virtance=virtance,
                 size=old_size,
                 amount=virtance.size.price,
-                backup_amount=backup_amount,
-                started=started,
+                backup_amount=virtance.size.price * BACKUP_COST_RATIO if virtance.is_backup_enabled else 0,
+                started=current_time - timezone.timedelta(hours=1),
                 stopped=current_time,
             )
 
@@ -551,14 +553,13 @@ def delete_virtance(virtance_id):
         try:
             VirtanceCounter.objects.get(started__gt=first_day_month, virtance=virtance, stopped__isnull=True).stop()
         except VirtanceCounter.DoesNotExist:
-            started = current_time - timezone.timedelta(hours=1)
-            backup_amount = virtance.size.price * BACKUP_COST_RATIO if virtance.is_backup_enabled else 0
+            # If not found counter, just create on 1 hour earlier
             VirtanceCounter.objects.create(
                 virtance=virtance,
                 size=virtance.size,
                 amount=virtance.size.price,
-                backup_amount=backup_amount,
-                started=started,
+                backup_amount=virtance.size.price * BACKUP_COST_RATIO if virtance.is_backup_enabled else 0,
+                started=current_time - timezone.timedelta(hours=1),
                 stopped=current_time,
             )
 
@@ -577,14 +578,12 @@ def virtance_counter():
         try:
             VirtanceCounter.objects.get(started__gt=first_day_current_month, virtance=virtance)
         except VirtanceCounter.DoesNotExist:
-            period_start = current_time - timezone.timedelta(hours=1)
-            backup_amount = virtance.size.price * BACKUP_COST_RATIO if virtance.is_backup_enabled else 0
             VirtanceCounter.objects.create(
                 virtance=virtance,
                 size=virtance.size,
                 amount=virtance.size.price,
-                backup_amount=backup_amount,
-                started=period_start,
+                backup_amount=virtance.size.price * BACKUP_COST_RATIO if virtance.is_backup_enabled else 0,
+                started=current_time - timezone.timedelta(hours=1),
             )
 
     virtance_counters = VirtanceCounter.objects.filter(started__gt=first_day_current_month, stopped__isnull=True)
