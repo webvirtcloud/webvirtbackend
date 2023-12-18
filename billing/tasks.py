@@ -44,6 +44,26 @@ def make_monthly_invoice():
             )
             total_usage += virtances_usage
 
+            virtances_backup_usage = (
+                VirtanceCounter.objects.filter(
+                    virtance__user=user,
+                    started__gte=start_of_month,
+                    stopped__lte=end_of_month,
+                ).aggregate(total_amount=Sum("backup_amount"))["total_amount"]
+                or 0
+            )
+            total_usage += virtances_backup_usage
+
+            virtances_license_usage = (
+                VirtanceCounter.objects.filter(
+                    virtance__user=user,
+                    started__gte=start_of_month,
+                    stopped__lte=end_of_month,
+                ).aggregate(total_amount=Sum("license_amount"))["total_amount"]
+                or 0
+            )
+            total_usage += virtances_license_usage
+
             snapshots_usage = (
                 SnapshotCounter.objects.filter(
                     image__user=user,
@@ -69,7 +89,7 @@ def make_monthly_invoice():
 
             # Update user balance
             Balance.objects.create(
-                user=user, amount=-invoice.amount, invoice=invoice, description=f"Invoice for {now.year}-{now.month}"
+                user=user, amount=invoice.amount, invoice=invoice, description=f"Invoice for {now.year}-{now.month}"
             )
 
             # Send invoice to user
