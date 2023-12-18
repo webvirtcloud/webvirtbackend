@@ -78,7 +78,7 @@ class InvoicePdfAPI(APIView):
                 {
                     "name": f"{virtance_count.virtance.name} ({virtance_count.virtance.size.name})",
                     "start_at": virtance_count.started,
-                    "end_at": virtance_count.stopped,
+                    "stop_at": virtance_count.stopped,
                     "amount": virtance_count.amount,
                     "hour": (virtance_count.stopped - virtance_count.started).total_seconds() / 3600,
                 }
@@ -98,7 +98,7 @@ class InvoicePdfAPI(APIView):
                     {
                         "name": f"{virtance_count.virtance.name} (License)",
                         "start_at": virtance_count.started,
-                        "end_at": virtance_count.stopped,
+                        "stop_at": virtance_count.stopped,
                         "amount": virtance_count.license_amount,
                         "hour": (virtance_count.stopped - virtance_count.started).total_seconds() / 3600,
                     }
@@ -115,7 +115,7 @@ class InvoicePdfAPI(APIView):
                 {
                     "name": f"{snapshot_count.image.name} ({snapshot_count.image.file_size / 1073741824}GB)",
                     "start_at": snapshot_count.started,
-                    "end_at": snapshot_count.stopped,
+                    "stop_at": snapshot_count.stopped,
                     "amount": snapshot_count.amount,
                     "hour": (snapshot_count.stopped - snapshot_count.started).total_seconds() / 3600,
                 }
@@ -132,7 +132,7 @@ class InvoicePdfAPI(APIView):
                 {
                     "name": f"{floating_ip_count.ipaddress}",
                     "start_at": floating_ip_count.started,
-                    "end_at": floating_ip_count.stopped,
+                    "stop_at": floating_ip_count.stopped,
                     "amount": floating_ip_count.amount,
                     "hour": (floating_ip_count.stopped - floating_ip_count.started).total_seconds() / 3600,
                 }
