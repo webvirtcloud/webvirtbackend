@@ -1,17 +1,235 @@
-Virtances
+{% load billing %}
+<!DOCTYPE html>
+<html lang="en">
 
-{% for virtnace in virtances %}
-    {{ virtnace }}
-{% endfor %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice</title>
+    <style>
+        body {
+            font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+            margin: 0;
+            width: 100%;
+            background-color: #fff;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+            word-break: break-word;
+        }
 
-Snapshots 
+        th {
+            text-align: left;
+        }
+    </style>
+</head>
 
-{% for snapshot in snapshots %}
-    {{ snapshot }}
-{% endfor %}
+<body>
+    <div>
+        <div style="position: relative; text-decoration: none; color: black; font-size: 20px; font-weight: 600; margin-bottom: 16px;">
+            <svg width="50" height="50" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg"
+                style="vertical-align: middle;">
+                <rect width="53.607" height="53.607" rx="4" transform="matrix(.83205 .5547 0 1 11 35.895)" fill="url(#a)" />
+                <rect width="53.201" height="53.201" rx="4" transform="matrix(.83205 -.5547 0 1 63.734 65.812)"
+                fill="url(#b)" />
+                <rect width="53.201" height="53.201" rx="4" transform="matrix(.83205 -.5547 .83014 .55756 15.437 30.51)"
+                fill="url(#c)" />
+                <defs>
+                <linearGradient id="a" x1="26.697" y1="11.053" x2="-14.788" y2="50.395" gradientUnits="userSpaceOnUse">
+                    <stop stop-color="#054AC4" />
+                    <stop offset="1" stop-color="#2AF2FD" />
+                </linearGradient>
+                <linearGradient id="b" x1="16.352" y1="15.764" x2="40.279" y2="55.818" gradientUnits="userSpaceOnUse">
+                    <stop stop-color="#F2F626" />
+                    <stop offset="1" stop-color="#2AF2FD" />
+                </linearGradient>
+                <linearGradient id="c" x1="41.542" y1="11.533" x2="12.333" y2="43.538" gradientUnits="userSpaceOnUse">
+                    <stop stop-color="#2AF2FD" />
+                    <stop offset="1" stop-color="#1F77F4" />
+                </linearGradient>
+                </defs>
+            </svg>
+            <span style="vertical-align: middle;">WebVirtCloud</span>
+        </div>
+    
+        <div style="margin-bottom: 16px; border-radius: 12px; background-color: #fff; font-size: 14px; color: #3f3f46;">
+            <p style="font-size: 16px; margin-bottom: 48px;">Final invoice for the {{ period|date:"F Y" }} billing period</p>
 
-Floating IPs 
+            <table style="width: 100%; border-collapse: collapse; margin-bottom: 48px;">
+                <thead>
+                    <tr>
+                        <th>From</th>
+                        <th>Invoice Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="padding: 12px 0; font-size: 12px; color: #52525b; width: 50%;">
+                            <div>
+                                WebVirtCloud
+                            </div>
+                        </td>
+                        <td style="padding: 12px 0; font-size: 12px; color: #52525b; text-align: right; width: 50%;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                                <span> Invoice number:</span> <span>{{ invoice.id }}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                                <span>Date of issue:</span> <span>{{ invoice.create|date:"F j, Y" }}</span>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
 
-{% for floating_ip in floating_ips %}
-    {{ floating_ip }}
-{% endfor %}
+            <table style="width: 100%; border-collapse: collapse; margin-bottom: 48px;">
+                <thead>
+                    <tr>
+                        <th>Billing Details</th>
+                        <th>Account</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="padding: 12px 0; font-size: 12px; color: #52525b; width: 50%;">
+                            <div>
+                                WebVirtCloud
+                            </div>
+                        </td>
+                        <td style="padding: 12px 0; font-size: 12px; color: #52525b; width: 50%;">
+                            {{ invoice.user.email }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div style="margin-bottom: 32px;">
+                <div style="font-size: 18px; margin-bottom: 12px; font-weight: 600;">Summary</div>
+                <div
+                    style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid lightgray; border-top: 1px solid lightgray;">
+                    <div>Total usage charges</div>
+                    <b>${{ invoice.amount|floatformat:"2" }}</b>
+                </div>
+            </div>
+            
+            {% if virtances %}
+            <table style="width: 100%; border-collapse: collapse; margin-bottom: 48px;">
+                <thead style="border-bottom: 1px solid lightgray;">
+                    <tr">
+                        <th style="padding-bottom: 8px;">Virtances</th>
+                        <th style="padding-bottom: 8px;">Hours</th>
+                        <th style="padding-bottom: 8px;">Start</th>
+                        <th style="padding-bottom: 8px;">End</th>
+                        <th style="text-align: right; padding-bottom: 8px;">${{ virtances|sum_by_field:"amount"|floatformat:"2" }}</th>
+                        </tr>
+                </thead>
+                <tbody>
+                    {% for virtance in virtances %}
+                    <tr>
+                        <td style="padding: 8px 0; font-size: 12px; color: #52525b; width: 50%;">
+                            {{ virtance.name }}
+                        </td>
+                        <td style="padding: 8px 0; font-size: 12px; color: #52525b;">
+                            {{ virtance.hour }}
+                        </td>
+                        <td style="padding: 8px 0; font-size: 12px; color: #52525b;">
+                            {{ virtance.start_at|date:"m-d H:i" }}
+                        </td>
+                        <td style="padding: 8px 0; font-size: 12px; color: #52525b;">
+                            {{ virtance.stop_at|date:"m-d H:i" }}
+                        </td>
+                        <td style="padding: 8px 0; font-size: 12px; color: #52525b; text-align: right;">
+                            ${{ virtance.amount|floatformat:"2" }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% endif %}
+
+            {% if snapshots %}
+            <table style="width: 100%; border-collapse: collapse; margin-bottom: 48px;">
+                <thead style="border-bottom: 1px solid lightgray;">
+                    <tr">
+                        <th style="padding-bottom: 8px;">Snapshots</th>
+                        <th style="padding-bottom: 8px;">Hours</th>
+                        <th style="padding-bottom: 8px;">Start</th>
+                        <th style="padding-bottom: 8px;">End</th>
+                        <th style="text-align: right; padding-bottom: 8px;">${{ snapshots|sum_by_field:"amount"|floatformat:"2" }}</th>
+                        </tr>
+                </thead>
+                <tbody>
+                    {% for snapshot in snapshots %}
+                    <tr>
+                        <td style="padding: 8px 0; font-size: 12px; color: #52525b; width: 50%;">
+                            {{ snapshot.name }}
+                        </td>
+                        <td style="padding: 8px 0; font-size: 12px; color: #52525b;">
+                            {{ snapshot.hour }}
+                        </td>
+                        <td style="padding: 8px 0; font-size: 12px; color: #52525b;">
+                            {{ snapshot.start_at|date:"m-d H:i" }}
+                        </td>
+                        <td style="padding: 8px 0; font-size: 12px; color: #52525b;">
+                            {{ snapshot.stop_at|date:"m-d H:i" }}
+                        </td>
+                        <td style="padding: 8px 0; font-size: 12px; color: #52525b; text-align: right;">
+                            ${{ snapshot.amount|floatformat:"2" }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% endif %}
+
+            {% if floating_ips %}
+            <table style="width: 100%; border-collapse: collapse; margin-bottom: 48px;">
+                <thead style="border-bottom: 1px solid lightgray;">
+                    <tr">
+                        <th style="padding-bottom: 8px;">Floating IPs</th>
+                        <th style="padding-bottom: 8px;">Hours</th>
+                        <th style="padding-bottom: 8px;">Start</th>
+                        <th style="padding-bottom: 8px;">End</th>
+                        <th style="text-align: right; padding-bottom: 8px;">${{ floating_ips|sum_by_field:"amount"|floatformat:"2" }}</th>
+                        </tr>
+                </thead>
+                <tbody>
+                    {% for floating_ip in floating_ips %}
+                    <tr>
+                        <td style="padding: 8px 0; font-size: 12px; color: #52525b; width: 50%;">
+                            {{ floating_ip.name }}
+                        </td>
+                        <td style="padding: 8px 0; font-size: 12px; color: #52525b;">
+                            {{ floating_ip.hour }}
+                        </td>
+                        <td style="padding: 8px 0; font-size: 12px; color: #52525b;">
+                            {{ floating_ip.start_at|date:"m-d H:i" }}
+                        </td>
+                        <td style="padding: 8px 0; font-size: 12px; color: #52525b;">
+                            {{ floating_ip.stop_at|date:"m-d H:i" }}
+                        </td>
+                        <td style="padding: 8px 0; font-size: 12px; color: #52525b; text-align: right;">
+                            ${{ floating_ip.amount|floatformat:"2" }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% endif %}
+
+        </div>
+        <div style="text-align: center; font-size: 10px; color: #52525b">
+            <a href="https://webvirt.cloud" target="_blank" class="hover-important-text-decoration-underline"
+                style="color: #4338ca; text-decoration: none">About us</a>
+            &bull;
+            <a href="https://github.com/webvirtcloud" target="_blank" class="hover-important-text-decoration-underline"
+                style="color: #4338ca; text-decoration: none;">Github</a>
+            &bull;
+            <a href="https://x.com/webvirtcloud" target="_blank" class="hover-important-text-decoration-underline"
+                style="color: #4338ca; text-decoration: none;">X</a>
+            &bull;
+            <a href="https://t.me/webvirtcloud" target="_blank" class="hover-important-text-decoration-underline"
+                style="color: #4338ca; text-decoration: none;">Telegram</a>
+        </div>
+    </div>
+</body>
+
+</html>

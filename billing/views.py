@@ -80,7 +80,7 @@ class InvoicePdfAPI(APIView):
                     "start_at": virtance_count.started,
                     "stop_at": virtance_count.stopped,
                     "amount": virtance_count.amount,
-                    "hour": (virtance_count.stopped - virtance_count.started).total_seconds() / 3600,
+                    "hour": int((virtance_count.stopped - virtance_count.started).total_seconds()) // 3600,
                 }
             )
             if virtance_count.backup_amount > 0:
@@ -90,7 +90,7 @@ class InvoicePdfAPI(APIView):
                         "start_at": virtance_count.started,
                         "end_at": virtance_count.stopped,
                         "amount": virtance_count.backup_amount,
-                        "hour": (virtance_count.stopped - virtance_count.started).total_seconds() / 3600,
+                        "hour": int((virtance_count.stopped - virtance_count.started).total_seconds()) // 3600,
                     }
                 )
             if virtance_count.license_amount > 0:
@@ -100,7 +100,7 @@ class InvoicePdfAPI(APIView):
                         "start_at": virtance_count.started,
                         "stop_at": virtance_count.stopped,
                         "amount": virtance_count.license_amount,
-                        "hour": (virtance_count.stopped - virtance_count.started).total_seconds() / 3600,
+                        "hour": int((virtance_count.stopped - virtance_count.started).total_seconds()) // 3600,
                     }
                 )
 
@@ -117,7 +117,7 @@ class InvoicePdfAPI(APIView):
                     "start_at": snapshot_count.started,
                     "stop_at": snapshot_count.stopped,
                     "amount": snapshot_count.amount,
-                    "hour": (snapshot_count.stopped - snapshot_count.started).total_seconds() / 3600,
+                    "hour": int((snapshot_count.stopped - snapshot_count.started).total_seconds()) // 3600,
                 }
             )
 
@@ -134,12 +134,13 @@ class InvoicePdfAPI(APIView):
                     "start_at": floating_ip_count.started,
                     "stop_at": floating_ip_count.stopped,
                     "amount": floating_ip_count.amount,
-                    "hour": (floating_ip_count.stopped - floating_ip_count.started).total_seconds() / 3600,
+                    "hour": int((floating_ip_count.stopped - floating_ip_count.started).total_seconds()) // 3600,
                 }
             )
 
         context = {
             "invoice": invoice,
+            "period": invoice.create - timezone.timedelta(days=1),
             "virtances": virtance_list,
             "snapshots": snapshot_list,
             "floating_ips": floating_ip_list,
