@@ -1,0 +1,35 @@
+[
+    {
+        "model": "account.user",
+        "pk": 2,
+        "fields": {
+            "password": "pbkdf2_sha256$390000$HRz46QOBjN2x6qsm0vzmjf$zoWkq6qcKi8pewdgKGND/gmUSy2uGDLM2WbMIzSuPfs=",
+            "last_login": null,
+            "uuid": "ac617209-6e4e-45ef-a74b-841399c32885",
+            "email": "user@webvirt.cloud",
+            "hash": "qSkDF6cTDaocoiCypczSYEho0DleXDihczvms48X",
+            "first_name": "Chuck",
+            "last_name": "Norris",
+            "is_admin": false,
+            "is_active": true,
+            "is_verified": true,
+            "is_email_verified": true,
+            "created": "2022-11-10T11:18:33.813Z",
+            "updated": "2022-11-10T11:18:33.813Z"
+        }
+    },
+    {
+        "model": "account.token",
+        "pk": 1,
+        "fields": {
+            "user": 2,
+            "name": "Obtained auth token",
+            "key": "fcc69bfad35527d087bf22a8a84a4f6c3b75387877c78ae3050e9e8036ef",
+            "scope": "write",
+            "is_obtained": true,
+            "created": "2022-11-12T10:16:34.548Z",
+            "updated": "2022-11-12T10:20:19.426Z",
+            "expired": null
+        }
+    }
+]

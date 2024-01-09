@@ -48,15 +48,23 @@ Open your web browser and go to `http://localhost:8000/admin`. You can log in wi
 * Username: `admin@webvirt.cloud`
 * Password: `admin`
 
-## Configuration ##
+## Settings ##
 
 You can configure the backend by editing the `webvirtcloud/settings/local.py` file for modifying the default settings. The default settings are defined in `webvirtcloud/settings/base.py`.
+
+## Development ##
+
+Load the test user:
+
+```bash
+docker compose exec backend python3 manage.py loaddata account/fixtures/user.json
+```
 
 ### Swagger ###
 
 The Swagger API documentation is available at `http://localhost:8000/swagger/`.
 
-## Usage ##
+### Credntials ###
 
 The API endpoints are available at `http://localhost:8000/api/`. You can use them to create, delete, and manage virtual machines. You can log in with the following credentials:
 
@@ -70,7 +78,7 @@ Example API requests:
 curl -H "Authorization: Bearer fcc69bfad35527d087bf22a8a84a4f6c3b75387877c78ae3050e9e8036ef" http://localhost:8000/api/v1/virtances/
 ```
 
-## Contributing ##
+### Contributing ###
 
 If you want to contribute to WebVirtBackend, please read the contributing guidelines first (Coming soon).
 
