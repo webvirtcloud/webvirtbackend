@@ -10,7 +10,7 @@ def vm_name(virtance_id):
 
 
 class WebVirtCompute(object):
-    def __init__(self, token, host, secure=False):
+    def __init__(self, token, host, secure=True):
         self.port = settings.COMPUTE_PORT
         self.host = host
         self.token = token
