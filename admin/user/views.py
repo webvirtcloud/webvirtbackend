@@ -1,7 +1,9 @@
+from django.urls import reverse_lazy
 from django.shortcuts import get_object_or_404
 
 from account.models import User
-from admin.mixins import AdminTemplateView
+from admin.user.forms import FormUser
+from admin.mixins import AdminTemplateView, AdminFormView
 
 
 class AdminUserIndexView(AdminTemplateView):
@@ -11,6 +13,16 @@ class AdminUserIndexView(AdminTemplateView):
         context = super().get_context_data(**kwargs)
         context["users"] = User.objects.filter(is_admin=False)
         return context
+
+
+class AdminUserCreateView(AdminFormView):
+    template_name = "admin/user/create.html"
+    form_class = FormUser
+    success_url = reverse_lazy("admin_user_index")
+
+    def form_valid(self, form):
+        form.save()
+        return super().form_valid(form)
 
 
 class AdminUserDataView(AdminTemplateView):
