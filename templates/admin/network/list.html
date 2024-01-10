@@ -50,6 +50,14 @@ class="inline-flex items-center text-sm p-2 bg-gray-100 rounded-md space-x-2 hov
                 >
                   Virtance
                 </th>
+                {% if network.type == "public" %}
+                  <th
+                    scope="col"
+                    class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                  >
+                    Floating IP
+                  </th>
+                {% endif %}
                 <th
                   scope="col"
                   class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
@@ -71,13 +79,17 @@ class="inline-flex items-center text-sm p-2 bg-gray-100 rounded-md space-x-2 hov
                   {{ ipaddr.address }}
                 </td>
                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                  {% if ipaddr.virtance is not None %}
                   <a
                     href="{% url 'admin_virtance_data' ipaddr.virtance.id %}"
                     class="text-blue-600 hover:text-blue-900"
                     >{{ ipaddr.virtance.id }}<span class="sr-only">{{ ipaddr.virtance.id }}</span></a
                   >
-                  
+                  {% endif %}
                 </td>
+                {% if network.type == "public" %}
+                	<td>{{ ipaddr.is_float }}</td>
+                {% endif %}
                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                   {{ network.created }}
                 </td>
