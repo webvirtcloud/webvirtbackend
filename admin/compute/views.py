@@ -135,7 +135,7 @@ class AdminComputeStorageDirCreateView(AdminFormView):
         compute = get_object_or_404(Compute, pk=self.kwargs.get("pk"), is_deleted=False)
         context["compute"] = compute
         return context
-    
+
     def get_success_url(self):
         return reverse("admin_compute_storages", args=[self.kwargs.get("pk")])
 
@@ -258,7 +258,7 @@ class AdminComputeStorageVolumeCreateView(AdminFormView):
         context["compute"] = compute
         context["pool"] = self.kwargs.get("pool")
         return context
-    
+
     def get_success_url(self):
         return reverse("admin_compute_storage", args=[self.kwargs.get("pk"), self.kwargs.get("pool")])
 
@@ -285,7 +285,7 @@ class AdminComputeStorageVolumeCloneView(AdminFormView):
         context["pool"] = self.kwargs.get("pool")
         context["vol"] = self.kwargs.get("vol")
         return context
-    
+
     def get_success_url(self):
         return reverse("admin_compute_storage", args=[self.kwargs.get("pk"), self.kwargs.get("pool")])
 
@@ -359,7 +359,7 @@ class AdminComputeNetworkCreateView(AdminFormView):
         compute = get_object_or_404(Compute, pk=self.kwargs.get("pk"), is_deleted=False)
         context["compute"] = compute
         return context
-    
+
     def get_success_url(self):
         return reverse("admin_compute_networks", args=[self.kwargs.get("pk")])
 
@@ -470,7 +470,7 @@ class AdminComputeSecretCreateView(AdminFormView):
         compute = get_object_or_404(Compute, pk=self.kwargs.get("pk"), is_deleted=False)
         context["compute"] = compute
         return context
-    
+
     def get_success_url(self):
         return reverse("admin_compute_secrets", args=self.kwargs.get("pk"))
 
@@ -503,7 +503,7 @@ class AdminComputeSecretValueView(AdminFormView):
         context["uuid"] = self.kwargs.get("uuid")
         context["compute"] = compute
         return context
-    
+
     def get_success_url(self):
         return reverse("admin_compute_secrets", args=self.kwargs.get("pk"))
 
@@ -552,7 +552,7 @@ class AdminComputeNwfilterCreateView(AdminFormView):
         compute = get_object_or_404(Compute, pk=self.kwargs.get("pk"), is_deleted=False)
         context["compute"] = compute
         return context
-    
+
     def get_success_url(self):
         return reverse("admin_compute_nwfilters", args=self.kwargs.get("pk"))
 

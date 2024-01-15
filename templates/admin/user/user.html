@@ -14,8 +14,16 @@
 
   <div class="flex items-center justify-between">
     <div>
-      <h2 class="text-2xl font-medium mb-0.5">{{ user.email }}</h2>
-      <p class="text-gray-500 text-sm">{{ user.uuid }}</p>
+      <h2 class="text-2xl font-medium mb-0.5">{{ user.email }} 
+        <div
+          class="inline-flex items-baseline rounded-full px-2.5 py-0.5 text-sm font-medium md:mt-2 lg:mt-0 {% if user.is_active %}bg-green-100 text-green-800{% else %}bg-red-100 text-red-800{% endif %}"
+        >
+          <span>
+            {% if user.is_active %}Active{% else %}Inactive{% endif %}
+          </span>
+        </div>
+      </h2> 
+      <p class="text-gray-500 text-sm">UUID: {{ user.uuid }}</p>
     </div>
     <a href="{% url 'admin_user_update' user.id %}"
       class="block rounded-md bg-blue-600 py-2 px-3 text-center text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">
@@ -52,10 +60,6 @@
             <dd class="mt-1 text-sm text-gray-900">{{ user.id }}</dd>
           </div>
           <div class="flex items-center justify-between gap-x-8">
-            <dt class="text-sm font-medium text-gray-500">Active</dt>
-            <dd class="mt-1 text-sm text-gray-900">{{ user.is_active }}</dd>
-          </div>
-          <div class="flex items-center justify-between gap-x-8">
             <dt class="text-sm font-medium text-gray-500">Firtname</dt>
             <dd class="mt-1 text-sm text-gray-900">{{ user.first_name }}</dd>
           </div>
@@ -71,12 +75,6 @@
             <dt class="text-sm font-medium text-gray-500">Updated</dt>
             <dd class="mt-1 text-sm text-gray-900">{{ user.updated }}</dd>
           </div>
-          <div class="flex items-center justify-between gap-x-8">
-            <dt class="text-sm font-medium text-gray-500">Confirmed</dt>
-            <dd class="mt-1 text-sm text-gray-900"><span
-                class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">
-                {{ user.is_email_verified }}</span></dd>
-          </div>
         </dl>
       </div>
     </div>
@@ -86,15 +84,15 @@
         <dl class="space-y-2">
           <div class="flex items-center justify-between gap-x-8">
             <dt class="text-sm font-medium text-gray-500">Account balance</dt>
-            <dd class="mt-1 text-sm text-gray-900">$0.00</dd>
+            <dd class="mt-1 text-sm text-gray-900">${{ balance|floatformat:-2 }}</dd>
           </div>
           <div class="flex items-center justify-between gap-x-8">
             <dt class="text-sm font-medium text-gray-500">Current usage</dt>
-            <dd class="mt-1 text-sm text-gray-900">$0.00</dd>
+            <dd class="mt-1 text-sm text-gray-900">${{ month_to_date_usage|floatformat:-2 }}</dd>
           </div>
           <div class="flex items-center justify-between gap-x-8">
             <dt class="text-sm font-medium text-gray-500">Current balance</dt>
-            <dd class="mt-1 text-sm text-gray-900">$0.00</dd>
+            <dd class="mt-1 text-sm text-gray-900">${{ get_month_to_date_balance|floatformat:-2 }}</dd>
           </div>
         </dl>
       </div>
@@ -109,19 +107,19 @@
         <dl class="space-y-2">
           <div class="flex items-center justify-between gap-x-8">
             <dt class="text-sm font-medium text-gray-500">Virtances</dt>
-            <dd class="mt-1 text-sm text-gray-900">0</dd>
+            <dd class="mt-1 text-sm text-gray-900">{{ virtances_len }}</dd>
           </div>
           <div class="flex items-center justify-between gap-x-8">
             <dt class="text-sm font-medium text-gray-500">Firewalls</dt>
-            <dd class="mt-1 text-sm text-gray-900">0</dd>
+            <dd class="mt-1 text-sm text-gray-900">{{ firewalls_len }}</dd>
           </div>
           <div class="flex items-center justify-between gap-x-8">
             <dt class="text-sm font-medium text-gray-500">Floating IPs</dt>
-            <dd class="mt-1 text-sm text-gray-900">0</dd>
+            <dd class="mt-1 text-sm text-gray-900">{{ floating_ips_len }}</dd>
           </div>
           <div class="flex items-center justify-between gap-x-8">
             <dt class="text-sm font-medium text-gray-500">Images</dt>
-            <dd class="mt-1 text-sm text-gray-900">0</dd>
+            <dd class="mt-1 text-sm text-gray-900">{{ snapshots_len }}</dd>
           </div>
         </dl>
       </div>
