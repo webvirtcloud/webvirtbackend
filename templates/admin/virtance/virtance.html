@@ -16,6 +16,13 @@
       <div class="flex items-center gap-2">
         <h3 class="text-2xl font-semibold leading-6 text-gray-900">
           {{virtance.name}}
+          <div
+            class="inline-flex items-baseline rounded-full px-2.5 py-0.5 text-sm font-medium md:mt-2 lg:mt-0 {% if status == 'running' %}bg-green-100 text-green-800{% else %}bg-red-100 text-red-800{% endif %}"
+          >
+            <span>
+              {{ status|capfirst }}
+            </span>
+          </div>
         </h3>
         {% if virtance.event %}
         <div
@@ -74,12 +81,7 @@
         {% endif %}
       </div>
       <p class="mt-1 max-w-2xl text-sm text-gray-500">
-        Status:
-        <span
-          class="text-{% if status == 'running' %}green{% else %}red{% endif %}-500"
-          >{{ status }}</span
-        >
-        / {{ virtance.uuid }}
+        UUID: {{ virtance.uuid }}
       </p>
     </div>
 
@@ -234,27 +236,6 @@
               <dt class="text-sm font-medium text-gray-500">Locked</dt>
               <dd class="mt-1 text-sm text-gray-900">{{ virtance.is_locked }}</dd>
             </div>
-          </div>
-      </div>
-    </div>
-    <div class="overflow-hidden bg-white shadow sm:rounded-lg">
-      <div class="px-4 py-5 sm:px-6">
-          <h2 class="mb-4 font-semibold text-lg">Compute</h2>
-          <div class="space-y-2">
-            <div class="flex items-center justify-between">
-              <dt class="text-sm font-medium text-gray-500">Size</dt>
-              <dd class="mt-1 text-sm text-gray-900">{{ virtance.size.slug }}</dd>
-            </div>
-            <div class="flex items-center justify-between">
-              <dt class="text-sm font-medium text-gray-500">Region</dt>
-              <dd class="mt-1 text-sm text-gray-900">{{ virtance.region.name }}</dd>
-            </div>
-            <div class="flex items-center justify-between">
-              <dt class="text-sm font-medium text-gray-500">Template</dt>
-              <dd class="mt-1 text-sm text-gray-900">
-                {{ virtance.template.description }}
-              </dd>
-            </div>
             <div class="flex items-center justify-between">
               <dt class="text-sm font-medium text-gray-500">Compute</dt>
               <dd class="mt-1 text-sm text-gray-900">
@@ -263,6 +244,33 @@
                   href="{% url 'admin_compute_overview' virtance.compute.id %}"
                   >{{ virtance.compute.name }}</a
                 >{% else %}Not assigned{% endif %}
+              </dd>
+            </div>
+          </div>
+      </div>
+    </div>
+    <div class="overflow-hidden bg-white shadow sm:rounded-lg">
+      <div class="px-4 py-5 sm:px-6">
+          <h2 class="mb-4 font-semibold text-lg">Image</h2>
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <dt class="text-sm font-medium text-gray-500">Disk</dt>
+              <dd class="mt-1 text-sm text-gray-900">{{ virtance.disk|filesizeformat }}</dd>
+            </div>
+            <div class="flex items-center justify-between">
+              <dt class="text-sm font-medium text-gray-500">Size</dt>
+              <dd class="mt-1 text-sm text-gray-900">{{ virtance.size.slug }}</dd>
+            </div>
+            <div class="flex items-center justify-between">
+              <dt class="text-sm font-medium text-gray-500">Template</dt>
+              <dd class="mt-1 text-sm text-gray-900">
+                {{ virtance.template.description }}
+              </dd>
+            </div>
+            <div class="flex items-center justify-between">
+              <dt class="text-sm font-medium text-gray-500">Deployed</dt>
+              <dd class="mt-1 text-sm text-gray-900">
+                {{ virtance.created }}
               </dd>
             </div>
           </div>
