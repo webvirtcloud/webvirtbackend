@@ -64,10 +64,10 @@ class AdminUserUpdateView(AdminUpdateView):
 
 
 class AdminUserDataView(AdminTemplateView):
-    template_name = "admin/user/user.html"
+    template_name = "admin/user/overview.html"
 
     def get_object(self):
-        return get_object_or_404(User, pk=self.kwargs["pk"])
+        return get_object_or_404(User, pk=self.kwargs.get("pk"), is_admin=False)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -125,4 +125,18 @@ class AdminUserDataView(AdminTemplateView):
         context["floating_ips_len"] = len(floating_ips_counters)
         context["month_to_date_usage"] = month_to_date_usage
         context["get_month_to_date_balance"] = get_month_to_date_balance
+        return context
+
+
+class AdminUserBillingView(AdminTemplateView):
+    template_name = "admin/user/billing.html"
+
+    def get_object(self):
+        return get_object_or_404(User, pk=self.kwargs.get("pk"), is_admin=False)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.get_object()
+        context["user"] = user
+        context["balance"] = Balance.objects.filter(user=user)
         return context

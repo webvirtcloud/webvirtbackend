@@ -342,27 +342,30 @@
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-200 bg-white">
-          {% for error in virtance_errors %}
-          <tr>
-            <td
-              class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
-            >
-              {{ forloop.counter }}
-            </td>
-            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-              {{ error.event }}
-            </td>
-            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-              {{ error.message }}
-            </td>
-            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-              {{ error.created }}
-            </td>
-          </tr>
-          {% endfor %}
+          {% if virtance_errors %}
+            {% for error in virtance_errors %}
+            <tr>
+              <td
+                class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
+              >
+                {{ forloop.counter }}
+              </td>
+              <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                {{ error.event }}
+              </td>
+              <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                {{ error.message }}
+              </td>
+              <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                {{ error.created }}
+              </td>
+            </tr>
+            {% endfor %}
+          {% else %}
           <tr>
             <td colspan="4" class="text-center py-8 font-medium text-xl">No errors</td>
           </tr>
+          {% endif %}
         </tbody>
       </table>
     </div>

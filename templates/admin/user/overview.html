@@ -39,7 +39,7 @@
           aria-current="page">Overview</a>
       </li>
       <li class="me-2">
-        <a href="#"
+        <a href="{% url 'admin_user_billing' user.id %}"
           class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300"
           aria-current="page">Billing</a>
       </li>
@@ -97,7 +97,7 @@
         </dl>
       </div>
       <div class="px-4 py-5 sm:px-6">
-        <a href="#" class="block rounded-md bg-gray-100 py-2 px-3 text-center text-sm font-semibold hover:bg-gray-200">
+        <a href="{% url 'admin_user_billing' user.id %}" class="block rounded-md bg-gray-100 py-2 px-3 text-center text-sm font-semibold hover:bg-gray-200">
           See billing history</a>
       </div>
     </div>
