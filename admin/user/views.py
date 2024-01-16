@@ -87,12 +87,7 @@ class AdminUserDataView(AdminTemplateView):
             started__gte=start_of_month,
             stopped=None,
         )
-        virtances_usage = (
-            virtances_counters.aggregate(
-                total_amount=Sum("amount")
-            )["total_amount"]
-            or 0
-        )
+        virtances_usage = virtances_counters.aggregate(total_amount=Sum("amount"))["total_amount"] or 0
 
         # Calculate total usage
         month_to_date_usage += virtances_usage
@@ -103,12 +98,7 @@ class AdminUserDataView(AdminTemplateView):
             started__gte=start_of_month,
             stopped=None,
         )
-        snapshots_usage = (
-            snapshots_counters.aggregate(
-                total_amount=Sum("amount")
-            )["total_amount"]
-            or 0
-        )
+        snapshots_usage = snapshots_counters.aggregate(total_amount=Sum("amount"))["total_amount"] or 0
 
         # Calculate total usage
         month_to_date_usage += snapshots_usage
@@ -119,12 +109,7 @@ class AdminUserDataView(AdminTemplateView):
             started__gte=start_of_month,
             stopped=None,
         )
-        floating_ips_usage = (
-            floating_ips_counters.aggregate(
-                total_amount=Sum("amount")
-            )["total_amount"]
-            or 0
-        )
+        floating_ips_usage = floating_ips_counters.aggregate(total_amount=Sum("amount"))["total_amount"] or 0
 
         # Calculate total usage
         month_to_date_usage += floating_ips_usage

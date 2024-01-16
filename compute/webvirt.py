@@ -1,8 +1,12 @@
+import urllib3
 import requests
 from base64 import b64encode
 from django.conf import settings
 from urllib.parse import urlencode
 from requests.exceptions import ConnectTimeout
+
+
+urllib3.disable_warnings()
 
 
 def vm_name(virtance_id):
