@@ -1,5 +1,6 @@
 import time
 from uuid import uuid4
+from decimal import Decimal
 from django.conf import settings
 from django.utils import timezone
 from passlib.hash import sha512_crypt
@@ -134,7 +135,7 @@ def create_virtance(virtance_id, password=None):
                 virtance=virtance,
                 size=virtance.size,
                 amount=virtance.size.price,
-                backup_amount=virtance.size.price * BACKUP_COST_RATIO if virtance.is_backup_enabled else 0,
+                backup_amount=virtance.size.price * Decimal(BACKUP_COST_RATIO) if virtance.is_backup_enabled else 0,
             )
 
             email_virtance_created(
@@ -247,7 +248,7 @@ def recreate_virtance(virtance_id):
                     virtance=virtance,
                     size=virtance.size,
                     amount=virtance.size.price,
-                    backup_amount=virtance.size.price * BACKUP_COST_RATIO if virtance.is_backup_enabled else 0,
+                    backup_amount=virtance.size.price * Decimal(BACKUP_COST_RATIO) if virtance.is_backup_enabled else 0,
                 )
 
             email_virtance_created(
@@ -380,7 +381,7 @@ def resize_virtance(virtance_id, size_id):
                 virtance=virtance,
                 size=old_size,
                 amount=virtance.size.price,
-                backup_amount=virtance.size.price * BACKUP_COST_RATIO if virtance.is_backup_enabled else 0,
+                backup_amount=virtance.size.price * Decimal(BACKUP_COST_RATIO) if virtance.is_backup_enabled else 0,
                 started=current_time - timezone.timedelta(hours=1),
                 stopped=current_time,
             )
@@ -389,7 +390,7 @@ def resize_virtance(virtance_id, size_id):
             virtance=virtance,
             size=virtance.size,
             amount=virtance.size.price,
-            backup_amount=virtance.size.price * BACKUP_COST_RATIO if virtance.is_backup_enabled else 0,
+            backup_amount=virtance.size.price * Decimal(BACKUP_COST_RATIO) if virtance.is_backup_enabled else 0,
             started=current_time,
         )
     else:
@@ -558,7 +559,7 @@ def delete_virtance(virtance_id):
                 virtance=virtance,
                 size=virtance.size,
                 amount=virtance.size.price,
-                backup_amount=virtance.size.price * BACKUP_COST_RATIO if virtance.is_backup_enabled else 0,
+                backup_amount=virtance.size.price * Decimal(BACKUP_COST_RATIO) if virtance.is_backup_enabled else 0,
                 started=current_time - timezone.timedelta(hours=1),
                 stopped=current_time,
             )
@@ -582,7 +583,7 @@ def virtance_counter():
                 virtance=virtance,
                 size=virtance.size,
                 amount=virtance.size.price,
-                backup_amount=virtance.size.price * BACKUP_COST_RATIO if virtance.is_backup_enabled else 0,
+                backup_amount=virtance.size.price * Decimal(BACKUP_COST_RATIO) if virtance.is_backup_enabled else 0,
                 started=current_time - timezone.timedelta(hours=1),
             )
 
@@ -596,7 +597,7 @@ def virtance_counter():
         for virt_count in virtance_counters:
             virt_count.amount += virt_count.size.price
             virt_count.backup_amount += (
-                virt_count.size.price * BACKUP_COST_RATIO if virt_count.virtance.is_backup_enabled else 0
+                virt_count.size.price * Decimal(BACKUP_COST_RATIO) if virt_count.virtance.is_backup_enabled else 0
             )
             virt_count.save()
 
