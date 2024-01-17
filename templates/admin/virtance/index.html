@@ -60,12 +60,6 @@
                   scope="col"
                   class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                 >
-                  Locked
-                </th>
-                <th
-                  scope="col"
-                  class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                >
                   Created
                 </th>
               </tr>
@@ -100,14 +94,17 @@
                 </td>
                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                   {% if virtance.compute %}
-                    {{ virtance.compute.name }}
+                    <a 
+                      href="{% url 'admin_compute_overview' virtance.compute.id %}"
+                      class="text-blue-600 hover:text-blue-900"
+                      >{{ virtance.compute.name }}</a
+                    >
+                  {% else %}
+                    -
                   {% endif %}
                 </td>
                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                   {{ virtance.status|capfirst }} {% if virtance.event %}({{ virtance.event|capfirst }}){% endif %}
-                </td>
-                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                  {{ virtance.is_locked }}
                 </td>
                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                   {{ virtance.created}}
