@@ -86,7 +86,11 @@
                   >
                 </td>
                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                  {{ virtance.user.email }}
+                  <a 
+                    class="text-blue-600 hover:text-blue-900" 
+                    href="{% url 'admin_user_data' virtance.user.id %}"
+                    >{{ virtance.user.email }}</a
+                  >
                 </td>
                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                   {{ virtance.size.name }}

@@ -36,6 +36,12 @@
                   scope="col"
                   class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                 >
+                  Name
+                </th>
+                <th
+                  scope="col"
+                  class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                >
                   Created
                 </th>
               </tr>
@@ -52,7 +58,14 @@
                   {{ firewall.id }}
                 </td>
                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                  {{ firewall.user.email }}
+                  <a 
+                    class="text-blue-600 hover:text-blue-900" 
+                    href="{% url 'admin_user_data' firewall.user.id %}"
+                    >{{ firewall.user.email }}</a
+                  >
+                </td>
+                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                  {{ firewall.name }}
                 </td>
                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                   {{ firewall.created}}
