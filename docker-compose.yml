@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile
     image: webvirtbackend:dev
-    container_name: webvirtcloud-backend
+    container_name: webvirtcloud-dev-backend
     hostname: backend
     ports:
       - 8000:8000
@@ -32,7 +32,7 @@ services:
       dockerfile: Dockerfile
     hostname: novnc
     image: webvirtbackend:dev
-    container_name: webvirtcloud-novnc
+    container_name: webvirtcloud-dev-novnc
     ports:
       - 127.0.0.1:6080:6080
     volumes:
@@ -52,7 +52,7 @@ services:
       context: .
       dockerfile: Dockerfile
     image: webvirtbackend:dev
-    container_name: webvirtcloud-worker
+    container_name: webvirtcloud-dev-worker
     hostname: worker
     volumes:
       - .:/app
@@ -76,7 +76,7 @@ services:
       context: .
       dockerfile: Dockerfile
     image: webvirtbackend:dev
-    container_name: webvirtcloud-scheduler
+    container_name: webvirtcloud-dev-scheduler
     hostname: scheduler
     volumes:
       - .:/app
@@ -97,7 +97,7 @@ services:
       - rabbitmq
   mariadb:
     image: mariadb:10.6.10
-    container_name: webvirtcloud-mariadb
+    container_name: webvirtcloud-dev-mariadb
     hostname: mariadb
     volumes:
       - ./.mysql:/var/lib/mysql
@@ -110,21 +110,21 @@ services:
       MARIADB_ROOT_PASSWORD: root
   rabbitmq:
     image: rabbitmq:3.10.13
-    container_name: webvirtcloud-rabbitmq
+    container_name: webvirtcloud-dev-rabbitmq
     hostname: rabbitmq
     environment:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
   cloudinit-proxy:
     image: haproxy:lts
-    container_name: webvirtcloud-cloudinit-proxy
+    container_name: webvirtcloud-dev-cloudinit-proxy
     hostname: cloudinit-proxy
     volumes:
       - ./.devcontainer/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
     network_mode: host
   mailhog:
     image: mailhog/mailhog
-    container_name: webvirtcloud-mailhog
+    container_name: webvirtcloud-dev-mailhog
     hostname: mailhog
     ports:
       - 127.0.0.1:8025:8025
