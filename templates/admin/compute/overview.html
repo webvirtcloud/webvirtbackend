@@ -88,6 +88,12 @@
             scope="col"
             class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
           >
+            #
+          </th>
+          <th
+            scope="col"
+            class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+          >
             ID
           </th>
           <th
@@ -140,6 +146,10 @@
           <td
             class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
           >
+            {{ forloop.counter }}
+          </td>
+          <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+
             <a 
               class="text-blue-600 hover:text-blue-900" 
               href="{% url 'admin_virtance_data' virtance.id %}"
@@ -147,7 +157,12 @@
             >
           </td>
           <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-            {{ virtance.user.email }}
+            <a 
+              class="text-blue-600 hover:text-blue-900" 
+              href="{% url 'admin_user_data' virtance.user.id %}"
+              >{{ virtance.user.email }}</a
+            >
+            
           </td>
           <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
             {{ virtance.size.name }}
