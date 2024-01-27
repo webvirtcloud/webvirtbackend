@@ -1,6 +1,16 @@
 {% extends "admin/base.html" %} {% block content %}
-<div class="space-y-8">
+<div class="space-y-4">
+  <a href="{% url 'admin_image_index' %}"
+    class="inline-flex items-center text-sm p-2 bg-gray-100 rounded-md space-x-2 hover:bg-gray-200"><svg
+      xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+      class="w-5 h-5">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
+    </svg>
+    <span>Back to the list</span>
+  </a>
+
   <h2 class="text-2xl font-medium mb-4">Image</h2>
+
   <div class="overflow-hidden bg-white shadow sm:rounded-lg">
     <div class="px-4 py-5 sm:px-6">
       {% include 'admin/alerts.html' %}
@@ -9,7 +19,7 @@
         <div class="flex items-center gap-2">
           <div>
             <p class="font-semibold leading-6 text-gray-900">
-              {{ image.name }}
+              Image: {{ image.name }}
             </p>
           </div>
           {% if image.event %}
