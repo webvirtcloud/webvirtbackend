@@ -61,7 +61,11 @@
                   {{ forloop.counter }}
                 </td>
                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                  {{ floating_ip.id }}
+                  <a 
+                    class="text-blue-600 hover:text-blue-900" 
+                    href="{% url 'admin_floating_ip_data' floating_ip.id %}"
+                    >{{ floating_ip.id }}</a
+                  >
                 </td>
                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                   <a 

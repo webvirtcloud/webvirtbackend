@@ -25,9 +25,9 @@ class AdminImageDataView(AdminTemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        iamge = self.get_object()
-        context["image"] = iamge
-        context["image_errors"] = ImageError.objects.filter(image=iamge)
+        image = self.get_object()
+        context["image"] = image
+        context["image_errors"] = ImageError.objects.filter(image=image)
         return context
 
 
