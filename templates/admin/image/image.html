@@ -19,7 +19,7 @@
         <div class="flex items-center gap-2">
           <div>
             <p class="font-semibold leading-6 text-gray-900">
-              Image: {{ image.name }}
+              {{ image.name }}.img
             </p>
           </div>
           {% if image.event %}
@@ -97,7 +97,7 @@
           <dd class="mt-1 text-sm text-gray-900">{{ image.md5sum }}</dd>
         </div>
         <div class="sm:col-span-1">
-          <dt class="text-sm font-medium text-gray-500">Virtance</dt>
+          <dt class="text-sm font-medium text-gray-500">Source</dt>
           <dd class="mt-1 text-sm text-gray-900">
             {% if image.source.is_deleted == False %}
             <a
@@ -127,10 +127,6 @@
         <div class="sm:col-span-1">
           <dt class="text-sm font-medium text-gray-500">Distro</dt>
           <dd class="mt-1 text-sm text-gray-900">{{ image.description }}</dd>
-        </div>
-        <div class="sm:col-span-1">
-          <dt class="text-sm font-medium text-gray-500">File Name</dt>
-          <dd class="mt-1 text-sm text-gray-900">{{ image.file_name }}</dd>
         </div>
         <div class="sm:col-span-1">
           <dt class="text-sm font-medium text-gray-500">Created</dt>
