@@ -592,10 +592,10 @@ def virtance_counter():
         last_day_prev_month = prev_month.replace(hour=23, minute=59, second=59, microsecond=999999)
         first_day_prev_month = previous_month.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
         
-        virtance_counters = VirtanceCounter.objects.filter(started__gt=first_day_prev_month, stopped__isnull=True)
+        virtance_counters = VirtanceCounter.objects.filter(started__gt=first_day_prev_month, stopped=None)
         virtance_counters.update(stopped=last_day_prev_month)
     else:
-        virtance_counters = VirtanceCounter.objects.filter(started__gt=first_day_previous_mont, stopped__isnull=True)
+        virtance_counters = VirtanceCounter.objects.filter(started__gt=first_day_current_month, stopped=None)
         for virt_count in virtance_counters:
             virt_count.amount += virt_count.size.price
             virt_count.backup_amount += (
