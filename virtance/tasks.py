@@ -587,13 +587,15 @@ def virtance_counter():
                 started=current_time - timezone.timedelta(hours=1),
             )
 
-    virtance_counters = VirtanceCounter.objects.filter(started__gt=first_day_current_month, stopped__isnull=True)
-
     if current_day == 1 and current_hour == 0:
-        previous_month = current_time - timezone.timedelta(days=1)
-        period_end = previous_month.replace(hour=23, minute=59, second=59, microsecond=999999)
-        virtance_counters.update(stopped=period_end)
+        prev_month = current_time - timezone.timedelta(days=1)
+        last_day_prev_month = prev_month.replace(hour=23, minute=59, second=59, microsecond=999999)
+        first_day_prev_month = previous_month.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+        
+        virtance_counters = VirtanceCounter.objects.filter(started__gt=first_day_prev_month, stopped__isnull=True)
+        virtance_counters.update(stopped=last_day_prev_month)
     else:
+        virtance_counters = VirtanceCounter.objects.filter(started__gt=first_day_previous_mont, stopped__isnull=True)
         for virt_count in virtance_counters:
             virt_count.amount += virt_count.size.price
             virt_count.backup_amount += (

@@ -171,13 +171,15 @@ def floating_ip_counter():
                 floatip=floatip, ipaddress=floatip.ipaddress.address, amount=0.0, started=period_start
             )
 
-    floating_ip_counters = FloatIPCounter.objects.filter(started__gt=first_day_current_month, stopped__isnull=True)
-
     if current_day == 1 and current_hour == 0:
-        previous_month = current_time - timezone.timedelta(days=1)
-        period_end = previous_month.replace(hour=23, minute=59, second=59, microsecond=999999)
-        floating_ip_counters.update(stopped=period_end)
+        prev_month = current_time - timezone.timedelta(days=1)
+        last_day_prev_month = prev_month.replace(hour=23, minute=59, second=59, microsecond=999999)
+        first_day_prev_month = previous_month.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+
+        floating_ip_counters = FloatIPCounter.objects.filter(started__gt=first_day_prev_month, stopped__isnull=True)
+        floating_ip_counters.update(stopped=last_day_prev_month)
     else:
+        floating_ip_counters = FloatIPCounter.objects.filter(started__gt=first_day_current_month, stopped__isnull=True)
         for floatip_count in floating_ip_counters:
             floatip_count.amount += Decimal(0.0)
             floatip_count.save()

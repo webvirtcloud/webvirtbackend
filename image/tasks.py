@@ -55,13 +55,15 @@ def snapshot_counter():
             period_start = current_time - timezone.timedelta(hours=1)
             SnapshotCounter.objects.create(image=image, amount=0.0, started=period_start)
 
-    snapshot_counters = SnapshotCounter.objects.filter(started__gt=first_day_current_month, stopped__isnull=True)
-
     if current_day == 1 and current_hour == 0:
-        previous_month = current_time - timezone.timedelta(days=1)
-        period_end = previous_month.replace(hour=23, minute=59, second=59, microsecond=999999)
-        snapshot_counters.update(stopped=period_end)
+        prev_month = current_time - timezone.timedelta(days=1)
+        last_day_prev_month = prev_month.replace(hour=23, minute=59, second=59, microsecond=999999)
+        first_day_prev_month = previous_month.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+        
+        snapshot_counters = SnapshotCounter.objects.filter(started__gt=first_day_prev_month, stopped__isnull=True)
+        snapshot_counters.update(stopped=first_day_prev_month)
     else:
+        snapshot_counters = SnapshotCounter.objects.filter(started__gt=first_day_current_month, stopped__isnull=True)
         for snap_count in snapshot_counters:
             snap_count.amount += Decimal(0.0)
             snap_count.save()
