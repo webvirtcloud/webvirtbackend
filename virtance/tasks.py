@@ -577,7 +577,7 @@ def virtance_counter():
 
     for virtance in Virtance.objects.filter(is_deleted=False):
         try:
-            VirtanceCounter.objects.get(started__gt=first_day_current_month, virtance=virtance, stopped__isnull=True)
+            VirtanceCounter.objects.get(started__gt=first_day_current_month, stopped=None, virtance=virtance)
         except VirtanceCounter.DoesNotExist:
             VirtanceCounter.objects.create(
                 virtance=virtance,

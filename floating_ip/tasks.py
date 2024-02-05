@@ -164,7 +164,7 @@ def floating_ip_counter():
 
     for floatip in FloatIP.objects.filter(is_deleted=False):
         try:
-            FloatIPCounter.objects.get(started__gt=first_day_current_month, floatip=floatip)
+            FloatIPCounter.objects.get(started__gt=first_day_current_month, stopped=None, floatip=floatip)
         except FloatIPCounter.DoesNotExist:
             period_start = current_time - timezone.timedelta(hours=1)
             FloatIPCounter.objects.create(

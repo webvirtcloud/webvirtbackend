@@ -50,7 +50,7 @@ def snapshot_counter():
 
     for image in Image.objects.filter(type=Image.SNAPSHOT, is_deleted=False):
         try:
-            SnapshotCounter.objects.get(started__gt=first_day_current_month, image=image)
+            SnapshotCounter.objects.get(started__gt=first_day_current_month, stopped=None, image=image)
         except SnapshotCounter.DoesNotExist:
             period_start = current_time - timezone.timedelta(hours=1)
             SnapshotCounter.objects.create(image=image, amount=0.0, started=period_start)
