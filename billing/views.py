@@ -88,7 +88,7 @@ class InvoicePdfAPI(APIView):
                     {
                         "name": f"{virtance_count.virtance.name} (Backup)",
                         "start_at": virtance_count.started,
-                        "end_at": virtance_count.stopped,
+                        "stop_at": virtance_count.stopped,
                         "amount": virtance_count.backup_amount,
                         "hour": int((virtance_count.stopped - virtance_count.started).total_seconds()) // 3600,
                     }
