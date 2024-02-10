@@ -119,7 +119,8 @@
             <th style="padding: 8px 4px;">Hours</th>
             <th style="padding: 8px 4px;">Start</th>
             <th style="padding: 8px 4px;">End</th>
-            <th style="text-align: right; padding-bottom: 8px;">${{ virtances|sum_by_field:"amount"|floatformat:"2" }}
+            <th style="text-align: right; padding-bottom: 8px;">
+              ${{ virtances|sum_by_field:"amount"|floatformat:"2" }}
             </th>
             </tr>
         </thead>
@@ -155,7 +156,8 @@
             <th style="padding: 8px 4px;">Hours</th>
             <th style="padding: 8px 4px;">Start</th>
             <th style="padding: 8px 4px;">End</th>
-            <th style="text-align: right; padding-bottom: 8px;">${{ snapshots|sum_by_field:"amount"|floatformat:"2" }}
+            <th style="text-align: right; padding-bottom: 8px;">
+              ${{ snapshots|sum_by_field:"amount"|floatformat:"2" }}
             </th>
             </tr>
         </thead>
@@ -191,8 +193,9 @@
             <th style="padding: 8px 4px;">Hours</th>
             <th style="padding: 8px 4px;">Start</th>
             <th style="padding: 8px 4px;">End</th>
-            <th style="text-align: right; padding-bottom: 8px;">${{ floating_ips|sum_by_field:"amount"|floatformat:"2"
-              }}</th>
+            <th style="text-align: right; padding-bottom: 8px;">
+              ${{ floating_ips|sum_by_field:"amount"|floatformat:"2" }}
+            </th>
             </tr>
         </thead>
         <tbody>
