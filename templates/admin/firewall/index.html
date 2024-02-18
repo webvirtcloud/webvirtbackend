@@ -67,7 +67,11 @@
                   {{ forloop.counter }}
                 </td>
                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                  {{ firewall.id }}
+                  <a 
+                    class="text-blue-600 hover:text-blue-900" 
+                    href="{% url 'admin_firewall_data' firewall.id %}"
+                    >{{ firewall.id }}</a
+                  >
                 </td>
                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                   <a 
