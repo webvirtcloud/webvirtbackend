@@ -115,5 +115,5 @@ class InvoiceSerializer(serializers.Serializer):
         fields = ("uuid", "period", "amount", "created_at")
 
     def get_period(self, obj):
-        first_day_previous_month = obj.create.replace(day=1) - timezone.timedelta(days=1)
-        return first_day_previous_month.strftime("%Y-%m")
+        first_day_prev_month = obj.create.replace(day=1) - timezone.timedelta(days=1)
+        return first_day_prev_month.strftime("%Y-%m")

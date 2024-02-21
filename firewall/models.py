@@ -24,6 +24,7 @@ class Firewall(models.Model):
         (ATTACH, "Attaching"),
         (DETACH, "Detaching"),
     ]
+
     uuid = models.UUIDField(unique=True, editable=False, default=uuid4)
     user = models.ForeignKey("account.User", models.PROTECT)
     name = models.CharField(max_length=50, blank=False)
@@ -64,18 +65,21 @@ class Rule(models.Model):
         (UDP, "UDP"),
         (ICMP, "ICMP"),
     ]
+
     DROP = "DROP"
     ACCEPT = "ACCEPT"
     ACTION_CHOICES = [
         (DROP, "DROP"),
         (ACCEPT, "ACCEPT"),
     ]
+
     INBOUND = "inbound"
     OUTBOUND = "outbound"
     DIRECTION_CHOICES = [
         (INBOUND, "Inbound"),
         (OUTBOUND, "Outbound"),
     ]
+
     firewall = models.ForeignKey(Firewall, models.PROTECT)
     direction = models.CharField(max_length=10, choices=DIRECTION_CHOICES)
     protocol = models.CharField(max_length=10, blank=True, null=True, choices=PROTOCOL_CHOICES)

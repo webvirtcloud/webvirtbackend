@@ -174,7 +174,7 @@ def floating_ip_counter():
     if current_day == 1 and current_hour == 0:
         prev_month = current_time - timezone.timedelta(days=1)
         last_day_prev_month = prev_month.replace(hour=23, minute=59, second=59, microsecond=999999)
-        first_day_prev_month = previous_month.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+        first_day_prev_month = prev_month.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
 
         floating_ip_counters = FloatIPCounter.objects.filter(started__gt=first_day_prev_month, stopped=None)
         floating_ip_counters.update(stopped=last_day_prev_month)

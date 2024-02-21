@@ -13,6 +13,7 @@ class FloatIP(models.Model):
         (ASSIGN, "Assigning"),
         (UNASSIGN, "Unassigning"),
     ]
+
     user = models.ForeignKey("account.User", models.PROTECT)
     event = models.CharField(max_length=40, choices=EVENT_CHOICES, blank=True, null=True)
     cidr = models.CharField(max_length=32, blank=True, null=True)

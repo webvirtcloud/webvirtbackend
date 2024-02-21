@@ -8,6 +8,7 @@ class Image(models.Model):
     X86_64 = "x86_64"
     AARCH64 = "aarch64"
     ARCH_CHOICES = [(X86_64, "X64"), (AARCH64, "ARM64")]
+
     CUSTOM = "custom"
     BACKUP = "backup"
     SNAPSHOT = "snapshot"
@@ -20,6 +21,7 @@ class Image(models.Model):
         (APPLICATION, "Application"),
         (DISTRIBUTION, "Distribution"),
     ]
+
     UNKNOWN = "unknown"
     DEBIAN = "debian"
     UBUNTU = "ubuntu"
@@ -36,6 +38,7 @@ class Image(models.Model):
         (ALMALINUX, "AlmaLinux"),
         (ROCKYLINUX, "Rocky Linux"),
     ]
+
     CREATE = "create"
     DELETE = "delete"
     RESTORE = "restore"
@@ -48,6 +51,7 @@ class Image(models.Model):
         (CONVERT, "Converting"),
         (TRANSFER, "Transfering"),
     ]
+
     user = models.ForeignKey(settings.AUTH_USER_MODEL, models.PROTECT, blank=True, null=True)
     source = models.ForeignKey("virtance.Virtance", models.PROTECT, blank=True, null=True)
     regions = models.ManyToManyField("region.Region", blank=True)

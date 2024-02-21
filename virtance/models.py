@@ -5,6 +5,15 @@ from django.utils import timezone
 
 
 class Virtance(models.Model):
+    ACTIVE = "active"
+    PENDING = "pending"
+    INACTIVE = "inactive"
+    STATUS_CHOICES = (
+        (ACTIVE, "Active"),
+        (PENDING, "Pending"),
+        (INACTIVE, "Inactive"),
+    )
+
     CREATE = "create"
     DELETE = "delete"
     REBOOT = "reboot"
@@ -51,14 +60,7 @@ class Virtance(models.Model):
         (ENABLE_RECOVERY_MODE, "Enable Recovery Mode"),
         (DISABLE_RECOVERY_MODE, "Disable Recovery Mode"),
     ]
-    ACTIVE = "active"
-    PENDING = "pending"
-    INACTIVE = "inactive"
-    STATUS_CHOICES = (
-        (ACTIVE, "Active"),
-        (PENDING, "Pending"),
-        (INACTIVE, "Inactive"),
-    )
+
     user = models.ForeignKey(settings.AUTH_USER_MODEL, models.PROTECT)
     size = models.ForeignKey("size.Size", models.PROTECT)
     region = models.ForeignKey("region.Region", models.PROTECT)

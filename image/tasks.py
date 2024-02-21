@@ -58,10 +58,10 @@ def snapshot_counter():
     if current_day == 1 and current_hour == 0:
         prev_month = current_time - timezone.timedelta(days=1)
         last_day_prev_month = prev_month.replace(hour=23, minute=59, second=59, microsecond=999999)
-        first_day_prev_month = previous_month.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
-        
+        first_day_prev_month = prev_month.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+
         snapshot_counters = SnapshotCounter.objects.filter(started__gt=first_day_prev_month, stopped=None)
-        snapshot_counters.update(stopped=first_day_prev_month)
+        snapshot_counters.update(stopped=last_day_prev_month)
     else:
         snapshot_counters = SnapshotCounter.objects.filter(started__gt=first_day_current_month, stopped=None)
         for snap_count in snapshot_counters:
