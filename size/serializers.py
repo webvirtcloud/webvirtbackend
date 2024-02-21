@@ -37,7 +37,7 @@ class SizeSerializer(serializers.ModelSerializer):
         return obj.transfer / 1099511627776
 
     def get_price_monthly(self, obj):
-        return int(round(obj.price * 730, 0))
+        return int(round(obj.price * (30 * 24), 0))
 
     def get_regions(self, obj):
         return [region.slug for region in obj.regions.all()]
