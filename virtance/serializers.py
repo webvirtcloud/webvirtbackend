@@ -131,8 +131,8 @@ class CreateVirtanceSerializer(serializers.Serializer):
     user_data = serializers.CharField(required=False, allow_blank=True)
 
     def validate(self, attrs):
-        image = attrs.get("image")
         size = attrs.get("size")
+        image = attrs.get("image")
         region = attrs.get("region")
         backups = attrs.get("backups")
         keypairs = attrs.get("keypairs")
@@ -188,6 +188,10 @@ class CreateVirtanceSerializer(serializers.Serializer):
         # Check if image is available in region
         if check_region not in check_image.regions.all():
             raise serializers.ValidationError({"image": ["Image is not available in the region."]})
+        
+        # Check if image size is available in size
+        if check_image.disk_size > check_size.disk:
+            raise serializers.ValidationError({"image": ["Image disk size is bigger than size choosed."]})
 
         return attrs
 
@@ -207,6 +211,10 @@ class CreateVirtanceSerializer(serializers.Serializer):
             template = Image.objects.get(id=image_id_or_slug)
         else:
             template = Image.objects.get(slug=image_id_or_slug)
+
+        if template.type == Image.SNAPSHOT or template.type == Image.BACKUP:
+            template.event = Image.RESTORE
+            template.save()
 
         size = Size.objects.get(slug=size_slug)
         region = Region.objects.get(slug=region_slug)
