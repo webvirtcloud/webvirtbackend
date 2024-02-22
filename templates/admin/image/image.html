@@ -9,7 +9,7 @@
     <span>Back to the list</span>
   </a>
 
-  <h2 class="text-2xl font-medium mb-4">Image</h2>
+  <h2 class="text-2xl font-medium mb-4">Image: {{ image.name }}</h2>
 
   <div class="overflow-hidden bg-white shadow sm:rounded-lg">
     <div class="px-4 py-5 sm:px-6">
@@ -19,7 +19,7 @@
         <div class="flex items-center gap-2">
           <div>
             <p class="font-semibold leading-6 text-gray-900">
-              {{ image.name }}.img
+              {{ image.file_name }}
             </p>
           </div>
           {% if image.event %}
@@ -97,7 +97,7 @@
           <dd class="mt-1 text-sm text-gray-900">{{ image.md5sum }}</dd>
         </div>
         <div class="sm:col-span-1">
-          <dt class="text-sm font-medium text-gray-500">Source</dt>
+          <dt class="text-sm font-medium text-gray-500">Virtance</dt>
           <dd class="mt-1 text-sm text-gray-900">
             {% if image.source.is_deleted == False %}
             <a
