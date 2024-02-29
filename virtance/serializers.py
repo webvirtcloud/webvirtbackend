@@ -190,8 +190,9 @@ class CreateVirtanceSerializer(serializers.Serializer):
             raise serializers.ValidationError({"image": ["Image is not available in the region."]})
         
         # Check if image size is available in size
-        if check_image.disk_size > check_size.disk:
-            raise serializers.ValidationError({"image": ["Image disk size is bigger than size choosed."]})
+        if check_image.SNAPSHOT or check_image.BACKUP or check_image.CUSTOM:
+            if check_image.disk_size > check_size.disk:
+                raise serializers.ValidationError({"image": ["Image disk size is bigger than size choosed."]})
 
         return attrs
 
