@@ -93,4 +93,4 @@ def make_monthly_invoice():
             )
 
             # Send invoice to user
-            email_send_invoice(user.email, invoice.amount, f"{now.year}-{now.month}")
+            email_send_invoice(user.email, invoice.amount, f"{prev_month.year}-{prev_month.month}")
