@@ -480,24 +480,31 @@ def delete_virtance(virtance_id):
 
 @app.task
 def virtance_counter():
+    new_period = False
     current_time = timezone.now()
     current_day = current_time.day
     current_hour = current_time.hour
     first_day_current_month = current_time.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
 
+    if current_day == 1 and current_hour == 0:
+        new_period = True
+
     for virtance in Virtance.objects.filter(is_deleted=False):
         try:
             VirtanceCounter.objects.get(started__gt=first_day_current_month, stopped=None, virtance=virtance)
         except VirtanceCounter.DoesNotExist:
+            period_start = current_time - timezone.timedelta(hours=1)
+            if new_period is True:
+                period_start = first_day_current_month
             VirtanceCounter.objects.create(
                 virtance=virtance,
                 size=virtance.size,
                 amount=virtance.size.price,
                 backup_amount=virtance.size.price * Decimal(BACKUP_COST_RATIO) if virtance.is_backup_enabled else 0,
-                started=current_time - timezone.timedelta(hours=1),
+                started=period_start,
             )
 
-    if current_day == 1 and current_hour == 0:
+    if new_period is True:
         prev_month = current_time - timezone.timedelta(days=1)
         last_day_prev_month = prev_month.replace(hour=23, minute=59, second=59, microsecond=999999)
         first_day_prev_month = prev_month.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
