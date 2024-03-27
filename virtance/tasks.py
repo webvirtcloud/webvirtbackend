@@ -3,6 +3,7 @@ from uuid import uuid4
 from decimal import Decimal
 from django.conf import settings
 from django.utils import timezone
+from django.db.models import F, Count, Exists, OuterRef
 from passlib.hash import sha512_crypt
 
 from webvirtcloud.celery import app
@@ -525,32 +526,43 @@ def virtance_counter():
 def virtance_backup():
     compute_event_backup_ids = []
 
-    compute_ids = Virtance.objects.filter(
+    compute_ids_with_backup = Virtance.objects.filter(
         event=Virtance.BACKUP,
         is_deleted=False,
         is_backup_enabled=True,
-    ).values_list("compute_id", flat=True)
+    ).values('compute_id')
 
-    virtances = Virtance.objects.filter(
-        event=None,
+    unbacked_virtances = Virtance.objects.filter(
         is_deleted=False,
         is_backup_enabled=True,
-    ).exclude(compute__in=list(set(compute_ids)))
+    ).exclude(
+        compute__in=compute_ids_with_backup
+    ).annotate(
+        has_backup=Exists(
+            Image.objects.filter(
+                source=OuterRef('pk'),
+                type=Image.BACKUP,
+                is_deleted=False
+            )
+        ),
+        backup_count=Count('image', filter=F('image__type') == Image.BACKUP),
+    )
 
-    for virtance in virtances:
-        backups = Image.objects.filter(source=virtance, type=Image.BACKUP, is_deleted=False)
+    for virtance in unbacked_virtances:
+        if virtance.compute_id not in compute_event_backup_ids:
+            compute_event_backup_ids.append(virtance.compute_id)
 
-        if virtance.compute.id not in compute_event_backup_ids:
-            compute_event_backup_ids.append(virtance.compute.id)
-
-            if backups:
-                if (timezone.now() - backups.first().created).days >= settings.BACKUP_PERIOD_DAYS:
+            if virtance.has_backup:
+                # Check if backup is outdated
+                if (timezone.now() - virtance.image_set.filter(type=Image.BACKUP, is_deleted=False).first().created).days >= settings.BACKUP_PERIOD_DAYS:
                     virtance.event = Virtance.BACKUP
                     virtance.save()
                     backup_virtance.delay(virtance.id)
-                if len(backups) > settings.BACKUP_PER_MONTH:
-                    image_delete.delay(backups.last().id)
+                # Check if backup count exceeds the monthly limit
+                if virtance.backup_count > settings.BACKUP_PER_MONTH:
+                    image_delete.delay(virtance.image_set.filter(type=Image.BACKUP, is_deleted=False).last().id)
             else:
+                # If no existing backups, create one
                 backup_virtance.delay(virtance.id)
                 virtance.event = Virtance.BACKUP
                 virtance.save()
