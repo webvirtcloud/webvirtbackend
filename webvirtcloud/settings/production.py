@@ -2,6 +2,7 @@
 Django production settings for WebVirtCloud project.
 
 """
+
 from .base import *
 
 # Django settings

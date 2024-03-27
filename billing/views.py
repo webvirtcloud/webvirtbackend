@@ -149,8 +149,8 @@ class InvoicePdfAPI(APIView):
         html_content = template.render(context)
 
         response = HttpResponse(content_type="application/pdf")
-        response[
-            "Content-Disposition"
-        ] = f"attachment; filename='inovoice-{invoice.create.year}-{invoice.create.month}.pdf'"
+        response["Content-Disposition"] = (
+            f"attachment; filename='inovoice-{invoice.create.year}-{invoice.create.month}.pdf'"
+        )
         HTML(string=html_content).write_pdf(response)
         return response

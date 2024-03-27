@@ -509,7 +509,7 @@ def virtance_counter():
         prev_month = current_time - timezone.timedelta(days=1)
         last_day_prev_month = prev_month.replace(hour=23, minute=59, second=59, microsecond=999999)
         first_day_prev_month = prev_month.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
-        
+
         virtance_counters = VirtanceCounter.objects.filter(started__gt=first_day_prev_month, stopped=None)
         virtance_counters.update(stopped=last_day_prev_month)
     else:
@@ -530,22 +530,18 @@ def virtance_backup():
         event=Virtance.BACKUP,
         is_deleted=False,
         is_backup_enabled=True,
-    ).values('compute_id')
+    ).values("compute_id")
 
-    unbacked_virtances = Virtance.objects.filter(
-        is_deleted=False,
-        is_backup_enabled=True,
-    ).exclude(
-        compute__in=compute_ids_with_backup
-    ).annotate(
-        has_backup=Exists(
-            Image.objects.filter(
-                source=OuterRef('pk'),
-                type=Image.BACKUP,
-                is_deleted=False
-            )
-        ),
-        backup_count=Count('image', filter=F('image__type') == Image.BACKUP),
+    unbacked_virtances = (
+        Virtance.objects.filter(
+            is_deleted=False,
+            is_backup_enabled=True,
+        )
+        .exclude(compute__in=compute_ids_with_backup)
+        .annotate(
+            has_backup=Exists(Image.objects.filter(source=OuterRef("pk"), type=Image.BACKUP, is_deleted=False)),
+            backup_count=Count("image", filter=F("image__type") == Image.BACKUP),
+        )
     )
 
     for virtance in unbacked_virtances:
@@ -554,7 +550,9 @@ def virtance_backup():
 
             if virtance.has_backup:
                 # Check if backup is outdated
-                if (timezone.now() - virtance.image_set.filter(type=Image.BACKUP, is_deleted=False).first().created).days >= settings.BACKUP_PERIOD_DAYS:
+                if (
+                    timezone.now() - virtance.image_set.filter(type=Image.BACKUP, is_deleted=False).first().created
+                ).days >= settings.BACKUP_PERIOD_DAYS:
                     virtance.event = Virtance.BACKUP
                     virtance.save()
                     backup_virtance.delay(virtance.id)
