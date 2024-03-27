@@ -27,13 +27,19 @@ class FormUser(forms.ModelForm):
         return cleaned_data
 
     def save(self, *args, **kwargs):
-        User.objects.create(
-            is_admin=False,
-            is_active=True,
-            is_verified=True,
-            is_email_verified=True,
-            email=self.cleaned_data.get("email"),
-            password=self.cleaned_data.get("password"),
-            first_name=self.cleaned_data.get("first_name"),
-            last_name=self.cleaned_data.get("last_name"),
-        )
+        email = self.cleaned_data.get("email")
+        password = self.cleaned_data.get("password")
+        first_name = self.cleaned_data.get("first_name")
+        last_name = self.cleaned_data.get("last_name")
+
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            user = User.objects.create_user(email=email, password=password)
+            user.first_name = first_name
+            user.last_name = last_name
+            user.is_active = True
+            user.is_verified = True
+            user.is_email_verified = True
+            user.save()
+            user.update_hash()
