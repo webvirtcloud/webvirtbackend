@@ -262,7 +262,7 @@ class VirtanceMetricsCpuAPI(APIView):
                 if float(val[1]) > 100:
                     total_value[i][1] = str(100.0)
         except (KeyError, IndexError):
-            sys_value = []
+            total_value = []
 
         data = {"sys": sys_value, "user": user_value, "total": total_value}
         return Response({"metrics": {"name": "CPU", "unit": "%", "data": data}})
