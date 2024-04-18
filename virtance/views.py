@@ -221,18 +221,28 @@ class VirtanceMetricsCpuAPI(APIView):
         timestamp_today = time.mktime(today.timetuple())
         timestamp_yesterday = time.mktime((today - timezone.timedelta(days=1)).timetuple())
 
-        cpu_sys_query = (
-            f"(irate(libvirt_domain_info_cpu_time_system{{domain='{vname}'}}[5m])*100)/on(domain)"
-            f"(count(libvirt_domain_info_vcpu_state{{domain='{vname}'}})by(domain)*1000000000)"
-        )
         cpu_usr_query = (
-            f"(irate(libvirt_domain_info_cpu_time_total{{domain='{vname}'}}[5m])*100)/on(domain)"
-            f"(count(libvirt_domain_info_vcpu_state{{domain='{vname}'}})by(domain)*1000000000)"
+            f"(irate(libvirt_domain_info_cpu_time_user{{domain='{vname}'}}[5m])*100)/"
+            f"(libvirt_domain_info_vcpu_num{{domain='{vname}'}}*1000000000)"
+        )
+        cpu_sys_query = (
+            f"(irate(libvirt_domain_info_cpu_time_system{{domain='{vname}'}}[5m])*100)/"
+            f"(libvirt_domain_info_vcpu_num{{domain='{vname}'}}*1000000000)"
+        )
+        cpu_total_query = (
+            f"(irate(libvirt_domain_info_cpu_time{{domain='{vname}'}}[5m])*100)/"
+            f"(libvirt_domain_info_vcpu_num{{domain='{vname}'}}*1000000000)"
         )
 
         wvcomp = WebVirtCompute(virtance.compute.token, virtance.compute.hostname)
-        cpu_sys_res = wvcomp.get_metrics(cpu_sys_query, timestamp_yesterday, timestamp_today, "5m")
         cpu_usr_res = wvcomp.get_metrics(cpu_usr_query, timestamp_yesterday, timestamp_today, "5m")
+        cpu_sys_res = wvcomp.get_metrics(cpu_sys_query, timestamp_yesterday, timestamp_today, "5m")
+        cpu_total_res = wvcomp.get_metrics(cpu_total_query, timestamp_yesterday, timestamp_today, "5m")
+
+        try:
+            user_value = cpu_usr_res["data"]["result"][0]["values"]
+        except (KeyError, IndexError):
+            user_value = []
 
         try:
             sys_value = cpu_sys_res["data"]["result"][0]["values"]
@@ -240,12 +250,13 @@ class VirtanceMetricsCpuAPI(APIView):
             sys_value = []
 
         try:
-            user_value = cpu_usr_res["data"]["result"][0]["values"]
+            total_value = cpu_total_res["data"]["result"][0]["values"]
         except (KeyError, IndexError):
-            user_value = []
+            sys_value = []
 
-        data = {"sys": sys_value, "user": user_value}
+        data = {"sys": sys_value, "user": user_value, "total": total_value}
         return Response({"metrics": {"name": "CPU", "unit": "%", "data": data}})
+
 
 
 class VirtanceMetricsNetAPI(APIView):
@@ -262,8 +273,8 @@ class VirtanceMetricsNetAPI(APIView):
         timestamp_today = time.mktime(today.timetuple())
         timestamp_yesterday = time.mktime((today - timezone.timedelta(days=1)).timetuple())
 
-        rx_query = f"(irate(libvirt_domain_info_net_rx_bytes{{domain='{vname}'}}[5m])*8)/(1024*1024)"
-        tx_query = f"(irate(libvirt_domain_info_net_tx_bytes{{domain='{vname}'}}[5m])*8)/(1024*1024)"
+        rx_query = f"(irate(libvirt_domain_info_net_rx_bytes{{domain='{vname}'}}[5m])*8)/1048576"
+        tx_query = f"(irate(libvirt_domain_info_net_tx_bytes{{domain='{vname}'}}[5m])*8)/1048576"
 
         wvcomp = WebVirtCompute(virtance.compute.token, virtance.compute.hostname)
         in_res = wvcomp.get_metrics(rx_query, timestamp_yesterday, timestamp_today, "5m")
@@ -305,8 +316,8 @@ class VirtanceMetricsDiskAPI(APIView):
         timestamp_today = time.mktime(today.timetuple())
         timestamp_yesterday = time.mktime((today - timezone.timedelta(days=1)).timetuple())
 
-        r_query = f"irate(libvirt_domain_info_block_read_bytes{{domain='{vname}'}}[5m])/(1024*1024)"
-        w_query = f"irate(libvirt_domain_info_block_write_bytes{{domain='{vname}'}}[5m])/(1024*1024)"
+        r_query = f"irate(libvirt_domain_info_block_read_bytes{{dev='vda',domain='{vname}'}}[5m])/1048576"
+        w_query = f"irate(libvirt_domain_info_block_write_bytes{{dev='vda',domain='{vname}'}}[5m])/1048576"
 
         wvcomp = WebVirtCompute(virtance.compute.token, virtance.compute.hostname)
         rd_res = wvcomp.get_metrics(r_query, timestamp_yesterday, timestamp_today, "5m")
