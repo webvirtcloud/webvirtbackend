@@ -241,16 +241,26 @@ class VirtanceMetricsCpuAPI(APIView):
 
         try:
             user_value = cpu_usr_res["data"]["result"][0]["values"]
+            for i, val in enumerate(user_value):
+                if float(val[1]) > 100:
+                    user_value[i][1] = str(100.0)
         except (KeyError, IndexError):
             user_value = []
 
         try:
             sys_value = cpu_sys_res["data"]["result"][0]["values"]
+            for i, val in enumerate(sys_value):
+                if float(val[1]) > 100:
+                    sys_value[i][1] = str(100.0)
         except (KeyError, IndexError):
             sys_value = []
 
         try:
             total_value = cpu_total_res["data"]["result"][0]["values"]
+            for i, val in enumerate(total_value):
+                print(val[1])
+                if float(val[1]) > 100:
+                    total_value[i][1] = str(100.0)
         except (KeyError, IndexError):
             sys_value = []
 
