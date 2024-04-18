@@ -258,7 +258,6 @@ class VirtanceMetricsCpuAPI(APIView):
         try:
             total_value = cpu_total_res["data"]["result"][0]["values"]
             for i, val in enumerate(total_value):
-                print(val[1])
                 if float(val[1]) > 100:
                     total_value[i][1] = str(100.0)
         except (KeyError, IndexError):
@@ -267,6 +266,34 @@ class VirtanceMetricsCpuAPI(APIView):
         data = {"sys": sys_value, "user": user_value, "total": total_value}
         return Response({"metrics": {"name": "CPU", "unit": "%", "data": data}})
 
+
+class VirtanceMetricsMemAPI(APIView):
+    def get_object(self):
+        return get_object_or_404(Virtance, pk=self.kwargs.get("id"), user=self.request.user, is_deleted=False)
+
+    def get(self, request, *args, **kwargs):
+        virtance = self.get_object()
+        vname = f"{settings.VM_NAME_PREFIX}{str(virtance.id)}"
+        today = timezone.now()
+        timestamp_today = time.mktime(today.timetuple())
+        timestamp_yesterday = time.mktime((today - timezone.timedelta(days=1)).timetuple())
+
+        mem_query = (
+            f"(((avg_over_time(libvirt_domain_info_memory_actual{{domain='{vname}'}}[5m]))-"
+            f"(avg_over_time(libvirt_domain_info_memory_unused{{domain='{vname}'}}[5m])))/"
+            f"(avg_over_time(libvirt_domain_info_memory_actual{{domain='{vname}'}}[5m])))*100"
+        )
+
+        wvcomp = WebVirtCompute(virtance.compute.token, virtance.compute.hostname)
+        mem_res = wvcomp.get_metrics(mem_query, timestamp_yesterday, timestamp_today, "5m")
+
+        try:
+            mem_value = mem_res["data"]["result"][0]["values"]
+        except (KeyError, IndexError):
+            mem_value = []
+
+        data = mem_value
+        return Response({"metrics": {"name": "Memory", "unit": "%", "data": data}})
 
 
 class VirtanceMetricsNetAPI(APIView):
