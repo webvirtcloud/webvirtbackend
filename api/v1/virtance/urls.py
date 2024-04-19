@@ -14,7 +14,7 @@ urlpatterns = [
     re_path(r"(?P<id>\d+)/snapshots/?$", VirtanceSnapshotsAPI.as_view(), name="virtance_snapshots_api"),
     re_path(r"(?P<id>\d+)/console/?$", VirtanceConsoleAPI.as_view(), name="virtance_console_api"),
     re_path(r"(?P<id>\d+)/metrics/cpu/?$", VirtanceMetricsCpuAPI.as_view(), name="virtance_metrics_cpu_api"),
-    re_path(r"(?P<id>\d+)/metrics/mem/?$", VirtanceMetricsCpuAPI.as_view(), name="virtance_metrics_mem_api"),
+    re_path(r"(?P<id>\d+)/metrics/mem/?$", VirtanceMetricsMemAPI.as_view(), name="virtance_metrics_mem_api"),
     re_path(r"(?P<id>\d+)/metrics/net/?$", VirtanceMetricsNetAPI.as_view(), name="virtance_metrics_net_api"),
     re_path(r"(?P<id>\d+)/metrics/disk/?$", VirtanceMetricsDiskAPI.as_view(), name="virtance_metrics_disk_api"),
 ]
