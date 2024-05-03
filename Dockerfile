@@ -13,5 +13,5 @@ RUN set -eux; \
 
 COPY ./requirements/develop.txt ./requirements/production.txt /app/
 
-RUN python3 -m pip install -U pip wheel setuptools; \
-    python3 -m pip install -r develop.txt
+RUN pip install uv; \
+    uv pip install --system -r develop.txt
