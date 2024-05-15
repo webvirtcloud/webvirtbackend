@@ -66,7 +66,7 @@ class Virtance(models.Model):
     region = models.ForeignKey("region.Region", models.PROTECT)
     compute = models.ForeignKey("compute.Compute", models.PROTECT, null=True, blank=True)
     template = models.ForeignKey("image.Image", models.PROTECT)
-    event = models.CharField(max_length=40, choices=EVENT_CHOICES, blank=True, null=True)
+    event = models.CharField(max_length=40, choices=EVENT_CHOICES, default=CREATE, blank=True, null=True)
     uuid = models.UUIDField(unique=True, editable=False, default=uuid4)
     name = models.CharField(max_length=100)
     disk = models.BigIntegerField()
