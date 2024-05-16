@@ -17,13 +17,13 @@ class Firewall(models.Model):
     DELETE = "delete"
     ATTACH = "attach"
     DETACH = "detach"
-    EVENT_CHOICES = [
+    EVENT_CHOICES = (
         (CREATE, "Creating"),
         (UPDATE, "Updating"),
         (DELETE, "Deleting"),
         (ATTACH, "Attaching"),
         (DETACH, "Detaching"),
-    ]
+    )
 
     uuid = models.UUIDField(unique=True, editable=False, default=uuid4)
     user = models.ForeignKey("account.User", models.PROTECT)
@@ -60,25 +60,25 @@ class Rule(models.Model):
     TCP = "tcp"
     UDP = "udp"
     ICMP = "icmp"
-    PROTOCOL_CHOICES = [
+    PROTOCOL_CHOICES = (
         (TCP, "TCP"),
         (UDP, "UDP"),
         (ICMP, "ICMP"),
-    ]
+    )
 
     DROP = "DROP"
     ACCEPT = "ACCEPT"
-    ACTION_CHOICES = [
+    ACTION_CHOICES = (
         (DROP, "DROP"),
         (ACCEPT, "ACCEPT"),
-    ]
+    )
 
     INBOUND = "inbound"
     OUTBOUND = "outbound"
-    DIRECTION_CHOICES = [
+    DIRECTION_CHOICES = (
         (INBOUND, "Inbound"),
         (OUTBOUND, "Outbound"),
-    ]
+    )
 
     firewall = models.ForeignKey(Firewall, models.PROTECT)
     direction = models.CharField(max_length=10, choices=DIRECTION_CHOICES)

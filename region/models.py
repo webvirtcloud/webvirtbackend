@@ -12,6 +12,7 @@ class Feature(models.Model):
         ("one_click", "One-Click"),
         ("floating_ip", "Floating-IP"),
     )
+    
     name = models.CharField(choices=FEATURE_CHOICES, unique=True, max_length=100)
 
     class Meta:

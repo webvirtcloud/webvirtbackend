@@ -36,7 +36,7 @@ class Virtance(models.Model):
     UNASSIGN_FLOATING_IP = "unassign_floating_ip"
     ENABLE_RECOVERY_MODE = "enable_recovery_mode"
     DISABLE_RECOVERY_MODE = "disable_recovery_mode"
-    EVENT_CHOICES = [
+    EVENT_CHOICES = (
         (CREATE, "Create"),
         (DELETE, "Delete"),
         (REBOOT, "Reboot"),
@@ -59,7 +59,7 @@ class Virtance(models.Model):
         (UNASSIGN_FLOATING_IP, "Unassign Floating IP"),
         (ENABLE_RECOVERY_MODE, "Enable Recovery Mode"),
         (DISABLE_RECOVERY_MODE, "Disable Recovery Mode"),
-    ]
+    )
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, models.PROTECT)
     size = models.ForeignKey("size.Size", models.PROTECT)

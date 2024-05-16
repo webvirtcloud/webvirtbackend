@@ -11,12 +11,14 @@ class Network(models.Model):
         (PRIVATE, "Private"),
         (COMPUTE, "Compute"),
     )
+
     IPv4 = 4
     IPv6 = 6
     VERSION_CHOICES = (
         (IPv4, "IPv4"),
         (IPv6, "IPv6"),
     )
+    
     cidr = models.GenericIPAddressField()
     netmask = models.GenericIPAddressField()
     gateway = models.GenericIPAddressField()

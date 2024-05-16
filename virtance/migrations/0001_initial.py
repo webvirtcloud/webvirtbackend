@@ -51,6 +51,7 @@ class Migration(migrations.Migration):
                             ("disable_recovery_mode", "Disable Recovery Mode"),
                         ],
                         max_length=40,
+                        default="create",
                         null=True,
                     ),
                 ),

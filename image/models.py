@@ -14,13 +14,13 @@ class Image(models.Model):
     SNAPSHOT = "snapshot"
     APPLICATION = "application"
     DISTRIBUTION = "distribution"
-    TYPE_CHOICES = [
+    TYPE_CHOICES = (
         (CUSTOM, "Custom"),
         (BACKUP, "Backup"),
         (SNAPSHOT, "Snapshot"),
         (APPLICATION, "Application"),
         (DISTRIBUTION, "Distribution"),
-    ]
+    )
 
     UNKNOWN = "unknown"
     DEBIAN = "debian"
@@ -29,7 +29,7 @@ class Image(models.Model):
     CENTOS = "centos"
     ALMALINUX = "almalinux"
     ROCKYLINUX = "rockylinux"
-    DISTRO_CHOICES = [
+    DISTRO_CHOICES = (
         (UNKNOWN, "Unknown"),
         (DEBIAN, "Debian"),
         (UBUNTU, "Ubuntu"),
@@ -37,20 +37,20 @@ class Image(models.Model):
         (CENTOS, "CentOS"),
         (ALMALINUX, "AlmaLinux"),
         (ROCKYLINUX, "Rocky Linux"),
-    ]
+    )
 
     CREATE = "create"
     DELETE = "delete"
     RESTORE = "restore"
     CONVERT = "convert"
     TRANSFER = "transfer"
-    EVENT_CHOICES = [
+    EVENT_CHOICES = (
         (CREATE, "Creating"),
         (DELETE, "Deleting"),
         (RESTORE, "Restoring"),
         (CONVERT, "Converting"),
         (TRANSFER, "Transfering"),
-    ]
+    )
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, models.PROTECT, blank=True, null=True)
     source = models.ForeignKey("virtance.Virtance", models.PROTECT, blank=True, null=True)

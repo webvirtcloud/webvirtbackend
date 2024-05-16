@@ -27,18 +27,19 @@ class LBaaS(models.Model):
     REMOVE_VIRTANCE = "remove_virtance"
     ADD_FORWARD_RULE = "add_forward_rule"
     REMOVE_FORWARD_RULE = "remove_forward_rule"
-    EVENT_CHOICES = [
+    EVENT_CHOICES = (
         (CREATE, "Create"),
         (DELETE, "Delete"),
         (ADD_VIRTANCE, "Add Virtance to a Load Balancer"),
         (REMOVE_VIRTANCE, "Remove Virtance from a Load Balancer"),
         (ADD_FORWARD_RULE, "Add Forwarding Rules to a Load Balancer"),
         (REMOVE_FORWARD_RULE, "Remove Forwarding Rules to a Load Balancer"),
-    ]
+    )
 
     uuid = models.UUIDField(unique=True, editable=False, default=uuid4)
     name = models.CharField(max_length=100)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, models.PROTECT)
+    virtance = models.ForeignKey("virtances.Virtance", models.PROTECT)
     event = models.CharField(max_length=40, choices=EVENT_CHOICES, default=CREATE, blank=True, null=True)
     check_protocol = models.CharField(max_length=10, choices=CHECK_PROTOCOL_CHOICES, default=TCP)
     check_port = models.IntegerField(default=80)

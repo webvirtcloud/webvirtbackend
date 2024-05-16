@@ -7,12 +7,12 @@ class FloatIP(models.Model):
     DELETE = "delete"
     ASSIGN = "assign"
     UNASSIGN = "unassign"
-    EVENT_CHOICES = [
+    EVENT_CHOICES = (
         (CREATE, "Creating"),
         (DELETE, "Deleting"),
         (ASSIGN, "Assigning"),
         (UNASSIGN, "Unassigning"),
-    ]
+    )
 
     user = models.ForeignKey("account.User", models.PROTECT)
     event = models.CharField(max_length=40, choices=EVENT_CHOICES, blank=True, null=True)
