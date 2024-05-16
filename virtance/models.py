@@ -61,11 +61,23 @@ class Virtance(models.Model):
         (DISABLE_RECOVERY_MODE, "Disable Recovery Mode"),
     )
 
+    K8AAS = "k8aas"
+    DBAAS = "dbaas"
+    LBAAS = "lbaas"
+    VIRTANCE = "virtance"
+    TYPE_CHOICES = (
+        (VIRTANCE, "Virtance"),
+        (K8AAS, "Kubernetes"),
+        (DBAAS, "Database"),
+        (LBAAS, "Load Balancer"),
+    )
+
     user = models.ForeignKey(settings.AUTH_USER_MODEL, models.PROTECT)
     size = models.ForeignKey("size.Size", models.PROTECT)
     region = models.ForeignKey("region.Region", models.PROTECT)
     compute = models.ForeignKey("compute.Compute", models.PROTECT, null=True, blank=True)
     template = models.ForeignKey("image.Image", models.PROTECT)
+    type = models.CharField(max_length=40, choices=TYPE_CHOICES, default=VIRTANCE)
     event = models.CharField(max_length=40, choices=EVENT_CHOICES, default=CREATE, blank=True, null=True)
     uuid = models.UUIDField(unique=True, editable=False, default=uuid4)
     name = models.CharField(max_length=100)
