@@ -37,7 +37,7 @@ class WebVirtCompute(object):
             response = requests.get(url, headers=self._headers(), stream=stream, timeout=5, verify=False)
             return response
         except ConnectTimeout:
-            return {"error": "Connection to compute timeout."}
+            return {"detail": "Connection to compute timeout."}
 
     def _make_post(self, url, params):
         url = self._url() + url
@@ -45,7 +45,7 @@ class WebVirtCompute(object):
             response = requests.post(url, headers=self._headers(), json=params, verify=False)
             return response
         except ConnectTimeout:
-            return {"error": "Connection to compute timeout."}
+            return {"detail": "Connection to compute timeout."}
 
     def _make_put(self, url, params):
         url = self._url() + url
@@ -53,7 +53,7 @@ class WebVirtCompute(object):
             response = requests.put(url, headers=self._headers(), json=params, verify=False)
             return response
         except ConnectTimeout:
-            return {"error": "Connection to compute timeout."}
+            return {"detail": "Connection to compute timeout."}
 
     def _make_delete(self, url, params=None):
         url = self._url() + url
@@ -61,7 +61,7 @@ class WebVirtCompute(object):
             response = requests.delete(url, headers=self._headers(), json=params, verify=False)
             return response
         except ConnectTimeout:
-            return {"error": "Connection to compute timeout."}
+            return {"detail": "Connection to compute timeout."}
 
     def _process_response(self, response, json=True):
         if isinstance(response, dict):

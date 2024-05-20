@@ -96,7 +96,7 @@ class AdminComputeOverviewView(AdminTemplateView):
         virtances = Virtance.objects.filter(compute=compute, is_deleted=False)
         wvcomp = WebVirtCompute(compute.token, compute.hostname)
         res = wvcomp.get_host_overview()
-        messages.error(self.request, res.get("error"))
+        messages.error(self.request, res.get("detail"))
         context["compute"] = compute
         context["virtances"] = virtances
         context["host_overview"] = res
@@ -111,7 +111,7 @@ class AdminComputeStoragesView(AdminTemplateView):
         compute = get_object_or_404(Compute, pk=kwargs.get("pk"), is_deleted=False)
         wvcomp = WebVirtCompute(compute.token, compute.hostname)
         res = wvcomp.get_storages()
-        messages.error(self.request, res.get("error"))
+        messages.error(self.request, res.get("detail"))
         context["compute"] = compute
         context["storages"] = res.get("storages")
         return context
@@ -187,7 +187,7 @@ class AdminComputeStorageView(AdminTemplateView):
         compute = get_object_or_404(Compute, pk=kwargs.get("pk"), is_deleted=False)
         wvcomp = WebVirtCompute(compute.token, compute.hostname)
         res = wvcomp.get_storage(kwargs.get("pool"))
-        messages.error(self.request, res.get("error"))
+        messages.error(self.request, res.get("detail"))
         context["compute"] = compute
         context["form_start"] = FormStartAction()
         context["form_autostart"] = FormAutostartAction()
@@ -372,7 +372,7 @@ class AdminComputeNetworksView(AdminTemplateView):
         compute = get_object_or_404(Compute, pk=kwargs.get("pk"), is_deleted=False)
         wvcomp = WebVirtCompute(compute.token, compute.hostname)
         res = wvcomp.get_networks()
-        messages.error(self.request, res.get("error"))
+        messages.error(self.request, res.get("detail"))
         context["compute"] = compute
         context["networks"] = res.get("networks")
         return context
@@ -386,7 +386,7 @@ class AdminComputeNetworkView(AdminTemplateView):
         compute = get_object_or_404(Compute, pk=kwargs.get("pk"), is_deleted=False)
         wvcomp = WebVirtCompute(compute.token, compute.hostname)
         res = wvcomp.get_network(kwargs.get("pool"))
-        messages.error(self.request, res.get("error"))
+        messages.error(self.request, res.get("detail"))
         context["compute"] = compute
         context["form_start"] = FormStartAction()
         context["form_autostart"] = FormAutostartAction()
@@ -441,7 +441,7 @@ class AdminComputeSecretsView(AdminTemplateView):
         compute = get_object_or_404(Compute, pk=kwargs.get("pk"), is_deleted=False)
         wvcomp = WebVirtCompute(compute.token, compute.hostname)
         res = wvcomp.get_secrets()
-        messages.error(self.request, res.get("error"))
+        messages.error(self.request, res.get("detail"))
         context["compute"] = compute
         context["secrets"] = res.get("secrets")
         return context
@@ -528,7 +528,7 @@ class AdminComputeNwfiltersView(AdminTemplateView):
         compute = get_object_or_404(Compute, pk=kwargs.get("pk"), is_deleted=False)
         wvcomp = WebVirtCompute(compute.token, compute.hostname)
         res = wvcomp.get_nwfilters()
-        messages.error(self.request, res.get("error"))
+        messages.error(self.request, res.get("detail"))
         context["compute"] = compute
         context["nwfilters"] = res.get("nwfilters")
         return context
@@ -565,7 +565,7 @@ class AdminComputeNwfilterView(AdminTemplateView):
         compute = get_object_or_404(Compute, pk=self.kwargs.get("pk"), is_deleted=False)
         wvcomp = WebVirtCompute(compute.token, compute.hostname)
         res = wvcomp.view_nwfilter(kwargs.get("nfilter"))
-        messages.error(self.request, res.get("error"))
+        messages.error(self.request, res.get("detail"))
         context["compute"] = compute
         context["nwfilter"] = res.get("nwfilter")
         return context
