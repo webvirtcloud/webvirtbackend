@@ -27,12 +27,9 @@ services:
       - mariadb
   
   novnc:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    hostname: novnc
     image: webvirtbackend:dev
     container_name: webvirtcloud-dev-novnc
+    hostname: novnc
     ports:
       - 127.0.0.1:6080:6080
     volumes:
@@ -49,9 +46,6 @@ services:
       - mariadb
   
   worker:
-    build:
-      context: .
-      dockerfile: Dockerfile
     image: webvirtbackend:dev
     container_name: webvirtcloud-dev-worker
     hostname: worker
@@ -74,9 +68,6 @@ services:
       - rabbitmq
   
   scheduler:
-    build:
-      context: .
-      dockerfile: Dockerfile
     image: webvirtbackend:dev
     container_name: webvirtcloud-dev-scheduler
     hostname: scheduler
