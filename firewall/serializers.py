@@ -150,17 +150,13 @@ class FirewallSerializer(serializers.ModelSerializer):
                 out_rule_checked.add(out_rule_data)
 
         # Check integer list in virtance_ids
-        for v_id in virtance_ids:
-            if not isinstance(v_id, int):
-                raise serializers.ValidationError({"virtance_ids": ["This field must be a list of integers."]})
+        if not all(isinstance(x, int) for x in virtance_ids):
+            raise serializers.ValidationError({"virtance_ids": ["This field must be a list of integers."]})
 
         # Check virtance exists
-        list_ids = Virtance.objects.filter(user=user, id__in=virtance_ids, is_deleted=False).values_list(
-            "id", flat=True
-        )
-        for v_id in virtance_ids:
-            if v_id not in list_ids:
-                raise serializers.ValidationError(f"Virtance with ID {v_id} does not exist.")
+        exist_virtances = Virtance.objects.filter(user=user, id__in=virtance_ids, is_deleted=False)
+        if len(exist_virtances) != len(virtance_ids):
+            raise serializers.ValidationError({"virtance_ids": ["Virtance not found."]})
 
         # Check virtance already assigned
         for v_id in virtance_ids:
@@ -177,6 +173,7 @@ class FirewallSerializer(serializers.ModelSerializer):
             in_rule.sources = {}
             in_rule.sources["addresses"] = [f"{i.address}/{i.prefix}" for i in Cidr.objects.filter(rule=in_rule)]
         data["inbound_rules"] = InboundRuleSerializer(inbound_rules, many=True).data
+
         outbound_rules = Rule.objects.filter(firewall=instance, direction=Rule.OUTBOUND, is_system=False)
         for out_rule in outbound_rules:
             out_rule.destinations = {}

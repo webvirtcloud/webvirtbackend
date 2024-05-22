@@ -37,7 +37,7 @@ def ansible_play(user="root", password=None, private_key=None, port=22, hosts=[]
     # Create a temporary file for the private key
     key_file_path = None
     if private_key:
-        key_file_path = os.path.join(C.DEFAULT_LOCAL_TMP , "tmp-id-rsa-priv.pem")
+        key_file_path = os.path.join(C.DEFAULT_LOCAL_TMP, "tmp-id-rsa-priv.pem")
         with open(key_file_path, "w") as key_file:
             key_file.write(private_key)
         os.chmod(key_file_path, 0o600)
@@ -86,7 +86,7 @@ def ansible_play(user="root", password=None, private_key=None, port=22, hosts=[]
 
     if hosts:
         try:
-            tqm.run(play) 
+            tqm.run(play)
         finally:
             tqm.cleanup()
             if loader:

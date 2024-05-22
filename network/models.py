@@ -18,7 +18,7 @@ class Network(models.Model):
         (IPv4, "IPv4"),
         (IPv6, "IPv6"),
     )
-    
+
     cidr = models.GenericIPAddressField()
     netmask = models.GenericIPAddressField()
     gateway = models.GenericIPAddressField()

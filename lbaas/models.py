@@ -14,13 +14,6 @@ class LBaaS(models.Model):
         (HTTPS, "HTTPS"),
     )
 
-    ROUND_ROB = "round_robin"
-    LEAST_CONN = "least_connections"
-    ALGORITHM_CHOICES = (
-        (ROUND_ROB, "Round Robin"),
-        (LEAST_CONN, "Least Connections"),
-    )
-
     CREATE = "create"
     DELETE = "delete"
     ADD_VIRTANCE = "add_virtance"
@@ -52,7 +45,6 @@ class LBaaS(models.Model):
     sticky_sessions_cookie_name = models.CharField(max_length=100, default="sessionid")
     sticky_sessions_cookie_ttl = models.IntegerField(default=3600)
     redirect_http_to_https = models.BooleanField(default=False)
-    algorithm = models.CharField(max_length=20, choices=ALGORITHM_CHOICES, default=ROUND_ROB)
     is_deleted = models.BooleanField("Deleted", default=False)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -77,7 +69,7 @@ class LBaaS(models.Model):
         self.save()
 
 
-class LBaaSForwadRules(models.Model):
+class LBaaSForwadRule(models.Model):
     UDP = "udp"
     TCP = "tcp"
     HTTP = "http"
@@ -93,7 +85,7 @@ class LBaaSForwadRules(models.Model):
 
     lbaas = models.ForeignKey(LBaaS, models.PROTECT)
     entry_port = models.IntegerField()
-    entry_protocol = models.CharField(max_length=10, choices=PROTOCOL_CHOICES, default=HTTP)    
+    entry_protocol = models.CharField(max_length=10, choices=PROTOCOL_CHOICES, default=HTTP)
     target_port = models.IntegerField()
     target_protocol = models.CharField(max_length=10, choices=PROTOCOL_CHOICES, default=HTTP)
     is_deleted = models.BooleanField("Deleted", default=False)
@@ -111,7 +103,7 @@ class LBaaSForwadRules(models.Model):
 
     def save(self, *args, **kwargs):
         self.updated = timezone.now()
-        super(LBaaSForwadRules, self).save(*args, **kwargs)
+        super(LBaaSForwadRule, self).save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
         self.is_active = False
