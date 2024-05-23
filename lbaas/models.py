@@ -32,7 +32,7 @@ class LBaaS(models.Model):
     uuid = models.UUIDField(unique=True, editable=False, default=uuid4)
     name = models.CharField(max_length=100)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, models.PROTECT)
-    virtance = models.ForeignKey("virtances.Virtance", models.PROTECT)
+    virtance = models.ForeignKey("virtance.Virtance", models.PROTECT)
     event = models.CharField(max_length=40, choices=EVENT_CHOICES, default=CREATE, blank=True, null=True)
     check_protocol = models.CharField(max_length=10, choices=CHECK_PROTOCOL_CHOICES, default=TCP)
     check_port = models.IntegerField(default=80)
@@ -114,7 +114,7 @@ class LBaaSForwadRule(models.Model):
 
 class LBaaSVirtance(models.Model):
     lbaas = models.ForeignKey(LBaaS, models.PROTECT)
-    virtance = models.ForeignKey("virtances.Virtance", models.PROTECT)
+    virtance = models.ForeignKey("virtance.Virtance", models.PROTECT)
     is_deleted = models.BooleanField("Deleted", default=False)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)

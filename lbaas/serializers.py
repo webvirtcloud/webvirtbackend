@@ -37,12 +37,11 @@ class LBaaSSerializer(serializers.ModelSerializer):
     id = serializers.UUIDField(required=False, read_only=True)
     ip = serializers.SerializerMethodField(read_only=True)
     name = serializers.CharField()
-    status = serializers.SerializerMethodField(read_only=True)
-    region = RegionSerializer()
+    region = serializers.CharField()
     created_at = serializers.DateTimeField(read_only=True)
     virtance_ids = serializers.ListField(required=False)
-    health_check = HeathCheckSerializer()
-    sticky_sessions = StickySessionsSerializer(required=False)
+    health_check = serializers.DictField(required=False)
+    sticky_sessions = serializers.DictField(required=False)
     forwarding_rules = ListOfForwardingRuleSerializer()
     redirect_http_to_https = serializers.BooleanField(required=False)
 
@@ -52,7 +51,7 @@ class LBaaSSerializer(serializers.ModelSerializer):
             "id",
             "ip",
             "name",
-            "status",
+            "event",
             "region",
             "created_at",
             "virtance_ids",
@@ -61,6 +60,9 @@ class LBaaSSerializer(serializers.ModelSerializer):
             "forwarding_rules",
             "redirect_http_to_https",
         )
+
+    def get_ip(self, obj):
+        return None
 
     def validate(self, attrs):
         user = self.context.get("user")
@@ -136,11 +138,13 @@ class LBaaSSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         data = super().to_representation(instance)
 
-        lbaasforwardrules = LBaaSForwadRule.objects.filter(lbaas=instance, is_deleted=False)
-        data["forwarding_rules"] = ForwardingRuleSerializer(lbaasforwardrules, many=True).data
-
-        lbaasvirtance = LBaaSVirtance.objects.filter(lbaas=instance, is_deleted=False)
-        data["virtance_ids"] = [lv.virtance.id for lv in lbaasvirtance]
+        data["region"] = RegionSerializer(Region.objects.get(slug=instance.region, is_deleted=False)).data
+        data["health_check"] = HeathCheckSerializer(LBaaS.objects.get(id=instance.id)).data
+        data["virtance_ids"] = [lv.virtance.id for lv in LBaaSVirtance.objects.filter(lbaas=instance, is_deleted=False)]
+        data["sticky_sessions"] = StickySessionsSerializer(LBaaS.objects.get(id=instance.id)).data
+        data["forwarding_rules"] = ForwardingRuleSerializer(
+            LBaaSForwadRule.objects.filter(lbaas=instance, is_deleted=False), many=True
+        ).data
 
         return data
 

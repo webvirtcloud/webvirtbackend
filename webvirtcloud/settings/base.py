@@ -36,6 +36,7 @@ INSTALLED_APPS += [
     "size",
     "admin",
     "image",
+    "lbaas",
     "region",
     "account",
     "billing",
