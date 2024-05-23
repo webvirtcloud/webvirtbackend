@@ -60,7 +60,14 @@ class Migration(migrations.Migration):
                 ("updated", models.DateTimeField(auto_now=True)),
                 ("deleted", models.DateTimeField(blank=True, null=True)),
                 ("user", models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to=settings.AUTH_USER_MODEL)),
-                ("virtance", models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to="virtance.virtance")),
+                (
+                    "virtance", models.ForeignKey(
+                        blank=True, 
+                        on_delete=django.db.models.deletion.PROTECT, 
+                        to="virtance.virtance", 
+                        null=True,
+                    )
+                ),
             ],
             options={
                 "verbose_name": "Load Balancer",

@@ -125,10 +125,7 @@ class LBaaSSerializer(serializers.ModelSerializer):
             if not sticky_sessions.get("cookie_name") or sticky_sessions.get("cookie_name") == "":
                 raise serializers.ValidationError({"sticky_sessions": ["Cookie name is required."]})
 
-            if (
-                not sticky_sessions.get("cookie_ttl_seconds")
-                or 1 > sticky_sessions.get("cookie_ttl_seconds") < 9999
-            ):
+            if not sticky_sessions.get("cookie_ttl_seconds") or 1 > sticky_sessions.get("cookie_ttl_seconds") < 9999:
                 raise serializers.ValidationError({"sticky_sessions": ["Invalid cookie_ttl."]})
 
         return attrs
@@ -147,7 +144,43 @@ class LBaaSSerializer(serializers.ModelSerializer):
         return data
 
     def create(self, validated_data):
-        return validated_data
+        user = self.context.get("user")
+        name = validated_data.get("name")
+        region_slug = validated_data.get("region")
+        virtance_ids = list(set(validated_data.get("virtance_ids", [])))
+        health_check = validated_data.get("health_check")
+        sticky_sessions = validated_data.get("sticky_sessions")
+        forwarding_rules = validated_data.get("forwarding_rules", [])
+        redirect_http_to_https = validated_data.get("redirect_http_to_https", False)
+
+        region = Region.objects.get(slug=region_slug, is_deleted=False)
+
+        lbaas = LBaaS.objects.create(
+            name=name,
+            user=user,
+            region=region,
+            sticky_sessions=True if sticky_sessions else False,
+            sticky_sessions_cookie_name=sticky_sessions.get("cookie_name") if sticky_sessions else "sessionid",
+            sticky_sessions_cookie_ttl=sticky_sessions.get("cookie_ttl_seconds") if sticky_sessions else 3600,
+            redirect_http_to_https=redirect_http_to_https,
+        )
+
+        if forwarding_rules:
+            for rule in forwarding_rules:
+                LBaaSForwadRule.objects.create(
+                    lbaas=lbaas,
+                    entry_port=rule.get("entry_port"),
+                    entry_protocol=rule.get("entry_protocol"),
+                    target_port=rule.get("target_port"),
+                    target_protocol=rule.get("target_protocol"),
+                )
+
+        if virtance_ids:
+            for v_id in virtance_ids:
+                virtance = Virtance.objects.get(user=user, id=v_id, region=region, is_deleted=False)
+                LBaaSVirtance.objects.create(lbaas=lbaas, virtance=virtance)
+
+        return lbaas
 
     def update(self, instance, validated_data):
         return instance
