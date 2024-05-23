@@ -28,7 +28,6 @@ class ListOfForwardingRuleSerializer(serializers.ListSerializer):
 
 
 class StickySessionsSerializer(serializers.Serializer):
-    type = serializers.CharField()
     cookie_name = serializers.CharField()
     cookie_ttl_seconds = serializers.IntegerField()
 
@@ -123,15 +122,14 @@ class LBaaSSerializer(serializers.ModelSerializer):
 
         # Check if sticky_sessions is valid
         if sticky_sessions:
-            if sticky_sessions.get("type") == "cookies":
-                if not sticky_sessions.get("cookie_name") or sticky_sessions.get("cookie_name") == "":
-                    raise serializers.ValidationError({"sticky_sessions": ["Cookie name is required."]})
+            if not sticky_sessions.get("cookie_name") or sticky_sessions.get("cookie_name") == "":
+                raise serializers.ValidationError({"sticky_sessions": ["Cookie name is required."]})
 
-                if (
-                    not sticky_sessions.get("cookie_ttl_seconds")
-                    or 1 > sticky_sessions.get("cookie_ttl_seconds") < 9999
-                ):
-                    raise serializers.ValidationError({"sticky_sessions": ["Invalid cookie_ttl."]})
+            if (
+                not sticky_sessions.get("cookie_ttl_seconds")
+                or 1 > sticky_sessions.get("cookie_ttl_seconds") < 9999
+            ):
+                raise serializers.ValidationError({"sticky_sessions": ["Invalid cookie_ttl."]})
 
         return attrs
 
