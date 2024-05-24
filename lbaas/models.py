@@ -38,7 +38,7 @@ class LBaaS(models.Model):
     check_port = models.IntegerField(default=80)
     check_path = models.CharField(max_length=100, default="/")
     check_interval_seconds = models.IntegerField(default=10)
-    check_timeout_seconds = models.IntegerField(default=2)
+    check_timeout_seconds = models.IntegerField(default=5)
     check_unhealthy_threshold = models.IntegerField(default=5)
     check_healthy_threshold = models.IntegerField(default=3)
     sticky_sessions = models.BooleanField(default=False)

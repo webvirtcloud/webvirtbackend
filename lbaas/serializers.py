@@ -155,13 +155,32 @@ class LBaaSSerializer(serializers.ModelSerializer):
 
         region = Region.objects.get(slug=region_slug, is_deleted=False)
 
+        stick_session_enabled = bool(sticky_sessions)
+        stick_session_cookie_name = sticky_sessions.get("cookie_name", "sessionid")
+        stick_session_cookie_ttl = sticky_sessions.get("cookie_ttl_seconds", 3600)
+
+        check_protocol = health_check.get("protocol", LBaaS.TCP)
+        check_path = health_check.get("path", "/")
+        check_port = health_check.get("port", 80)
+        check_check_interval_seconds = health_check.get("check_interval_seconds", 10)
+        check_response_timeout_seconds = health_check.get("response_timeout_seconds", 5)
+        check_healthy_threshold = health_check.get("healthy_threshold", 3)
+        check_unhealthy_threshold = health_check.get("unhealthy_threshold", 5)
+
         lbaas = LBaaS.objects.create(
             name=name,
             user=user,
             region=region,
-            sticky_sessions=True if sticky_sessions else False,
-            sticky_sessions_cookie_name=sticky_sessions.get("cookie_name") if sticky_sessions else "sessionid",
-            sticky_sessions_cookie_ttl=sticky_sessions.get("cookie_ttl_seconds") if sticky_sessions else 3600,
+            check_protocol=check_protocol,
+            check_port=check_port,
+            check_path=check_path,
+            check_interval_seconds=check_check_interval_seconds,
+            check_timeout_seconds=check_response_timeout_seconds,
+            check_unhealthy_threshold=check_unhealthy_threshold,
+            check_healthy_threshold=check_healthy_threshold,
+            sticky_sessions=stick_session_enabled,
+            sticky_sessions_cookie_name=stick_session_cookie_name,
+            sticky_sessions_cookie_ttl=stick_session_cookie_ttl,
             redirect_http_to_https=redirect_http_to_https,
         )
 
