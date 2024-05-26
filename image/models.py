@@ -9,12 +9,14 @@ class Image(models.Model):
     AARCH64 = "aarch64"
     ARCH_CHOICES = [(X86_64, "X64"), (AARCH64, "ARM64")]
 
+    LBAAS = "lbaas"
     CUSTOM = "custom"
     BACKUP = "backup"
     SNAPSHOT = "snapshot"
     APPLICATION = "application"
     DISTRIBUTION = "distribution"
     TYPE_CHOICES = (
+        (LBAAS, "Load Balancer"),
         (CUSTOM, "Custom"),
         (BACKUP, "Backup"),
         (SNAPSHOT, "Snapshot"),

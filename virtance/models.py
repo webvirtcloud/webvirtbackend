@@ -4,6 +4,21 @@ from django.conf import settings
 from django.utils import timezone
 
 
+class VirtanceQuerySet(models.QuerySet):
+    def filter(self, *args, **kwargs):
+        if "type" not in kwargs:
+            kwargs["type"] = Virtance.VIRTANCE
+        return super().filter(*args, **kwargs)
+
+
+class VirtanceManager(models.Manager):
+    def get_queryset(self):
+        return VirtanceQuerySet(self.model, using=self._db)
+
+    def filter(self, *args, **kwargs):
+        return self.get_queryset().filter(*args, **kwargs)
+
+
 class Virtance(models.Model):
     ACTIVE = "active"
     PENDING = "pending"
@@ -91,6 +106,8 @@ class Virtance(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     deleted = models.DateTimeField(null=True, blank=True)
+
+    objects = VirtanceManager()
 
     class Meta:
         ordering = ["-id"]

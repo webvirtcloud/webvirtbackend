@@ -1,6 +1,8 @@
 from rest_framework import serializers
 
 from region.serializers import RegionSerializer
+from size.models import Size
+from image.models import Image
 from region.models import Region
 from virtance.models import Virtance
 from .models import LBaaS, LBaaSForwadRule, LBaaSVirtance
@@ -153,7 +155,9 @@ class LBaaSSerializer(serializers.ModelSerializer):
         forwarding_rules = validated_data.get("forwarding_rules", [])
         redirect_http_to_https = validated_data.get("redirect_http_to_https", False)
 
+        size = Size.objects.get(type=Size.LBAAS, is_deleted=False)
         region = Region.objects.get(slug=region_slug, is_deleted=False)
+        template = Image.objects.get(type=Image.LBAAS, is_deleted=False)
 
         stick_session_enabled = bool(sticky_sessions)
         stick_session_cookie_name = sticky_sessions.get("cookie_name", "sessionid")
@@ -167,10 +171,21 @@ class LBaaSSerializer(serializers.ModelSerializer):
         check_healthy_threshold = health_check.get("healthy_threshold", 3)
         check_unhealthy_threshold = health_check.get("unhealthy_threshold", 5)
 
+        virtance = Virtance.objects.create(
+            name=name,
+            user=user,
+            size=size,
+            type=Virtance.LBAAS,
+            region=region,
+            disk=size.disk,
+            template=template,
+        )
+
         lbaas = LBaaS.objects.create(
             name=name,
             user=user,
             region=region,
+            virtance=virtance,
             check_protocol=check_protocol,
             check_port=check_port,
             check_path=check_path,
