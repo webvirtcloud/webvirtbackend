@@ -37,7 +37,7 @@
             "type": "distribution",
             "md5sum": "f03e3ad42f4e4f9c1311a822184e4c62",
             "distribution": "ubuntu",
-            "description": "Ubuntu 22.04 TLS x64",
+            "description": "Ubuntu 22.04 LTS x64",
             "file_name": "ubuntu-22-04-x64.qcow2",
             "file_size": null,
             "disk_size": null,
@@ -305,6 +305,32 @@
             "is_deleted": false,
             "created": "2023-06-10T22:11:43.407Z",
             "updated": "2023-06-10T22:11:43.407Z",
+            "deleted": null,
+            "regions": [
+                1
+            ]
+        }
+    },
+    {
+        "model": "image.image",
+        "pk": 13,
+        "fields": {
+            "user": null,
+            "source": null,
+            "uuid": "b132dc2e-8681-44e9-b76d-dd457376c32f",
+            "name": "24.04 (LTS) x64",
+            "slug": "ubuntu-24-04-x64",
+            "type": "distribution",
+            "md5sum": "47e6b0a973d08f5a67849298462fe78c",
+            "distribution": "ubuntu",
+            "description": "Ubuntu 24.04 LTS x64",
+            "file_name": "ubuntu-24-04-x64.qcow2",
+            "file_size": null,
+            "disk_size": null,
+            "is_active": true,
+            "is_deleted": false,
+            "created": "2024-05-27T22:41:21.417Z",
+            "updated": "2024-05-27T14:41:21.417Z",
             "deleted": null,
             "regions": [
                 1
