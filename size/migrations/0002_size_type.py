@@ -17,4 +17,12 @@ class Migration(migrations.Migration):
                 choices=[("lbaas", "Load Balancer"), ("virtance", "Virtance")], default="virtance", max_length=50
             ),
         ),
+        migrations.AlterModelOptions(
+            name="size",
+            options={
+                "ordering": ["-type", "memory", "vcpu", "disk", "transfer"],
+                "verbose_name": "Size",
+                "verbose_name_plural": "Sizes",
+            },
+        ),
     ]

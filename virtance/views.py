@@ -36,7 +36,9 @@ class VirtanceListAPI(APIView):
         has_firewall = self.request.query_params.get("has_firewall")
         has_floating_ip = self.request.query_params.get("has_floating_ip")
 
-        queryset = Virtance.objects.filter(~Q(event=Virtance.DELETE), user=self.request.user, is_deleted=False)
+        queryset = Virtance.objects.filter(
+            ~Q(event=Virtance.DELETE), type=Virtance.VIRTANCE, user=self.request.user, is_deleted=False
+        )
 
         if name:
             queryset = queryset.filter(name__icontains=name)
@@ -89,7 +91,9 @@ class VirtanceDataAPI(APIView):
     class_serializer = VirtanceSerializer
 
     def get_object(self):
-        return get_object_or_404(Virtance, pk=self.kwargs.get("id"), user=self.request.user, is_deleted=False)
+        return get_object_or_404(
+            Virtance, pk=self.kwargs.get("id"), type=Virtance.VIRTANCE, user=self.request.user, is_deleted=False
+        )
 
     def get(self, request, *args, **kwargs):
         virtances = self.get_object()
@@ -109,7 +113,9 @@ class VirtanceActionAPI(APIView):
     class_serializer = VirtanceActionSerializer
 
     def get_object(self):
-        return get_object_or_404(Virtance, pk=self.kwargs.get("id"), user=self.request.user, is_deleted=False)
+        return get_object_or_404(
+            Virtance, pk=self.kwargs.get("id"), type=Virtance.VIRTANCE, user=self.request.user, is_deleted=False
+        )
 
     def post(self, request, *args, **kwargs):
         virtance = self.get_object()
@@ -128,7 +134,9 @@ class VirtanceBackupsAPI(APIView):
     class_serializer = ImageSerializer
 
     def get_objects(self):
-        virtance = get_object_or_404(Virtance, pk=self.kwargs.get("id"), user=self.request.user, is_deleted=False)
+        virtance = get_object_or_404(
+            Virtance, pk=self.kwargs.get("id"), type=Virtance.VIRTANCE, user=self.request.user, is_deleted=False
+        )
         return Image.objects.filter(type=Image.BACKUP, source_id=virtance.id, user=self.request.user, is_deleted=False)
 
     def get(self, request, *args, **kwargs):
@@ -141,7 +149,9 @@ class VirtanceFirewallAPI(APIView):
     class_serializer = FirewallSerializer
 
     def get_object(self):
-        virtance = get_object_or_404(Virtance, pk=self.kwargs.get("id"), user=self.request.user, is_deleted=False)
+        virtance = get_object_or_404(
+            Virtance, pk=self.kwargs.get("id"), type=Virtance.VIRTANCE, user=self.request.user, is_deleted=False
+        )
         firewallinstance = FirewallVirtance.objects.filter(virtance=virtance).first()
         return firewallinstance.firewall if firewallinstance else None
 
@@ -156,7 +166,9 @@ class VirtanceSnapshotsAPI(APIView):
     class_serializer = ImageSerializer
 
     def get_objects(self):
-        virtance = get_object_or_404(Virtance, pk=self.kwargs.get("id"), user=self.request.user, is_deleted=False)
+        virtance = get_object_or_404(
+            Virtance, pk=self.kwargs.get("id"), type=Virtance.VIRTANCE, user=self.request.user, is_deleted=False
+        )
         return Image.objects.filter(
             type=Image.SNAPSHOT, source_id=virtance.id, user=self.request.user, is_deleted=False
         )
@@ -171,7 +183,9 @@ class VirtanceHistoryAPI(APIView):
     class_serializer = VirtanceHistorySerializer
 
     def get_object(self):
-        return get_object_or_404(Virtance, pk=self.kwargs.get("id"), user=self.request.user, is_deleted=False)
+        return get_object_or_404(
+            Virtance, pk=self.kwargs.get("id"), type=Virtance.VIRTANCE, user=self.request.user, is_deleted=False
+        )
 
     def get(self, request, *args, **kwargs):
         virtance = self.get_object()
@@ -182,7 +196,9 @@ class VirtanceHistoryAPI(APIView):
 
 class VirtanceConsoleAPI(APIView):
     def get_object(self):
-        return get_object_or_404(Virtance, pk=self.kwargs.get("id"), user=self.request.user, is_deleted=False)
+        return get_object_or_404(
+            Virtance, pk=self.kwargs.get("id"), type=Virtance.VIRTANCE, user=self.request.user, is_deleted=False
+        )
 
     def get(self, request, *args, **kwargs):
         virtance = self.get_object()
@@ -212,7 +228,9 @@ class VirtanceConsoleAPI(APIView):
 
 class VirtanceMetricsCpuAPI(APIView):
     def get_object(self):
-        return get_object_or_404(Virtance, pk=self.kwargs.get("id"), user=self.request.user, is_deleted=False)
+        return get_object_or_404(
+            Virtance, pk=self.kwargs.get("id"), type=Virtance.VIRTANCE, user=self.request.user, is_deleted=False
+        )
 
     def get(self, request, *args, **kwargs):
         virtance = self.get_object()
@@ -269,7 +287,9 @@ class VirtanceMetricsCpuAPI(APIView):
 
 class VirtanceMetricsMemAPI(APIView):
     def get_object(self):
-        return get_object_or_404(Virtance, pk=self.kwargs.get("id"), user=self.request.user, is_deleted=False)
+        return get_object_or_404(
+            Virtance, pk=self.kwargs.get("id"), type=Virtance.VIRTANCE, user=self.request.user, is_deleted=False
+        )
 
     def get(self, request, *args, **kwargs):
         virtance = self.get_object()
@@ -298,7 +318,9 @@ class VirtanceMetricsMemAPI(APIView):
 
 class VirtanceMetricsNetAPI(APIView):
     def get_object(self):
-        return get_object_or_404(Virtance, pk=self.kwargs.get("id"), user=self.request.user, is_deleted=False)
+        return get_object_or_404(
+            Virtance, pk=self.kwargs.get("id"), type=Virtance.VIRTANCE, user=self.request.user, is_deleted=False
+        )
 
     def get(self, request, *args, **kwargs):
         in_val = {}
@@ -344,7 +366,9 @@ class VirtanceMetricsNetAPI(APIView):
 
 class VirtanceMetricsDiskAPI(APIView):
     def get_object(self):
-        return get_object_or_404(Virtance, pk=self.kwargs.get("id"), user=self.request.user, is_deleted=False)
+        return get_object_or_404(
+            Virtance, pk=self.kwargs.get("id"), type=Virtance.VIRTANCE, user=self.request.user, is_deleted=False
+        )
 
     def get(self, request, *args, **kwargs):
         virtance = self.get_object()

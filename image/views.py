@@ -16,21 +16,25 @@ class ImageListAPI(APIView):
 
     def get_queryset(self):
         user = self.request.user
-        image_type = self.request.query_params.get("type", None)
-        if image_type is None:
+        i_type = self.request.query_params.get("type", None)
+        
+        if i_type:
+            if i_type == Image.LBAAS:
+                i_type = None
+            if i_type in (Image.DISTRIBUTION, Image.APPLICATION):
+                queryset = Image.objects.filter(type=i_type, user=None, is_deleted=False)
+
+        if i_type is None:
             queryset = Image.objects.filter(
-                Q(type=Image.APPLICATION)
+                ~Q(type=Image.LBAAS)
+                | Q(type=Image.APPLICATION)
                 | Q(type=Image.DISTRIBUTION)
                 | Q(type=Image.CUSTOM, user=user)
                 | Q(type=Image.BACKUP, user=user)
                 | Q(type=Image.SNAPSHOT, user=user),
                 is_deleted=False,
             )
-        else:
-            if image_type in (Image.DISTRIBUTION, Image.APPLICATION):
-                user = None
-
-            queryset = Image.objects.filter(type=image_type, user=user, is_deleted=False)
+            
         return queryset
 
     def get(self, request, *args, **kwargs):
@@ -43,6 +47,8 @@ class ImageDataAPI(APIView):
 
     def get_object(self):
         image = get_object_or_404(Image, pk=self.kwargs.get("id"), is_deleted=False)
+        if image.type == Image.LBAAS:
+            raise Http404
         if image.type == Image.SNAPSHOT or image.type == Image.BACKUP or image.type == Image.CUSTOM:
             if image.user != self.request.user:
                 raise Http404
@@ -79,6 +85,8 @@ class ImageActionAPI(APIView):
 
     def get_object(self):
         image = get_object_or_404(Image, pk=self.kwargs.get("id"), is_deleted=False)
+        if image.type == Image.LBAAS:
+            raise Http404
         if image.type == Image.SNAPSHOT or image.type == Image.BACKUP or image.type == Image.CUSTOM:
             if image.user != self.request.user:
                 raise Http404

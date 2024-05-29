@@ -29,6 +29,7 @@ class FormSize(forms.ModelForm):
             "vcpu",
             "disk",
             "memory",
+            "type",
             "transfer",
             "price",
             InlineCheckboxes("regions", css_class="checkboxinput"),

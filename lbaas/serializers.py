@@ -155,9 +155,9 @@ class LBaaSSerializer(serializers.ModelSerializer):
         forwarding_rules = validated_data.get("forwarding_rules", [])
         redirect_http_to_https = validated_data.get("redirect_http_to_https", False)
 
-        size = Size.objects.get(type=Size.LBAAS, is_deleted=False)
+        size = Size.objects.filter(type=Size.LBAAS, is_deleted=False).first()
         region = Region.objects.get(slug=region_slug, is_deleted=False)
-        template = Image.objects.get(type=Image.LBAAS, is_deleted=False)
+        template = Image.objects.filter(type=Image.LBAAS, is_deleted=False).first()
 
         stick_session_enabled = bool(sticky_sessions)
         stick_session_cookie_name = sticky_sessions.get("cookie_name", "sessionid")
@@ -170,6 +170,11 @@ class LBaaSSerializer(serializers.ModelSerializer):
         check_response_timeout_seconds = health_check.get("response_timeout_seconds", 5)
         check_healthy_threshold = health_check.get("healthy_threshold", 3)
         check_unhealthy_threshold = health_check.get("unhealthy_threshold", 5)
+
+        if not template and not size:
+            raise serializers.ValidationError(
+                {"error": ["Template or size not found. Plese contact support for more information."]}
+            )
 
         virtance = Virtance.objects.create(
             name=name,

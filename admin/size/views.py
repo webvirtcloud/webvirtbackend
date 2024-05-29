@@ -25,6 +25,10 @@ class AdminSizeCreateView(AdminFormView):
     success_url = reverse_lazy("admin_size_index")
 
     def form_valid(self, form):
+        if form.cleaned_data["type"] == Size.LBAAS:
+            if Size.objects.filter(type=Size.LBAAS, is_deleted=False).exists():
+                form.add_error("type", "LBaaS already exists.")
+                return self.form_invalid(form)
         form.save()
         return super().form_valid(form)
 

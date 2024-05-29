@@ -78,7 +78,7 @@ class Image(models.Model):
     class Meta:
         verbose_name = "Image"
         verbose_name_plural = "Images"
-        ordering = ["-id"]
+        ordering = ["-id", "-type"]
 
     def reset_event(self):
         self.event = None

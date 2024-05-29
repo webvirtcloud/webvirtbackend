@@ -27,6 +27,10 @@ class AdminImageCreateView(AdminFormView):
     success_url = reverse_lazy("admin_template_index")
 
     def form_valid(self, form):
+        if form.cleaned_data["type"] == Image.LBAAS:
+            if Image.objects.filter(type=Image.LBAAS, is_deleted=False).exists():
+                form.add_error("type", "LBaaS already exists.")
+                return self.form_invalid(form)
         form.save()
         return super().form_valid(form)
 

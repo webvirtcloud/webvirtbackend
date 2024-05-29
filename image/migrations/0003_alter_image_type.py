@@ -26,4 +26,8 @@ class Migration(migrations.Migration):
                 max_length=50,
             ),
         ),
+               migrations.AlterModelOptions(
+            name="image",
+            options={"ordering": ["-id", "-type"], "verbose_name": "Image", "verbose_name_plural": "Images"},
+        ),
     ]
