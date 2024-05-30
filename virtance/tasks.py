@@ -48,7 +48,7 @@ def email_virtance_created(recipient, hostname, ipaddr, region, distro):
 
 
 @app.task
-def create_virtance(virtance_id, password=None):
+def create_virtance(virtance_id, password=None, send_email=True):
     keypairs = []
     ipv4_public = None
     ipv4_compute = None
@@ -57,8 +57,8 @@ def create_virtance(virtance_id, password=None):
     virtance = Virtance.objects.get(id=virtance_id)
     compute = virtance.compute if virtance.compute else None
 
-    password = password if password else uuid4().hex[0:24]
-    password_hash = sha512_crypt.encrypt(uuid4().hex[0:24], salt=uuid4().hex[0:8], rounds=5000)
+    password_str = password if password else uuid4().hex[0:20]
+    password_hash = sha512_crypt.encrypt(password_str, salt=uuid4().hex[0:8], rounds=5000)
 
     if compute is None:
         compute_id = assign_free_compute(virtance_id)
@@ -142,6 +142,7 @@ def create_virtance(virtance_id, password=None):
         )
         if isinstance(res, dict) and res.get("detail"):
             virtance_error(virtance_id, res.get("detail"), "create")
+            return False
         else:
             virtance.active()
             virtance.reset_event()
@@ -159,13 +160,16 @@ def create_virtance(virtance_id, password=None):
             if virtance.template.type == Image.SNAPSHOT or virtance.template.type == Image.BACKUP:
                 virtance.template.reset_event()
 
-            email_virtance_created(
-                virtance.user.email,
-                virtance.name,
-                ipv4_public.address,
-                virtance.region.name,
-                virtance.template.description,
-            )
+            if send_email:
+                email_virtance_created(
+                    virtance.user.email,
+                    virtance.name,
+                    ipv4_public.address,
+                    virtance.region.name,
+                    virtance.template.description,
+                )
+    
+    return True
 
 
 @app.task
@@ -225,6 +229,8 @@ def rebuild_virtance(virtance_id):
     if res.get("detail") is None:
         virtance.active()
         virtance.reset_event()
+        return True
+    return False
 
 
 @app.task
@@ -380,11 +386,10 @@ def restore_virtance(virtance_id, image_id):
 
 @app.task
 def reset_password_virtance(virtance_id, password=None):
-    if password is None:
-        password = uuid4().hex[0:16]
     virtance = Virtance.objects.get(pk=virtance_id)
     wvcomp = wvcomp_conn(virtance.compute)
-    password_hash = sha512_crypt.encrypt(password, salt=uuid4().hex[0:8], rounds=5000)
+    password_str = password if password else uuid4().hex[0:20]
+    password_hash = sha512_crypt.encrypt(password_str, salt=uuid4().hex[0:8], rounds=5000)
     res = wvcomp.reset_password_virtance(virtance.id, password_hash)
     if res.get("detail") is None:
         virtance.active()

@@ -28,6 +28,6 @@ class Migration(migrations.Migration):
         ),
                migrations.AlterModelOptions(
             name="image",
-            options={"ordering": ["-id", "-type"], "verbose_name": "Image", "verbose_name_plural": "Images"},
+            options={"ordering": ["type", "-id"], "verbose_name": "Image", "verbose_name_plural": "Images"},
         ),
     ]

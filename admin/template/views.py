@@ -16,7 +16,7 @@ class AdminImageIndexView(AdminTemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["images"] = Image.objects.filter(
-            Q(type=Image.DISTRIBUTION) | Q(type=Image.APPLICATION), is_deleted=False
+            Q(type=Image.DISTRIBUTION) | Q(type=Image.APPLICATION) | Q(type=Image.LBAAS), is_deleted=False
         )
         return context
 

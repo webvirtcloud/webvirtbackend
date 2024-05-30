@@ -5,6 +5,8 @@ from size.models import Size
 from image.models import Image
 from region.models import Region
 from virtance.models import Virtance
+from virtance.utils import make_ssh_key, encrypt_data
+from .tasks import create_lbaas
 from .models import LBaaS, LBaaSForwadRule, LBaaSVirtance
 
 
@@ -190,6 +192,7 @@ class LBaaSSerializer(serializers.ModelSerializer):
             name=name,
             user=user,
             region=region,
+            private_key=encrypt_data(make_ssh_key()),
             virtance=virtance,
             check_protocol=check_protocol,
             check_port=check_port,
@@ -218,6 +221,8 @@ class LBaaSSerializer(serializers.ModelSerializer):
             for v_id in virtance_ids:
                 virtance = Virtance.objects.get(user=user, id=v_id, region=region, is_deleted=False)
                 LBaaSVirtance.objects.create(lbaas=lbaas, virtance=virtance)
+
+        create_lbaas.delay(lbaas.id)
 
         return lbaas
 

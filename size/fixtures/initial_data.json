@@ -5,18 +5,21 @@
         "fields": {
             "name": "micro",
             "slug": "s-1vcpu-512mb-10gb",
+            "type": "virtance",
             "description": "Micro",
             "vcpu": 1,
             "disk": 10737418240,
             "memory": 536870912,
             "transfer": 549755813888,
-            "type": "virtance",
             "is_active": true,
             "is_deleted": false,
             "created": "2022-11-11T18:48:33.848Z",
             "updated": "2022-11-11T18:48:33.848Z",
             "deleted": null,
-            "price": "0.007"
+            "price": "0.007000",
+            "regions": [
+                1
+            ]
         }
     },
     {
@@ -25,18 +28,21 @@
         "fields": {
             "name": "mini",
             "slug": "s-1vcpu-1gb-20gb",
+            "type": "virtance",
             "description": "Mini",
             "vcpu": 1,
             "disk": 21474836480,
             "memory": 1073741824,
             "transfer": 1099511627776,
-            "type": "virtance",
             "is_active": true,
             "is_deleted": false,
             "created": "2022-11-11T18:48:33.848Z",
             "updated": "2022-11-11T18:48:33.848Z",
             "deleted": null,
-            "price": "0.0139"
+            "price": "0.013900",
+            "regions": [
+                1
+            ]
         }
     },
     {
@@ -45,18 +51,21 @@
         "fields": {
             "name": "small",
             "slug": "s-1vcpu-2gb-40gb",
+            "type": "virtance",
             "description": "Small",
             "vcpu": 1,
             "disk": 42949672960,
             "memory": 2147483648,
             "transfer": 2199023255552,
-            "type": "virtance",
             "is_active": true,
             "is_deleted": false,
             "created": "2022-11-11T18:48:33.848Z",
             "updated": "2022-11-11T18:48:33.848Z",
             "deleted": null,
-            "price": "0.0209"
+            "price": "0.020900",
+            "regions": [
+                1
+            ]
         }
     },
     {
@@ -65,18 +74,21 @@
         "fields": {
             "name": "medium",
             "slug": "s-1vcpu-3gb-60gb",
+            "type": "virtance",
             "description": "Medium",
             "vcpu": 1,
             "disk": 64424509440,
             "memory": 3221225472,
             "transfer": 3298534883328,
-            "type": "virtance",
             "is_active": true,
             "is_deleted": false,
             "created": "2022-11-11T18:48:33.848Z",
             "updated": "2022-11-11T18:48:33.848Z",
             "deleted": null,
-            "price": "0.0278"
+            "price": "0.027800",
+            "regions": [
+                1
+            ]
         }
     },
     {
@@ -85,18 +97,21 @@
         "fields": {
             "name": "large",
             "slug": "s-2vcpu-4gb-80gb",
+            "type": "virtance",
             "description": "Large",
             "vcpu": 2,
             "disk": 85899345920,
             "memory": 4294967296,
             "transfer": 4398046511104,
-            "type": "virtance",
             "is_active": true,
             "is_deleted": false,
             "created": "2022-11-11T18:48:33.848Z",
             "updated": "2022-11-11T18:48:33.848Z",
             "deleted": null,
-            "price": "0.0348"
+            "price": "0.034800",
+            "regions": [
+                1
+            ]
         }
     },
     {
@@ -105,18 +120,21 @@
         "fields": {
             "name": "xlarge",
             "slug": "s-4vcpu-8gb-160gb",
+            "type": "virtance",
             "description": "Xlarge",
             "vcpu": 4,
             "disk": 171798691840,
             "memory": 8589934592,
             "transfer": 6597069766656,
-            "type": "virtance",
             "is_active": true,
             "is_deleted": false,
             "created": "2022-11-11T18:48:33.848Z",
             "updated": "2022-11-11T18:48:33.848Z",
             "deleted": null,
-            "price": "0.0695"
+            "price": "0.069500",
+            "regions": [
+                1
+            ]
         }
     },
     {
@@ -125,18 +143,21 @@
         "fields": {
             "name": "xxlarge",
             "slug": "s-6vcpu-16gb-320gb",
+            "type": "virtance",
             "description": "XXlarge",
             "vcpu": 6,
             "disk": 343597383680,
             "memory": 17179869184,
             "transfer": 8796093022208,
-            "type": "virtance",
             "is_active": true,
             "is_deleted": false,
             "created": "2022-11-11T18:48:33.848Z",
             "updated": "2022-11-11T18:48:33.848Z",
             "deleted": null,
-            "price": "0.1389"
+            "price": "0.138900",
+            "regions": [
+                1
+            ]
         }
     },
     {
@@ -145,82 +166,44 @@
         "fields": {
             "name": "xxxlarge",
             "slug": "s-8vcpu-32gb-480gb",
+            "type": "virtance",
             "description": "XXXlarge",
             "vcpu": 8,
             "disk": 515396075520,
             "memory": 34359738368,
             "transfer": 10995116277760,
-            "type": "virtance",
             "is_active": true,
             "is_deleted": false,
             "created": "2022-11-11T18:48:33.848Z",
             "updated": "2022-11-11T18:48:33.848Z",
             "deleted": null,
-            "price": "0.2779"
+            "price": "0.277900",
+            "regions": [
+                1
+            ]
         }
     },
     {
-        "model": "size.size_regions",
-        "pk": 1,
+        "model": "size.size",
+        "pk": 9,
         "fields": {
-            "size": 1,
-            "region": 1
-        }
-    },
-    {
-        "model": "size.size_regions",
-        "pk": 2,
-        "fields": {
-            "size": 2,
-            "region": 1
-        }
-    },
-    {
-        "model": "size.size_regions",
-        "pk": 3,
-        "fields": {
-            "size": 3,
-            "region": 1
-        }
-    },
-    {
-        "model": "size.size_regions",
-        "pk": 4,
-        "fields": {
-            "size": 4,
-            "region": 1
-        }
-    },
-    {
-        "model": "size.size_regions",
-        "pk": 5,
-        "fields": {
-            "size": 5,
-            "region": 1
-        }
-    },
-    {
-        "model": "size.size_regions",
-        "pk": 6,
-        "fields": {
-            "size": 6,
-            "region": 1
-        }
-    },
-    {
-        "model": "size.size_regions",
-        "pk": 7,
-        "fields": {
-            "size": 7,
-            "region": 1
-        }
-    },
-    {
-        "model": "size.size_regions",
-        "pk": 8,
-        "fields": {
-            "size": 8,
-            "region": 1
+            "name": "lbaas",
+            "slug": "lbaas-2vcpu-2gb-20gb",
+            "type": "lbaas",
+            "description": "Load Balancer",
+            "vcpu": 2,
+            "disk": 21474836480,
+            "memory": 2147483648,
+            "transfer": 2199023255552,
+            "is_active": true,
+            "is_deleted": false,
+            "created": "2024-05-29T17:25:21.538Z",
+            "updated": "2024-05-29T17:25:21.538Z",
+            "deleted": null,
+            "price": "0.020900",
+            "regions": [
+                1
+            ]
         }
     }
 ]

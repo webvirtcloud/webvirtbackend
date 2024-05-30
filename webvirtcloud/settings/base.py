@@ -227,6 +227,9 @@ CSRF_TRUSTED_ORIGINS = os.environ.get("CSRF_TRUSTED_ORIGINS", [ADMIN_URL])
 #
 # Panel settings
 #
+# Encryption key
+ENCRYPTION_KEY = os.environ.get("ENCRYPTION_KEY", "5yxdlGC9Dj-65vcwNBD_vTIeiyALevCLIJq89OCaToY=")
+
 # Public images URL storage (Distributions, Applicatons)
 PUBLIC_IMAGES_URL = os.environ.get("PUBLIC_IMAGES_URL", "https://cloud-images.webvirt.cloud/")
 
