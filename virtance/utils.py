@@ -1,3 +1,5 @@
+import time
+import socket
 from io import StringIO
 from random import choice
 from paramiko import RSAKey
@@ -52,6 +54,23 @@ def decrypt_data(data, key=None):
     decoded_encrypted_data = b64decode(data)
     decrypted_data = cipher.decrypt(decoded_encrypted_data)
     return decrypted_data.decode()
+
+
+def check_ssh_connect(host, port=22, timeout=180):
+    elapsed_time = 0
+    while elapsed_time < timeout:
+        try:
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            sock.connect((host, port))
+            return True
+        except socket.error:
+            time.sleep(1)
+            elapsed_time += 1
+
+        finally:
+            sock.close()
+
+    return False
 
 
 def make_vnc_hash(vnc_password, prefix_length=NOVNC_PASSWD_PREFIX, suffix_length=NOVNC_PASSWD_SUFFIX):
