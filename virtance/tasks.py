@@ -168,7 +168,7 @@ def create_virtance(virtance_id, password=None, send_email=True):
                     virtance.region.name,
                     virtance.template.description,
                 )
-    
+
     return True
 
 

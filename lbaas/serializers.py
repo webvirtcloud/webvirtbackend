@@ -11,13 +11,13 @@ from .models import LBaaS, LBaaSForwadRule, LBaaSVirtance
 
 
 class HeathCheckSerializer(serializers.Serializer):
-    path = serializers.CharField(required=False)
-    port = serializers.IntegerField()
-    protocol = serializers.CharField()
-    healthy_threshold = serializers.IntegerField()
-    unhealthy_threshold = serializers.IntegerField()
-    check_interval_seconds = serializers.IntegerField()
-    response_timeout_seconds = serializers.IntegerField()
+    path = serializers.CharField(required=False, source="check_path")
+    port = serializers.IntegerField(source="check_port")
+    protocol = serializers.CharField(source="check_protocol")
+    healthy_threshold = serializers.IntegerField(source="check_healthy_threshold")
+    unhealthy_threshold = serializers.IntegerField(source="check_unhealthy_threshold")
+    check_interval_seconds = serializers.IntegerField(source="check_interval_seconds")
+    response_timeout_seconds = serializers.IntegerField(source="check_timeout_seconds")
 
 
 class ForwardingRuleSerializer(serializers.Serializer):
@@ -37,15 +37,15 @@ class StickySessionsSerializer(serializers.Serializer):
 
 
 class LBaaSSerializer(serializers.ModelSerializer):
-    id = serializers.UUIDField(required=False, read_only=True)
+    id = serializers.UUIDField(required=False, read_only=True, source="uuid")
     ip = serializers.SerializerMethodField(read_only=True)
     name = serializers.CharField()
-    region = serializers.CharField()
-    created_at = serializers.DateTimeField(read_only=True)
-    virtance_ids = serializers.ListField(required=False)
+    region = serializers.CharField(write_only=True)
+    created_at = serializers.DateTimeField(read_only=True, source="created")
+    virtance_ids = serializers.ListField(required=False, write_only=True)
     health_check = serializers.DictField(required=False)
-    sticky_sessions = serializers.DictField(required=False)
-    forwarding_rules = ListOfForwardingRuleSerializer()
+    sticky_sessions = serializers.DictField(required=False, write_only=True)
+    forwarding_rules = ListOfForwardingRuleSerializer(write_only=True)
     redirect_http_to_https = serializers.BooleanField(required=False)
 
     class Meta:
@@ -88,6 +88,26 @@ class LBaaSSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({"forwarding_rules": ["Forwarding rules is required."]})
         if not all(isinstance(x, dict) for x in forwarding_rules):
             raise serializers.ValidationError({"forwarding_rules": ["Invalid forwarding rules."]})
+        for rule in forwarding_rules:
+            if (
+                not rule.get("entry_port")
+                or not rule.get("entry_protocol")
+                or not rule.get("target_port")
+                or not rule.get("target_protocol")
+            ):
+                raise serializers.ValidationError({"forwarding_rules": ["Invalid forwarding rules."]})
+
+            if rule.get("entry_protocol") not in [x[0] for x in LBaaSForwadRule.PROTOCOL_CHOICES]:
+                raise serializers.ValidationError({"forwarding_rules": ["Invalid entry_protocol."]})
+
+            if rule.get("target_protocol") not in [x[0] for x in LBaaSForwadRule.PROTOCOL_CHOICES]:
+                raise serializers.ValidationError({"forwarding_rules": ["Invalid target_protocol."]})
+
+            if 1 > rule.get("entry_port") < 65535:
+                raise serializers.ValidationError({"forwarding_rules": ["Invalid entry_port."]})
+
+            if 1 > rule.get("target_port") < 65535:
+                raise serializers.ValidationError({"forwarding_rules": ["Invalid target_port."]})
 
         # Check if virtance_ids are valid
         if virtance_ids:
@@ -137,14 +157,14 @@ class LBaaSSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         data = super().to_representation(instance)
 
-        data["region"] = RegionSerializer(Region.objects.get(slug=instance.region, is_deleted=False)).data
-        data["health_check"] = HeathCheckSerializer(LBaaS.objects.get(id=instance.id)).data
+        data["region"] = RegionSerializer(Region.objects.get(id=instance.virtance.region.id, is_deleted=False)).data
+        data["health_check"] = HeathCheckSerializer(instance).data
         data["virtance_ids"] = [lv.virtance.id for lv in LBaaSVirtance.objects.filter(lbaas=instance, is_deleted=False)]
-        data["sticky_sessions"] = StickySessionsSerializer(LBaaS.objects.get(id=instance.id)).data
+        data["sticky_sessions"] = StickySessionsSerializer(instance) if instance.sticky_sessions else None
         data["forwarding_rules"] = ForwardingRuleSerializer(
             LBaaSForwadRule.objects.filter(lbaas=instance, is_deleted=False), many=True
         ).data
-
+        
         return data
 
     def create(self, validated_data):
@@ -156,22 +176,34 @@ class LBaaSSerializer(serializers.ModelSerializer):
         sticky_sessions = validated_data.get("sticky_sessions")
         forwarding_rules = validated_data.get("forwarding_rules", [])
         redirect_http_to_https = validated_data.get("redirect_http_to_https", False)
+        private_key = encrypt_data(make_ssh_key())
 
         size = Size.objects.filter(type=Size.LBAAS, is_deleted=False).first()
         region = Region.objects.get(slug=region_slug, is_deleted=False)
         template = Image.objects.filter(type=Image.LBAAS, is_deleted=False).first()
 
-        stick_session_enabled = bool(sticky_sessions)
-        stick_session_cookie_name = sticky_sessions.get("cookie_name", "sessionid")
-        stick_session_cookie_ttl = sticky_sessions.get("cookie_ttl_seconds", 3600)
+        stick_session_enabled = True if sticky_sessions else False
+        stick_session_cookie_name = "sessionid"
+        stick_session_cookie_ttl = 3600
+        if sticky_sessions:
+            stick_session_cookie_name = sticky_sessions.get("cookie_name")
+            stick_session_cookie_ttl = sticky_sessions.get("cookie_ttl_seconds")
 
-        check_protocol = health_check.get("protocol", LBaaS.TCP)
-        check_path = health_check.get("path", "/")
-        check_port = health_check.get("port", 80)
-        check_check_interval_seconds = health_check.get("check_interval_seconds", 10)
-        check_response_timeout_seconds = health_check.get("response_timeout_seconds", 5)
-        check_healthy_threshold = health_check.get("healthy_threshold", 3)
-        check_unhealthy_threshold = health_check.get("unhealthy_threshold", 5)
+        check_protocol = LBaaS.TCP
+        check_path = "/"
+        check_port = 80
+        check_check_interval_seconds = 10
+        check_response_timeout_seconds = 5
+        check_healthy_threshold = 3
+        check_unhealthy_threshold = 5
+        if health_check:
+            check_protocol = health_check.get("protocol")
+            check_path = health_check.get("path", check_path)
+            check_port = health_check.get("port")
+            check_check_interval_seconds = health_check.get("check_interval_seconds")
+            check_response_timeout_seconds = health_check.get("response_timeout_seconds")
+            check_healthy_threshold = health_check.get("healthy_threshold")
+            check_unhealthy_threshold = health_check.get("unhealthy_threshold")
 
         if not template and not size:
             raise serializers.ValidationError(
@@ -191,8 +223,7 @@ class LBaaSSerializer(serializers.ModelSerializer):
         lbaas = LBaaS.objects.create(
             name=name,
             user=user,
-            region=region,
-            private_key=encrypt_data(make_ssh_key()),
+            private_key=private_key,
             virtance=virtance,
             check_protocol=check_protocol,
             check_port=check_port,
@@ -222,7 +253,7 @@ class LBaaSSerializer(serializers.ModelSerializer):
                 virtance = Virtance.objects.get(user=user, id=v_id, region=region, is_deleted=False)
                 LBaaSVirtance.objects.create(lbaas=lbaas, virtance=virtance)
 
-        create_lbaas.delay(lbaas.id)
+        # create_lbaas.delay(lbaas.id)
 
         return lbaas
 

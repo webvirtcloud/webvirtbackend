@@ -39,7 +39,7 @@ class Migration(migrations.Migration):
                         null=True,
                     ),
                 ),
-                ("private_key", models.CharField(max_length=1000, blank=True, null=True)),
+                ("private_key", models.TextField()),
                 (
                     "check_protocol",
                     models.CharField(

@@ -34,7 +34,7 @@ class LBaaS(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, models.PROTECT)
     virtance = models.ForeignKey("virtance.Virtance", models.PROTECT, blank=True, null=True)
     event = models.CharField(max_length=40, choices=EVENT_CHOICES, default=CREATE, blank=True, null=True)
-    private_key = models.CharField(max_length=1000, blank=True, null=True)
+    private_key = models.TextField()
     check_protocol = models.CharField(max_length=10, choices=CHECK_PROTOCOL_CHOICES, default=TCP)
     check_port = models.IntegerField(default=80)
     check_path = models.CharField(max_length=100, default="/")

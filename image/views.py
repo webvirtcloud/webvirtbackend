@@ -17,7 +17,7 @@ class ImageListAPI(APIView):
     def get_queryset(self):
         user = self.request.user
         i_type = self.request.query_params.get("type", None)
-        
+
         if i_type:
             if i_type == Image.LBAAS:
                 i_type = None
@@ -34,7 +34,7 @@ class ImageListAPI(APIView):
                 | Q(type=Image.SNAPSHOT, user=user),
                 is_deleted=False,
             )
-            
+
         return queryset
 
     def get(self, request, *args, **kwargs):

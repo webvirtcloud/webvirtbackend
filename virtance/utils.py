@@ -39,19 +39,21 @@ def make_ssh_key():
 
 
 def encrypt_data(data, key=None):
-    if key and not is_valid_fernet_key(key):
-        key = settings.ENCRYPTION_KEY
-    cipher = Fernet(key.encode())
-    encrypted_data = cipher.encrypt(data)
+    enc_key = settings.ENCRYPTION_KEY
+    if key and is_valid_fernet_key(key):
+        enc_key = key
+    cipher = Fernet(enc_key.encode())
+    encrypted_data = cipher.encrypt(data.encode())
     encoded_encrypted_data = b64encode(encrypted_data).decode()
     return encoded_encrypted_data
 
 
 def decrypt_data(data, key=None):
-    if key and not is_valid_fernet_key(key):
-        key = settings.ENCRYPTION_KEY
-    cipher = Fernet(key.encode())
-    decoded_encrypted_data = b64decode(data)
+    enc_key = settings.ENCRYPTION_KEY
+    if key and is_valid_fernet_key(key):
+        enc_key = key
+    cipher = Fernet(enc_key.encode())
+    decoded_encrypted_data = b64decode(data.encode())
     decrypted_data = cipher.decrypt(decoded_encrypted_data)
     return decrypted_data.decode()
 
