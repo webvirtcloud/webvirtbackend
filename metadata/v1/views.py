@@ -1,7 +1,9 @@
 from django.http import HttpResponse, JsonResponse
 
-from network.models import Network, IPAddress
+from lbaas.models import LBaaS
 from keypair.models import KeyPairVirtance
+from network.models import Network, IPAddress
+from virtance.utils import decrypt_data, make_ssh_public
 from .utils import MetadataMixin
 
 
@@ -16,6 +18,11 @@ class MetadataV1Json(MetadataMixin):
 
         for i in KeyPairVirtance.objects.filter(virtance=self.virtance):
             public_keys.append(i.keypair.public_key)
+
+        if self.virtance.type == self.virtance.LBAAS:
+            lbaas = LBaaS.objects.get(virtance_id=self.virtance.id)
+            private_key = decrypt_data(lbaas.private_key)
+            public_keys.append(make_ssh_public(private_key))
 
         ipaddr = IPAddress.objects.filter(virtance=self.virtance)
         interfaces = {
