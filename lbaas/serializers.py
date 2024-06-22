@@ -164,7 +164,7 @@ class LBaaSSerializer(serializers.ModelSerializer):
         data["forwarding_rules"] = ForwardingRuleSerializer(
             LBaaSForwadRule.objects.filter(lbaas=instance, is_deleted=False), many=True
         ).data
-        
+
         return data
 
     def create(self, validated_data):
@@ -253,7 +253,7 @@ class LBaaSSerializer(serializers.ModelSerializer):
                 virtance = Virtance.objects.get(user=user, id=v_id, region=region, is_deleted=False)
                 LBaaSVirtance.objects.create(lbaas=lbaas, virtance=virtance)
 
-        # create_lbaas.delay(lbaas.id)
+        create_lbaas.delay(lbaas.id)
 
         return lbaas
 

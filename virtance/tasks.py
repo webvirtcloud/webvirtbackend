@@ -91,12 +91,16 @@ def create_virtance(virtance_id, password=None, send_email=True):
         keypairs.append(kpv.keypair.public_key)
 
     if compute and ipv4_public and ipv4_compute and ipv4_private:
+        # TODO: rebuild webvirtcompute with new API for LBAAS type images
+        image_type = virtance.template.type
+        if virtance.template.type == Image.LBAAS:
+            image_type = "distribution"
         images = [
             {
                 "primary": True,
                 "name": vm_name(virtance.id),
                 "size": virtance.size.disk,
-                "type": virtance.template.type,
+                "type": image_type,
                 "md5sum": virtance.template.md5sum,
                 "file_name": virtance.template.file_name,
                 "public_url": settings.PUBLIC_IMAGES_URL,
