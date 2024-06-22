@@ -31,11 +31,16 @@ def make_passwd(length=8):
     return phrase
 
 
-def make_ssh_key():
+def make_ssh_private():
     private_key = RSAKey.generate(bits=2048)
     private_key_string = StringIO()
     private_key.write_private_key(private_key_string)
     return private_key_string.getvalue()
+
+
+def make_ssh_public(key):
+    private_key = RSAKey(file_obj=StringIO(key))
+    return f"{private_key.get_name()} {private_key.get_base64()}"
 
 
 def encrypt_data(data, key=None):
