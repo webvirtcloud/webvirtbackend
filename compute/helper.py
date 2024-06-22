@@ -37,10 +37,12 @@ def assign_free_compute(virtance_id):
 
         # Something checking for free resources :-)
         if host_res is not None and storage_res is not None:
-            cpu_free = ((host_res["host"]["cpus"] * CPU_USAGE_RATIO) - cpu_used) > virtance.size.vcpu
-            memory_free = ((host_res["host"]["memory"] * MEMORY_USAGE_RATIO) - memory_used) > virtance.size.memory
+            cpu_free = ((host_res.get("host", {}).get("cpus", 0) * CPU_USAGE_RATIO) - cpu_used) > virtance.size.vcpu
+            memory_free = (
+                (host_res.get("host", {}).get("memory", 0) * MEMORY_USAGE_RATIO) - memory_used
+            ) > virtance.size.memory
             storage_free = (
-                (storage_res["storage"]["size"]["total"] * STORAGE_USAGE_RATIO) - storage_used
+                (storage_res.get("storage", {}).get("size", {}).get("total", 0) * STORAGE_USAGE_RATIO) - storage_used
             ) > virtance.size.disk
 
             if cpu_free is True and memory_free is True and storage_free is True:
@@ -50,3 +52,4 @@ def assign_free_compute(virtance_id):
 
     virtance_error(virtance.id, "No compute found", event="assign_free_compute")
     return None
+ 
