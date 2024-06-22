@@ -37,6 +37,7 @@ class AdminVirtanceDataView(AdminTemplateView):
             if res_status.get("detail"):
                 messages.error(self.request, res_status.get("detail"))
 
+            status = res_status.get("status")
             if status == "running":
                 virtance.active()
             if status == "shutoff":
