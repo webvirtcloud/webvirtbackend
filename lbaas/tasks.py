@@ -90,8 +90,6 @@ reload_tasks = [
 
 
 def provision_lbaas(host, private_key, tasks, lbaas_vars=None):
-    private_key = decrypt_data(private_key)
-
     res = ansible_play(private_key=private_key, hosts=host, tasks=tasks, extra_vars=lbaas_vars)
 
     if res.host_failed.items():
@@ -109,12 +107,8 @@ def provision_lbaas(host, private_key, tasks, lbaas_vars=None):
 @app.task
 def create_lbaas(lbaas_id):
     lbaas = LBaaS.objects.get(id=lbaas_id)
-    private_key = decrypt_data(lbaas.private_key)
-    ipaddr = IPAddress.objects.get(virtance=lbaas.virtance, network__type=Network.PUBLIC, is_float=False).address
-    ansible_vars = {}
-
     if create_virtance(lbaas.virtance.id, send_email=False):
-        print(1111)
+        ipaddr = IPAddress.objects.get(virtance=lbaas.virtance, network__type=Network.PUBLIC, is_float=False).address
         if check_ssh_connect(ipaddr):
-            print(22222)
+            private_key = decrypt_data(lbaas.virtance.private_key)
             provision_lbaas(ipaddr, private_key, provision_tasks)

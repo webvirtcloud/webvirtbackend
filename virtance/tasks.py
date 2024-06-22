@@ -15,6 +15,7 @@ from network.helper import (
     assign_free_ipv4_compute,
     assign_free_ipv4_private,
 )
+from lbaas.models import LBaaS
 from image.tasks import image_delete
 from firewall.tasks import firewall_detach
 from size.models import Size
@@ -24,7 +25,7 @@ from network.models import Network, IPAddress
 from firewall.models import FirewallVirtance
 from image.models import Image, SnapshotCounter
 from .models import Virtance, VirtanceCounter
-from .utils import virtance_error
+from .utils import virtance_error, decrypt_data, make_ssh_public
 
 
 BACKUP_COST_RATIO = settings.BACKUP_COST_PERCENTAGE / 100
@@ -89,6 +90,11 @@ def create_virtance(virtance_id, password=None, send_email=True):
 
     for kpv in KeyPairVirtance.objects.filter(virtance_id=virtance_id):
         keypairs.append(kpv.keypair.public_key)
+
+    if virtance.type == Virtance.LBAAS:
+        lbaas = LBaaS.objects.get(virtance_id=virtance_id)
+        private_key = decrypt_data(lbaas.private_key)
+        keypairs.append(make_ssh_public(private_key))
 
     if compute and ipv4_public and ipv4_compute and ipv4_private:
         # TODO: rebuild webvirtcompute with new API for LBAAS type images

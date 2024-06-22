@@ -5,7 +5,7 @@ from size.models import Size
 from image.models import Image
 from region.models import Region
 from virtance.models import Virtance
-from virtance.utils import make_ssh_key, encrypt_data
+from virtance.utils import make_ssh_private, encrypt_data
 from .tasks import create_lbaas
 from .models import LBaaS, LBaaSForwadRule, LBaaSVirtance
 
@@ -176,7 +176,7 @@ class LBaaSSerializer(serializers.ModelSerializer):
         sticky_sessions = validated_data.get("sticky_sessions")
         forwarding_rules = validated_data.get("forwarding_rules", [])
         redirect_http_to_https = validated_data.get("redirect_http_to_https", False)
-        private_key = encrypt_data(make_ssh_key())
+        enc_private_key = encrypt_data(make_ssh_private())
 
         size = Size.objects.filter(type=Size.LBAAS, is_deleted=False).first()
         region = Region.objects.get(slug=region_slug, is_deleted=False)
@@ -223,7 +223,7 @@ class LBaaSSerializer(serializers.ModelSerializer):
         lbaas = LBaaS.objects.create(
             name=name,
             user=user,
-            private_key=private_key,
+            private_key=enc_private_key,
             virtance=virtance,
             check_protocol=check_protocol,
             check_port=check_port,
