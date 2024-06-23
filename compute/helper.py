@@ -52,4 +52,3 @@ def assign_free_compute(virtance_id):
 
     virtance_error(virtance.id, "No compute found", event="assign_free_compute")
     return None
- 

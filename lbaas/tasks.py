@@ -1,10 +1,11 @@
 from webvirtcloud.celery import app
 
-from .models import LBaaS
+from .models import LBaaS, LBaaSForwadRule, LBaaSVirtance
 from network.models import Network, IPAddress
 from virtance.tasks import create_virtance
 from virtance.utils import check_ssh_connect, decrypt_data
 from virtance.provision import ansible_play
+
 
 provision_tasks = [
     {
@@ -65,6 +66,7 @@ provision_tasks = [
     {"name": "Restart SSH service", "action": {"module": "systemd", "args": {"name": "sshd", "state": "reloaded"}}},
 ]
 
+
 reload_tasks = [
     {
         "name": "Template HAProxy configuration",
@@ -90,6 +92,9 @@ reload_tasks = [
 
 
 def provision_lbaas(host, private_key, tasks, lbaas_vars=None):
+    task = None
+    error = None
+
     res = ansible_play(private_key=private_key, hosts=host, tasks=tasks, extra_vars=lbaas_vars)
 
     if res.host_failed.items():
@@ -103,12 +108,68 @@ def provision_lbaas(host, private_key, tasks, lbaas_vars=None):
     if res.host_ok.items():
         pass
 
+    return error, task
+
 
 @app.task
 def create_lbaas(lbaas_id):
     lbaas = LBaaS.objects.get(id=lbaas_id)
     if create_virtance(lbaas.virtance.id, send_email=False):
-        ipaddr = IPAddress.objects.get(virtance=lbaas.virtance, network__type=Network.PUBLIC, is_float=False).address
-        if check_ssh_connect(ipaddr):
+        ipv4_public_address = IPAddress.objects.get(
+            virtance=lbaas.virtance, network__type=Network.PUBLIC, is_float=False
+        ).address
+        ipv4_private_address = IPAddress.objects.get(
+            virtance=lbaas.virtance, network__type=Network.PRIVATE, is_float=False
+        ).address
+        if check_ssh_connect(ipv4_public_address):
+            health = {
+                "check_protocol": lbaas.check_protocol,
+                "check_port": lbaas.check_port,
+                "check_path": lbaas.check_path,
+                "check_interval_seconds": lbaas.check_interval_seconds,
+                "check_timeout_seconds": lbaas.check_timeout_seconds,
+                "check_unhealthy_threshold": lbaas.check_unhealthy_threshold,
+                "check_healthy_threshold": lbaas.check_healthy_threshold,
+            }
+
+            forwarding_rules = []
+            for rule in LBaaSForwadRule.objects.filter(lbaas=lbaas, is_deleted=False):
+                forwarding_rules.append(
+                    {
+                        "entry_port": rule.entry_port,
+                        "entry_protocol": rule.entry_protocol,
+                        "target_port": rule.target_port,
+                        "target_protocol": rule.target_protocol,
+                    }
+                )
+
+            sticky_sessions = {}
+            if sticky_sessions:
+                sticky_sessions = {
+                    "cookie_ttl": lbaas.sticky_sessions_cookie_ttl,
+                    "cookie_name": lbaas.sticky_sessions_cookie_name,
+                }
+
+            virtances = []
+            for l_v in LBaaSVirtance.objects.filter(lbaas=lbaas, is_deleted=False):
+                ipv4_address = IPAddress.objects.get(
+                    virtance=l_v.virtance, network__type=Network.PRIVATE, is_float=False
+                ).address
+                virtances.append(
+                    {
+                        "virtance_id": l_v.virtance.id,
+                        "ipv4_address": ipv4_address,
+                    }
+                )
+
+            ansible_vars = {
+                "health": health,
+                "virtances": virtances,
+                "sticky_sessions": sticky_sessions,
+                "forwarding_rules": forwarding_rules,
+                "redirect_to_https": lbaas.redirect_http_to_https,
+                "ipv4_public_address": ipv4_private_address,
+                "ipv4_private_address": ipv4_private_address,
+            }
             private_key = decrypt_data(lbaas.private_key)
-            provision_lbaas(ipaddr, private_key, provision_tasks)
+            provision_lbaas(ipv4_public_address, private_key, provision_tasks, lbaas_vars=ansible_vars)
