@@ -2,14 +2,15 @@ import os
 import shutil
 import importlib
 import ansible.constants as C
+from ansible import context
+from ansible.playbook.play import Play
+from ansible.vars.manager import VariableManager
+from ansible.parsing.dataloader import DataLoader
+from ansible.plugins.callback import CallbackBase
+from ansible.plugins.loader import init_plugin_loader
+from ansible.inventory.manager import InventoryManager
 from ansible.executor.task_queue_manager import TaskQueueManager
 from ansible.module_utils.common.collections import ImmutableDict
-from ansible.inventory.manager import InventoryManager
-from ansible.parsing.dataloader import DataLoader
-from ansible.playbook.play import Play
-from ansible.plugins.callback import CallbackBase
-from ansible.vars.manager import VariableManager
-from ansible import context
 
 
 # Create a callback plugin so we can return as a result
@@ -31,6 +32,9 @@ class ResultsCollectorCallback(CallbackBase):
 
 
 def ansible_play(user="root", password=None, private_key=None, port=22, hosts=[], tasks={}, extra_vars=None):
+    # Load all the plugins (builtin and custom)
+    init_plugin_loader()
+
     # Update TMPDIR for ansible
     importlib.reload(C)
 
@@ -45,7 +49,7 @@ def ansible_play(user="root", password=None, private_key=None, port=22, hosts=[]
     # Set the default connection type to 'smart'
     context.CLIARGS = ImmutableDict(
         connection="smart",
-        module_path=[],
+        module_path=[""],
         forks=10,
         become=None,
         become_method=None,

@@ -110,5 +110,5 @@ def create_lbaas(lbaas_id):
     if create_virtance(lbaas.virtance.id, send_email=False):
         ipaddr = IPAddress.objects.get(virtance=lbaas.virtance, network__type=Network.PUBLIC, is_float=False).address
         if check_ssh_connect(ipaddr):
-            private_key = decrypt_data(lbaas.virtance.private_key)
+            private_key = decrypt_data(lbaas.private_key)
             provision_lbaas(ipaddr, private_key, provision_tasks)
