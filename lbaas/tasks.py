@@ -57,6 +57,28 @@ provision_tasks = [
         "action": {
             "module": "replace",
             "args": {
+                "dest": "/etc/default/prometheus",
+                "regexp": 'ARGS=""',
+                "replace": 'ARGS="--web.listen-address={{ ipv4_private_address }}:9090"',
+            },
+        },
+    },
+    {
+        "name": "Restart prometheus service",
+        "action": {"module": "systemd", "args": {"name": "prometheus", "state": "reloaded"}},
+    },
+    {
+        "name": "Disable systemd-resolved service",
+        "action": {
+            "module": "systemd",
+            "args": {"name": "systemd-resolved", "state": "stopped", "enabled": "no"},
+        },
+    },
+    {
+        "name": "Listen SSH on private IP address",
+        "action": {
+            "module": "replace",
+            "args": {
                 "dest": "/etc/ssh/sshd_config",
                 "regexp": "#ListenAddress 0.0.0.0",
                 "replace": "ListenAddress {{ ipv4_private_address }}",
@@ -123,7 +145,7 @@ def create_lbaas(lbaas_id):
         ipv4_private_address = IPAddress.objects.get(
             virtance=lbaas.virtance, network__type=Network.PRIVATE, is_float=False
         ).address
-        
+
         if check_ssh_connect(ipv4_public_address, private_key=private_key):
             health = {
                 "check_protocol": lbaas.check_protocol,

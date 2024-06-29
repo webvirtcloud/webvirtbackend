@@ -375,7 +375,7 @@
             "arch": "x86_64",
             "type": "lbaas",
             "event": null,
-            "md5sum": "21a15b720fe6a8ff08643a666cf9409a",
+            "md5sum": "e970f4fa67be21d17742728ee1e18fd9",
             "distribution": "debian",
             "description": "Debian 12 LBaaS x64",
             "file_name": "debian-12-lbaas-x64.qcow2",
