@@ -1,5 +1,6 @@
 import time
 import socket
+import paramiko
 from io import StringIO
 from random import choice
 from paramiko import RSAKey
@@ -63,13 +64,43 @@ def decrypt_data(data, key=None):
     return decrypted_data.decode()
 
 
-def check_ssh_connect(host, port=22, timeout=180):
+def check_ssh_auth(hostname, password=None, private_key=None, username="root", timeout=180):
+    pkey = None
+    elapsed_time = 0
+    ssh = paramiko.SSHClient()
+    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+
+    if private_key:
+        pkey = paramiko.RSAKey.from_private_key(StringIO(private_key))
+
+    while elapsed_time < timeout:
+        try:
+            ssh.connect(
+                hostname=hostname,
+                username=username,
+                password=password,
+                pkey=pkey,
+                allow_agent=False,
+                look_for_keys=False,
+            )
+            return True
+        except Exception:
+            time.sleep(1)
+
+        finally:
+            ssh.close()
+
+    return False
+
+
+def check_ssh_connect(host, password=None, private_key=None, port=22, timeout=180):
     elapsed_time = 0
     while elapsed_time < timeout:
         try:
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             sock.connect((host, port))
-            return True
+            if check_ssh_auth(host, password=password, private_key=private_key):
+                return True
         except socket.error:
             time.sleep(1)
             elapsed_time += 1

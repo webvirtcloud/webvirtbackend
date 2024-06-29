@@ -114,6 +114,8 @@ def provision_lbaas(host, private_key, tasks, lbaas_vars=None):
 @app.task
 def create_lbaas(lbaas_id):
     lbaas = LBaaS.objects.get(id=lbaas_id)
+    private_key = decrypt_data(lbaas.private_key)
+
     if create_virtance(lbaas.virtance.id, send_email=False):
         ipv4_public_address = IPAddress.objects.get(
             virtance=lbaas.virtance, network__type=Network.PUBLIC, is_float=False
@@ -121,7 +123,8 @@ def create_lbaas(lbaas_id):
         ipv4_private_address = IPAddress.objects.get(
             virtance=lbaas.virtance, network__type=Network.PRIVATE, is_float=False
         ).address
-        if check_ssh_connect(ipv4_public_address):
+        
+        if check_ssh_connect(ipv4_public_address, private_key=private_key):
             health = {
                 "check_protocol": lbaas.check_protocol,
                 "check_port": lbaas.check_port,
@@ -171,5 +174,4 @@ def create_lbaas(lbaas_id):
                 "ipv4_public_address": ipv4_private_address,
                 "ipv4_private_address": ipv4_private_address,
             }
-            private_key = decrypt_data(lbaas.private_key)
             provision_lbaas(ipv4_public_address, private_key, provision_tasks, lbaas_vars=ansible_vars)
