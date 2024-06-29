@@ -53,7 +53,7 @@ provision_tasks = [
         },
     },
     {
-        "name": "Listen SSH on private IP address",
+        "name": "Change prometheus listen address",
         "action": {
             "module": "replace",
             "args": {
@@ -72,6 +72,29 @@ provision_tasks = [
         "action": {
             "module": "systemd",
             "args": {"name": "systemd-resolved", "state": "stopped", "enabled": "no"},
+        },
+    },
+    {
+        "name": "Remove resolv.conf symlink",
+        "action": {
+            "module": "file",
+            "args": {
+                "path": "/etc/resolv.conf",
+                "state": "absent",
+            },
+        },
+    },
+    {
+        "name": "Create resolv.conf",
+        "action": {
+            "module": "template",
+            "args": {
+                "src": "ansible/lbaas/resolv.conf.j2",
+                "dest": "/etc/resolv.conf",
+                "owner": "root",
+                "group": "root",
+                "mode": "0644",
+            },
         },
     },
     {
