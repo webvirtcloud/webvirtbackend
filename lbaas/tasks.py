@@ -3,8 +3,8 @@ from webvirtcloud.celery import app
 from .models import LBaaS, LBaaSForwadRule, LBaaSVirtance
 from network.models import Network, IPAddress
 from virtance.tasks import create_virtance
-from virtance.utils import check_ssh_connect, decrypt_data
 from virtance.provision import ansible_play
+from virtance.utils import check_ssh_connect, decrypt_data, virtance_error
 
 
 provision_tasks = [
@@ -210,7 +210,7 @@ def create_lbaas(lbaas_id):
                     }
                 )
 
-            ansible_vars = {
+            lbaas_vars = {
                 "health": health,
                 "virtances": virtances,
                 "sticky_sessions": sticky_sessions,
@@ -219,4 +219,11 @@ def create_lbaas(lbaas_id):
                 "ipv4_public_address": ipv4_private_address,
                 "ipv4_private_address": ipv4_private_address,
             }
-            provision_lbaas(ipv4_public_address, private_key, provision_tasks, lbaas_vars=ansible_vars)
+            error, task = provision_lbaas(ipv4_public_address, private_key, provision_tasks, lbaas_vars=lbaas_vars)
+            if error:
+                error_message = error
+                if task:
+                    error_message = f"Task: {task}. Error: {error}"
+                virtance_error(lbaas.virtance.id, error_message, event="lbaas_provision")
+            else:
+                lbaas.reset_events()
