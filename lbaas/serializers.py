@@ -6,7 +6,7 @@ from image.models import Image
 from region.models import Region
 from virtance.models import Virtance
 from virtance.utils import make_ssh_private, encrypt_data
-from .tasks import create_lbaas
+from .tasks import create_lbaas, reload_lbaas
 from .models import LBaaS, LBaaSForwadRule, LBaaSVirtance
 
 
@@ -259,3 +259,80 @@ class LBaaSSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         return instance
+
+
+class LBaaSAddVirtanceSerializer(serializers.ModelSerializer):
+    virtance_ids = serializers.ListField(required=False)
+
+    def validate(self, attrs):
+        virtance_ids = list(set(attrs.get("virtance_ids", [])))
+
+        for v_id in virtance_ids:
+            if not isinstance(v_id, int):
+                raise serializers.ValidationError({"virtance_ids": ["This field must be a list of integers."]})
+
+        list_ids = Virtance.objects.filter(user=self.instance.user, id__in=virtance_ids, is_deleted=False).values_list(
+            "id", flat=True
+        )
+        for v_id in virtance_ids:
+            if v_id not in list_ids:
+                raise serializers.ValidationError(f"Virtance with ID {v_id} not found.")
+
+        for v_id in virtance_ids:
+            if LBaaSVirtance.objects.filter(lbaas=self.instance, virtance_id=v_id, is_deleted=False).exists():
+                raise serializers.ValidationError(f"Virtance with ID {v_id} has already added to load balancer.")
+
+        return attrs
+
+
+    def update(self, instance, validated_data):
+        virtance_ids = list(set(validated_data.get("virtance_ids")))
+
+        for v_id in virtance_ids:
+            LBaaSVirtance.objects.create(lbaas=instance, virtance_id=v_id)
+
+        instance.event = LBaaS.ADD_VIRTANCE
+        instance.save()
+        
+        reload_lbaas.delay(instance.id)
+
+        return validated_data
+
+
+class LBaaSDelVirtanceSerializer(serializers.ModelSerializer):
+    virtance_ids = serializers.ListField(required=False)
+
+    def validate(self, attrs):
+        virtance_ids = list(set(attrs.get("virtance_ids", [])))
+
+        for v_id in virtance_ids:
+            if not isinstance(v_id, int):
+                raise serializers.ValidationError({"virtance_ids": ["This field must be a list of integers."]})
+
+        list_ids = Virtance.objects.filter(user=self.instance.user, id__in=virtance_ids, is_deleted=False).values_list(
+            "id", flat=True
+        )
+        for v_id in virtance_ids:
+            if v_id not in list_ids:
+                raise serializers.ValidationError(f"Virtance with ID {v_id} not found.")
+
+        for v_id in virtance_ids:
+            if not LBaaSVirtance.objects.filter(lbaas=self.instance, virtance_id=v_id, is_deleted=False).exists():
+                raise serializers.ValidationError(f"Virtance with ID {v_id} has not added to load balancer.")
+
+        return attrs
+
+
+    def update(self, instance, validated_data):
+        virtance_ids = list(set(validated_data.get("virtance_ids")))
+
+        LBaaSVirtance.objects.filter(
+            lbaas=instance, virtance_id__in=virtance_ids, is_deleted=False
+        ).update(is_deleted=True)
+
+        instance.event = LBaaS.REMOVE_VIRTANCE
+        instance.save()
+
+        reload_lbaas.delay(instance.id)
+
+        return validated_data
