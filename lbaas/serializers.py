@@ -284,7 +284,6 @@ class LBaaSAddVirtanceSerializer(serializers.ModelSerializer):
 
         return attrs
 
-
     def update(self, instance, validated_data):
         virtance_ids = list(set(validated_data.get("virtance_ids")))
 
@@ -293,7 +292,7 @@ class LBaaSAddVirtanceSerializer(serializers.ModelSerializer):
 
         instance.event = LBaaS.ADD_VIRTANCE
         instance.save()
-        
+
         reload_lbaas.delay(instance.id)
 
         return validated_data
@@ -322,15 +321,139 @@ class LBaaSDelVirtanceSerializer(serializers.ModelSerializer):
 
         return attrs
 
-
     def update(self, instance, validated_data):
         virtance_ids = list(set(validated_data.get("virtance_ids")))
 
-        LBaaSVirtance.objects.filter(
-            lbaas=instance, virtance_id__in=virtance_ids, is_deleted=False
-        ).update(is_deleted=True)
+        LBaaSVirtance.objects.filter(lbaas=instance, virtance_id__in=virtance_ids, is_deleted=False).update(
+            is_deleted=True
+        )
 
         instance.event = LBaaS.REMOVE_VIRTANCE
+        instance.save()
+
+        reload_lbaas.delay(instance.id)
+
+        return validated_data
+
+
+class LBaaSAddRuleSerializer(serializers.ModelSerializer):
+    forwarding_rules = ListOfForwardingRuleSerializer()
+
+    def validate(self, attrs):
+        forwarding_rules = attrs.get("forwarding_rules")
+
+        if not all(isinstance(x, dict) for x in forwarding_rules):
+            raise serializers.ValidationError({"forwarding_rules": ["Invalid forwarding rules."]})
+        for rule in forwarding_rules:
+            if (
+                not rule.get("entry_port")
+                or not rule.get("entry_protocol")
+                or not rule.get("target_port")
+                or not rule.get("target_protocol")
+            ):
+                raise serializers.ValidationError({"forwarding_rules": ["Invalid forwarding rules."]})
+
+            if rule.get("entry_protocol") not in [x[0] for x in LBaaSForwadRule.PROTOCOL_CHOICES]:
+                raise serializers.ValidationError({"forwarding_rules": ["Invalid entry_protocol."]})
+
+            if rule.get("target_protocol") not in [x[0] for x in LBaaSForwadRule.PROTOCOL_CHOICES]:
+                raise serializers.ValidationError({"forwarding_rules": ["Invalid target_protocol."]})
+
+            if 1 > rule.get("entry_port") < 65535:
+                raise serializers.ValidationError({"forwarding_rules": ["Invalid entry_port."]})
+
+            if 1 > rule.get("target_port") < 65535:
+                raise serializers.ValidationError({"forwarding_rules": ["Invalid target_port."]})
+
+        for rule in forwarding_rules:
+            if LBaaSForwadRule.objects.filter(
+                lbaas=self.instance,
+                entry_port=rule.get("entry_port"),
+                entry_protocol=rule.get("entry_protocol"),
+                target_port=rule.get("target_port"),
+                target_protocol=rule.get("target_protocol"),
+                is_deleted=False,
+            ).exists():
+                raise serializers.ValidationError({"forwarding_rules": ["Rule already exists."]})
+
+        return attrs
+
+    def update(self, instance, validated_data):
+        forwarding_rules = validated_data.get("forwarding_rules")
+
+        for rule in forwarding_rules:
+            LBaaSForwadRule.objects.create(
+                lbaas=instance,
+                entry_port=rule.get("entry_port"),
+                entry_protocol=rule.get("entry_protocol"),
+                target_port=rule.get("target_port"),
+                target_protocol=rule.get("target_protocol"),
+            )
+
+        instance.event = LBaaS.ADD_RULE
+        instance.save()
+
+        reload_lbaas.delay(instance.id)
+
+        return validated_data
+
+
+class LBaaSDelRuleSerializer(serializers.ModelSerializer):
+    forwarding_rules = ListOfForwardingRuleSerializer()
+
+    def validate(self, attrs):
+        forwarding_rules = attrs.get("forwarding_rules")
+
+        if not all(isinstance(x, dict) for x in forwarding_rules):
+            raise serializers.ValidationError({"forwarding_rules": ["Invalid forwarding rules."]})
+        for rule in forwarding_rules:
+            if (
+                not rule.get("entry_port")
+                or not rule.get("entry_protocol")
+                or not rule.get("target_port")
+                or not rule.get("target_protocol")
+            ):
+                raise serializers.ValidationError({"forwarding_rules": ["Invalid forwarding rules."]})
+
+            if rule.get("entry_protocol") not in [x[0] for x in LBaaSForwadRule.PROTOCOL_CHOICES]:
+                raise serializers.ValidationError({"forwarding_rules": ["Invalid entry_protocol."]})
+
+            if rule.get("target_protocol") not in [x[0] for x in LBaaSForwadRule.PROTOCOL_CHOICES]:
+                raise serializers.ValidationError({"forwarding_rules": ["Invalid target_protocol."]})
+
+            if 1 > rule.get("entry_port") < 65535:
+                raise serializers.ValidationError({"forwarding_rules": ["Invalid entry_port."]})
+
+            if 1 > rule.get("target_port") < 65535:
+                raise serializers.ValidationError({"forwarding_rules": ["Invalid target_port."]})
+
+        for rule in forwarding_rules:
+            if not LBaaSForwadRule.objects.filter(
+                lbaas=self.instance,
+                entry_port=rule.get("entry_port"),
+                entry_protocol=rule.get("entry_protocol"),
+                target_port=rule.get("target_port"),
+                target_protocol=rule.get("target_protocol"),
+                is_deleted=False,
+            ).exists():
+                raise serializers.ValidationError({"forwarding_rules": ["Rule not found."]})
+
+        return attrs
+
+    def update(self, instance, validated_data):
+        forwarding_rules = validated_data.get("forwarding_rules")
+
+        for rule in forwarding_rules:
+            LBaaSForwadRule.objects.filter(
+                lbaas=instance,
+                entry_port=rule.get("entry_port"),
+                entry_protocol=rule.get("entry_protocol"),
+                target_port=rule.get("target_port"),
+                target_protocol=rule.get("target_protocol"),
+                is_deleted=False,
+            ).update(is_deleted=True)
+
+        instance.event = LBaaS.REMOVE_RULE
         instance.save()
 
         reload_lbaas.delay(instance.id)

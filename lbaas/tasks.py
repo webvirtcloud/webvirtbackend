@@ -247,7 +247,7 @@ def reload_lbaas(lbaas_id):
             "check_unhealthy_threshold": lbaas.check_unhealthy_threshold,
             "check_healthy_threshold": lbaas.check_healthy_threshold,
         }
-    
+
         forwarding_rules = []
         for rule in LBaaSForwadRule.objects.filter(lbaas=lbaas, is_deleted=False):
             forwarding_rules.append(
@@ -302,7 +302,7 @@ def delete_lbaas(lbaas_id):
     lbaas = LBaaS.objects.get(id=lbaas_id)
     lbaas.event = LBaaS.DELETE
     lbaas.save()
-    
+
     if delete_virtance(lbaas.virtance.id):
         lbaas.reset_events()
         lbaas.delete()
