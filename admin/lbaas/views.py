@@ -12,8 +12,8 @@ class AdminLBaaSIndexView(AdminTemplateView):
         context = super().get_context_data(**kwargs)
         lbaas = LBaaS.objects.filter(is_deleted=False)
         for lb in lbaas:
-            lb.num_rule = len(LBaaSForwadRule.objects.filter(lbaas=lbaas, is_deleted=False))
-            lb.num_virtance = len(LBaaSVirtance.objects.filter(lbaas=lbaas, is_deleted=False))
+            lb.num_rule = LBaaSForwadRule.objects.filter(lbaas=lb, is_deleted=False).count()
+            lb.num_virtance = LBaaSVirtance.objects.filter(lbaas=lb, is_deleted=False).count()
         context["lbaas"] = lbaas
         return context
 

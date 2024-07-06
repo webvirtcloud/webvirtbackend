@@ -19,6 +19,7 @@ INSTALLED_APPS += [
     "drf_yasg",
     "corsheaders",
     "debug_toolbar",
+    "django_browser_reload",
 ]
 
 # CORS settings
@@ -35,6 +36,7 @@ INTERNAL_IPS = [ip[: ip.rfind(".")] + ".1" for ip in ips] + ["127.0.0.1", "local
 MIDDLEWARE += [
     "corsheaders.middleware.CorsMiddleware",
     "debug_toolbar.middleware.DebugToolbarMiddleware",
+    "django_browser_reload.middleware.BrowserReloadMiddleware",
 ]
 
 # Static URL

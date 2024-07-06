@@ -35,6 +35,7 @@ if settings.DEBUG:
         re_path(r"^swagger(?P<format>\.json|\.yaml)$", schema_view.without_ui(cache_timeout=0), name="schema-json"),
         # Debug Toolbar
         re_path("__debug__/", include("debug_toolbar.urls")),
+        re_path("__reload__/", include("django_browser_reload.urls")),
     ]
 
 handler403 = "webvirtcloud.views.app_exception_handler403"

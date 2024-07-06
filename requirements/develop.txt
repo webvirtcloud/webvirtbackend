@@ -5,3 +5,4 @@ bpython
 drf-yasg
 django-cors-headers
 django-debug-toolbar
+django-browser-reload

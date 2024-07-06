@@ -36,6 +36,12 @@
                   scope="col"
                   class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                 >
+                  Type
+                </th>
+                <th
+                  scope="col"
+                  class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                >
                   Size
                 </th>
                 <th
@@ -85,6 +91,9 @@
                     href="{% url 'admin_user_data' virtance.user.id %}"
                     >{{ virtance.user.email }}</a
                   >
+                </td>
+                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                  {{ virtance.type|capfirst }}
                 </td>
                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                   {{ virtance.size.name }}

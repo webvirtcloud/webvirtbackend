@@ -12,8 +12,8 @@ class AdminFirewallIndexView(AdminTemplateView):
         context = super().get_context_data(**kwargs)
         firewalls = Firewall.objects.filter(is_deleted=False)
         for firewall in firewalls:
-            firewall.num_rule = len(Rule.objects.filter(firewall=firewall))
-            firewall.num_virtance = len(FirewallVirtance.objects.filter(firewall=firewall))
+            firewall.num_rule = Rule.objects.filter(firewall=firewall).count()
+            firewall.num_virtance = FirewallVirtance.objects.filter(firewall=firewall).count()
         context["firewalls"] = firewalls
         return context
 

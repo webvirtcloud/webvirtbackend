@@ -247,6 +247,33 @@
                 Floating IPs
               </a>
             </div>
+            <div class="space-y-1 px-2">
+              <a
+                href="{% url 'admin_lbaas_index' %}"
+                class="group flex items-center rounded-md px-2 py-2 text-sm font-medium {% if 'admin/floating_ip' in request.path %}bg-gray-100 text-gray-900{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900 {% endif %}"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="text-gray-400 group-hover:text-gray-500 mr-3 h-6 w-6"
+                >
+                  <path 
+                    stroke-linecap="round" 
+                    stroke-linejoin="round" 
+                    d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"
+                  ></path>
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"
+                  ></path>
+                </svg>
+                Load Balancers
+              </a>
+            </div>
           </div>
 
           <div>
