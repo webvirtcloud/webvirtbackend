@@ -276,7 +276,7 @@ def reload_lbaas(lbaas_id):
                     "virtance_id": l_v.virtance.id,
                     "ipv4_address": ipv4_address,
                 }
-            )`
+            )
 
         lbaas_vars = {
             "health": health,
