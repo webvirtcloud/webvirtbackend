@@ -38,3 +38,85 @@ defaults
         errorfile 502 /etc/haproxy/errors/502.http
         errorfile 503 /etc/haproxy/errors/503.http
         errorfile 504 /etc/haproxy/errors/504.http
+
+{% for rule in forwarding_rules %}
+{% if rule.entry_protocol == 'http' %}
+frontend {{ rule.entry_protocol }}_{{ rule.entry_port }}
+        bind {{ ipv4_public_address }}:{{ rule.entry_port }}
+        {% if http_redirect_https %}
+        redirect scheme https code 301 if !{ ssl_fc }
+        {% endif %}
+        default_backend {{ rule.entry_protocol }}_{{ rule.entry_port }}
+
+backend {{ rule.entry_protocol }}_{{ rule.entry_port }}
+        balance roundrobin
+        {% if sticky_sessions %}
+        cookie {{ sticky_sessions.cookie_name }} insert indirect nocache maxidle {{ sticky_sessions.cookie_ttl }}
+        {% endif %}
+        {% for virtance in rule.virtances %}
+        server virtance_{{ virtance.id }} {{ virtance.ipaddr }}:{{ rule.target_port }} {% if sticky_sessions %}cookie S1{% endif %} check {{ health.check_protocol }} 
+        {% endfor %}
+        check port {{ healthc.heck_port }} 
+        check inter {{ health.check_interval_seconds }}s
+        check fastinter {{ health.check_interval_seconds }}s
+        check downinter {{ health.check_unhealthy_threshold }}s
+        check rise {{ health.check_healthy_threshold }}
+        check fall {{ health.check_unhealthy_threshold }}
+        check timeout {{ health.check_timeout_seconds }}s
+        http-check send meth GET uri {{ health.check_path }} ver HTTP/1.1
+{% elif rule.entry_protocol == 'https' %}
+frontend {{ rule.entry_protocol }}_{{ rule.entry_port }}
+        bind {{ ipv4_public_address }}:{{ rule.entry_port }} ssl crt /etc/haproxy/ssl/cert.pem
+        default_backend {{ rule.entry_protocol }}_{{ rule.entry_port }}
+
+backend {{ rule.entry_protocol }}_{{ rule.entry_port }}
+        balance roundrobin
+        {% if sticky_sessions %}
+        cookie {{ sticky_sessions.cookie_name }} insert indirect nocache maxidle {{ sticky_sessions.cookie_ttl }}
+        {% endif %}
+        {% for virtance in rule.virtances %}
+        server virtance_{{ virtance.id }} {{ virtance.ipaddr }}:{{ rule.target_port }} {% if sticky_sessions %}cookie S1{% endif %} check {{ health.check_protocol }} 
+        {% endfor %}
+        check port {{ healthc.heck_port }} 
+        check inter {{ health.check_interval_seconds }}s
+        check fastinter {{ health.check_interval_seconds }}s
+        check downinter {{ health.check_unhealthy_threshold }}s
+        check rise {{ health.check_healthy_threshold }}
+        check fall {{ health.check_unhealthy_threshold }}
+        check timeout {{ health.check_timeout_seconds }}s
+{% elif rule.entry_protocol == 'tcp' %}
+frontend {{ rule.entry_protocol }}_{{ rule.entry_port }}
+        bind {{ ipv4_public_address }}:{{ rule.entry_port }}
+        default_backend {{ rule.entry_protocol }}_{{ rule.entry_port }}
+
+backend {{ rule.entry_protocol }}_{{ rule.entry_port }}
+        balance roundrobin
+        {% for virtance in rule.virtances %}
+        server virtance_{{ virtance.id }} {{ virtance.ipaddr }}:{{ rule.target_port }} check
+        {% endfor %}
+        check port {{ healthc.heck_port }} 
+        check inter {{ health.check_interval_seconds }}s
+        check fastinter {{ health.check_interval_seconds }}s
+        check downinter {{ health.check_unhealthy_threshold }}s
+        check rise {{ health.check_healthy_threshold }}
+        check fall {{ health.check_unhealthy_threshold }}
+        check timeout {{ health.check_timeout_seconds }}s
+{% elif rule.entry_protocol == 'udp' %}
+frontend {{ rule.entry_protocol }}_{{ rule.entry_port }}
+        bind {{ ipv4_public_address }}:{{ rule.entry_port }}
+        default_backend {{ rule.entry_protocol }}_{{ rule.entry_port }}
+
+backend {{ rule.entry_protocol }}_{{ rule.entry_port }}
+        balance roundrobin
+        {% for virtance in rule.virtances %}
+        server virtance_{{ virtance.id }} {{ virtance.ipaddr }}:{{ rule.target_port }} check
+        {% endfor %}
+        check port {{ healthc.heck_port }} 
+        check inter {{ health.check_interval_seconds }}s
+        check fastinter {{ health.check_interval_seconds }}s
+        check downinter {{ health.check_unhealthy_threshold }}s
+        check rise {{ health.check_healthy_threshold }}
+        check fall {{ health.check_unhealthy_threshold }}
+        check timeout {{ health.check_timeout_seconds }}s
+{% endif %}
+{% endfor %}
