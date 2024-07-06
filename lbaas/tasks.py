@@ -2,7 +2,7 @@ from webvirtcloud.celery import app
 
 from .models import LBaaS, LBaaSForwadRule, LBaaSVirtance
 from network.models import Network, IPAddress
-from virtance.tasks import create_virtance
+from virtance.tasks import create_virtance, delete_virtance
 from virtance.provision import ansible_play
 from virtance.utils import check_ssh_connect, decrypt_data, virtance_error
 
@@ -295,3 +295,14 @@ def reload_lbaas(lbaas_id):
             virtance_error(lbaas.virtance.id, error_message, event="lbaas_reload")
         else:
             lbaas.reset_events()
+
+
+@app.task
+def delete_lbaas(lbaas_id):
+    lbaas = LBaaS.objects.get(id=lbaas_id)
+    lbaas.event = LBaaS.DELETE
+    lbaas.save()
+    
+    if delete_virtance(lbaas.virtance.id):
+        lbaas.reset_events()
+        lbaas.delete()

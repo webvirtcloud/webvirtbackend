@@ -493,6 +493,8 @@ def delete_virtance(virtance_id):
     if res.get("detail"):
         virtance_error(virtance_id, res.get("detail"), "delete")
 
+    return True
+
 
 @app.task
 def virtance_counter():

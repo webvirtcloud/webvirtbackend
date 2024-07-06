@@ -6,6 +6,7 @@ from django.shortcuts import get_object_or_404
 from webvirtcloud.views import error_message_response
 from .models import LBaaS
 from .serializers import LBaaSSerializer
+from .tasks import delete_lbaas
 
 
 class LBaaSListAPI(APIView):
@@ -38,6 +39,11 @@ class LBaaSDataAPI(APIView):
 
     def delete(self, request, *args, **kwargs):
         lbaas = self.get_object()
+
+        if lbaas.event is not None:
+            return error_message_response("The load balancer already has event.")
+
+        delete_lbaas.delay(lbaas.id)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
