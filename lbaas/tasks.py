@@ -227,3 +227,71 @@ def create_lbaas(lbaas_id):
                 virtance_error(lbaas.virtance.id, error_message, event="lbaas_provision")
             else:
                 lbaas.reset_events()
+
+
+@app.task
+def reload_lbaas(lbaas_id):
+    lbaas = LBaaS.objects.get(id=lbaas_id)
+    private_key = decrypt_data(lbaas.private_key)
+    ipv4_private_address = IPAddress.objects.get(
+        virtance=lbaas.virtance, network__type=Network.PRIVATE, is_float=False
+    ).address
+
+    if check_ssh_connect(lbaas.ipv4_private_address, private_key=private_key):
+        health = {
+            "check_protocol": lbaas.check_protocol,
+            "check_port": lbaas.check_port,
+            "check_path": lbaas.check_path,
+            "check_interval_seconds": lbaas.check_interval_seconds,
+            "check_timeout_seconds": lbaas.check_timeout_seconds,
+            "check_unhealthy_threshold": lbaas.check_unhealthy_threshold,
+            "check_healthy_threshold": lbaas.check_healthy_threshold,
+        }
+    
+        forwarding_rules = []
+        for rule in LBaaSForwadRule.objects.filter(lbaas=lbaas, is_deleted=False):
+            forwarding_rules.append(
+                {
+                    "entry_port": rule.entry_port,
+                    "entry_protocol": rule.entry_protocol,
+                    "target_port": rule.target_port,
+                    "target_protocol": rule.target_protocol,
+                }
+            )
+
+        sticky_sessions = {}
+        if sticky_sessions:
+            sticky_sessions = {
+                "cookie_ttl": lbaas.sticky_sessions_cookie_ttl,
+                "cookie_name": lbaas.sticky_sessions_cookie_name,
+            }
+
+        virtances = []
+        for l_v in LBaaSVirtance.objects.filter(lbaas=lbaas, is_deleted=False):
+            ipv4_address = IPAddress.objects.get(
+                virtance=l_v.virtance, network__type=Network.PRIVATE, is_float=False
+            ).address
+            virtances.append(
+                {
+                    "virtance_id": l_v.virtance.id,
+                    "ipv4_address": ipv4_address,
+                }
+            )`
+
+        lbaas_vars = {
+            "health": health,
+            "virtances": virtances,
+            "sticky_sessions": sticky_sessions,
+            "forwarding_rules": forwarding_rules,
+            "redirect_to_https": lbaas.redirect_http_to_https,
+            "ipv4_public_address": ipv4_private_address,
+            "ipv4_private_address": ipv4_private_address,
+        }
+        error, task = provision_lbaas(lbaas.ipv4_private_address, private_key, reload_tasks, lbaas_vars=lbaas_vars)
+        if error:
+            error_message = error
+            if task:
+                error_message = f"Task: {task}. Error: {error}"
+            virtance_error(lbaas.virtance.id, error_message, event="lbaas_reload")
+        else:
+            lbaas.reset_events()

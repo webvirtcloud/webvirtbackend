@@ -55,13 +55,13 @@ class LBaaSVirtancesAPI(APIView):
 
         serializer = self.class_serializer(lbaas, many=False)
         return Response({"load_balancer": serializer.data})
-    
+
     def delete(self, request, *args, **kwargs):
         lbaas = self.get_object()
 
         if lbaas.event is not None:
             return error_message_response("The load balancer already has event.")
-    
+
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
@@ -79,7 +79,7 @@ class LBaaSForwardRulesAPI(APIView):
 
         serializer = self.class_serializer(self.get_object(), many=False)
         return Response({"load_balancer": serializer.data})
-    
+
     def delete(self, request, *args, **kwargs):
         lbaas = self.get_object()
 
