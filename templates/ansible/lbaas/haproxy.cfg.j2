@@ -53,10 +53,10 @@ backend {{ rule.entry_protocol }}_{{ rule.entry_port }}
         {% if sticky_sessions %}
         cookie {{ sticky_sessions.cookie_name }} insert indirect nocache maxidle {{ sticky_sessions.cookie_ttl }}
         {% endif %}
-        {% for virtance in rule.virtances %}
+        {% for virtance in virtances %}
         server virtance_{{ virtance.id }} {{ virtance.ipaddr }}:{{ rule.target_port }} {% if sticky_sessions %}cookie S1{% endif %} check {{ health.check_protocol }} 
         {% endfor %}
-        check port {{ healthc.heck_port }} 
+        check port {{ health.check_port }} 
         check inter {{ health.check_interval_seconds }}s
         check fastinter {{ health.check_interval_seconds }}s
         check downinter {{ health.check_unhealthy_threshold }}s
@@ -74,10 +74,10 @@ backend {{ rule.entry_protocol }}_{{ rule.entry_port }}
         {% if sticky_sessions %}
         cookie {{ sticky_sessions.cookie_name }} insert indirect nocache maxidle {{ sticky_sessions.cookie_ttl }}
         {% endif %}
-        {% for virtance in rule.virtances %}
+        {% for virtance in virtances %}
         server virtance_{{ virtance.id }} {{ virtance.ipaddr }}:{{ rule.target_port }} {% if sticky_sessions %}cookie S1{% endif %} check {{ health.check_protocol }} 
         {% endfor %}
-        check port {{ healthc.heck_port }} 
+        check port {{ health.check_port }} 
         check inter {{ health.check_interval_seconds }}s
         check fastinter {{ health.check_interval_seconds }}s
         check downinter {{ health.check_unhealthy_threshold }}s
@@ -91,10 +91,10 @@ frontend {{ rule.entry_protocol }}_{{ rule.entry_port }}
 
 backend {{ rule.entry_protocol }}_{{ rule.entry_port }}
         balance roundrobin
-        {% for virtance in rule.virtances %}
+        {% for virtance in virtances %}
         server virtance_{{ virtance.id }} {{ virtance.ipaddr }}:{{ rule.target_port }} check
         {% endfor %}
-        check port {{ healthc.heck_port }} 
+        check port {{ health.check_port }} 
         check inter {{ health.check_interval_seconds }}s
         check fastinter {{ health.check_interval_seconds }}s
         check downinter {{ health.check_unhealthy_threshold }}s
@@ -108,10 +108,10 @@ frontend {{ rule.entry_protocol }}_{{ rule.entry_port }}
 
 backend {{ rule.entry_protocol }}_{{ rule.entry_port }}
         balance roundrobin
-        {% for virtance in rule.virtances %}
+        {% for virtance in virtances %}
         server virtance_{{ virtance.id }} {{ virtance.ipaddr }}:{{ rule.target_port }} check
         {% endfor %}
-        check port {{ healthc.heck_port }} 
+        check port {{ health.check_port }} 
         check inter {{ health.check_interval_seconds }}s
         check fastinter {{ health.check_interval_seconds }}s
         check downinter {{ health.check_unhealthy_threshold }}s

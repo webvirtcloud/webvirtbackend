@@ -304,5 +304,5 @@ def delete_lbaas(lbaas_id):
     lbaas.save()
 
     if delete_virtance(lbaas.virtance.id):
-        lbaas.reset_events()
+        lbaas.reset_event()
         lbaas.delete()
