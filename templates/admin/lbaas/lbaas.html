@@ -13,7 +13,7 @@
 
   <div class="overflow-hidden bg-white shadow sm:rounded-lg">
     <div class="px-4 py-5 sm:px-6">
-      
+
       {% include 'admin/alerts.html' %}
 
       <div class="flex justify-between items-center">
@@ -24,58 +24,30 @@
             </p>
             <p class="mt-1 max-w-2xl text-sm text-gray-500">
               Running on Virtance: <a class="text-blue-600 hover:text-blue-900"
-                                      href="{% url 'admin_virtance_data' lbaas.virtance.id %}"
-                                    >{{ lbaas.virtance.id }}</a>
+                href="{% url 'admin_virtance_data' lbaas.virtance.id %}">{{ lbaas.virtance.id }}</a>
             </p>
           </div>
           {% if lbaas.event %}
           <div
-            class="py-0.5 px-1 rounded-md flex items-center gap-1 border border-yellow-300 bg-yellow-50 text-xs text-yellow-700"
-          >
-            <svg
-              class="animate-spin h-3 w-3"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <circle
-                class="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                stroke-width="4"
-              ></circle>
-              <path
-                class="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-              ></path>
+            class="py-0.5 px-1 rounded-md flex items-center gap-1 border border-yellow-300 bg-yellow-50 text-xs text-yellow-700">
+            <svg class="animate-spin h-3 w-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+              </path>
             </svg>
             {{ lbaas.event|capfirst }}...
           </div>
           <div>
-            <form
-              action="{% url 'admin_lbaas_reset_event' lbaas.id %}"
-              method="post"
-            >
+            <form action="{% url 'admin_lbaas_reset_event' lbaas.id %}" method="post">
               {% csrf_token %}
               <button
                 class="flex items-center justify-center gap-1 rounded-md bg-gray-200 py-0.5 px-1.5 text-center text-xs font-semibold shadow-sm hover:bg-gray-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
-                name="reset"
-                type="submit"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                  class="w-3 h-3"
-                >
-                  <path
-                    fill-rule="evenodd"
+                name="reset" type="submit">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-3 h-3">
+                  <path fill-rule="evenodd"
                     d="M15.312 11.424a5.5 5.5 0 01-9.201 2.466l-.312-.311h2.433a.75.75 0 000-1.5H3.989a.75.75 0 00-.75.75v4.242a.75.75 0 001.5 0v-2.43l.31.31a7 7 0 0011.712-3.138.75.75 0 00-1.449-.39zm1.23-3.723a.75.75 0 00.219-.53V2.929a.75.75 0 00-1.5 0V5.36l-.31-.31A7 7 0 003.239 8.188a.75.75 0 101.448.389A5.5 5.5 0 0113.89 6.11l.311.31h-2.432a.75.75 0 000 1.5h4.243a.75.75 0 00.53-.219z"
-                    clip-rule="evenodd"
-                  />
+                    clip-rule="evenodd" />
                 </svg>
 
                 Reset Event
@@ -85,51 +57,28 @@
           {% endif %}
         </div>
         <div class="flex items-center gap-2">
-          <button
-            title="Download Private Key"
-            class="text-gray-500 hover:bg-gray-100 block w-9 flex items-center justify-center h-9 rounded-md border"
-            onclick="window.open(`{% url 'admin_lbaas_download_private_key' lbaas.id %}`);"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-              class="w-5 h-5"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M3.25 3A2.25 2.25 0 001 5.25v9.5A2.25 2.25 0 003.25 17h13.5A2.25 2.25 0 0019 14.75v-9.5A2.25 2.25 0 0016.75 3H3.25zm.943 8.752a.75.75 0 01.055-1.06L6.128 9l-1.88-1.693a.75.75 0 111.004-1.114l2.5 2.25a.75.75 0 010 1.114l-2.5 2.25a.75.75 0 01-1.06-.055zM9.75 10.25a.75.75 0 000 1.5h2.5a.75.75 0 000-1.5h-2.5z"
-                clip-rule="evenodd"
-              />
+          <button title="Download Private Key"
+            class="text-gray-500 hover:bg-gray-100 block flex pl-2 pr-4 gap-1.5 items-center justify-center h-9 rounded-md border"
+            onclick="window.open(`{% url 'admin_lbaas_download_private_key' lbaas.id %}`);">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="w-5 h-5">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
             </svg>
+            <span class="text-sm font-medium">Private key</span>
           </button>
           <div class="h-full w-0.5 bg-gray-300"></div>
-          <form
-            action="{% url 'admin_lbaas_recreate' lbaas.id %}"
-            method="post"
-          >
+          <form action="{% url 'admin_lbaas_recreate' lbaas.id %}" method="post">
             {% csrf_token %}
-            <button {% if event %}disabled{% endif %}
-              type="submit"
-              name="recreate"
-              title="Recreate"
+            <button {% if event %}disabled{% endif %} type="submit" name="recreate" title="Recreate"
               class="text-gray-500 hover:bg-gray-100 block w-9 flex items-center justify-center h-9 rounded-md border"
-              onclick="return confirm('Are you sure you want to recreate this Virtance? This will delete all existing data and cannot be undone.');"
-            >
-              <svg 
-                xmlns="http://www.w3.org/2000/svg" 
-                viewBox="0 0 20 20" 
-                fill="currentColor" 
-                class="w-5 h-5"
-              >
-                <path 
-                  fill-rule="evenodd" 
-                  d="M14.5 10a4.5 4.5 0 004.284-5.882c-.105-.324-.51-.391-.752-.15L15.34 6.66a.454.454 0 01-.493.11 3.01 3.01 0 01-1.618-1.616.455.455 0 01.11-.494l2.694-2.692c.24-.241.174-.647-.15-.752a4.5 4.5 0 00-5.873 4.575c.055.873-.128 1.808-.8 2.368l-7.23 6.024a2.724 2.724 0 103.837 3.837l6.024-7.23c.56-.672 1.495-.855 2.368-.8.096.007.193.01.291.01zM5 16a1 1 0 11-2 0 1 1 0 012 0z" 
-                  clip-rule="evenodd" 
-                />
-                <path 
-                  d="M14.5 11.5c.173 0 .345-.007.514-.022l3.754 3.754a2.5 2.5 0 01-3.536 3.536l-4.41-4.41 2.172-2.607c.052-.063.147-.138.342-.196.202-.06.469-.087.777-.067.128.008.257.012.387.012zM6 4.586l2.33 2.33a.452.452 0 01-.08.09L6.8 8.214 4.586 6H3.309a.5.5 0 01-.447-.276l-1.7-3.402a.5.5 0 01.093-.577l.49-.49a.5.5 0 01.577-.094l3.402 1.7A.5.5 0 016 3.31v1.277z"
-                />
+              onclick="return confirm('Are you sure you want to recreate this Virtance? This will delete all existing data and cannot be undone.');">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5">
+                <path fill-rule="evenodd"
+                  d="M14.5 10a4.5 4.5 0 004.284-5.882c-.105-.324-.51-.391-.752-.15L15.34 6.66a.454.454 0 01-.493.11 3.01 3.01 0 01-1.618-1.616.455.455 0 01.11-.494l2.694-2.692c.24-.241.174-.647-.15-.752a4.5 4.5 0 00-5.873 4.575c.055.873-.128 1.808-.8 2.368l-7.23 6.024a2.724 2.724 0 103.837 3.837l6.024-7.23c.56-.672 1.495-.855 2.368-.8.096.007.193.01.291.01zM5 16a1 1 0 11-2 0 1 1 0 012 0z"
+                  clip-rule="evenodd" />
+                <path
+                  d="M14.5 11.5c.173 0 .345-.007.514-.022l3.754 3.754a2.5 2.5 0 01-3.536 3.536l-4.41-4.41 2.172-2.607c.052-.063.147-.138.342-.196.202-.06.469-.087.777-.067.128.008.257.012.387.012zM6 4.586l2.33 2.33a.452.452 0 01-.08.09L6.8 8.214 4.586 6H3.309a.5.5 0 01-.447-.276l-1.7-3.402a.5.5 0 01.093-.577l.49-.49a.5.5 0 01.577-.094l3.402 1.7A.5.5 0 016 3.31v1.277z" />
               </svg>
             </button>
           </form>
@@ -137,9 +86,7 @@
       </div>
     </div>
     <div class="border-t border-gray-200 px-4 py-5 sm:px-6">
-      <dl
-        class="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-3"
-      >
+      <dl class="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
         <div class="sm:col-span-1">
           <dt class="text-sm font-medium text-gray-500">ID</dt>
           <dd class="mt-1 text-sm text-gray-900">{{ lbaas.id }}</dd>
@@ -151,11 +98,8 @@
         <div class="sm:col-span-1">
           <dt class="text-sm font-medium text-gray-500">User</dt>
           <dd class="mt-1 text-sm text-gray-900">
-            <a
-              class="text-blue-600 hover:text-blue-900"
-              href="{% url 'admin_user_data' lbaas.user.id %}"
-              >{{ lbaas.user.email }}</a
-            >
+            <a class="text-blue-600 hover:text-blue-900" href="{% url 'admin_user_data' lbaas.user.id %}">{{
+              lbaas.user.email }}</a>
           </dd>
         </div>
         <div class="sm:col-span-1">
@@ -177,49 +121,29 @@
       </dl>
     </div>
   </div>
-  
+
   <div>
     <h2 class="text-2xl font-medium mb-4">Rules</h2>
-    <div
-      class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg"
-    >
+    <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg">
       <table class="min-w-full divide-y divide-gray-300">
         <thead class="bg-gray-50">
           <tr>
-            <th
-              scope="col"
-              class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
-            >
+            <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">
               #
             </th>
-            <th
-              scope="col"
-              class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-            >
+            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
               Entry Port
             </th>
-            <th
-              scope="col"
-              class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-            >
+            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
               Entry Protocol
             </th>
-            <th
-              scope="col"
-              class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-            >
+            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
               Target Port
             </th>
-            <th
-              scope="col"
-              class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-            >
+            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
               Target Protocol
-            </th>      
-            <th
-              scope="col"
-              class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-            >
+            </th>
+            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
               Created
             </th>
           </tr>
@@ -227,22 +151,20 @@
         <tbody class="divide-y divide-gray-200 bg-white">
           {% for rule in rules %}
           <tr>
-            <td
-              class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
-            >
+            <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
               {{ forloop.counter }}
             </td>
             <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                {{ rule.entry_port }}
+              {{ rule.entry_port }}
             </td>
             <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                {{ rule.entry_protocol|upper }}
+              {{ rule.entry_protocol|upper }}
             </td>
             <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                {{ rule.target_port }}
+              {{ rule.target_port }}
             </td>
             <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                {{ rule.target_protocol }}
+              {{ rule.target_protocol }}
             </td>
             <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
               {{ rule.created }}
@@ -256,28 +178,17 @@
 
   <div>
     <h2 class="text-2xl font-medium mb-4">Virtances</h2>
-    <div
-      class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg"
-    >
+    <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg">
       <table class="min-w-full divide-y divide-gray-300">
         <thead class="bg-gray-50">
           <tr>
-            <th
-              scope="col"
-              class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
-            >
+            <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">
               #
             </th>
-            <th
-              scope="col"
-              class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-            >
+            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
               ID
-            </th>       
-            <th
-              scope="col"
-              class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-            >
+            </th>
+            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
               Attached
             </th>
           </tr>
@@ -285,17 +196,12 @@
         <tbody class="divide-y divide-gray-200 bg-white">
           {% for lb_v in virtnaces %}
           <tr>
-            <td
-              class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
-            >
+            <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
               {{ forloop.counter }}
             </td>
             <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-              <a
-                class="text-blue-600 hover:text-blue-900"
-                href="{% url 'admin_virtance_data' lb_v.virtance.id  %}"
-                >{{ lb_v.virtance.id }}</a
-              >
+              <a class="text-blue-600 hover:text-blue-900" href="{% url 'admin_virtance_data' lb_v.virtance.id  %}">{{
+                lb_v.virtance.id }}</a>
             </td>
             <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
               {{ lb_v.created }}
