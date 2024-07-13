@@ -40,72 +40,34 @@ defaults
         errorfile 504 /etc/haproxy/errors/504.http
 
 {% for rule in forwarding_rules %}
-{% if rule.entry_protocol == 'http' %}
 frontend fontend_{{ rule.entry_protocol }}_{{ rule.entry_port }}
+        mode {% if rule.entry_protocol == 'http' %}http{% else %}tcp{% endif %}
         bind {{ ipv4_public_address }}:{{ rule.entry_port }}
+        {% if rule.entry_protocol == 'http' %}
+        option httplog
         {% if http_redirect_https %}
         redirect scheme https code 301 if !{ ssl_fc }
         {% endif %}
+        {% else %}
+        option tcplog
+        {% endif %}
         default_backend backend_{{ rule.entry_protocol }}_{{ rule.entry_port }}
 
-backend backend_{{ rule.entry_protocol }}_{{ rule.entry_port }}
+backend backend_{{ rule.target_protocol }}_{{ rule.target_port }}
+        mode {% if rule.target_protocol == 'http' %}http{% else %}tcp{% endif %}
         balance roundrobin
         timeout check {{ health.check_timeout_seconds }}s
+        {% if rule.target_protocol == 'http' %}
         option httpchk GET {{ health.check_path }} HTTP/1.1
         http-check expect status 200
         {% if sticky_sessions %}
         cookie {{ sticky_sessions.cookie_name }} insert indirect nocache maxidle {{ sticky_sessions.cookie_ttl }}
         {% endif %}
-        {% for virtance in virtances %}
-        default-server inter {{ health.check_interval_seconds }}s check rise {{ health.check_healthy_threshold }} fall {{ health.check_unhealthy_threshold }} port {{ health.check_port }} check
-        server virtance_{{ virtance.id }} {{ virtance.ipaddr }}:{{ rule.target_port }}
-        {% endfor %}
-
-{% elif rule.entry_protocol == 'https' %}
-frontend fontend_{{ rule.entry_protocol }}_{{ rule.entry_port }}
-        bind {{ ipv4_public_address }}:{{ rule.entry_port }} ssl crt /etc/haproxy/ssl/cert.pem
-        default_backend backend_{{ rule.entry_protocol }}_{{ rule.entry_port }}
-
-backend backend_{{ rule.entry_protocol }}_{{ rule.entry_port }}
-        balance roundrobin
-        timeout check {{ health.check_timeout_seconds }}s
-        option httpchk GET {{ health.check_path }} HTTP/1.1
-        option ssl-hello-chk
-        http-check expect status 200
-        {% if sticky_sessions %}
-        cookie {{ sticky_sessions.cookie_name }} insert indirect nocache maxidle {{ sticky_sessions.cookie_ttl }}
-        {% endif %}
-        {% for virtance in virtances %}
-        default-server inter {{ health.check_interval_seconds }}s check rise {{ health.check_healthy_threshold }} fall {{ health.check_unhealthy_threshold }} port {{ health.check_port }} check
-        server virtance_{{ virtance.id }} {{ virtance.ipaddr }}:{{ rule.target_port }}
-        {% endfor %}
-
-{% elif rule.entry_protocol == 'tcp' %}
-frontend fontend_{{ rule.entry_protocol }}_{{ rule.entry_port }}
-        bind {{ ipv4_public_address }}:{{ rule.entry_port }}
-        default_backend backend_{{ rule.entry_protocol }}_{{ rule.entry_port }}
-
-backend backend_{{ rule.entry_protocol }}_{{ rule.entry_port }}
-        balance roundrobin
-        timeout check {{ health.check_timeout_seconds }}s
+        {% else %}
         option tcp-check
+        {% endif %}
         {% for virtance in virtances %}
         default-server inter {{ health.check_interval_seconds }}s check rise {{ health.check_healthy_threshold }} fall {{ health.check_unhealthy_threshold }} port {{ health.check_port }} check
         server virtance_{{ virtance.id }} {{ virtance.ipaddr }}:{{ rule.target_port }}
         {% endfor %}
-
-{% elif rule.entry_protocol == 'udp' %}
-frontend fontend_{{ rule.entry_protocol }}_{{ rule.entry_port }}
-        bind {{ ipv4_public_address }}:{{ rule.entry_port }}
-        default_backend backend_{{ rule.entry_protocol }}_{{ rule.entry_port }}
-
-backend backend_{{ rule.entry_protocol }}_{{ rule.entry_port }}
-        balance roundrobin
-        timeout check {{ health.check_timeout_seconds }}s
-        {% for virtance in virtances %}
-        default-server inter {{ health.check_interval_seconds }}s check rise {{ health.check_healthy_threshold }} fall {{ health.check_unhealthy_threshold }} port {{ health.check_port }} check
-        server virtance_{{ virtance.id }} {{ virtance.ipaddr }}:{{ rule.target_port }}
-        {% endfor %}
-{% endif %}
-
 {% endfor %}

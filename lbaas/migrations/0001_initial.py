@@ -101,7 +101,14 @@ class Migration(migrations.Migration):
                 (
                     "entry_protocol",
                     models.CharField(
-                        choices=[("udp", "UDP"), ("tcp", "TCP"), ("http", "HTTP"), ("https", "HTTPS")],
+                        choices=[
+                            ("udp", "UDP"), 
+                            ("tcp", "TCP"), 
+                            ("http", "HTTP"), 
+                            ("https", "HTTPS"), 
+                            ("http2", "HTTP2"), 
+                            ("http3", "HTTP3")
+                        ],
                         default="http",
                         max_length=10,
                     ),
