@@ -1,7 +1,6 @@
 """
 WebVirtCloud URL Configuration
 """
-
 from django.conf import settings
 from django.urls import include, re_path
 
@@ -26,6 +25,9 @@ if settings.DEBUG:
         ),
         public=True,
         permission_classes=(AllowAny,),
+        patterns=[
+            re_path(r"api/", include("api.urls")),
+        ],
     )
 
     urlpatterns += [
