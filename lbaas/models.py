@@ -86,6 +86,8 @@ class LBaaSForwadRule(models.Model):
         (TCP, "TCP"),
         (HTTP, "HTTP"),
         (HTTPS, "HTTPS"),
+        (HTTP2, "HTTP2"),
+        (HTTP3, "HTTP3"),
     )
 
     lbaas = models.ForeignKey(LBaaS, models.PROTECT)
