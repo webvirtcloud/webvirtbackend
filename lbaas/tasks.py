@@ -241,7 +241,7 @@ def reload_lbaas(lbaas_id):
         virtance=lbaas.virtance, network__type=Network.PRIVATE, is_float=False
     )
 
-    if check_ssh_connect(lbaas.ipv4_private_address, private_key=private_key):
+    if check_ssh_connect(ipv4_private.address, private_key=private_key):
         health = {
             "check_protocol": lbaas.check_protocol,
             "check_port": lbaas.check_port,
@@ -299,7 +299,7 @@ def reload_lbaas(lbaas_id):
                 error_message = f"Task: {task}. Error: {error}"
             virtance_error(lbaas.virtance.id, error_message, event="lbaas_reload")
         else:
-            lbaas.reset_events()
+            lbaas.reset_event()
 
 
 @app.task

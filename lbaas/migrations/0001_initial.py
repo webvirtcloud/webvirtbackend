@@ -28,6 +28,7 @@ class Migration(migrations.Migration):
                         blank=True,
                         choices=[
                             ("create", "Create"),
+                            ("reload", "Reload"),
                             ("delete", "Delete"),
                             ("add_virtance", "Add Virtance to a Load Balancer"),
                             ("remove_virtance", "Remove Virtance from a Load Balancer"),

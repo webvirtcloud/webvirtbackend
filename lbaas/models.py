@@ -15,6 +15,7 @@ class LBaaS(models.Model):
     )
 
     CREATE = "create"
+    RELOAD = "reload"
     DELETE = "delete"
     ADD_VIRTANCE = "add_virtance"
     REMOVE_VIRTANCE = "remove_virtance"
@@ -22,6 +23,7 @@ class LBaaS(models.Model):
     REMOVE_FORWARD_RULE = "remove_forward_rule"
     EVENT_CHOICES = (
         (CREATE, "Create"),
+        (RELOAD, "Reload"),
         (DELETE, "Delete"),
         (ADD_VIRTANCE, "Add Virtance to a Load Balancer"),
         (REMOVE_VIRTANCE, "Remove Virtance from a Load Balancer"),
