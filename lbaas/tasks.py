@@ -162,14 +162,14 @@ def create_lbaas(lbaas_id):
     private_key = decrypt_data(lbaas.private_key)
 
     if create_virtance(lbaas.virtance.id, send_email=False):
-        ipv4_public_address = IPAddress.objects.get(
+        ipv4_public = IPAddress.objects.get(
             virtance=lbaas.virtance, network__type=Network.PUBLIC, is_float=False
-        ).address
-        ipv4_private_address = IPAddress.objects.get(
+        )
+        ipv4_private = IPAddress.objects.get(
             virtance=lbaas.virtance, network__type=Network.PRIVATE, is_float=False
         )
 
-        if check_ssh_connect(ipv4_public_address, private_key=private_key):
+        if check_ssh_connect(ipv4_public.address, private_key=private_key):
             health = {
                 "check_protocol": lbaas.check_protocol,
                 "check_port": lbaas.check_port,
@@ -216,11 +216,11 @@ def create_lbaas(lbaas_id):
                 "sticky_sessions": sticky_sessions,
                 "forwarding_rules": forwarding_rules,
                 "redirect_to_https": lbaas.redirect_http_to_https,
-                "ipv4_public_address": ipv4_private_address,
-                "ipv4_private_address": ipv4_private_address.address,
-                "ipv4_private_gateway": ipv4_private_address.network.gateway,
+                "ipv4_public_address": ipv4_public.address,
+                "ipv4_private_address": ipv4_private.address,
+                "ipv4_private_gateway": ipv4_private.network.gateway,
             }
-            error, task = provision_lbaas(ipv4_public_address, private_key, provision_tasks, lbaas_vars=lbaas_vars)
+            error, task = provision_lbaas(ipv4_public.address, private_key, provision_tasks, lbaas_vars=lbaas_vars)
             if error:
                 error_message = error
                 if task:
@@ -234,7 +234,10 @@ def create_lbaas(lbaas_id):
 def reload_lbaas(lbaas_id):
     lbaas = LBaaS.objects.get(id=lbaas_id)
     private_key = decrypt_data(lbaas.private_key)
-    ipv4_private_address = IPAddress.objects.get(
+    ipv4_public = IPAddress.objects.get(
+        virtance=lbaas.virtance, network__type=Network.PUBLIC, is_float=False
+    )
+    ipv4_private = IPAddress.objects.get(
         virtance=lbaas.virtance, network__type=Network.PRIVATE, is_float=False
     )
 
@@ -285,11 +288,11 @@ def reload_lbaas(lbaas_id):
             "sticky_sessions": sticky_sessions,
             "forwarding_rules": forwarding_rules,
             "redirect_to_https": lbaas.redirect_http_to_https,
-            "ipv4_public_address": ipv4_private_address,
-            "ipv4_private_address": ipv4_private_address.address,
-            "ipv4_private_gateway": ipv4_private_address.network.gateway,
+            "ipv4_public_address": ipv4_public.address,
+            "ipv4_private_address": ipv4_private.address,
+            "ipv4_private_gateway": ipv4_private.network.gateway,
         }
-        error, task = provision_lbaas(lbaas.ipv4_private_address, private_key, reload_tasks, lbaas_vars=lbaas_vars)
+        error, task = provision_lbaas(ipv4_private.address, private_key, reload_tasks, lbaas_vars=lbaas_vars)
         if error:
             error_message = error
             if task:
