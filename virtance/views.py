@@ -13,6 +13,7 @@ from firewall.serializers import FirewallSerializer
 from image.serializers import ImageSerializer
 from image.models import Image
 from floating_ip.models import FloatIP
+from lbaas.models import LBaaSVirtance
 from firewall.models import FirewallVirtance
 from .utils import make_vnc_hash, virtance_history
 from .models import Virtance, VirtanceHistory
@@ -31,6 +32,7 @@ class VirtanceListAPI(APIView):
     def get_queryset(self):
         name = self.request.query_params.get("name")
         region = self.request.query_params.get("region")
+        used_in_lb = self.request.query_params.get("used_in_lb")
         has_backups = self.request.query_params.get("has_backups")
         has_snapshots = self.request.query_params.get("has_snapshots")
         has_firewall = self.request.query_params.get("has_firewall")
@@ -51,6 +53,16 @@ class VirtanceListAPI(APIView):
                 user=self.request.user, type=Image.SNAPSHOT, source__is_deleted=False, is_deleted=False
             ).values_list("source_id", flat=True)
             queryset = queryset.filter(id__in=virtance_ids)
+        if used_in_lb == "true":
+            virtance_ids = LBaaSVirtance.objects.filter(
+                virtance__user=self.request.user, is_deleted=False
+            ).values_list("virtance_id", flat=True)
+            queryset = queryset.filter(id__in=virtance_ids)
+        if used_in_lb == "false":
+            virtance_ids = LBaaSVirtance.objects.filter(
+                virtance__user=self.request.user, is_deleted=False
+            ).values_list("virtance_id", flat=True)
+            queryset = queryset.filter(~Q(id__in=virtance_ids))
         if has_firewall == "true":
             virtance_ids = FirewallVirtance.objects.filter(virtance__user=self.request.user).values_list(
                 "virtance_id", flat=True
