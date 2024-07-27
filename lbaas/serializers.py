@@ -80,6 +80,8 @@ class LBaaSSerializer(serializers.ModelSerializer):
             check_region = Region.objects.get(slug=region, is_deleted=False)
             if check_region.is_active is False:
                 raise serializers.ValidationError({"region": ["Region is not active."]})
+            if check_region.features.filter(name="load_balancer").exists() is False:
+                raise serializers.ValidationError({"region": ["Region does not support load balancer."]})
         except Region.DoesNotExist:
             raise serializers.ValidationError({"region": ["Region not found."]})
 

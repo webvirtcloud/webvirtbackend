@@ -61,5 +61,12 @@
         "fields": {
             "name": "floating_ip"
         }
+    },
+    {
+        "model": "region.feature",
+        "pk": 8,
+        "fields": {
+            "name": "load_balancer"
+        }
     }
 ]

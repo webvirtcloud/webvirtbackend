@@ -24,6 +24,7 @@ class Migration(migrations.Migration):
                             ("snapshot", "Snapshot"),
                             ("one_click", "One-Click"),
                             ("floating_ip", "Floating-IP"),
+                            ("load_balancer", "Load-Balancer"),
                         ],
                         max_length=100,
                         unique=True,

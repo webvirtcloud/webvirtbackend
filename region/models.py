@@ -9,8 +9,9 @@ class Feature(models.Model):
         ("volume", "Volume"),
         ("backup", "Backup"),
         ("snapshot", "Snapshot"),
-        ("one_click", "One-Click"),
-        ("floating_ip", "Floating-IP"),
+        ("one_click", "1click"),
+        ("floating_ip", "Float-IP"),
+        ("load_balancer", "LBaaS"),
     )
 
     name = models.CharField(choices=FEATURE_CHOICES, unique=True, max_length=100)
