@@ -89,6 +89,7 @@ class LBaaSSerializer(serializers.ModelSerializer):
         if not all(isinstance(x, dict) for x in forwarding_rules):
             raise serializers.ValidationError({"forwarding_rules": ["Invalid forwarding rules."]})
 
+        # Check duplicate forwarding rules for entry and target
         if len([tuple(sorted(d.items())) for d in forwarding_rules]) != len(
             set([tuple(sorted(d.items())) for d in forwarding_rules])
         ):
@@ -114,18 +115,20 @@ class LBaaSSerializer(serializers.ModelSerializer):
             if not 0 < rule.get("entry_port") < 65536:
                 raise serializers.ValidationError({"forwarding_rules": ["Invalid entry_port."]})
 
-            if not 0 < rule.get("target_port") < 65536:
-                raise serializers.ValidationError({"forwarding_rules": ["Invalid target_port."]})
-
             if rule.get("target_protocol") not in [x[0] for x in LBaaSForwadRule.PROTOCOL_CHOICES]:
                 raise serializers.ValidationError({"forwarding_rules": ["Invalid target_protocol."]})
+
+            if not 0 < rule.get("target_port") < 65536:
+                raise serializers.ValidationError({"forwarding_rules": ["Invalid target_port."]})
 
             if rule.get("entry_protocol") != rule.get("target_protocol"):
                 raise serializers.ValidationError(
                     {
                         "forwarding_rules": [
-                            ("Entry and target protocol must be the same. "
-                             "Support for different procotols is temporarily unsupported.")
+                            (
+                                "Entry and target protocol must be the same. "
+                                "Support for different procotols is temporarily unsupported."
+                            )
                         ]
                     }
                 )
@@ -363,6 +366,17 @@ class LBaaSAddRuleSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         forwarding_rules = attrs.get("forwarding_rules")
 
+        # Check duplicate forwarding rules for entry and target
+        if len([tuple(sorted(d.items())) for d in forwarding_rules]) != len(
+            set([tuple(sorted(d.items())) for d in forwarding_rules])
+        ):
+            raise serializers.ValidationError({"forwarding_rules": ["Duplicate forwarding rules."]})
+
+        # Check duplicate forwarding rules on entry data
+        entry_data = [f'{rule.get("entry_protcol")}_{rule.get("entry_port")}' for rule in forwarding_rules]
+        if len(entry_data) != len(set(entry_data)):
+            raise serializers.ValidationError({"forwarding_rules": ["Duplicate entry_protcol and entry_port."]})
+
         if not all(isinstance(x, dict) for x in forwarding_rules):
             raise serializers.ValidationError({"forwarding_rules": ["Invalid forwarding rules."]})
         for rule in forwarding_rules:
@@ -377,14 +391,26 @@ class LBaaSAddRuleSerializer(serializers.ModelSerializer):
             if rule.get("entry_protocol") not in [x[0] for x in LBaaSForwadRule.PROTOCOL_CHOICES]:
                 raise serializers.ValidationError({"forwarding_rules": ["Invalid entry_protocol."]})
 
+            if not 0 < rule.get("entry_port") < 65536:
+                raise serializers.ValidationError({"forwarding_rules": ["Invalid entry_port."]})
+
             if rule.get("target_protocol") not in [x[0] for x in LBaaSForwadRule.PROTOCOL_CHOICES]:
                 raise serializers.ValidationError({"forwarding_rules": ["Invalid target_protocol."]})
 
-            if 1 > rule.get("entry_port") < 65535:
-                raise serializers.ValidationError({"forwarding_rules": ["Invalid entry_port."]})
-
-            if 1 > rule.get("target_port") < 65535:
+            if not 0 < rule.get("target_port") < 65536:
                 raise serializers.ValidationError({"forwarding_rules": ["Invalid target_port."]})
+
+            if rule.get("entry_protocol") != rule.get("target_protocol"):
+                raise serializers.ValidationError(
+                    {
+                        "forwarding_rules": [
+                            (
+                                "Entry and target protocol must be the same. "
+                                "Support for different procotols is temporarily unsupported."
+                            )
+                        ]
+                    }
+                )
 
         for rule in forwarding_rules:
             if LBaaSForwadRule.objects.filter(
@@ -425,6 +451,12 @@ class LBaaSDelRuleSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         forwarding_rules = attrs.get("forwarding_rules")
 
+        # Check duplicate forwarding rules for entry and target
+        if len([tuple(sorted(d.items())) for d in forwarding_rules]) != len(
+            set([tuple(sorted(d.items())) for d in forwarding_rules])
+        ):
+            raise serializers.ValidationError({"forwarding_rules": ["Duplicate forwarding rules."]})
+
         if not all(isinstance(x, dict) for x in forwarding_rules):
             raise serializers.ValidationError({"forwarding_rules": ["Invalid forwarding rules."]})
         for rule in forwarding_rules:
@@ -439,14 +471,15 @@ class LBaaSDelRuleSerializer(serializers.ModelSerializer):
             if rule.get("entry_protocol") not in [x[0] for x in LBaaSForwadRule.PROTOCOL_CHOICES]:
                 raise serializers.ValidationError({"forwarding_rules": ["Invalid entry_protocol."]})
 
+            if not 0 < rule.get("entry_port") < 65536:
+                raise serializers.ValidationError({"forwarding_rules": ["Invalid entry_port."]})
+
             if rule.get("target_protocol") not in [x[0] for x in LBaaSForwadRule.PROTOCOL_CHOICES]:
                 raise serializers.ValidationError({"forwarding_rules": ["Invalid target_protocol."]})
 
-            if 1 > rule.get("entry_port") < 65535:
-                raise serializers.ValidationError({"forwarding_rules": ["Invalid entry_port."]})
-
-            if 1 > rule.get("target_port") < 65535:
+            if not 0 < rule.get("target_port") < 65536:
                 raise serializers.ValidationError({"forwarding_rules": ["Invalid target_port."]})
+
 
         for rule in forwarding_rules:
             if not LBaaSForwadRule.objects.filter(
