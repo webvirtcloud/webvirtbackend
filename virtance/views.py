@@ -55,12 +55,12 @@ class VirtanceListAPI(APIView):
             queryset = queryset.filter(id__in=virtance_ids)
         if used_in_lb == "true":
             virtance_ids = LBaaSVirtance.objects.filter(
-                virtance__user=self.request.user, is_deleted=False
+                virtance__user=self.request.user, virtance__is_deleted=False, is_deleted=False
             ).values_list("virtance_id", flat=True)
             queryset = queryset.filter(id__in=virtance_ids)
         if used_in_lb == "false":
             virtance_ids = LBaaSVirtance.objects.filter(
-                virtance__user=self.request.user, is_deleted=False
+                virtance__user=self.request.user, virtance__is_deleted=False, is_deleted=False
             ).values_list("virtance_id", flat=True)
             queryset = queryset.filter(~Q(id__in=virtance_ids))
         if has_firewall == "true":
