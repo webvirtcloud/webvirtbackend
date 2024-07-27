@@ -482,7 +482,6 @@ class LBaaSDelRuleSerializer(serializers.ModelSerializer):
             if not 0 < rule.get("target_port") < 65536:
                 raise serializers.ValidationError({"forwarding_rules": ["Invalid target_port."]})
 
-
         for rule in forwarding_rules:
             if not LBaaSForwadRule.objects.filter(
                 lbaas=self.instance,

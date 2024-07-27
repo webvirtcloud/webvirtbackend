@@ -162,12 +162,8 @@ def create_lbaas(lbaas_id):
     private_key = decrypt_data(lbaas.private_key)
 
     if create_virtance(lbaas.virtance.id, send_email=False):
-        ipv4_public = IPAddress.objects.get(
-            virtance=lbaas.virtance, network__type=Network.PUBLIC, is_float=False
-        )
-        ipv4_private = IPAddress.objects.get(
-            virtance=lbaas.virtance, network__type=Network.PRIVATE, is_float=False
-        )
+        ipv4_public = IPAddress.objects.get(virtance=lbaas.virtance, network__type=Network.PUBLIC, is_float=False)
+        ipv4_private = IPAddress.objects.get(virtance=lbaas.virtance, network__type=Network.PRIVATE, is_float=False)
 
         if check_ssh_connect(ipv4_public.address, private_key=private_key):
             health = {
@@ -234,12 +230,8 @@ def create_lbaas(lbaas_id):
 def reload_lbaas(lbaas_id):
     lbaas = LBaaS.objects.get(id=lbaas_id)
     private_key = decrypt_data(lbaas.private_key)
-    ipv4_public = IPAddress.objects.get(
-        virtance=lbaas.virtance, network__type=Network.PUBLIC, is_float=False
-    )
-    ipv4_private = IPAddress.objects.get(
-        virtance=lbaas.virtance, network__type=Network.PRIVATE, is_float=False
-    )
+    ipv4_public = IPAddress.objects.get(virtance=lbaas.virtance, network__type=Network.PUBLIC, is_float=False)
+    ipv4_private = IPAddress.objects.get(virtance=lbaas.virtance, network__type=Network.PRIVATE, is_float=False)
 
     if check_ssh_connect(ipv4_private.address, private_key=private_key):
         health = {
