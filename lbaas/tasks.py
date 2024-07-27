@@ -167,7 +167,7 @@ def create_lbaas(lbaas_id):
         ).address
         ipv4_private_address = IPAddress.objects.get(
             virtance=lbaas.virtance, network__type=Network.PRIVATE, is_float=False
-        ).address
+        )
 
         if check_ssh_connect(ipv4_public_address, private_key=private_key):
             health = {
@@ -217,7 +217,8 @@ def create_lbaas(lbaas_id):
                 "forwarding_rules": forwarding_rules,
                 "redirect_to_https": lbaas.redirect_http_to_https,
                 "ipv4_public_address": ipv4_private_address,
-                "ipv4_private_address": ipv4_private_address,
+                "ipv4_private_address": ipv4_private_address.address,
+                "ipv4_private_gateway": ipv4_private_address.network.gateway,
             }
             error, task = provision_lbaas(ipv4_public_address, private_key, provision_tasks, lbaas_vars=lbaas_vars)
             if error:
@@ -226,7 +227,7 @@ def create_lbaas(lbaas_id):
                     error_message = f"Task: {task}. Error: {error}"
                 virtance_error(lbaas.virtance.id, error_message, event="lbaas_provision")
             else:
-                lbaas.reset_events()
+                lbaas.reset_event()
 
 
 @app.task
@@ -235,7 +236,7 @@ def reload_lbaas(lbaas_id):
     private_key = decrypt_data(lbaas.private_key)
     ipv4_private_address = IPAddress.objects.get(
         virtance=lbaas.virtance, network__type=Network.PRIVATE, is_float=False
-    ).address
+    )
 
     if check_ssh_connect(lbaas.ipv4_private_address, private_key=private_key):
         health = {
@@ -285,7 +286,8 @@ def reload_lbaas(lbaas_id):
             "forwarding_rules": forwarding_rules,
             "redirect_to_https": lbaas.redirect_http_to_https,
             "ipv4_public_address": ipv4_private_address,
-            "ipv4_private_address": ipv4_private_address,
+            "ipv4_private_address": ipv4_private_address.address,
+            "ipv4_private_gateway": ipv4_private_address.network.gateway,
         }
         error, task = provision_lbaas(lbaas.ipv4_private_address, private_key, reload_tasks, lbaas_vars=lbaas_vars)
         if error:

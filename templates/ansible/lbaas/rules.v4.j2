@@ -2,7 +2,7 @@
 :INPUT ACCEPT [0:0]
 :FORWARD ACCEPT [0:0]
 :OUTPUT ACCEPT [0:0]
-[0:0] -A INPUT -s {{ ipv4_private_address }} -i eth1 -j ACCEPT
+[0:0] -A INPUT -s {{ ipv4_private_gateway }} -i eth1 -j ACCEPT
 [0:0] -A INPUT -p tcp --dport 22 -i eth1 -j DROP
 [0:0] -A INPUT -p tcp --dport 9090 -i eth1 -j DROP
 COMMIT
