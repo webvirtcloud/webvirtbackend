@@ -2,6 +2,8 @@ from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
 
 from virtance.models import Virtance
 from virtance.serializers import VirtanceSerializer
@@ -32,7 +34,7 @@ class FirewallListAPI(APIView):
     def get(self, request, *args, **kwargs):
         serilizator = self.class_serializer(self.get_queryset(), many=True)
         return Response({"firewalls": serilizator.data})
-
+    
     def post(self, request, *args, **kwargs):
         serializer = self.class_serializer(data=request.data, context={"user": request.user})
         serializer.is_valid(raise_exception=True)

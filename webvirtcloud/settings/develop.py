@@ -19,6 +19,7 @@ INSTALLED_APPS += [
     "drf_yasg",
     "corsheaders",
     "debug_toolbar",
+    "drf_spectacular",
     "django_browser_reload",
 ]
 
