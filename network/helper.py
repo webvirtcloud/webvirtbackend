@@ -5,8 +5,8 @@ from virtance.models import Virtance
 from .models import Network, IPAddress
 
 
-# First is a gateway and last address is broadcast
-SUBNET_RANGE = slice(2, -1)
+# First is a gateway and 2 lasts are reserved for broadcast and system needs
+SUBNET_V4_RANGE = slice(2, -2)
 
 
 def assign_free_ipv4_compute(virtance_id):
@@ -16,7 +16,7 @@ def assign_free_ipv4_compute(virtance_id):
         region=virtance.region, version=Network.IPv4, type=Network.COMPUTE, is_active=True, is_deleted=False
     )
     assigned_ipv4_compute = IPAddress.objects.filter(network=network, virtance__in=virtances)
-    ipaddrs = list(IPv4Network(f"{network.cidr}/{network.netmask}"))[SUBNET_RANGE]
+    ipaddrs = list(IPv4Network(f"{network.cidr}/{network.netmask}"))[SUBNET_V4_RANGE]
     for ipaddr in random.sample(ipaddrs, k=len(ipaddrs)):
         if str(ipaddr) not in [ip.address for ip in assigned_ipv4_compute]:
             ipaddr = IPAddress.objects.create(network=network, address=str(ipaddr), virtance=virtance)
@@ -30,7 +30,7 @@ def assign_free_ipv4_public(virtance_id, is_float=False):
         region=virtance.region, version=Network.IPv4, type=Network.PUBLIC, is_active=True, is_deleted=False
     )
     for net in networks:
-        ipaddrs = list(IPv4Network(f"{net.cidr}/{net.netmask}"))[SUBNET_RANGE]
+        ipaddrs = list(IPv4Network(f"{net.cidr}/{net.netmask}"))[SUBNET_V4_RANGE]
         for ipaddr in random.sample(ipaddrs, k=len(ipaddrs)):
             if not IPAddress.objects.filter(network=net, address=str(ipaddr)).exists():
                 ipaddr = IPAddress.objects.create(
@@ -46,7 +46,7 @@ def assign_free_ipv4_private(virtance_id):
         region=virtance.region, version=Network.IPv4, type=Network.PRIVATE, is_active=True, is_deleted=False
     )
     for net in networks:
-        ipaddrs = list(IPv4Network(f"{net.cidr}/{net.netmask}"))[SUBNET_RANGE]
+        ipaddrs = list(IPv4Network(f"{net.cidr}/{net.netmask}"))[SUBNET_V4_RANGE]
         for ipaddr in random.sample(ipaddrs, k=len(ipaddrs)):
             if not IPAddress.objects.filter(network=net, address=str(ipaddr)).exists():
                 ipaddr = IPAddress.objects.create(network=net, address=str(ipaddr), virtance=virtance)
