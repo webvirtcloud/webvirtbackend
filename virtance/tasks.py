@@ -568,18 +568,18 @@ def virtance_backup():
                 if (
                     timezone.now() - virtance.image_set.filter(type=Image.BACKUP, is_deleted=False).first().created
                 ).days >= settings.BACKUP_PERIOD_DAYS:
+                    backup_virtance.delay(virtance.id)
                     virtance.event = Virtance.BACKUP
                     virtance.save()
-                    backup_virtance.delay(virtance.id)
                     compute_event_backup_ids.append(virtance.compute_id)
                 # Check if backup count exceeds the monthly limit
                 if virtance.backup_count > settings.BACKUP_PER_MONTH:
                     image_delete.delay(virtance.image_set.filter(type=Image.BACKUP, is_deleted=False).last().id)
             else:
                 # If no existing backups, create one
+                backup_virtance.delay(virtance.id)
                 virtance.event = Virtance.BACKUP
                 virtance.save()
-                backup_virtance.delay(virtance.id)
                 compute_event_backup_ids.append(virtance.compute_id)
 
 
