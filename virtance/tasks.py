@@ -563,8 +563,6 @@ def virtance_backup():
 
     for virtance in unbacked_virtances:
         if virtance.compute_id not in compute_event_backup_ids:
-            compute_event_backup_ids.append(virtance.compute_id)
-
             if virtance.has_backup:
                 # Check if backup is outdated
                 if (
@@ -573,14 +571,16 @@ def virtance_backup():
                     virtance.event = Virtance.BACKUP
                     virtance.save()
                     backup_virtance.delay(virtance.id)
+                    compute_event_backup_ids.append(virtance.compute_id)
                 # Check if backup count exceeds the monthly limit
                 if virtance.backup_count > settings.BACKUP_PER_MONTH:
                     image_delete.delay(virtance.image_set.filter(type=Image.BACKUP, is_deleted=False).last().id)
             else:
                 # If no existing backups, create one
-                backup_virtance.delay(virtance.id)
                 virtance.event = Virtance.BACKUP
                 virtance.save()
+                backup_virtance.delay(virtance.id)
+                compute_event_backup_ids.append(virtance.compute_id)
 
 
 @app.task
