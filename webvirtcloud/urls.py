@@ -16,7 +16,6 @@ if settings.DEBUG:
     from drf_yasg import openapi
     from drf_yasg.views import get_schema_view
     from rest_framework.permissions import AllowAny
-    from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 
     schema_view = get_schema_view(
         openapi.Info(
@@ -32,9 +31,6 @@ if settings.DEBUG:
     )
 
     urlpatterns += [
-        re_path(r'^swagger/schema/', SpectacularAPIView.as_view(), name='schema'),
-        re_path(r'^swagger/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='docs'), 
-
         # Swagger
         re_path(r"^redoc/$", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"),
         re_path(r"^swagger/$", schema_view.with_ui("swagger", cache_timeout=0), name="schema-swagger-ui"),
