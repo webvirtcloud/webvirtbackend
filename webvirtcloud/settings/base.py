@@ -257,6 +257,9 @@ NOVNC_PASSWD_SUFFIX_LENGHT = os.environ.get("NOVNC_PASSWD_SUFFIX_LENGHT", 12)
 # Recovery image settings
 RECOVERY_ISO_NAME = os.environ.get("RECOVERY_ISO_NAME", "finnix-125.iso")
 
+# LBaaS settings
+LBAAS_IPV4_ACCESS_LIST = os.environ.get("LBAAS_IPV4_ACCESS_LIST", [])
+
 # Backup settings
 BACKUP_PER_MONTH = os.environ.get("BACKUP_PER_MONTH", 4)
 BACKUP_PERIOD_DAYS = os.environ.get("BACKUP_PERIOD_DAYS", 7)

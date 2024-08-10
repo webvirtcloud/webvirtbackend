@@ -1,3 +1,4 @@
+from django.conf import settings
 from webvirtcloud.celery import app
 
 from .models import LBaaS, LBaaSForwadRule, LBaaSVirtance
@@ -215,6 +216,7 @@ def create_lbaas(lbaas_id):
                 "ipv4_public_address": ipv4_public.address,
                 "ipv4_private_address": ipv4_private.address,
                 "ipv4_private_gateway": ipv4_private.network.gateway,
+                "ipv4_lbaas_access_list": settings.LBAAS_IPV4_ACCESS_LIST,
             }
             error, task = provision_lbaas(ipv4_public.address, private_key, provision_tasks, lbaas_vars=lbaas_vars)
             if error:
@@ -283,6 +285,7 @@ def reload_lbaas(lbaas_id):
             "ipv4_public_address": ipv4_public.address,
             "ipv4_private_address": ipv4_private.address,
             "ipv4_private_gateway": ipv4_private.network.gateway,
+            "ipv4_lbaas_access_list": settings.LBAAS_IPV4_ACCESS_LIST,
         }
         error, task = provision_lbaas(ipv4_private.address, private_key, reload_tasks, lbaas_vars=lbaas_vars)
         if error:
