@@ -34,7 +34,7 @@ class FirewallListAPI(APIView):
     def get(self, request, *args, **kwargs):
         serilizator = self.class_serializer(self.get_queryset(), many=True)
         return Response({"firewalls": serilizator.data})
-    
+
     def post(self, request, *args, **kwargs):
         serializer = self.class_serializer(data=request.data, context={"user": request.user})
         serializer.is_valid(raise_exception=True)
