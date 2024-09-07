@@ -22,10 +22,24 @@ class FloatingIPListAPI(APIView):
         return queryset
 
     def get(self, request, *args, **kwargs):
+        """
+        Retvieve floating ips
+        ---
+        """
         serializer = self.class_serializer(self.get_queryset(), many=True)
         return Response({"floating_ips": serializer.data})
 
     def post(self, request, *args, **kwargs):
+        """
+        Create floating ip
+        ---
+            parameters:
+
+                - name: virtance_id
+                  description: virtance id
+                  required: true
+                  type: integer
+        """
         serializer = self.class_serializer(data=request.data, context={"user": request.user})
         serializer.is_valid(raise_exception=True)
         serializer.save()
@@ -41,10 +55,18 @@ class FloatingIPDataAPI(APIView):
         )
 
     def get(self, request, *args, **kwargs):
+        """
+        Retrieve floating ip
+        ---
+        """
         serializer = self.class_serializer(self.get_object(), many=False)
         return Response({"floating_ip": serializer.data})
 
     def delete(self, request, *args, **kwargs):
+        """
+        Delete floating ip
+        ---
+        """
         floatip = self.get_object()
 
         if floatip.event is not None:
@@ -67,6 +89,21 @@ class FloatingIPActionAPI(APIView):
         )
 
     def post(self, request, *args, **kwargs):
+        """
+        Floating ip action
+        ---
+            parameters:
+
+                - name: action
+                  description: action ("assign" or "unassign")
+                  required: true
+                  type: string
+
+                - name: virtance_id
+                  description: virtance id
+                  required: false
+                  type: integer
+        """
         floatip = self.get_object()
 
         if floatip.event is not None:
