@@ -86,10 +86,65 @@ class VirtanceListAPI(APIView):
         return queryset
 
     def get(self, request, *args, **kwargs):
+        """
+        List of All Virtances
+        ---
+        """
         serilizator = self.class_serializer(self.get_queryset(), many=True)
         return Response({"virtances": serilizator.data})
 
     def post(self, request, *args, **kwargs):
+        """
+        Create a New Virtance
+        ---
+            parameters:
+                - name: name
+                  description: Virtance name
+                  required: true
+                  type: string
+
+                - name: region
+                  description: Region slug
+                  required: true
+                  type: string
+
+                - name: image
+                  description: Slug size or ID for snapshot
+                  required: true
+                  type: string or integer
+
+                - name: size
+                  description: Slug size
+                  required: true
+                  type: integer
+
+                - name: ipv6
+                  description: Enable IPv6 (beta)
+                  required: false
+                  type: boolean
+
+                - name: buckups
+                  description: Enable automatic backups
+                  required: false
+                  type: boolean
+
+                - name: password
+                  description: Virtance password or skip for random
+                  required: false
+                  type: string
+
+                - name: keypairs
+                  description: SSH keypairs
+                  required: false
+                  type: array
+                  items:
+                    type: integer
+                
+                - name: user_data
+                  description: User data
+                  required: false
+                  type: string
+        """
         serilizator = CreateVirtanceSerializer(data=request.data, context={"request": request})
         serilizator.is_valid(raise_exception=True)
         validated_data = serilizator.save(password=request.data.get("password"))
@@ -108,11 +163,19 @@ class VirtanceDataAPI(APIView):
         )
 
     def get(self, request, *args, **kwargs):
+        """
+        Retrieve an Existing Virtance
+        ---
+        """
         virtances = self.get_object()
         serilizator = self.class_serializer(virtances, many=False)
         return Response({"virtance": serilizator.data})
 
     def delete(self, request, *args, **kwargs):
+        """
+        Delete The Virtance
+        ---
+        """
         virtance = self.get_object()
         virtance.event = Virtance.DELETE
         virtance.save()
@@ -130,6 +193,52 @@ class VirtanceActionAPI(APIView):
         )
 
     def post(self, request, *args, **kwargs):
+        """
+        Virtance Actions
+        ---
+            parameters:
+                - name: action
+                  description: Virtance action
+                  required: true
+                  type: string
+                  action:
+                    - reboot
+                    - resize
+                    - reboot
+                    - rename
+                    - rebuild
+                    - restore
+                    - snapshot
+                    - shutdown
+                    - power_on
+                    - power_off
+                    - power_cyrcle
+                    - password_reset
+                    - enable_backups
+                    - disable_backups
+                    - enable_recovery_mode
+                    - disable_recovery_mode
+
+                - name: size
+                  description: For "resize" action
+                  required: false
+                  type: string
+                  
+                - name: name
+                  description: For "rename" and "snapshot" actions
+                  required: false
+                  type: string
+                
+                - name: image
+                  description: For "restore" and "rebuild" actions
+                  required: false
+                  type: string
+
+                - name: password
+                  description: For "password_reset" action
+                  required: false
+                  type: string
+        """
         virtance = self.get_object()
 
         if virtance.event is not None:
@@ -152,6 +261,10 @@ class VirtanceBackupsAPI(APIView):
         return Image.objects.filter(type=Image.BACKUP, source_id=virtance.id, user=self.request.user, is_deleted=False)
 
     def get(self, request, *args, **kwargs):
+        """
+        List of The Virtance Backups
+        ---
+        """
         backups = self.get_objects()
         serilizator = self.class_serializer(backups, many=True)
         return Response({"backups": serilizator.data})
@@ -168,6 +281,10 @@ class VirtanceFirewallAPI(APIView):
         return firewallinstance.firewall if firewallinstance else None
 
     def get(self, request, *args, **kwargs):
+        """
+        Retrieve The Virtance Firewall
+        ---
+        """
         if not self.get_object():
             return Response({"firewall": None})
         serilizator = self.class_serializer(self.get_object(), many=False)
@@ -186,6 +303,10 @@ class VirtanceSnapshotsAPI(APIView):
         )
 
     def get(self, request, *args, **kwargs):
+        """
+        List of The Virtance Snapshots
+        ---
+        """
         snapshots = self.get_objects()
         serilizator = self.class_serializer(snapshots, many=True)
         return Response({"snapshots": serilizator.data})
@@ -200,6 +321,10 @@ class VirtanceHistoryAPI(APIView):
         )
 
     def get(self, request, *args, **kwargs):
+        """
+        List of The Virtance History
+        ---
+        """
         virtance = self.get_object()
         virtance_history = VirtanceHistory.objects.filter(virtance=virtance)
         serilizator = self.class_serializer(virtance_history, many=True)
@@ -213,6 +338,10 @@ class VirtanceConsoleAPI(APIView):
         )
 
     def get(self, request, *args, **kwargs):
+        """
+        Show The Virtance Console
+        ---
+        """
         virtance = self.get_object()
         wvcomp = WebVirtCompute(virtance.compute.token, virtance.compute.hostname)
         res = wvcomp.get_virtance_vnc(virtance.id)
@@ -245,6 +374,10 @@ class VirtanceMetricsCpuAPI(APIView):
         )
 
     def get(self, request, *args, **kwargs):
+        """
+        Retrieve The Virtance CPU Metrics
+        ---
+        """
         virtance = self.get_object()
         vname = f"{settings.VM_NAME_PREFIX}{str(virtance.id)}"
         today = timezone.now()
@@ -304,6 +437,10 @@ class VirtanceMetricsMemAPI(APIView):
         )
 
     def get(self, request, *args, **kwargs):
+        """
+        Retrieve The Virtance Memory Metrics
+        ---
+        """
         virtance = self.get_object()
         vname = f"{settings.VM_NAME_PREFIX}{str(virtance.id)}"
         today = timezone.now()
@@ -335,6 +472,10 @@ class VirtanceMetricsNetAPI(APIView):
         )
 
     def get(self, request, *args, **kwargs):
+        """
+        Retrieve The Virtance Network Metrics
+        ---
+        """
         in_val = {}
         out_val = {}
         net_devs = [0, 1]
@@ -383,6 +524,10 @@ class VirtanceMetricsDiskAPI(APIView):
         )
 
     def get(self, request, *args, **kwargs):
+        """
+        Retrieve The Virtance Disk Metrics
+        ---
+        """
         virtance = self.get_object()
         vname = f"{settings.VM_NAME_PREFIX}{str(virtance.id)}"
         today = timezone.now()
