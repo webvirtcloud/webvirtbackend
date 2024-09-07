@@ -2,8 +2,6 @@ from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from drf_yasg.utils import swagger_auto_schema
-from drf_yasg import openapi
 
 from virtance.models import Virtance
 from virtance.serializers import VirtanceSerializer
@@ -32,10 +30,74 @@ class FirewallListAPI(APIView):
         return queryset
 
     def get(self, request, *args, **kwargs):
+        """
+        Retvieve list of firewalls
+        ---
+        """
         serilizator = self.class_serializer(self.get_queryset(), many=True)
         return Response({"firewalls": serilizator.data})
 
     def post(self, request, *args, **kwargs):
+        """
+        Create new firewall
+        ---
+            parameters:
+                - name: name
+                  description: Firewall name
+                  required: true
+                  type: string
+
+                - name: virtance_ids
+                  description: List of virtance ids
+                  required: false
+                  type: array
+                  items:
+                    type: integer
+
+                - name: inbound_rules
+                  description: Inbound rules
+                  required: false
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      protocol:
+                        type: string
+                        enum: ["tcp", "udp", "icmp"]
+                      ports:
+                        type: integer or string
+                        description: Port number from 1 to 65535 or range of ports (e.g. 80-443)
+                      sources:
+                        type: object
+                        properties:
+                          type: object
+                          properties:
+                            addresses:
+                              type: string
+                              description: IPv4 address or CIDR
+                
+                - name: outbound_rules
+                  description: Outbound rules
+                  required: false
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      protocol:
+                        type: string
+                        enum: ["tcp", "udp", "icmp"]
+                      ports:
+                        type: integer or string
+                        description: Port number from 1 to 65535 or range of ports (e.g. 80-443)
+                      destinations:
+                        type: object
+                        properties:
+                          type: object
+                          properties:
+                            addresses:
+                              type: string
+                              description: IPv4 address or CIDR
+        """
         serializer = self.class_serializer(data=request.data, context={"user": request.user})
         serializer.is_valid(raise_exception=True)
         serializer.save()
@@ -49,16 +111,84 @@ class FirewallDataAPI(APIView):
         return get_object_or_404(Firewall, uuid=self.kwargs.get("uuid"), user=self.request.user, is_deleted=False)
 
     def get(self, request, *args, **kwargs):
+        """
+        Retvieve firewall data
+        ---
+        """
         serilizator = self.class_serializer(self.get_object(), many=False)
         return Response({"firewall": serilizator.data})
 
     def put(self, request, *args, **kwargs):
+        """
+        Update firewall data
+        ---
+            parameters:
+                - name: name
+                  description: Firewall name
+                  required: false
+                  type: string
+
+                - name: virtance_ids
+                  description: List of virtance ids
+                  required: false
+                  type: array
+                  items:
+                    type: integer
+
+                - name: inbound_rules
+                  description: Inbound rules
+                  required: false
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      protocol:
+                        type: string
+                        enum: ["tcp", "udp", "icmp"]
+                      ports:
+                        type: integer or string
+                        description: Port number from 1 to 65535 or range of ports (e.g. 80-443)
+                      sources:
+                        type: object
+                        properties:
+                          type: object
+                          properties:
+                            addresses:
+                              type: string
+                              description: IPv4 address or CIDR
+                
+                - name: outbound_rules
+                  description: Outbound rules
+                  required: false
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      protocol:
+                        type: string
+                        enum: ["tcp", "udp", "icmp"]
+                      ports:
+                        type: integer or string
+                        description: Port number from 1 to 65535 or range of ports (e.g. 80-443)
+                      destinations:
+                        type: object
+                        properties:
+                          type: object
+                          properties:
+                            addresses:
+                              type: string
+                              description: IPv4 address or CIDR
+        """
         serilizator = self.class_serializer(self.get_object(), data=request.data)
         serilizator.is_valid(raise_exception=True)
         serilizator.save()
         return Response({"firewall": serilizator.data})
 
     def delete(self, request, *args, **kwargs):
+        """
+        Delete firewall
+        ---
+        """
         firewall = self.get_object()
 
         for fw_to_virt in FirewallVirtance.objects.filter(firewall=firewall):
@@ -79,12 +209,108 @@ class FirewallRuleAPI(APIView):
         return get_object_or_404(Firewall, uuid=self.kwargs.get("uuid"), user=self.request.user, is_deleted=False)
 
     def post(self, request, *args, **kwargs):
+        """
+        Add new rule to firewall
+        ---
+            parameters:
+                - name: inbound_rules
+                  description: Inbound rules
+                  required: false
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      protocol:
+                        type: string
+                        enum: ["tcp", "udp", "icmp"]
+                      ports:
+                        type: integer or string
+                        description: Port number from 1 to 65535 or range of ports (e.g. 80-443)
+                      sources:
+                        type: object
+                        properties:
+                          type: object
+                          properties:
+                            addresses:
+                              type: string
+                              description: IPv4 address or CIDR
+                
+                - name: outbound_rules
+                  description: Outbound rules
+                  required: false
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      protocol:
+                        type: string
+                        enum: ["tcp", "udp", "icmp"]
+                      ports:
+                        type: integer or string
+                        description: Port number from 1 to 65535 or range of ports (e.g. 80-443)
+                      destinations:
+                        type: object
+                        properties:
+                          type: object
+                          properties:
+                            addresses:
+                              type: string
+                              description: IPv4 address or CIDR
+        """
         serializer = FirewallAddRuleSerializer(self.get_object(), data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
 
     def delete(self, request, *args, **kwargs):
+        """
+        Delete rule from firewall
+        ---
+            parameters:
+                - name: inbound_rules
+                  description: Inbound rules
+                  required: false
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      protocol:
+                        type: string
+                        enum: ["tcp", "udp", "icmp"]
+                      ports:
+                        type: integer or string
+                        description: Port number from 1 to 65535 or range of ports (e.g. 80-443)
+                      sources:
+                        type: object
+                        properties:
+                          type: object
+                          properties:
+                            addresses:
+                              type: string
+                              description: IPv4 address or CIDR
+                
+                - name: outbound_rules
+                  description: Outbound rules
+                  required: false
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      protocol:
+                        type: string
+                        enum: ["tcp", "udp", "icmp"]
+                      ports:
+                        type: integer or string
+                        description: Port number from 1 to 65535 or range of ports (e.g. 80-443)
+                      destinations:
+                        type: object
+                        properties:
+                          type: object
+                          properties:
+                            addresses:
+                              type: string
+                              description: IPv4 address or CIDR
+        """
         serializer = FirewallDelRuleSerializer(self.get_object(), data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
@@ -96,18 +322,44 @@ class FirewallVirtanceAPI(APIView):
         return get_object_or_404(Firewall, uuid=self.kwargs.get("uuid"), user=self.request.user, is_deleted=False)
 
     def get(self, request, *args, **kwargs):
+        """
+        Retvieve list of virtances attached to firewall
+        ---
+        """
         virtance_ids = FirewallVirtance.objects.filter(firewall=self.get_object()).values_list("virtance_id", flat=True)
         virtances = Virtance.objects.filter(id__in=virtance_ids)
         serilizator = VirtanceSerializer(virtances, many=True)
         return Response({"virtances": serilizator.data})
 
     def post(self, request, *args, **kwargs):
+        """
+        Attach virtance to firewall
+        ---
+            parameters:
+                - name: virtance_ids
+                  description: List of virtance ids
+                  required: true
+                  type: array
+                  items:
+                    type: integer
+        """
         serializer = FirewallAddVirtanceSerializer(self.get_object(), data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
 
     def delete(self, request, *args, **kwargs):
+        """
+        Detach virtance from firewall
+        ---
+            parameters:
+                - name: virtance_ids
+                  description: List of virtance ids
+                  required: true
+                  type: array
+                  items:
+                    type: integer
+        """
         serializer = FirewallDelVirtanceSerializer(self.get_object(), data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
