@@ -25,6 +25,20 @@ class Login(ObtainAuthToken):
     serializer_class = AuthTokenSerializer
 
     def post(self, request, *args, **kwargs):
+        """
+        Obtain auth token for user
+        ---
+            parameters:
+                - name: username
+                  description: Username
+                  required: true
+                  type: string
+
+                - name: password
+                  description: Password
+                  required: true
+                  type: string
+        """
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data.get("user")
@@ -44,6 +58,20 @@ class Register(APIView):
     serializer_class = RegisterSerializer
 
     def post(self, request, *args, **kwargs):
+        """
+        Register new user
+        ---
+            parameters:
+                - name: email
+                  description: Email
+                  required: true
+                  type: string
+
+                - name: password
+                  description: Password
+                  required: true
+                  type: string
+        """
         if settings.REGISTRATION_ENABLED is False:
             return error_message_response("Sorry, registration is disabled.")
         serializer = self.serializer_class(data=request.data)
@@ -57,6 +85,15 @@ class ResetPassword(APIView):
     serializer_class = ResetPasswordSerializer
 
     def post(self, request, *args, **kwargs):
+        """
+        Reset user password
+        ---
+            parameters:
+                - name: email
+                  description: Email
+                  required: true
+                  type: string
+        """
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
@@ -68,6 +105,20 @@ class ResetPasswordHash(APIView):
     serializer_class = ResetPasswordHashSerializer
 
     def post(self, request, hash, *args, **kwargs):
+        """
+        Reset user password by hash
+        ---
+            parameters:
+                - name: password
+                  description: Password
+                  required: true
+                  type: string
+
+                - name: password_confirm
+                  description: Password confirm
+                  required: true
+                  type: string     
+        """
         if User.objects.filter(hash=hash, is_active=True).exists():
             user = User.objects.get(hash=hash)
             serializer = self.serializer_class(user, data=request.data)
@@ -81,6 +132,10 @@ class VerifyResendEmail(APIView):
     permission_classes = (IsAuthenticated,)
 
     def post(self, request, *args, **kwargs):
+        """
+        Resend verification email
+        ---
+        """
         if request.user.is_email_verified:
             return error_message_response("Account already verified.")
         request.user.update_hash()
@@ -92,6 +147,10 @@ class VerifyHashEmail(APIView):
     permission_classes = (IsAuthenticated,)
 
     def get(self, request, *args, **kwargs):
+        """
+        Verify email by hash
+        ---
+        """
         if User.objects.filter(hash=kwargs.get("hash"), is_email_verified=False, is_active=True).exists():
             user = User.objects.get(hash=kwargs.get("hash"))
             user.email_verify()
@@ -111,10 +170,28 @@ class ProfileAPI(APIView):
     permission_classes = (IsAuthenticated,)
 
     def get(self, request, *args, **kwargs):
+        """
+        Get user profile
+        ---
+        """
         serializer = self.serializer_class(request.user)
         return Response({"profile": serializer.data})
 
     def put(self, request, *args, **kwargs):
+        """
+        Update user profile
+        ---
+            parameters: 
+                - name: first_name
+                  description: First name
+                  required: false
+                  type: string
+
+                - name: last_name
+                  description: Last name
+                  required: false
+                  type: string
+        """
         serializer = self.serializer_class(request.user, data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
@@ -126,6 +203,25 @@ class ChangePasswordAPI(APIView):
     permission_classes = (IsAuthenticated,)
 
     def post(self, request, *args, **kwargs):
+        """
+        Change user password
+        ---
+            parameters:
+                - name: old_password
+                  description: Old password
+                  required: true
+                  type: string
+                
+                - name: new_password
+                  description: New password
+                  required: true
+                  type: string
+
+                - name: new_password_confirm
+                  description: New password confirm
+                  required: true
+                  type: string
+        """
         serializer = self.serializer_class(request.user, data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
