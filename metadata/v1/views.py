@@ -9,6 +9,9 @@ from .utils import MetadataMixin
 
 class MetadataV1Json(MetadataMixin):
     def get(self, request, *args, **kwargs):
+        """
+        Retrieve an Metadata JSON for a Virtance
+        """
         vendor_data = ""
         nameservers = []
         public_keys = []

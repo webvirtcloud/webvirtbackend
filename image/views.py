@@ -39,7 +39,7 @@ class ImageListAPI(APIView):
 
     def get(self, request, *args, **kwargs):
         """
-        Retvie a list of all types of images
+        List of All Types of Images
         ---
         """
         serilizator = self.class_serializer(self.get_queryset(), many=True)
@@ -60,7 +60,7 @@ class ImageDataAPI(APIView):
 
     def get(self, request, *args, **kwargs):
         """
-        Retvie image data
+        Retrieve an Existing Image
         ---
         """
         serilizator = self.class_serializer(self.get_object(), many=False)
@@ -68,7 +68,7 @@ class ImageDataAPI(APIView):
 
     def put(self, request, *args, **kwargs):
         """
-        Update image name
+        Update the Image (Only for snapshot image)
         ---
         """
         image = self.get_object()
@@ -82,7 +82,7 @@ class ImageDataAPI(APIView):
 
     def delete(self, request, *args, **kwargs):
         """
-        Delete user image
+        Delete the User Image
         ---
         """
         image = self.get_object()
@@ -110,7 +110,7 @@ class ImageActionAPI(APIView):
 
     def post(self, request, *args, **kwargs):
         """
-        Image action
+        Image Actions
         ---
             parameters:
                 - name: action
@@ -142,7 +142,7 @@ class ImageSnapshotsAPI(APIView):
 
     def get(self, request, *args, **kwargs):
         """
-        Retvie user snapshots list
+        List all User Snapshots 
         ---
         """
         serilizator = self.class_serializer(self.get_queryset(), many=True)

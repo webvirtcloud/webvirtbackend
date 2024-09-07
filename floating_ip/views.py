@@ -23,7 +23,7 @@ class FloatingIPListAPI(APIView):
 
     def get(self, request, *args, **kwargs):
         """
-        Retvieve floating ips
+        List All Floating IP
         ---
         """
         serializer = self.class_serializer(self.get_queryset(), many=True)
@@ -31,7 +31,7 @@ class FloatingIPListAPI(APIView):
 
     def post(self, request, *args, **kwargs):
         """
-        Create floating ip
+        Create a New Floating IP
         ---
             parameters:
 
@@ -56,7 +56,7 @@ class FloatingIPDataAPI(APIView):
 
     def get(self, request, *args, **kwargs):
         """
-        Retrieve floating ip
+        Retrieve an Existing Floating IP
         ---
         """
         serializer = self.class_serializer(self.get_object(), many=False)
@@ -64,7 +64,7 @@ class FloatingIPDataAPI(APIView):
 
     def delete(self, request, *args, **kwargs):
         """
-        Delete floating ip
+        Delete the Floating IP
         ---
         """
         floatip = self.get_object()
@@ -90,7 +90,7 @@ class FloatingIPActionAPI(APIView):
 
     def post(self, request, *args, **kwargs):
         """
-        Floating ip action
+        Floating IP Actions
         ---
             parameters:
 

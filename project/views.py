@@ -20,6 +20,10 @@ class ProjectDefaultAPI(APIView):
             raise Http404
 
     def get(self, request, *args, **kwargs):
+        """
+        Get Default Project
+        ---
+        """
         projects = self.get_object(user=request.user)
         serilizator = self.class_serializer(projects, many=False)
         return Response({"project": serilizator.data})
@@ -29,6 +33,10 @@ class ProjectListAPI(APIView):
     class_serializer = ProjectSerializer
 
     def get(self, request, *args, **kwargs):
+        """
+        List All Projects
+        ---
+        """
         projects = Project.objects.filter(user=request.user, is_deleted=False)
         serilizator = self.class_serializer(projects, many=True)
         return Response({"projects": serilizator.data})
@@ -54,11 +62,24 @@ class ProjectDataAPI(APIView):
             raise Http404
 
     def get(self, request, uuid, *args, **kwargs):
+        """
+        Retrieve an Existing Project
+        ---
+        """
         project = self.get_object(uuid, request.user)
         serilizator = self.class_serializer(project, many=False)
         return Response({"project": serilizator.data})
 
     def put(self, request, uuid, *args, **kwargs):
+        """
+        Update the Project
+        ---
+            parameters:
+                - name: name
+                  description: Project name
+                  required: true
+                  type: string
+        """
         project = self.get_object(uuid, request.user)
         serilizator = self.class_serializer(project, data=request.data)
         if serilizator.is_valid(raise_exception=True):
@@ -66,6 +87,10 @@ class ProjectDataAPI(APIView):
         return Response(serilizator.data)
 
     def delete(self, request, uuid, *args, **kwargs):
+        """
+        Delete a Project
+        ---
+        """
         project = self.get_object(uuid, request.user)
         if project.is_default:
             return error_message_response("You can not delete default project.")

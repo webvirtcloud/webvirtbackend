@@ -31,7 +31,7 @@ class FirewallListAPI(APIView):
 
     def get(self, request, *args, **kwargs):
         """
-        Retvieve list of firewalls
+        List All Firewalls
         ---
         """
         serilizator = self.class_serializer(self.get_queryset(), many=True)
@@ -39,7 +39,7 @@ class FirewallListAPI(APIView):
 
     def post(self, request, *args, **kwargs):
         """
-        Create new firewall
+        Create a New Firewall
         ---
             parameters:
                 - name: name
@@ -112,7 +112,7 @@ class FirewallDataAPI(APIView):
 
     def get(self, request, *args, **kwargs):
         """
-        Retvieve firewall data
+        Retrieve an Existing Firewall
         ---
         """
         serilizator = self.class_serializer(self.get_object(), many=False)
@@ -120,7 +120,7 @@ class FirewallDataAPI(APIView):
 
     def put(self, request, *args, **kwargs):
         """
-        Update firewall data
+        Update the Firewall
         ---
             parameters:
                 - name: name
@@ -186,7 +186,7 @@ class FirewallDataAPI(APIView):
 
     def delete(self, request, *args, **kwargs):
         """
-        Delete firewall
+        Delete the Firewall
         ---
         """
         firewall = self.get_object()
@@ -210,7 +210,7 @@ class FirewallRuleAPI(APIView):
 
     def post(self, request, *args, **kwargs):
         """
-        Add new rule to firewall
+        Add New Firewall Rules 
         ---
             parameters:
                 - name: inbound_rules
@@ -264,7 +264,7 @@ class FirewallRuleAPI(APIView):
 
     def delete(self, request, *args, **kwargs):
         """
-        Delete rule from firewall
+        Delete the Firewall Rules
         ---
             parameters:
                 - name: inbound_rules
@@ -323,7 +323,7 @@ class FirewallVirtanceAPI(APIView):
 
     def get(self, request, *args, **kwargs):
         """
-        Retvieve list of virtances attached to firewall
+        List All Attached Virtances To The Firewall  
         ---
         """
         virtance_ids = FirewallVirtance.objects.filter(firewall=self.get_object()).values_list("virtance_id", flat=True)
@@ -333,7 +333,7 @@ class FirewallVirtanceAPI(APIView):
 
     def post(self, request, *args, **kwargs):
         """
-        Attach virtance to firewall
+        Attach Virtance To The Firewall
         ---
             parameters:
                 - name: virtance_ids
@@ -350,7 +350,7 @@ class FirewallVirtanceAPI(APIView):
 
     def delete(self, request, *args, **kwargs):
         """
-        Detach virtance from firewall
+        Detach Virtance From The Firewall
         ---
             parameters:
                 - name: virtance_ids

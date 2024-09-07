@@ -26,7 +26,7 @@ class Login(ObtainAuthToken):
 
     def post(self, request, *args, **kwargs):
         """
-        Obtain auth token for user
+        Obtain Auth Token For The User
         ---
             parameters:
                 - name: username
@@ -59,7 +59,7 @@ class Register(APIView):
 
     def post(self, request, *args, **kwargs):
         """
-        Register new user
+        Register a New User
         ---
             parameters:
                 - name: email
@@ -86,7 +86,7 @@ class ResetPassword(APIView):
 
     def post(self, request, *args, **kwargs):
         """
-        Reset user password
+        Reset the User Password
         ---
             parameters:
                 - name: email
@@ -106,7 +106,7 @@ class ResetPasswordHash(APIView):
 
     def post(self, request, hash, *args, **kwargs):
         """
-        Reset user password by hash
+        Reset he User Password by Hash
         ---
             parameters:
                 - name: password
@@ -133,7 +133,7 @@ class VerifyResendEmail(APIView):
 
     def post(self, request, *args, **kwargs):
         """
-        Resend verification email
+        Resend Vrification Email
         ---
         """
         if request.user.is_email_verified:
@@ -148,7 +148,7 @@ class VerifyHashEmail(APIView):
 
     def get(self, request, *args, **kwargs):
         """
-        Verify email by hash
+        Verify Email by Hash
         ---
         """
         if User.objects.filter(hash=kwargs.get("hash"), is_email_verified=False, is_active=True).exists():
@@ -171,7 +171,7 @@ class ProfileAPI(APIView):
 
     def get(self, request, *args, **kwargs):
         """
-        Get user profile
+        Retrieve THe User Profile
         ---
         """
         serializer = self.serializer_class(request.user)
@@ -179,7 +179,7 @@ class ProfileAPI(APIView):
 
     def put(self, request, *args, **kwargs):
         """
-        Update user profile
+        Update The User Profile
         ---
             parameters: 
                 - name: first_name
@@ -204,7 +204,7 @@ class ChangePasswordAPI(APIView):
 
     def post(self, request, *args, **kwargs):
         """
-        Change user password
+        Change The User Password
         ---
             parameters:
                 - name: old_password
