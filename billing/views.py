@@ -17,6 +17,10 @@ class BalanceAPI(APIView):
     serializer_class = BalanceSerilizer
 
     def get(self, request, *args, **kwargs):
+        """
+        Get user balance
+        ---
+        """
         serializer = self.serializer_class(request.user)
         return Response(serializer.data)
 
@@ -28,6 +32,10 @@ class BillingHistoryListAPI(APIView):
         return Balance.objects.filter(user=self.request.user)
 
     def get(self, request, *args, **kwargs):
+        """
+        Get user billing history
+        ---
+        """
         serializer = self.serializer_class(self.get_object(), many=True)
         return Response({"billing_history": serializer.data})
 
@@ -48,6 +56,10 @@ class InvoiceDataAPI(APIView):
         return get_object_or_404(Invoice, uuid=self.kwargs.get("uuid"), user=self.request.user)
 
     def get(self, request, *args, **kwargs):
+        """
+        Get invoice data
+        ---
+        """
         serializer = self.serializer_class(self.get_object(), many=False)
         return Response({"invoice": serializer.data})
 
@@ -59,6 +71,10 @@ class InvoicePdfAPI(APIView):
         return get_object_or_404(Invoice, uuid=self.kwargs.get("uuid"), user=self.request.user)
 
     def get(self, request, *args, **kwargs):
+        """
+        Download invoice pdf
+        ---
+        """
         virtance_list = []
         snapshot_list = []
         floating_ip_list = []
