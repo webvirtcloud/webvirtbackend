@@ -38,6 +38,10 @@ class ImageListAPI(APIView):
         return queryset
 
     def get(self, request, *args, **kwargs):
+        """
+        Retvie a list of all types of images
+        ---
+        """
         serilizator = self.class_serializer(self.get_queryset(), many=True)
         return Response({"images": serilizator.data})
 
@@ -55,10 +59,18 @@ class ImageDataAPI(APIView):
         return image
 
     def get(self, request, *args, **kwargs):
+        """
+        Retvie image data
+        ---
+        """
         serilizator = self.class_serializer(self.get_object(), many=False)
         return Response({"image": serilizator.data})
 
     def put(self, request, *args, **kwargs):
+        """
+        Update image name
+        ---
+        """
         image = self.get_object()
         if image.type != Image.SNAPSHOT:
             return error_message_response("Only snapshot image can be updated.")
@@ -69,6 +81,10 @@ class ImageDataAPI(APIView):
         return Response({"image": serilizator.data})
 
     def delete(self, request, *args, **kwargs):
+        """
+        Delete user image
+        ---
+        """
         image = self.get_object()
 
         if image.event is not None:
@@ -93,6 +109,20 @@ class ImageActionAPI(APIView):
         return image
 
     def post(self, request, *args, **kwargs):
+        """
+        Image action
+        ---
+            parameters:
+                - name: action
+                  description: Action type ("convert" or "transfer")
+                  required: true
+                  type: string
+                
+                - name: region
+                  description: Region slug for transfer action
+                  required: false
+                  type: string
+        """
         image = self.get_object()
 
         if image.event is not None:
@@ -111,5 +141,9 @@ class ImageSnapshotsAPI(APIView):
         return Image.objects.filter(type=Image.SNAPSHOT, user=self.request.user, is_deleted=False)
 
     def get(self, request, *args, **kwargs):
+        """
+        Retvie user snapshots list
+        ---
+        """
         serilizator = self.class_serializer(self.get_queryset(), many=True)
         return Response({"snapshots": serilizator.data})
