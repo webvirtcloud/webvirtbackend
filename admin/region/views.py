@@ -4,6 +4,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout
 from crispy_forms.bootstrap import InlineCheckboxes
 
+from compute.models import Compute
 from region.models import Region, Feature
 from .forms import FormRegion, CustomModelMultipleChoiceField
 from admin.mixins import AdminTemplateView, AdminFormView, AdminUpdateView, AdminDeleteView
@@ -46,6 +47,15 @@ class AdminRegionUpdateView(AdminUpdateView):
             "is_active",
             InlineCheckboxes("features", css_class="checkboxinput"),
         )
+
+    def form_valid(self, form):
+        if form.has_changed():
+            if form.cleaned_data.get("is_active") is True:
+                region = self.get_object()
+                computes = Compute.objects.filter(region=region, is_active=True, is_deleted=False)
+                if not computes.exists():
+                    form.add_error("__all__", "There are no active COMPUTES in the region.")
+        return super().form_valid(form)
 
     def get_form(self, form_class=None):
         form = super(AdminRegionUpdateView, self).get_form(form_class)
