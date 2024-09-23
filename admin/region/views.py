@@ -48,6 +48,13 @@ class AdminRegionUpdateView(AdminUpdateView):
             InlineCheckboxes("features", css_class="checkboxinput"),
         )
 
+    def get_form(self, form_class=None):
+        form = super(AdminRegionUpdateView, self).get_form(form_class)
+        form.fields["features"] = CustomModelMultipleChoiceField(
+            queryset=Feature.objects.all(), widget=forms.CheckboxSelectMultiple(), required=False
+        )
+        return form
+
     def form_valid(self, form):
         if form.has_changed():
             if form.cleaned_data.get("is_active") is True:
@@ -55,14 +62,8 @@ class AdminRegionUpdateView(AdminUpdateView):
                 computes = Compute.objects.filter(region=region, is_active=True, is_deleted=False)
                 if not computes.exists():
                     form.add_error("__all__", "There are no active COMPUTES in the region.")
+                    return super().form_invalid(form)
         return super().form_valid(form)
-
-    def get_form(self, form_class=None):
-        form = super(AdminRegionUpdateView, self).get_form(form_class)
-        form.fields["features"] = CustomModelMultipleChoiceField(
-            queryset=Feature.objects.all(), widget=forms.CheckboxSelectMultiple(), required=False
-        )
-        return form
 
     def get_context_data(self, **kwargs):
         context = super(AdminRegionUpdateView, self).get_context_data(**kwargs)
