@@ -303,8 +303,6 @@ class LBaaSVirtancesAPI(APIView):
         serializer = LBaaSAddVirtanceSerializer(lbaas, data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        lbaas_virtances = LBaaSVirtance.objects.filter(lbaas=lbaas, is_deleted=False)
-        serializer = VirtanceSerializer(lbaas_virtances, many=True)
         return Response(serializer.data)
 
     def delete(self, request, *args, **kwargs):
