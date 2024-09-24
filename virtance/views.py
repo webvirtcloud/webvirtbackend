@@ -88,7 +88,44 @@ class VirtanceListAPI(APIView):
     def get(self, request, *args, **kwargs):
         """
         List of All Virtances
+        
+        Search with netxt get parameters:
         ---
+            parameters:
+                - name: region
+                  description: Region slug
+                  required: false
+                  type: string
+
+                - name: name
+                  description: Virtance name
+                  required: false
+                  type: string
+
+                - name: used_in_lb
+                  description: Used in Load Balancer
+                  required: false
+                  type: boolean
+
+                - name: has_backups
+                  description: Has backups
+                  required: false
+                  type: boolean
+
+                - name: has_snapshots
+                  description: Has snapshots
+                  required: false
+                  type: boolean
+
+                - name: has_firewall
+                  description: Has firewall
+                  required: false
+                  type: boolean
+
+                - name: has_floating_ip
+                  description: Has floating IP
+                  required: false
+                  type: boolean
         """
         serilizator = self.class_serializer(self.get_queryset(), many=True)
         return Response({"virtances": serilizator.data})
