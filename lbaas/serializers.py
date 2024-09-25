@@ -296,6 +296,10 @@ class LBaaSSerializer(serializers.ModelSerializer):
 class LBaaSAddVirtanceSerializer(serializers.ModelSerializer):
     virtance_ids = serializers.ListField(required=False)
 
+    class Meta:
+        model = LBaaS
+        fields = ("virtance_ids",)
+
     def validate(self, attrs):
         virtance_ids = list(set(attrs.get("virtance_ids", [])))
 
@@ -463,6 +467,10 @@ class LBaaSAddRuleSerializer(serializers.ModelSerializer):
 
 class LBaaSDelRuleSerializer(serializers.ModelSerializer):
     forwarding_rules = ListOfForwardingRuleSerializer()
+
+    class Meta:
+        model = LBaaS
+        fields = ("forwarding_rules",)
 
     def validate(self, attrs):
         forwarding_rules = attrs.get("forwarding_rules")
