@@ -69,7 +69,7 @@ backend backend_{{ rule.target_protocol }}_{{ rule.target_port }}
         option tcp-check
 {% endif %}
         default-server inter {{ health.check_interval_seconds }}s check rise {{ health.check_healthy_threshold }} fall {{ health.check_unhealthy_threshold }} port {{ health.check_port }} check
-{% for virtance in virtances %}
-        server virtance_{{ virtance.id }} {{ virtance.ipaddr }}:{{ rule.target_port }}
+{% for v in virtances %}
+        server virtance_{{ v.id }} {{ v.ipv4_address }}:{{ rule.target_port }}
 {% endfor %}
 {% endfor %}

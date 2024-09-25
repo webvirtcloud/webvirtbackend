@@ -202,7 +202,7 @@ def create_lbaas(lbaas_id):
                 ).address
                 virtances.append(
                     {
-                        "virtance_id": l_v.virtance.id,
+                        "id": l_v.virtance.id,
                         "ipv4_address": ipv4_address,
                     }
                 )
@@ -271,7 +271,7 @@ def reload_lbaas(lbaas_id):
             ).address
             virtances.append(
                 {
-                    "virtance_id": l_v.virtance.id,
+                    "id": l_v.virtance.id,
                     "ipv4_address": ipv4_address,
                 }
             )
