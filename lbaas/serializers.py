@@ -5,6 +5,7 @@ from size.models import Size
 from image.models import Image
 from region.models import Region
 from virtance.models import Virtance
+from network.models import IPAddress, Network
 from virtance.utils import make_ssh_private, encrypt_data
 from .tasks import create_lbaas, reload_lbaas
 from .models import LBaaS, LBaaSForwadRule, LBaaSVirtance
@@ -65,7 +66,11 @@ class LBaaSSerializer(serializers.ModelSerializer):
         )
 
     def get_ip(self, obj):
-        return None
+        if obj.virtance:
+            ipaddr = IPAddress.objects.filter(
+                virtance=obj.virtance, network__version=Network.IPv4, is_float=False
+            ).first()
+        return ipaddr.address if ipaddr else None
 
     def validate(self, attrs):
         user = self.context.get("user")
