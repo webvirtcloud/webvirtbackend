@@ -66,6 +66,7 @@ class LBaaSSerializer(serializers.ModelSerializer):
         )
 
     def get_ip(self, obj):
+        ipaddr = None
         if obj.virtance:
             ipaddr = IPAddress.objects.filter(
                 virtance=obj.virtance, network__version=Network.IPv4, is_float=False
