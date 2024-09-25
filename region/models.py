@@ -9,7 +9,7 @@ class Feature(models.Model):
         ("volume", "Volume"),
         ("backup", "Backup"),
         ("snapshot", "Snapshot"),
-        ("one_click", "1click"),
+        ("one_click", "1Click"),
         ("floating_ip", "Float-IP"),
         ("load_balancer", "LBaaS"),
     )
