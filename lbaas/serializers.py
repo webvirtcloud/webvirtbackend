@@ -443,6 +443,16 @@ class LBaaSAddRuleSerializer(serializers.ModelSerializer):
                 lbaas=self.instance,
                 entry_port=rule.get("entry_port"),
                 entry_protocol=rule.get("entry_protocol"),
+                is_deleted=False,
+            ).exists():
+                raise serializers.ValidationError(
+                    {"forwarding_rules": ["Rule with the entry_port and entry_protocol already exists."]}
+                )
+            
+            if LBaaSForwadRule.objects.filter(
+                lbaas=self.instance,
+                entry_port=rule.get("entry_port"),
+                entry_protocol=rule.get("entry_protocol"),
                 target_port=rule.get("target_port"),
                 target_protocol=rule.get("target_protocol"),
                 is_deleted=False,
