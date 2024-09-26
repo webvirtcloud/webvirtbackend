@@ -13,6 +13,7 @@ from .serializers import (
     LBaaSSerializer,
     LBaaSAddRuleSerializer,
     LBaaSDelRuleSerializer,
+    LBaaSUpdateRuleSerializer,
     LBaaSAddVirtanceSerializer,
     LBaaSDelVirtanceSerializer,
 )
@@ -220,6 +221,48 @@ class LBaaSForwardRulesAPI(APIView):
             return error_message_response("The load balancer already has event.")
 
         serializer = LBaaSAddRuleSerializer(lbaas, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+
+    def put(self, request, *args, **kwargs):
+        """
+        Update Forward Rule to The Load Balancer
+        ---
+            parameters:
+                name: forwarding_rules
+                description: Forward Rules
+                required: true
+                type: array
+                items:
+                    type: object
+                    properties:
+                        entry_port:
+                          description: Entry Port (1-65535)
+                          required: true
+                          type: integer
+
+                        entry_protocol:
+                          description: Entry Protocol (TCP, UDP, HTTP, HTTPS, HTTP2 and HTTP3)
+                          required: true
+                          type: integer
+
+                        target_port:
+                          description: Target Port (1-65535)
+                          required: true
+                          type: integer
+
+                        target_protocol:
+                          description: Target Protocol (TCP, UDP, HTTP, HTTPS, HTTP2 and HTTP3)
+                          required: true
+                          type: integer
+        """
+        lbaas = self.get_object()
+
+        if lbaas.event is not None:
+            return error_message_response("The load balancer already has event.")
+
+        serializer = LBaaSUpdateRuleSerializer(lbaas, data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)

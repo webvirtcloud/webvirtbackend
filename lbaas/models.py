@@ -20,6 +20,7 @@ class LBaaS(models.Model):
     ADD_VIRTANCE = "add_virtance"
     REMOVE_VIRTANCE = "remove_virtance"
     ADD_FORWARD_RULE = "add_forward_rule"
+    UPDATE_FORWARD_RULE = "update_forward_rule"
     REMOVE_FORWARD_RULE = "remove_forward_rule"
     EVENT_CHOICES = (
         (CREATE, "Create"),

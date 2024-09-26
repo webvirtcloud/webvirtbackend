@@ -471,6 +471,95 @@ class LBaaSAddRuleSerializer(serializers.ModelSerializer):
         return validated_data
 
 
+class LBaaSUpdateRuleSerializer(serializers.ModelSerializer):
+    forwarding_rules = ListOfForwardingRuleSerializer()
+
+    class Meta:
+        model = LBaaS
+        fields = ("forwarding_rules",)
+
+    def validate(self, attrs):
+        forwarding_rules = attrs.get("forwarding_rules")
+
+        # Check duplicate forwarding rules for entry and target
+        if len([tuple(sorted(d.items())) for d in forwarding_rules]) != len(
+            set([tuple(sorted(d.items())) for d in forwarding_rules])
+        ):
+            raise serializers.ValidationError({"forwarding_rules": ["Duplicate forwarding rules."]})
+
+        # Check duplicate forwarding rules on entry data
+        entry_data = [f'{rule.get("entry_protcol")}_{rule.get("entry_port")}' for rule in forwarding_rules]
+        if len(entry_data) != len(set(entry_data)):
+            raise serializers.ValidationError({"forwarding_rules": ["Duplicate entry_protcol and entry_port."]})
+
+        if not all(isinstance(x, dict) for x in forwarding_rules):
+            raise serializers.ValidationError({"forwarding_rules": ["Invalid forwarding rules."]})
+        for rule in forwarding_rules:
+            if (
+                not rule.get("entry_port")
+                or not rule.get("entry_protocol")
+                or not rule.get("target_port")
+                or not rule.get("target_protocol")
+            ):
+                raise serializers.ValidationError({"forwarding_rules": ["Invalid forwarding rules."]})
+
+            if rule.get("entry_protocol") not in [x[0] for x in LBaaSForwadRule.PROTOCOL_CHOICES]:
+                raise serializers.ValidationError({"forwarding_rules": ["Invalid entry_protocol."]})
+
+            if not 0 < rule.get("entry_port") < 65536:
+                raise serializers.ValidationError({"forwarding_rules": ["Invalid entry_port."]})
+
+            if rule.get("target_protocol") not in [x[0] for x in LBaaSForwadRule.PROTOCOL_CHOICES]:
+                raise serializers.ValidationError({"forwarding_rules": ["Invalid target_protocol."]})
+
+            if not 0 < rule.get("target_port") < 65536:
+                raise serializers.ValidationError({"forwarding_rules": ["Invalid target_port."]})
+
+            if rule.get("entry_protocol") != rule.get("target_protocol"):
+                raise serializers.ValidationError(
+                    {
+                        "forwarding_rules": [
+                            (
+                                "Entry and target protocol must be the same. "
+                                "Support for different procotols is temporarily unsupported."
+                            )
+                        ]
+                    }
+                )
+
+        for rule in forwarding_rules:
+            if not LBaaSForwadRule.objects.filter(
+                lbaas=self.instance,
+                entry_port=rule.get("entry_port"),
+                entry_protocol=rule.get("entry_protocol"),
+                is_deleted=False,
+            ).exists():
+                raise serializers.ValidationError({"forwarding_rules": ["Rule not found."]})
+
+        return attrs
+
+    def update(self, instance, validated_data):
+        forwarding_rules = validated_data.get("forwarding_rules")
+
+        for rule in forwarding_rules:
+            lbrule = LBaaSForwadRule.objects.get(
+                lbaas=instance,
+                entry_port=rule.get("entry_port"),
+                entry_protocol=rule.get("entry_protocol"),
+                is_deleted=False,
+            )
+            lbrule.target_port = rule.get("target_port")
+            lbrule.target_protocol = rule.get("target_protocol")
+            lbrule.save()
+
+        instance.event = LBaaS.UPDATE_FORWARD_RULE
+        instance.save()
+
+        reload_lbaas.delay(instance.id)
+
+        return validated_data
+
+
 class LBaaSDelRuleSerializer(serializers.ModelSerializer):
     forwarding_rules = ListOfForwardingRuleSerializer()
 
