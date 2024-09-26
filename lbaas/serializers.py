@@ -560,7 +560,7 @@ class LBaaSUpdateRuleSerializer(serializers.ModelSerializer):
         forwarding_rules = validated_data.get("forwarding_rules")
 
         # Delete all old forwarding rules
-        LBaaSForwadRule.objects.get(
+        LBaaSForwadRule.objects.filter(
             lbaas=instance,
             is_deleted=False,
         ).update(is_deleted=True)
