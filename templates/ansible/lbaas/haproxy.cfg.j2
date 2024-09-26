@@ -46,6 +46,7 @@ frontend entry_{{ rule.entry_protocol }}_{{ rule.entry_port }}
         bind {{ ipv4_public_address }}:{{ rule.entry_port }}
 {% if rule.entry_protocol == 'http' %}
         option httplog
+        option forwardfor
 {% if redirect_to_https %}
         redirect scheme https code 301 if !{ ssl_fc }
 {% endif %}
