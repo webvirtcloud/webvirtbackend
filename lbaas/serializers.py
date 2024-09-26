@@ -559,6 +559,13 @@ class LBaaSUpdateRuleSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         forwarding_rules = validated_data.get("forwarding_rules")
 
+        # Delete all old forwarding rules
+        LBaaSForwadRule.objects.get(
+            lbaas=instance,
+            is_deleted=False,
+        ).update(is_deleted=True)
+
+        # Update old or create new forwarding rules
         for rule in forwarding_rules:
             try:
                 lbrule = LBaaSForwadRule.objects.get(
