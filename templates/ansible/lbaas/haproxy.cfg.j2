@@ -38,9 +38,9 @@ defaults
         errorfile 502 /etc/haproxy/errors/502.http
         errorfile 503 /etc/haproxy/errors/503.http
         errorfile 504 /etc/haproxy/errors/504.http
-
 {% for rule in forwarding_rules %}
-frontend fontend_{{ rule.entry_protocol }}_{{ rule.entry_port }}
+
+frontend entry_{{ rule.entry_protocol }}_{{ rule.entry_port }}
         mode {% if rule.entry_protocol == 'http' %}http{% else %}tcp{% endif %}
 
         bind {{ ipv4_public_address }}:{{ rule.entry_port }}
@@ -52,9 +52,9 @@ frontend fontend_{{ rule.entry_protocol }}_{{ rule.entry_port }}
 {% else %}
         option tcplog
 {% endif %}
-        default_backend backend_{{ rule.entry_protocol }}_{{ rule.entry_port }}
+        default_backend target_{{ rule.target_protocol }}_{{ rule.target_port }}
 
-backend backend_{{ rule.target_protocol }}_{{ rule.target_port }}
+backend target_{{ rule.target_protocol }}_{{ rule.target_port }}
         mode {% if rule.target_protocol == 'http' %}http{% else %}tcp{% endif %}
 
         balance roundrobin
