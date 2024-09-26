@@ -29,6 +29,7 @@ class LBaaS(models.Model):
         (ADD_VIRTANCE, "Add Virtance to a Load Balancer"),
         (REMOVE_VIRTANCE, "Remove Virtance from a Load Balancer"),
         (ADD_FORWARD_RULE, "Add Forwarding Rules to a Load Balancer"),
+        (UPDATE_FORWARD_RULE, "Update Forwarding Rules to a Load Balancer"),
         (REMOVE_FORWARD_RULE, "Remove Forwarding Rules to a Load Balancer"),
     )
 

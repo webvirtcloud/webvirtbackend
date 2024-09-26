@@ -33,6 +33,7 @@ class Migration(migrations.Migration):
                             ("add_virtance", "Add Virtance to a Load Balancer"),
                             ("remove_virtance", "Remove Virtance from a Load Balancer"),
                             ("add_forward_rule", "Add Forwarding Rules to a Load Balancer"),
+                            ("update_forward_rule", "Update Forwarding Rules to a Load Balancer"),
                             ("remove_forward_rule", "Remove Forwarding Rules to a Load Balancer"),
                         ],
                         default="create",
