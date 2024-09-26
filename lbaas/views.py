@@ -1,3 +1,4 @@
+from django.db.models import Q
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -21,8 +22,7 @@ class LBaaSListAPI(APIView):
     class_serializer = LBaaSSerializer
 
     def get_queryset(self):
-        queryset = LBaaS.objects.filter(user=self.request.user, is_deleted=False)
-        return queryset
+        return LBaaS.objects.filter(~Q(event=LBaaS.DELETE), user=self.request.user, is_deleted=False)
 
     def get(self, request, *args, **kwargs):
         """
