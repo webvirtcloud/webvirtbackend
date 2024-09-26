@@ -75,7 +75,7 @@ class FirewallListAPI(APIView):
                             addresses:
                               type: string
                               description: IPv4 address or CIDR
-                
+
                 - name: outbound_rules
                   description: Outbound rules
                   required: false
@@ -156,7 +156,7 @@ class FirewallDataAPI(APIView):
                             addresses:
                               type: string
                               description: IPv4 address or CIDR
-                
+
                 - name: outbound_rules
                   description: Outbound rules
                   required: false
@@ -210,7 +210,7 @@ class FirewallRuleAPI(APIView):
 
     def post(self, request, *args, **kwargs):
         """
-        Add New Firewall Rules 
+        Add New Firewall Rules
         ---
             parameters:
                 - name: inbound_rules
@@ -234,7 +234,7 @@ class FirewallRuleAPI(APIView):
                             addresses:
                               type: string
                               description: IPv4 address or CIDR
-                
+
                 - name: outbound_rules
                   description: Outbound rules
                   required: false
@@ -288,7 +288,7 @@ class FirewallRuleAPI(APIView):
                             addresses:
                               type: string
                               description: IPv4 address or CIDR
-                
+
                 - name: outbound_rules
                   description: Outbound rules
                   required: false
@@ -323,7 +323,7 @@ class FirewallVirtanceAPI(APIView):
 
     def get(self, request, *args, **kwargs):
         """
-        List All Attached Virtances To The Firewall  
+        List All Attached Virtances To The Firewall
         ---
         """
         virtance_ids = FirewallVirtance.objects.filter(firewall=self.get_object()).values_list("virtance_id", flat=True)

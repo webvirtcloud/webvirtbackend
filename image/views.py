@@ -117,7 +117,7 @@ class ImageActionAPI(APIView):
                   description: Action type ("convert" or "transfer")
                   required: true
                   type: string
-                
+
                 - name: region
                   description: Region slug for transfer action
                   required: false
@@ -142,7 +142,7 @@ class ImageSnapshotsAPI(APIView):
 
     def get(self, request, *args, **kwargs):
         """
-        List all User Snapshots 
+        List all User Snapshots
         ---
         """
         serilizator = self.class_serializer(self.get_queryset(), many=True)

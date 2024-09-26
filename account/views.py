@@ -117,7 +117,7 @@ class ResetPasswordHash(APIView):
                 - name: password_confirm
                   description: Password confirm
                   required: true
-                  type: string     
+                  type: string
         """
         if User.objects.filter(hash=hash, is_active=True).exists():
             user = User.objects.get(hash=hash)
@@ -181,7 +181,7 @@ class ProfileAPI(APIView):
         """
         Update The User Profile
         ---
-            parameters: 
+            parameters:
                 - name: first_name
                   description: First name
                   required: false
@@ -211,7 +211,7 @@ class ChangePasswordAPI(APIView):
                   description: Old password
                   required: true
                   type: string
-                
+
                 - name: new_password
                   description: New password
                   required: true

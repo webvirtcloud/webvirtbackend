@@ -88,7 +88,7 @@ class VirtanceListAPI(APIView):
     def get(self, request, *args, **kwargs):
         """
         List of All Virtances
-        
+
         Search with netxt get parameters:
         ---
             parameters:
@@ -176,7 +176,7 @@ class VirtanceListAPI(APIView):
                   type: array
                   items:
                     type: integer
-                
+
                 - name: user_data
                   description: User data
                   required: false
@@ -260,12 +260,12 @@ class VirtanceActionAPI(APIView):
                   description: For "resize" action
                   required: false
                   type: string
-                  
+
                 - name: name
                   description: For "rename" and "snapshot" actions
                   required: false
                   type: string
-                
+
                 - name: image
                   description: For "restore" and "rebuild" actions
                   required: false

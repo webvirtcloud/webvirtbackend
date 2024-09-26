@@ -73,7 +73,7 @@ class LBaaSSerializer(serializers.ModelSerializer):
                 virtance=obj.virtance, network__version=Network.IPv4, is_float=False
             ).first()
         return ipaddr.address if ipaddr else None
-    
+
     def get_event(self, obj):
         if obj.event is None:
             return None
@@ -448,7 +448,7 @@ class LBaaSAddRuleSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError(
                     {"forwarding_rules": ["Rule with the entry_port and entry_protocol already exists."]}
                 )
-            
+
             if LBaaSForwadRule.objects.filter(
                 lbaas=self.instance,
                 entry_port=rule.get("entry_port"),
@@ -544,7 +544,15 @@ class LBaaSUpdateRuleSerializer(serializers.ModelSerializer):
                 entry_protocol=rule.get("entry_protocol"),
                 is_deleted=False,
             ).exists():
-                raise serializers.ValidationError({"forwarding_rules": ["Rule not found."]})
+                if LBaaSForwadRule.objects.filter(
+                    lbaas=self.instance,
+                    entry_port=rule.get("entry_port"),
+                    entry_protocol=rule.get("entry_protocol"),
+                    target_port=rule.get("target_port"),
+                    target_protocol=rule.get("target_protocol"),
+                    is_deleted=False,
+                ).exists():
+                    raise serializers.ValidationError({"forwarding_rules": ["Rule already exists."]})
 
         return attrs
 
@@ -552,15 +560,24 @@ class LBaaSUpdateRuleSerializer(serializers.ModelSerializer):
         forwarding_rules = validated_data.get("forwarding_rules")
 
         for rule in forwarding_rules:
-            lbrule = LBaaSForwadRule.objects.get(
-                lbaas=instance,
-                entry_port=rule.get("entry_port"),
-                entry_protocol=rule.get("entry_protocol"),
-                is_deleted=False,
-            )
-            lbrule.target_port = rule.get("target_port")
-            lbrule.target_protocol = rule.get("target_protocol")
-            lbrule.save()
+            try:
+                lbrule = LBaaSForwadRule.objects.get(
+                    lbaas=instance,
+                    entry_port=rule.get("entry_port"),
+                    entry_protocol=rule.get("entry_protocol"),
+                    is_deleted=False,
+                )
+                lbrule.target_port = rule.get("target_port")
+                lbrule.target_protocol = rule.get("target_protocol")
+                lbrule.save()
+            except LBaaSForwadRule.DoesNotExist:
+                LBaaSForwadRule.objects.create(
+                    lbaas=instance,
+                    entry_port=rule.get("entry_port"),
+                    entry_protocol=rule.get("entry_protocol"),
+                    target_port=rule.get("target_port"),
+                    target_protocol=rule.get("target_protocol"),
+                )
 
         instance.event = LBaaS.UPDATE_FORWARD_RULE
         instance.save()

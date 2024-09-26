@@ -47,7 +47,7 @@ class LBaaSListAPI(APIView):
                   description: Region
                   required: true
                   type: string
-                
+
                 - name: virtance_ids
                   description: Virtances to be Attached to Load Balanced
                   required: true
@@ -56,7 +56,7 @@ class LBaaSListAPI(APIView):
                     type: integer
 
                 - name: redirect_http_to_https
-                  description: Redirect HTTP to HTTPS 
+                  description: Redirect HTTP to HTTPS
                   required: false
                   type: boolean
 
@@ -107,7 +107,7 @@ class LBaaSListAPI(APIView):
                       description: Unhealthy Threshold
                       required: true
                       type: integer
-                
+
                 - name: forwarding_rules
                   description: Forward Rules
                   required: true
@@ -297,7 +297,7 @@ class LBaaSForwardRulesAPI(APIView):
                         target_protocol:
                           description: Target Protocol (TCP, UDP, HTTP, HTTPS, HTTP2 and HTTP3)
                           required: true
-                          type: integer        
+                          type: integer
         """
         lbaas = self.get_object()
 
