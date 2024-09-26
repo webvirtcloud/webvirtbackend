@@ -463,7 +463,7 @@ class LBaaSAddRuleSerializer(serializers.ModelSerializer):
                 target_protocol=rule.get("target_protocol"),
             )
 
-        instance.event = LBaaS.ADD_RULE
+        instance.event = LBaaS.ADD_FORWARD_RULE
         instance.save()
 
         reload_lbaas.delay(instance.id)
@@ -536,7 +536,7 @@ class LBaaSDelRuleSerializer(serializers.ModelSerializer):
                 is_deleted=False,
             ).update(is_deleted=True)
 
-        instance.event = LBaaS.REMOVE_RULE
+        instance.event = LBaaS.REMOVE_FORWARD_RULE
         instance.save()
 
         reload_lbaas.delay(instance.id)
