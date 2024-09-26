@@ -300,8 +300,6 @@ def reload_lbaas(lbaas_id):
 @app.task
 def delete_lbaas(lbaas_id):
     lbaas = LBaaS.objects.get(id=lbaas_id)
-    lbaas.event = LBaaS.DELETE
-    lbaas.save()
 
     if delete_virtance(lbaas.virtance.id):
         lbaas.reset_event()

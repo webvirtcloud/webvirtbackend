@@ -174,6 +174,9 @@ class LBaaSDataAPI(APIView):
 
         if lbaas.event is not None:
             return error_message_response("The load balancer already has event.")
+        
+        lbaas.event = LBaaS.DELETE
+        lbaas.save()
 
         delete_lbaas.delay(lbaas.id)
         return Response(status=status.HTTP_204_NO_CONTENT)
