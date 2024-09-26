@@ -41,6 +41,7 @@ class LBaaSSerializer(serializers.ModelSerializer):
     id = serializers.UUIDField(required=False, read_only=True, source="uuid")
     ip = serializers.SerializerMethodField(read_only=True)
     name = serializers.CharField()
+    event = serializers.SerializerMethodField(read_only=True)
     region = serializers.CharField(write_only=True)
     created_at = serializers.DateTimeField(read_only=True, source="created")
     virtance_ids = serializers.ListField(required=False, write_only=True)
@@ -72,6 +73,11 @@ class LBaaSSerializer(serializers.ModelSerializer):
                 virtance=obj.virtance, network__version=Network.IPv4, is_float=False
             ).first()
         return ipaddr.address if ipaddr else None
+    
+    def get_event(self, obj):
+        if obj.event is None:
+            return None
+        return {"name": obj.event, "description": next((i[1] for i in obj.EVENT_CHOICES if i[0] == obj.event))}
 
     def validate(self, attrs):
         user = self.context.get("user")
