@@ -66,7 +66,7 @@ provision_tasks = [
     },
     {
         "name": "Restart prometheus service",
-        "action": {"module": "systemd", "args": {"name": "prometheus", "state": "reloaded"}},
+        "action": {"module": "systemd", "args": {"name": "prometheus", "state": "restarted"}},
     },
     {
         "name": "Disable systemd-resolved service",
