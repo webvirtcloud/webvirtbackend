@@ -138,7 +138,7 @@
             </div>
             <div class="space-y-1 px-2">
               <a href="{% url 'admin_lbaas_index' %}"
-                class="group flex items-center rounded-md px-2 py-2 text-sm font-medium {% if 'admin/floating_ip' in request.path %}bg-gray-100 text-gray-900{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900 {% endif %}">
+                class="group flex items-center rounded-md px-2 py-2 text-sm font-medium {% if 'admin/lbaas' in request.path %}bg-gray-100 text-gray-900{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900 {% endif %}">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                   stroke="currentColor" class="text-gray-400 group-hover:text-gray-500 mr-3 h-6 w-6">
                   <path stroke-linecap="round" stroke-linejoin="round"
