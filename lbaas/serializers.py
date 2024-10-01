@@ -295,7 +295,109 @@ class LBaaSSerializer(serializers.ModelSerializer):
 
         return lbaas
 
+
+class LBaaSUpdateSerializer(serializers.ModelSerializer):
+    name = serializers.CharField()
+    health_check = serializers.DictField(required=False)
+    sticky_sessions = serializers.DictField(required=False)
+    redirect_http_to_https = serializers.BooleanField(required=False)
+
+    def validate(self, attrs):
+        health_check = attrs.get("health_check")
+        sticky_sessions = attrs.get("sticky_sessions")
+
+        # Check if health_check is valid
+        if health_check:
+            if health_check.get("protocol") not in [x[0] for x in LBaaS.CHECK_PROTOCOL_CHOICES]:
+                raise serializers.ValidationError({"health_check": ["Invalid protocol."]})
+
+            if health_check.get("protocol") == LBaaS.HTTP or health_check.get("protocol") == LBaaS.HTTPS:
+                if health_check.get("path") == "" or not health_check.get("path"):
+                    raise serializers.ValidationError({"health_check": ["Path is required for HTTP protocol."]})
+
+            if 1 > health_check.get("port") < 65535:
+                raise serializers.ValidationError({"health_check": ["Invalid port."]})
+
+            if 1 > health_check.get("check_interval_seconds") < 9999:
+                raise serializers.ValidationError({"health_check": ["Invalid check_interval_seconds."]})
+
+            if 1 > health_check.get("response_timeout_seconds") < 9999:
+                raise serializers.ValidationError({"health_check": ["Invalid response_timeout_seconds."]})
+
+            if 1 > health_check.get("healthy_threshold") < 999:
+                raise serializers.ValidationError({"health_check": ["Invalid healthy_threshold."]})
+
+            if 1 > health_check.get("unhealthy_threshold") < 999:
+                raise serializers.ValidationError({"health_check": ["Invalid unhealthy_threshold."]})
+
+        # Check if sticky_sessions is valid
+        if sticky_sessions:
+            if not sticky_sessions.get("cookie_name") or sticky_sessions.get("cookie_name") == "":
+                raise serializers.ValidationError({"sticky_sessions": ["Cookie name is required."]})
+
+            if not sticky_sessions.get("cookie_ttl_seconds") or 1 > sticky_sessions.get("cookie_ttl_seconds") < 9999:
+                raise serializers.ValidationError({"sticky_sessions": ["Invalid cookie_ttl."]})
+
+        return attrs
+
     def update(self, instance, validated_data):
+        name = validated_data.get("name")
+        health_check = validated_data.get("health_check")
+        sticky_sessions = validated_data.get("sticky_sessions")
+        redirect_http_to_https = validated_data.get("redirect_http_to_https", False)
+
+        if name:
+            LBaaS.objects.filter(id=instance.id).update(name=name)
+
+        if redirect_http_to_https:
+            LBaaS.objects.filter(id=instance.id).update(redirect_http_to_https=redirect_http_to_https)
+
+        # Update sticky_sessions
+        stick_session_enabled = True if sticky_sessions else False
+        stick_session_cookie_name = "sessionid"
+        stick_session_cookie_ttl = 3600
+        if sticky_sessions:
+            stick_session_cookie_name = sticky_sessions.get("cookie_name")
+            stick_session_cookie_ttl = sticky_sessions.get("cookie_ttl_seconds")
+
+            LBaaS.objects.filter(id=instance.id).update(
+                sticky_sessions=stick_session_enabled,
+                sticky_sessions_cookie_name=stick_session_cookie_name,
+                sticky_sessions_cookie_ttl=stick_session_cookie_ttl,
+            )
+
+        # Update health_check
+        check_protocol = LBaaS.TCP
+        check_path = "/"
+        check_port = 80
+        check_check_interval_seconds = 10
+        check_response_timeout_seconds = 5
+        check_healthy_threshold = 3
+        check_unhealthy_threshold = 5
+        if health_check:
+            check_protocol = health_check.get("protocol")
+            check_path = health_check.get("path", check_path)
+            check_port = health_check.get("port")
+            check_check_interval_seconds = health_check.get("check_interval_seconds")
+            check_response_timeout_seconds = health_check.get("response_timeout_seconds")
+            check_healthy_threshold = health_check.get("healthy_threshold")
+            check_unhealthy_threshold = health_check.get("unhealthy_threshold")
+
+            LBaaS.objects.filter(id=instance.id).update(
+                check_protocol=check_protocol,
+                check_port=check_port,
+                check_path=check_path,
+                check_interval_seconds=check_check_interval_seconds,
+                check_timeout_seconds=check_response_timeout_seconds,
+                check_unhealthy_threshold=check_unhealthy_threshold,
+                check_healthy_threshold=check_healthy_threshold,
+            )
+
+        instance.event = LBaaS.RELOAD
+        instance.save()
+
+        reload_lbaas.delay(instance.id)
+
         return instance
 
 

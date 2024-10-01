@@ -11,6 +11,7 @@ from .models import LBaaS, LBaaSVirtance
 from .tasks import delete_lbaas
 from .serializers import (
     LBaaSSerializer,
+    LBaaSUpdateSerializer,
     LBaaSAddRuleSerializer,
     LBaaSDelRuleSerializer,
     LBaaSUpdateRuleSerializer,
@@ -153,8 +154,70 @@ class LBaaSDataAPI(APIView):
                   description: Load Balancer Name
                   required: true
                   type: string
+
+                - name: redirect_http_to_https
+                  description: Redirect HTTP to HTTPS
+                  required: false
+                  type: boolean
+
+                - name: sticky_session
+                  description: Sticky Session
+                  required: fal
+                  type: object
+                  properties:
+                    cookie_ttl_seconds:
+                      description: Cookie TTL
+                      required: true
+                      type: string
+                    cookie_name:
+                      description: Cookie Name
+                      required: true
+                      type: string
+
+                - name: health_check
+                  description: Health Check
+                  required: true
+                  type: object
+                  properties:
+                    protocol:
+                      description: Protocol (HTTP or TCP)
+                      required: true
+                      type: string
+                    port:
+                      description: Port for Health Check
+                      required: true
+                      type: integer
+                    path:
+                      description: HTTP Path (required for HTTP only)
+                      required: false
+                      type: string
+                    check_interval_seconds:
+                      description: Interval
+                      required: true
+                      type: integer
+                    response_timeout_seconds:
+                      description: Check Timeout
+                      required: true
+                      type: integer
+                    healthy_threshold:
+                      description: Healthy Threshold
+                      required: true
+                      type: integer
+                    unhealthy_threshold:
+                      description: Unhealthy Threshold
+                      required: true
+                      type: integer
         """
-        serializer = self.class_serializer(self.get_object(), many=False)
+        lbaas = self.get_object()
+
+        if lbaas.event is not None:
+            return error_message_response("The load balancer already has event.")
+        
+        serializer = LBaaSUpdateSerializer(lbaas, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        serializer = self.class_serializer(lbaas, many=False)
         return Response({"load_balancer": serializer.data})
 
     def get(self, request, *args, **kwargs):
