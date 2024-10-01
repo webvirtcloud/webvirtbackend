@@ -18,8 +18,10 @@ from network.helper import (
 from lbaas.models import LBaaS
 from image.tasks import image_delete
 from firewall.tasks import firewall_detach
+from floating_ip.tasks import unassign_floating_ip
 from size.models import Size
 from compute.models import Compute
+from floating_ip.models import FloatIP
 from keypair.models import KeyPairVirtance
 from network.models import Network, IPAddress
 from firewall.models import FirewallVirtance
@@ -459,19 +461,20 @@ def delete_virtance(virtance_id):
         firewall = FirewallVirtance.objects.get(virtance=virtance).firewall
         firewall.event = firewall.DETACH
         firewall.save()
-        virtance.event = Virtance.FIREWALL_DETACH
-        virtance.save()
-        firewall_detach(firewall.id, virtance.id)
+        firewall_detach(firewall.id, virtance.id, virtance_reset_event=False)
 
-        # Return task for virtance delete
-        virtance.event = Virtance.DELETE
-        virtance.save()
+    # Check if virtance has attached floating IP and detach it if so
+    if FloatIP.objects.filter(ipaddress__virtance=virtance, ipaddress__is_float=True).exists():
+        floatip = FloatIP.objects.get(ipaddress__virtance=virtance, ipaddress__is_float=True)
+        floatip.event = FloatIP.UNASSIGN
+        floatip.save()
+        unassign_floating_ip(floatip.id, virtance_reset_event=False)
 
     # Delete virtance
     wvcomp = wvcomp_conn(virtance.compute)
     res = wvcomp.delete_virtance(virtance.id)
     if res.get("detail") is None:
-        ipaddresse = IPAddress.objects.filter(virtance=virtance)
+        ipaddresse = IPAddress.objects.filter(virtance=virtance, is_float=False)
         ipaddresse.delete()
         virtance.delete()
 

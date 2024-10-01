@@ -40,7 +40,7 @@ def assign_floating_ip(floating_ip_id, virtance_id):
 
 
 @app.task
-def unassign_floating_ip(floating_ip_id):
+def unassign_floating_ip(floating_ip_id, virtance_reset_event=True):
     floatip = FloatIP.objects.get(id=floating_ip_id)
     virtance = floatip.ipaddress.virtance
     ipaddress = floatip.ipaddress
@@ -59,7 +59,8 @@ def unassign_floating_ip(floating_ip_id):
         ipaddress.virtance = None
         ipaddress.save()
 
-        virtance.reset_event()
+        if virtance_reset_event is True:
+            virtance.reset_event()
         floatip.reset_event()
 
 
