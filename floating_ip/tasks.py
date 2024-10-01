@@ -118,14 +118,13 @@ def delete_floating_ip(floating_ip_id):
     floatip = FloatIP.objects.get(id=floating_ip_id)
     virtance = floatip.ipaddress.virtance
     ipaddress = floatip.ipaddress
-    floatip_counter = FloatIPCounter.objects.get(floatip=floatip, stopped=None)
     ipv4_float = IPAddress.objects.get(id=floatip.ipaddress.id)
     ipv4_compute = IPAddress.objects.filter(virtance=virtance, network__type=Network.COMPUTE).first()
 
     current_time = timezone.now()
     first_day_month = current_time.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
     try:
-        floatip_counter = FloatIPCounter.objects.get(started__gt=first_day_month, floatip=floatip)
+        floatip_counter = FloatIPCounter.objects.get(started__gt=first_day_month, floatip=floatip, stopped=None)
     except FloatIPCounter.DoesNotExist:
         floatip_counter = FloatIPCounter.objects.create(
             floatip=floatip,
