@@ -26,7 +26,7 @@ from keypair.models import KeyPairVirtance
 from network.models import Network, IPAddress
 from firewall.models import FirewallVirtance
 from image.models import Image, SnapshotCounter
-from .helper import reload_lbaas_helper
+from lbaas.helper import reload_lbaas_helper
 from .models import Virtance, VirtanceCounter
 from .utils import virtance_error, decrypt_data, make_ssh_public
 
