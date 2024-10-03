@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.views import APIView
@@ -15,7 +16,7 @@ class FloatingIPListAPI(APIView):
     def get_queryset(self):
         virtance_id = self.request.query_params.get("virtance_id")
 
-        queryset = FloatIP.objects.filter(user=self.request.user, is_deleted=False)
+        queryset = FloatIP.objects.filter(~Q(event=FloatIP.DELETE), user=self.request.user, is_deleted=False)
 
         if virtance_id:
             queryset = queryset.filter(ipaddress__virtance_id=virtance_id)
