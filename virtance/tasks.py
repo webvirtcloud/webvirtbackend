@@ -15,8 +15,9 @@ from network.helper import (
     assign_free_ipv4_compute,
     assign_free_ipv4_private,
 )
-from lbaas.models import LBaaS
+from lbaas.models import LBaaS, LBaaSVirtance
 from image.tasks import image_delete
+from lbaas.tasks import reload_lbaas
 from firewall.tasks import firewall_detach
 from floating_ip.tasks import unassign_floating_ip
 from size.models import Size
@@ -469,6 +470,14 @@ def delete_virtance(virtance_id):
         floatip.event = FloatIP.UNASSIGN
         floatip.save()
         unassign_floating_ip(floatip.id, virtance_reset_event=False)
+
+    # Check if virtance has attached  and delete them if so
+    if LBaaSVirtance.objects.filter(lbaas__is_delted=False, virtance=virtance, is_deleted=False).exists():
+        lbaas_virtance = LBaaSVirtance.objects.filter(virtance=virtance, is_deleted=False).filter()
+        lbass = lbaas_virtance.lbaas
+        lbass.event = LBaaS.RELOAD
+        lbass.save()
+        reload_lbaas(lbass.id)
 
     # Delete virtance
     wvcomp = wvcomp_conn(virtance.compute)

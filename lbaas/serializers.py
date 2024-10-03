@@ -197,7 +197,10 @@ class LBaaSSerializer(serializers.ModelSerializer):
 
         data["region"] = RegionSerializer(Region.objects.get(id=instance.virtance.region.id, is_deleted=False)).data
         data["health_check"] = HeathCheckSerializer(instance).data
-        data["virtance_ids"] = [lv.virtance.id for lv in LBaaSVirtance.objects.filter(lbaas=instance, is_deleted=False)]
+        data["virtance_ids"] = [
+            lv.virtance.id
+            for lv in LBaaSVirtance.objects.filter(lbaas=instance, virtance__is_deleted=False, is_deleted=False)
+        ]
         data["sticky_sessions"] = StickySessionsSerializer(instance) if instance.sticky_sessions else None
         data["forwarding_rules"] = ForwardingRuleSerializer(
             LBaaSForwadRule.objects.filter(lbaas=instance, is_deleted=False), many=True
@@ -423,7 +426,9 @@ class LBaaSAddVirtanceSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError(f"Virtance with ID {v_id} not found.")
 
         for v_id in virtance_ids:
-            if LBaaSVirtance.objects.filter(lbaas=self.instance, virtance_id=v_id, is_deleted=False).exists():
+            if LBaaSVirtance.objects.filter(
+                lbaas=self.instance, virtance_id=v_id, virtance__is_deleted=False, is_deleted=False
+            ).exists():
                 raise serializers.ValidationError(f"Virtance with ID {v_id} has already added to load balancer.")
 
         return attrs
@@ -432,7 +437,7 @@ class LBaaSAddVirtanceSerializer(serializers.ModelSerializer):
         virtance_ids = list(set(validated_data.get("virtance_ids")))
 
         for v_id in virtance_ids:
-            LBaaSVirtance.objects.create(lbaas=instance, virtance_id=v_id)
+            LBaaSVirtance.objects.create(lbaas=instance, virtance_id=v_id, virtance_id__is_deleted=False)
 
         instance.event = LBaaS.ADD_VIRTANCE
         instance.save()
@@ -464,7 +469,9 @@ class LBaaSDelVirtanceSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError(f"Virtance with ID {v_id} not found.")
 
         for v_id in virtance_ids:
-            if not LBaaSVirtance.objects.filter(lbaas=self.instance, virtance_id=v_id, is_deleted=False).exists():
+            if not LBaaSVirtance.objects.filter(
+                lbaas=self.instance, virtance_id=v_id, virtance__is_deleted=False, is_deleted=False
+            ).exists():
                 raise serializers.ValidationError(f"Virtance with ID {v_id} has not added to load balancer.")
 
         return attrs

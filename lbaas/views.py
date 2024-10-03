@@ -212,7 +212,7 @@ class LBaaSDataAPI(APIView):
 
         if lbaas.event is not None:
             return error_message_response("The load balancer already has event.")
-        
+
         serializer = LBaaSUpdateSerializer(lbaas, data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
@@ -237,7 +237,7 @@ class LBaaSDataAPI(APIView):
 
         if lbaas.event is not None:
             return error_message_response("The load balancer already has event.")
-        
+
         lbaas.event = LBaaS.DELETE
         lbaas.save()
 
@@ -385,9 +385,9 @@ class LBaaSVirtancesAPI(APIView):
         List All Virtances Attached to The Load Balancer
         ---
         """
-        virtance_ids = LBaaSVirtance.objects.filter(lbaas=self.get_object(), is_deleted=False).values_list(
-            "virtance_id", flat=True
-        )
+        virtance_ids = LBaaSVirtance.objects.filter(
+            lbaas=self.get_object(), virtance__is_deleted=False, is_deleted=False
+        ).values_list("virtance_id", flat=True)
         virtances = Virtance.objects.filter(id__in=virtance_ids)
         serilizator = VirtanceSerializer(virtances, many=True)
         return Response({"virtances": serilizator.data})

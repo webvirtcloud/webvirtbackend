@@ -196,7 +196,7 @@ def create_lbaas(lbaas_id):
                 }
 
             virtances = []
-            for l_v in LBaaSVirtance.objects.filter(lbaas=lbaas, is_deleted=False):
+            for l_v in LBaaSVirtance.objects.filter(lbaas=lbaas, virtance__is_deleted=False, is_deleted=False):
                 ipv4_address = IPAddress.objects.get(
                     virtance=l_v.virtance, network__type=Network.PRIVATE, is_float=False
                 ).address
@@ -265,7 +265,7 @@ def reload_lbaas(lbaas_id):
             }
 
         virtances = []
-        for l_v in LBaaSVirtance.objects.filter(lbaas=lbaas, is_deleted=False):
+        for l_v in LBaaSVirtance.objects.filter(lbaas=lbaas, virtance__is_deleted=False, is_deleted=False):
             ipv4_address = IPAddress.objects.get(
                 virtance=l_v.virtance, network__type=Network.PRIVATE, is_float=False
             ).address
