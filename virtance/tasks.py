@@ -26,7 +26,7 @@ from keypair.models import KeyPairVirtance
 from network.models import Network, IPAddress
 from firewall.models import FirewallVirtance
 from image.models import Image, SnapshotCounter
-from lbaas.helper import reload_lbaas_helper
+from lbaas.shared import shared_reload_lbaas
 from .models import Virtance, VirtanceCounter
 from .utils import virtance_error, decrypt_data, make_ssh_public
 
@@ -477,7 +477,7 @@ def delete_virtance(virtance_id):
         lbass = lbaas_virtance.lbaas
         lbass.event = LBaaS.RELOAD
         lbass.save()
-        reload_lbaas_helper(lbass.id)
+        shared_reload_lbaas(lbass.id)
 
     # Delete virtance
     wvcomp = wvcomp_conn(virtance.compute)
