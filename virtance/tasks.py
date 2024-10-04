@@ -474,6 +474,8 @@ def delete_virtance(virtance_id):
     # Check if virtance has attached  and delete them if so
     if LBaaSVirtance.objects.filter(lbaas__is_delted=False, virtance=virtance, is_deleted=False).exists():
         lbaas_virtance = LBaaSVirtance.objects.filter(virtance=virtance, is_deleted=False).filter()
+        lbaas_virtance.is_deleted = True
+        lbaas_virtance.save()
         lbass = lbaas_virtance.lbaas
         lbass.event = LBaaS.RELOAD
         lbass.save()
