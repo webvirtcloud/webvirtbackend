@@ -300,7 +300,7 @@ class LBaaSSerializer(serializers.ModelSerializer):
 
 
 class LBaaSUpdateSerializer(serializers.ModelSerializer):
-    name = serializers.CharField()
+    name = serializers.CharField(required=False)
     health_check = serializers.DictField(required=False)
     sticky_sessions = serializers.DictField(required=False)
     redirect_http_to_https = serializers.BooleanField(required=False)
