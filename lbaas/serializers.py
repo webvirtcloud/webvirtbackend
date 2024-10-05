@@ -33,8 +33,8 @@ class ListOfForwardingRuleSerializer(serializers.ListSerializer):
 
 
 class StickySessionsSerializer(serializers.Serializer):
-    cookie_name = serializers.CharField()
-    cookie_ttl_seconds = serializers.IntegerField()
+    cookie_name = serializers.CharField(source="sticky_sessions_cookie_name")
+    cookie_ttl_seconds = serializers.IntegerField(source="sticky_sessions_cookie_ttl")
 
 
 class LBaaSSerializer(serializers.ModelSerializer):
@@ -201,7 +201,7 @@ class LBaaSSerializer(serializers.ModelSerializer):
             lv.virtance.id
             for lv in LBaaSVirtance.objects.filter(lbaas=instance, virtance__is_deleted=False, is_deleted=False)
         ]
-        data["sticky_sessions"] = StickySessionsSerializer(instance).data 
+        data["sticky_sessions"] = StickySessionsSerializer(instance).data if instance.sticky_sessions else None
         data["forwarding_rules"] = ForwardingRuleSerializer(
             LBaaSForwadRule.objects.filter(lbaas=instance, is_deleted=False), many=True
         ).data
