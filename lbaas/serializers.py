@@ -70,7 +70,7 @@ class LBaaSSerializer(serializers.ModelSerializer):
         ipaddr = None
         if obj.virtance:
             ipaddr = IPAddress.objects.filter(
-                virtance=obj.virtance, network__version=Network.IPv4, is_float=False
+                virtance=obj.virtance, network__type=Network.PUBLIC, network__version=Network.IPv4, is_float=False
             ).first()
         return ipaddr.address if ipaddr else None
 
