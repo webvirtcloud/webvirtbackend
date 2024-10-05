@@ -301,8 +301,8 @@ class LBaaSSerializer(serializers.ModelSerializer):
 
 class LBaaSUpdateSerializer(serializers.ModelSerializer):
     name = serializers.CharField(required=False)
-    health_check = serializers.DictField(required=False)
-    sticky_sessions = serializers.DictField(required=False)
+    health_check = HeathCheckSerializer(required=False)
+    sticky_sessions = StickySessionsSerializer(required=False)
     redirect_http_to_https = serializers.BooleanField(required=False)
 
     class Meta:
@@ -361,18 +361,18 @@ class LBaaSUpdateSerializer(serializers.ModelSerializer):
 
         # Update sticky_sessions
         if sticky_sessions:
-            stick_session_cookie_name = sticky_sessions.get("cookie_name", "sessionid")
-            stick_session_cookie_ttl = sticky_sessions.get("cookie_ttl_seconds", 3600)
+            sticky_session_cookie_name = sticky_sessions.get("cookie_name", "wvc_session")
+            sticky_session_cookie_ttl = sticky_sessions.get("cookie_ttl_seconds", 3600)
 
             instance.sticky_sessions=True if sticky_sessions else False
-            instance.sticky_sessions_cookie_name=stick_session_cookie_name
-            instance.sticky_sessions_cookie_ttl=stick_session_cookie_ttl
+            instance.sticky_sessions_cookie_name=sticky_session_cookie_name
+            instance.sticky_sessions_cookie_ttl=sticky_session_cookie_ttl
 
         # Update health_check
         if health_check:
-            check_protocol = health_check.get("protocol", LBaaS.TCP)
             check_path = health_check.get("path", "/")
             check_port = health_check.get("port", 80)
+            check_protocol = health_check.get("protocol", LBaaS.HTTP)
             check_check_interval_seconds = health_check.get("check_interval_seconds", 10)
             check_response_timeout_seconds = health_check.get("response_timeout_seconds", 5)
             check_healthy_threshold = health_check.get("healthy_threshold", 3)

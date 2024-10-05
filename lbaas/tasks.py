@@ -189,7 +189,7 @@ def create_lbaas(lbaas_id):
                 )
 
             sticky_sessions = {}
-            if sticky_sessions:
+            if lbaas.sticky_sessions:
                 sticky_sessions = {
                     "cookie_ttl": lbaas.sticky_sessions_cookie_ttl,
                     "cookie_name": lbaas.sticky_sessions_cookie_name,
@@ -258,7 +258,7 @@ def reload_lbaas(lbaas_id):
             )
 
         sticky_sessions = {}
-        if sticky_sessions:
+        if lbaas.sticky_sessions:
             sticky_sessions = {
                 "cookie_ttl": lbaas.sticky_sessions_cookie_ttl,
                 "cookie_name": lbaas.sticky_sessions_cookie_name,
