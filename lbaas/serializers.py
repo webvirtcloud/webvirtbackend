@@ -305,6 +305,10 @@ class LBaaSUpdateSerializer(serializers.ModelSerializer):
     sticky_sessions = serializers.DictField(required=False)
     redirect_http_to_https = serializers.BooleanField(required=False)
 
+    class Meta:
+        model = LBaaS
+        fields = ("name", "health_check", "sticky_sessions", "redirect_http_to_https")
+
     def validate(self, attrs):
         health_check = attrs.get("health_check")
         sticky_sessions = attrs.get("sticky_sessions")
