@@ -45,8 +45,8 @@ class LBaaSSerializer(serializers.ModelSerializer):
     region = serializers.CharField(write_only=True)
     created_at = serializers.DateTimeField(read_only=True, source="created")
     virtance_ids = serializers.ListField(required=False, write_only=True)
-    health_check = serializers.DictField(required=False)
-    sticky_sessions = serializers.DictField(required=False, write_only=True)
+    health_check = HeathCheckSerializer(required=False)
+    sticky_sessions = StickySessionsSerializer(required=False, write_only=True)
     forwarding_rules = ListOfForwardingRuleSerializer(write_only=True)
     redirect_http_to_https = serializers.BooleanField(required=False)
 
@@ -201,7 +201,7 @@ class LBaaSSerializer(serializers.ModelSerializer):
             lv.virtance.id
             for lv in LBaaSVirtance.objects.filter(lbaas=instance, virtance__is_deleted=False, is_deleted=False)
         ]
-        data["sticky_sessions"] = StickySessionsSerializer(instance) if instance.sticky_sessions else None
+        data["sticky_sessions"] = StickySessionsSerializer(instance).data 
         data["forwarding_rules"] = ForwardingRuleSerializer(
             LBaaSForwadRule.objects.filter(lbaas=instance, is_deleted=False), many=True
         ).data
