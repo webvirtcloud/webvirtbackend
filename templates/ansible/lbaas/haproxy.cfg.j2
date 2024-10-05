@@ -61,7 +61,9 @@ backend target_{{ rule.target_protocol }}_{{ rule.target_port }}
         balance roundrobin
         timeout check {{ health.check_timeout_seconds }}s
 {% if rule.target_protocol == 'http' %}
-        option httpchk GET {{ health.check_path }} HTTP/1.1
+        option httpchk
+        http-check connect
+        http-check send meth GET uri {{ health.check_path }}
         http-check expect status 200
 {% if sticky_sessions %}
         cookie {{ sticky_sessions.cookie_name }} insert indirect nocache maxidle {{ sticky_sessions.cookie_ttl }}
@@ -69,8 +71,8 @@ backend target_{{ rule.target_protocol }}_{{ rule.target_port }}
 {% else %}
         option tcp-check
 {% endif %}
-        default-server inter {{ health.check_interval_seconds }}s check rise {{ health.check_healthy_threshold }} fall {{ health.check_unhealthy_threshold }} port {{ health.check_port }} check
 {% for v in virtances %}
         server virtance_{{ v.id }} {{ v.ipv4_address }}:{{ rule.target_port }}
 {% endfor %}
+        default-server inter {{ health.check_interval_seconds }}s rise {{ health.check_healthy_threshold }} fall {{ health.check_unhealthy_threshold }} port {{ health.check_port }} check
 {% endfor %}
