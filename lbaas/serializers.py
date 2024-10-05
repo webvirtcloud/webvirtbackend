@@ -437,7 +437,7 @@ class LBaaSAddVirtanceSerializer(serializers.ModelSerializer):
         virtance_ids = list(set(validated_data.get("virtance_ids")))
 
         for v_id in virtance_ids:
-            LBaaSVirtance.objects.create(lbaas=instance, virtance_id=v_id, virtance_id__is_deleted=False)
+            LBaaSVirtance.objects.create(lbaas=instance, virtance_id=v_id)
 
         instance.event = LBaaS.ADD_VIRTANCE
         instance.save()
