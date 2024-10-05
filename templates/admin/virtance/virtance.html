@@ -15,7 +15,11 @@
     <div>
       <div class="flex items-center gap-2">
         <h3 class="text-2xl font-semibold leading-6 text-gray-900">
-          Virtance: {{virtance.name}}
+          {% if virtance.type == virtance.VIRTANCE %}Virtance
+          {% elif virtance.type == virtance.LBAAS %}LBAAS
+          {% elif virtance.type == virtance.DBAAS %}DBaaS
+          {% elif virtance.type == virtance.K8AAS %}K8aaS
+          {% endif %}: {{virtance.name}}
           <div
             class="inline-flex items-baseline rounded-full px-2.5 py-0.5 text-sm font-medium md:mt-2 lg:mt-0 {% if status == 'running' %}bg-green-100 text-green-800{% else %}bg-red-100 text-red-800{% endif %}"
           >
@@ -186,7 +190,7 @@
         method="post"
       >
         {% csrf_token %}
-        <button {% if event %}disabled{% endif %}
+        <button {% if event or virtance.type != virtance.VIRTANCE %}disabled{% endif %}
           type="submit"
           name="recreate"
           title="Recreate"
@@ -208,7 +212,7 @@
               d="M14.5 11.5c.173 0 .345-.007.514-.022l3.754 3.754a2.5 2.5 0 01-3.536 3.536l-4.41-4.41 2.172-2.607c.052-.063.147-.138.342-.196.202-.06.469-.087.777-.067.128.008.257.012.387.012zM6 4.586l2.33 2.33a.452.452 0 01-.08.09L6.8 8.214 4.586 6H3.309a.5.5 0 01-.447-.276l-1.7-3.402a.5.5 0 01.093-.577l.49-.49a.5.5 0 01.577-.094l3.402 1.7A.5.5 0 016 3.31v1.277z"
             />
           </svg>
-        </button>
+        </button>        
       </form>
     </div>
   </div>
