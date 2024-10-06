@@ -41,8 +41,12 @@ docker compose exec backend python3 manage.py migrate
 docker compose exec backend python3 manage.py loaddata initial_data
 ```
 
-7. Access the admin site:
+7. Load admin user:
+```bash
+docker compose exec backend python3 manage.py loaddata account/fixtures/admin.json
+```
 
+8. Access the admin site:
 Open your web browser and go to `http://localhost:8000/admin`. You can log in with the following credentials:
 
 * Username: `admin@webvirt.cloud`
