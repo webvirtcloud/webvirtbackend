@@ -368,6 +368,11 @@ class LBaaSUpdateSerializer(serializers.ModelSerializer):
             instance.sticky_sessions_cookie_name=sticky_session_cookie_name
             instance.sticky_sessions_cookie_ttl=sticky_session_cookie_ttl
 
+        if sticky_sessions == {}:
+            instance.sticky_sessions=False
+            instance.sticky_sessions_cookie_name=""
+            instance.sticky_sessions_cookie_ttl=0
+
         # Update health_check
         if health_check:
             check_path = health_check.get("path", "/")
