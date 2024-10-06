@@ -224,7 +224,7 @@ class LBaaSSerializer(serializers.ModelSerializer):
         template = Image.objects.filter(type=Image.LBAAS, is_deleted=False).first()
 
         stick_session_enabled = True if sticky_sessions else False
-        stick_session_cookie_name = "sessionid"
+        stick_session_cookie_name = "WVC-LB"
         stick_session_cookie_ttl = 3600
         if sticky_sessions:
             stick_session_cookie_name = sticky_sessions.get("cookie_name")
@@ -364,7 +364,7 @@ class LBaaSUpdateSerializer(serializers.ModelSerializer):
 
         # Update sticky_sessions
         if sticky_sessions:
-            sticky_session_cookie_name = sticky_sessions.get("cookie_name", "wvc_session")
+            sticky_session_cookie_name = sticky_sessions.get("cookie_name", "WVC-LB")
             sticky_session_cookie_ttl = sticky_sessions.get("cookie_ttl_seconds", 3600)
 
             instance.sticky_sessions=True if sticky_sessions else False
