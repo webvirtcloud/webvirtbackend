@@ -216,7 +216,7 @@ class LBaaSSerializer(serializers.ModelSerializer):
         health_check = validated_data.get("health_check")
         sticky_sessions = validated_data.get("sticky_sessions")
         forwarding_rules = validated_data.get("forwarding_rules", [])
-        redirect_http_to_https = validated_data.get("redirect_http_to_https", False)
+        redirect_http_to_https = validated_data.get("redirect_http_to_https")
         enc_private_key = encrypt_data(make_ssh_private())
 
         size = Size.objects.filter(type=Size.LBAAS, is_deleted=False).first()
@@ -260,6 +260,9 @@ class LBaaSSerializer(serializers.ModelSerializer):
             disk=size.disk,
             template=template,
         )
+
+        if redirect_http_to_https is None:
+            redirect_http_to_https = False
 
         lbaas = LBaaS.objects.create(
             name=name,
@@ -351,12 +354,12 @@ class LBaaSUpdateSerializer(serializers.ModelSerializer):
         name = validated_data.get("name")
         health_check = validated_data.get("health_check")
         sticky_sessions = validated_data.get("sticky_sessions")
-        redirect_http_to_https = validated_data.get("redirect_http_to_https", False)
+        redirect_http_to_https = validated_data.get("redirect_http_to_https")
         
         if name:
             instance.name=name
 
-        if redirect_http_to_https:
+        if redirect_http_to_https is not None:
             instance.redirect_http_to_https=redirect_http_to_https
 
         # Update sticky_sessions
