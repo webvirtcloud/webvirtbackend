@@ -61,9 +61,9 @@ class LBaaSListAPI(APIView):
                   required: false
                   type: boolean
 
-                - name: sticky_session
+                - name: sticky_sessions
                   description: Sticky Session
-                  required: fal
+                  required: false
                   type: object
                   properties:
                     cookie_ttl_seconds:
@@ -160,9 +160,9 @@ class LBaaSDataAPI(APIView):
                   required: false
                   type: boolean
 
-                - name: sticky_session
+                - name: sticky_sessions
                   description: Sticky Session
-                  required: fal
+                  required: false
                   type: object
                   properties:
                     cookie_ttl_seconds:

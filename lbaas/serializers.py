@@ -45,8 +45,8 @@ class LBaaSSerializer(serializers.ModelSerializer):
     region = serializers.CharField(write_only=True)
     created_at = serializers.DateTimeField(read_only=True, source="created")
     virtance_ids = serializers.ListField(required=False, write_only=True)
-    health_check = HeathCheckSerializer(required=False)
-    sticky_sessions = StickySessionsSerializer(required=False, write_only=True)
+    health_check = serializers.DictField(required=False)
+    sticky_sessions = serializers.DictField(required=False, write_only=True)
     forwarding_rules = ListOfForwardingRuleSerializer(write_only=True)
     redirect_http_to_https = serializers.BooleanField(required=False)
 
@@ -301,8 +301,8 @@ class LBaaSSerializer(serializers.ModelSerializer):
 
 class LBaaSUpdateSerializer(serializers.ModelSerializer):
     name = serializers.CharField(required=False)
-    health_check = HeathCheckSerializer(required=False)
-    sticky_sessions = StickySessionsSerializer(required=False)
+    health_check = serializers.DictField(required=False)
+    sticky_sessions = serializers.DictField(required=False)
     redirect_http_to_https = serializers.BooleanField(required=False)
 
     class Meta:
