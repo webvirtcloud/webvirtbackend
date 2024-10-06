@@ -62,7 +62,7 @@ class LBaaSListAPI(APIView):
                   type: boolean
 
                 - name: sticky_sessions
-                  description: Sticky Session
+                  description: Sticky Session 
                   required: false
                   type: object
                   properties:
@@ -161,7 +161,7 @@ class LBaaSDataAPI(APIView):
                   type: boolean
 
                 - name: sticky_sessions
-                  description: Sticky Session
+                  description: Empty object to disable '{}'
                   required: false
                   type: object
                   properties:
