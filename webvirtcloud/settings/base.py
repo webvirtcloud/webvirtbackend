@@ -227,7 +227,9 @@ CSRF_TRUSTED_ORIGINS = os.environ.get("CSRF_TRUSTED_ORIGINS", [ADMIN_URL])
 #
 # Panel settings
 #
-# Encryption key
+# Encryption key 
+# Generate a new key with the following command:
+# python3 -c 'import os, base64; print(base64.urlsafe_b64encode(os.urandom(32)).decode())'
 ENCRYPTION_KEY = os.environ.get("ENCRYPTION_KEY", "5yxdlGC9Dj-65vcwNBD_vTIeiyALevCLIJq89OCaToY=")
 
 # Public images URL storage (Distributions, Applicatons)
