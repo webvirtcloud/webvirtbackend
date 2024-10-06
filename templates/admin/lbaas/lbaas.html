@@ -9,7 +9,7 @@
     <span>Back to the list</span>
   </a>
 
-  <h2 class="text-2xl font-medium mb-4">Load Balancers</h2>
+  <h2 class="text-2xl font-medium mb-4">Load Balancer</h2>
 
   <div class="overflow-hidden bg-white shadow sm:rounded-lg">
     <div class="px-4 py-5 sm:px-6">
@@ -23,7 +23,7 @@
               {{ lbaas.name }}
             </p>
             <p class="mt-1 max-w-2xl text-sm text-gray-500">
-              Running on Virtance: <a class="text-blue-600 hover:text-blue-900"
+              Used Virtance: <a class="text-blue-600 hover:text-blue-900"
                 href="{% url 'admin_virtance_data' lbaas.virtance.id %}">{{ lbaas.virtance.id }}</a>
             </p>
           </div>
@@ -57,7 +57,7 @@
           {% endif %}
         </div>
         <div class="flex items-center gap-2">
-          <button title="Download Private Key"
+          <button title="Download SSH Private Key"
             class="text-gray-500 hover:bg-gray-100 block flex pl-2 pr-4 gap-1.5 items-center justify-center h-9 rounded-md border"
             onclick="window.open(`{% url 'admin_lbaas_download_private_key' lbaas.id %}`);">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -65,7 +65,7 @@
               <path stroke-linecap="round" stroke-linejoin="round"
                 d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
             </svg>
-            <span class="text-sm font-medium">Private key</span>
+            <span class="text-sm font-medium">SSH Key</span>
           </button>
           <div class="h-full w-0.5 bg-gray-300"></div>
           <form action="{% url 'admin_lbaas_reload' lbaas.id %}" method="post">
@@ -128,6 +128,24 @@
           </dd>
         </div>
         <div class="sm:col-span-1">
+          <dt class="text-sm font-medium text-gray-500">IPv4 Public</dt>
+          <dd class="mt-1 text-sm text-gray-900">
+            {{ ipv4_public.address }}
+          </dd>
+        </div>
+        <div class="sm:col-span-1">
+          <dt class="text-sm font-medium text-gray-500">IPv4 Private</dt>
+          <dd class="mt-1 text-sm text-gray-900">
+            {{ ipv4_private.address }}
+          </dd>
+        </div>
+        <div class="sm:col-span-1">
+          <dt class="text-sm font-medium text-gray-500">IPv4 Compute</dt>
+          <dd class="mt-1 text-sm text-gray-900">
+            {{ ipv4_compute.address }}
+          </dd>
+        </div>
+        <div class="sm:col-span-1">
           <dt class="text-sm font-medium text-gray-500">Rules</dt>
           <dd class="mt-1 text-sm text-gray-900">
             {{ rules|length }}
@@ -153,9 +171,6 @@
       <table class="min-w-full divide-y divide-gray-300">
         <thead class="bg-gray-50">
           <tr>
-            <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">
-              #
-            </th>
             <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
               Protocol
             </th>
@@ -181,9 +196,6 @@
         </thead>
         <tbody class="divide-y divide-gray-200 bg-white">
           <tr>
-            <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
-              {{ forloop.counter }}
-            </td>
             <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
               {{ lbaas.check_protocol|upper }}
             </td>

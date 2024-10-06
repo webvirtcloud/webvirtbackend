@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.shortcuts import redirect, get_object_or_404
 
 from admin.mixins import AdminView, AdminTemplateView
+from network.models import IPAddress, Network
 from lbaas.models import LBaaS, LBaaSForwadRule, LBaaSVirtance
 from lbaas.tasks import create_lbaas, reload_lbaas
 from virtance.utils import make_ssh_private, decrypt_data, encrypt_data
@@ -33,6 +34,9 @@ class AdminLBaaSDataView(AdminTemplateView):
         context["lbaas"] = lbaas
         context["rules"] = LBaaSForwadRule.objects.filter(lbaas=lbaas, is_deleted=False)
         context["virtances"] = LBaaSVirtance.objects.filter(lbaas=lbaas, is_deleted=False)
+        context["ipv4_public"] = IPAddress.objects.get(network__type=Network.PUBLIC, virtance=lbaas.virtance)
+        context["ipv4_private"] = IPAddress.objects.get(network__type=Network.PRIVATE, virtance=lbaas.virtance)     
+        context["ipv4_compute"] = IPAddress.objects.get(network__type=Network.COMPUTE, virtance=lbaas.virtance)   
         return context
 
 
