@@ -1,9 +1,13 @@
 from http import HTTPStatus
-from django.shortcuts import render
-from django.http import JsonResponse
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import exception_handler
+from django.http import JsonResponse
+from django.urls import reverse_lazy
+from django.shortcuts import render, redirect
+from django.views.generic.base import TemplateView
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 
 def success_message_response(message):
@@ -121,3 +125,13 @@ def app_exception_handler500(request):
         return response
 
     return render(request, "500.html", status=status_code)
+
+
+class IndexView(TemplateView):
+    template_name = "client/index.html"
+
+    @method_decorator(ensure_csrf_cookie, name="dispatch")
+    def dispatch(self, request, *args, **kwargs):
+        if request.user and request.user.is_superuser:
+            return redirect(reverse_lazy("admin_index"))
+        return super(IndexView, self).dispatch(request, *args, **kwargs)

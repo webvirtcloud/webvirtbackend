@@ -4,6 +4,9 @@ WebVirtCloud URL Configuration
 
 from django.conf import settings
 from django.urls import include, re_path
+from django.views.decorators.cache import never_cache
+
+from webvirtcloud.views import IndexView
 
 
 urlpatterns = [
@@ -40,6 +43,10 @@ if settings.DEBUG:
         re_path("__debug__/", include("debug_toolbar.urls")),
         re_path("__reload__/", include("django_browser_reload.urls")),
     ]
+
+urlpatterns += [
+    re_path(r"^$", never_cache(IndexView.as_view()), name="index"),
+]
 
 handler403 = "webvirtcloud.views.app_exception_handler403"
 handler404 = "webvirtcloud.views.app_exception_handler404"
