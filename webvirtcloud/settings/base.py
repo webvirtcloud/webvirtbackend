@@ -212,7 +212,7 @@ SITE_URL = os.environ.get("SITE_URL", f"https://www.{BASE_DOMAIN}")
 SESSION_COOKIE_DOMAIN = os.environ.get("SESSION_COOKIE_DOMAIN", f"{BASE_DOMAIN}")
 
 # CSFR Trusted hosts
-CSRF_TRUSTED_ORIGINS = os.environ.get("CSRF_TRUSTED_ORIGINS", [f"https://{BASE_DOMAIN}"])
+CSRF_TRUSTED_ORIGINS = os.environ.get("CSRF_TRUSTED_ORIGINS", [f"https://{BASE_DOMAIN}", f"http://{BASE_DOMAIN}"])
 
 #
 # Panel settings
