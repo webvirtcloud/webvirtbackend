@@ -172,6 +172,7 @@ USE_I18N = True
 USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
+STATIC_URL = "/static/"
 STATICFILES_DIRS = [os.path.join(os.path.join(BASE_DIR, ".."), "static")]
 
 # Default primary key field type
@@ -201,28 +202,16 @@ EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "")
 # Domain and URL settings
 #
 # Base domain
-BASE_DOMAIN = os.environ.get("BASE_DOMAIN", "webvirt.cloud")
-
-# NoVNC domain
-NOVNC_DOMAIN = os.environ.get("NOVNC_DOMAIN", f"console.{BASE_DOMAIN}")
+BASE_DOMAIN = os.environ.get("DOMAIN_NAME", "webvirt.cloud")
 
 # Site URL
 SITE_URL = os.environ.get("SITE_URL", f"https://www.{BASE_DOMAIN}")
 
-# Admin URL
-ADMIN_URL = os.environ.get("ADMIN_URL", f"https://manage.{BASE_DOMAIN}")
-
-# Panel URL
-CLIENT_URL = os.environ.get("CLIENT_URL", f"https://client.{BASE_DOMAIN}")
-
-# Static URL
-STATIC_URL = os.environ.get("STATIC_URL", f"https://assets.{BASE_DOMAIN}/")
-
 # Security settings
-SESSION_COOKIE_DOMAIN = os.environ.get("SESSION_COOKIE_DOMAIN", f".{BASE_DOMAIN}")
+SESSION_COOKIE_DOMAIN = os.environ.get("SESSION_COOKIE_DOMAIN", f"{BASE_DOMAIN}")
 
 # CSFR Trusted hosts
-CSRF_TRUSTED_ORIGINS = os.environ.get("CSRF_TRUSTED_ORIGINS", [ADMIN_URL])
+CSRF_TRUSTED_ORIGINS = os.environ.get("CSRF_TRUSTED_ORIGINS", [f"https://{BASE_DOMAIN}"])
 
 #
 # Panel settings
@@ -251,7 +240,7 @@ WEBSOCKET_PORT = os.environ.get("WEBSOCKET_PORT", 6080)
 WEBSOCKET_CERT = os.environ.get("WEBSOCKET_CERT", None)
 
 # noVNC settings
-NOVNC_URL = os.environ.get("NOVNC_URL", NOVNC_DOMAIN)
+NOVNC_URL = os.environ.get("NOVNC_URL", f"{BASE_DOMAIN}/novnc/")
 NOVNC_PORT = os.environ.get("NOVNC_PORT", 443)
 NOVNC_PASSWD_PREFIX_LENGHT = os.environ.get("NOVNC_PASSWD_PREFIX_LENGHT", 6)
 NOVNC_PASSWD_SUFFIX_LENGHT = os.environ.get("NOVNC_PASSWD_SUFFIX_LENGHT", 12)
