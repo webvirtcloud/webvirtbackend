@@ -4,6 +4,7 @@ WebVirtCloud URL Configuration
 
 from django.conf import settings
 from django.urls import include, re_path
+from django.conf.urls.static import static
 from django.views.decorators.cache import never_cache
 
 from webvirtcloud.views import IndexView
@@ -14,7 +15,7 @@ urlpatterns = [
     re_path(r"account/", include("account.urls")),
     re_path(r"metadata/", include("metadata.urls")),
     re_path(r"admin/", include("admin.urls")),
-]
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 if settings.DEBUG:
     from drf_yasg import openapi
