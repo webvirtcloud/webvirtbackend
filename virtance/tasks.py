@@ -46,7 +46,7 @@ def email_virtance_created(recipient, hostname, ipaddr, region, distro):
         "ipaddr": ipaddr,
         "region": region,
         "distro": distro,
-        "site_url": settings.SITE_URL,
+        "site_url": settings.BASE_DOMAIN,
     }
     send_email(subject, recipient, context, "email/virtance-created.html")
 

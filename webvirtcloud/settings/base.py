@@ -205,9 +205,6 @@ EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "")
 # Base domain
 BASE_DOMAIN = os.environ.get("DOMAIN_NAME", "webvirt.cloud")
 
-# Site URL
-SITE_URL = os.environ.get("SITE_URL", f"https://www.{BASE_DOMAIN}")
-
 # Security settings
 SESSION_COOKIE_DOMAIN = os.environ.get("SESSION_COOKIE_DOMAIN", f"{BASE_DOMAIN}")
 
