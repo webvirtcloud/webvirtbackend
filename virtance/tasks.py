@@ -356,8 +356,8 @@ def snapshot_virtance(virtance_id, display_name):
 
 
 @app.task
-def backup_virtance(virtance_id):
-    file_name = uuid4().hex
+def backup_virtance(virtance_id, backup=False):
+    file_name = f"backup-{uuid4().hex}" if backup else f"snapshot-{uuid4().hex}"
     virtance = Virtance.objects.get(pk=virtance_id)
     wvcomp = wvcomp_conn(virtance.compute)
     res = wvcomp.snapshot_virtance(virtance.id, file_name)
@@ -582,7 +582,7 @@ def virtance_backup():
                 if (
                     timezone.now() - virtance.image_set.filter(type=Image.BACKUP, is_deleted=False).first().created
                 ).days >= settings.BACKUP_PERIOD_DAYS:
-                    backup_virtance.delay(virtance.id)
+                    backup_virtance.delay(virtance.id, backup=True)
                     virtance.event = Virtance.BACKUP
                     virtance.save()
                     compute_event_backup_ids.append(virtance.compute_id)
@@ -591,7 +591,7 @@ def virtance_backup():
                     image_delete.delay(virtance.image_set.filter(type=Image.BACKUP, is_deleted=False).last().id)
             else:
                 # If no existing backups, create one
-                backup_virtance.delay(virtance.id)
+                backup_virtance.delay(virtance.id, backup=True)
                 virtance.event = Virtance.BACKUP
                 virtance.save()
                 compute_event_backup_ids.append(virtance.compute_id)
