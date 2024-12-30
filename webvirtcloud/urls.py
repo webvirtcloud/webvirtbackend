@@ -46,6 +46,7 @@ if settings.DEBUG:
 
 urlpatterns += [
     re_path(r"^$", never_cache(IndexView.as_view()), name="index"),
+    re_path(r"^(?:.*)/?$", never_cache(IndexView.as_view()), name="index"),
 ]
 
 handler403 = "webvirtcloud.views.app_exception_handler403"
