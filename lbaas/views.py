@@ -62,7 +62,7 @@ class LBaaSListAPI(APIView):
                   type: boolean
 
                 - name: sticky_sessions
-                  description: Sticky Session 
+                  description: Sticky Session
                   required: false
                   type: object
                   properties:

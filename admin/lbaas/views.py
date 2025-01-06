@@ -35,8 +35,8 @@ class AdminLBaaSDataView(AdminTemplateView):
         context["rules"] = LBaaSForwadRule.objects.filter(lbaas=lbaas, is_deleted=False)
         context["virtances"] = LBaaSVirtance.objects.filter(lbaas=lbaas, is_deleted=False)
         context["ipv4_public"] = IPAddress.objects.get(network__type=Network.PUBLIC, virtance=lbaas.virtance)
-        context["ipv4_private"] = IPAddress.objects.get(network__type=Network.PRIVATE, virtance=lbaas.virtance)     
-        context["ipv4_compute"] = IPAddress.objects.get(network__type=Network.COMPUTE, virtance=lbaas.virtance)   
+        context["ipv4_private"] = IPAddress.objects.get(network__type=Network.PRIVATE, virtance=lbaas.virtance)
+        context["ipv4_compute"] = IPAddress.objects.get(network__type=Network.COMPUTE, virtance=lbaas.virtance)
         return context
 
 
