@@ -22,7 +22,16 @@ class KeyPairSerializer(serializers.ModelSerializer):
 
     def validate_public_key(self, value):
         if getattr(self, "instance") is None:
-            if not value.startswith("ssh-rsa"):
+            if not value.startswith(
+                (
+                    "ssh-rsa",
+                    "ssh-dsa",
+                    "ssh-ed25519",
+                    "ecdsa-sha2-nistp256",
+                    "ecdsa-sha2-nistp384",
+                    "ecdsa-sha2-nistp521",
+                )
+            ):
                 raise serializers.ValidationError("Invalid public key format.")
             if len(value.strip().split()) <= 1:
                 raise serializers.ValidationError("Invalid public key format.")
