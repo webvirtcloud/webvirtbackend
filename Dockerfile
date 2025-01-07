@@ -6,7 +6,7 @@ ENV PYTHONDONTWRITEBYTECODE=1
 WORKDIR /app
 
 RUN set -eux; \
-	apk add --no-cache gcc g++ pango openssh-client fontconfig \
+	apk add --no-cache uv gcc g++ pango openssh-client fontconfig \
                        ttf-freefont font-noto terminus-font \
                        musl-dev mariadb-dev libffi-dev openssl-dev; \
     fc-cache -f; \
@@ -14,5 +14,4 @@ RUN set -eux; \
 
 COPY ./requirements/develop.txt ./requirements/production.txt /app/
 
-RUN pip install uv; \
-    uv pip install --system -r develop.txt
+RUN uv pip install --system -r develop.txt
