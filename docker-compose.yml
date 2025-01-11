@@ -119,9 +119,9 @@ services:
       - ./.devcontainer/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
     network_mode: host
   
-  mailhog:
-    image: mailhog/mailhog
-    container_name: webvirtcloud-dev-mailhog
-    hostname: mailhog
+  mailpit:
+    image: axllent/mailpit
+    container_name: webvirtcloud-dev-mailpit
+    hostname: mailpit
     ports:
       - 127.0.0.1:8025:8025
