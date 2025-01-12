@@ -47,7 +47,7 @@ docker compose exec backend python3 manage.py loaddata account/fixtures/admin.js
 ```
 
 8. Access the admin site:
-Open your web browser and go to `http://localhost:8000/admin`. You can log in with the following credentials:
+Open your web browser and go to `http://localhost:8000/admin/`. You can log in with the following credentials:
 
 * Username: `admin@webvirt.cloud`
 * Password: `admin`
