@@ -37,4 +37,10 @@ class FormSize(forms.ModelForm):
 
     class Meta:
         model = Size
+        labels = {
+            "disk": "Disk (Gb)",
+            "price": "Price (Hourly)",
+            "memory": "Memory (Mb)",
+            "transfer": "Transfer (Tb)",
+        }
         fields = "__all__"
