@@ -10,10 +10,10 @@ from webvirtcloud.views import IndexView
 
 
 urlpatterns = [
-    re_path(r"api/", include("api.urls")),
-    re_path(r"account/", include("account.urls")),
-    re_path(r"metadata/", include("metadata.urls")),
-    re_path(r"admin/", include("admin.urls")),
+    re_path(r"^api/?", include("api.urls")),
+    re_path(r"^admin/?", include("admin.urls")),
+    re_path(r"^account/?", include("account.urls")),
+    re_path(r"^metadata/?", include("metadata.urls")),
 ]
 
 if settings.DEBUG:
