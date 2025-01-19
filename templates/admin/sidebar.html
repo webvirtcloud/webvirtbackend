@@ -5,10 +5,10 @@
     <!-- Sidebar component, swap this element with another sidebar if you like -->
     <div class="flex min-h-0 flex-1 flex-col border-r border-gray-200 bg-white">
       <div class="flex flex-1 flex-col overflow-y-auto pt-5 pb-4">
-        <div class="flex flex-shrink-0 items-center px-4 space-x-4">
+        <a href="{% url 'admin_index' %}" class="flex flex-shrink-0 items-center px-4 space-x-4">
           <img class="h-8 w-auto" src="{% static 'admin/svg/logo.svg' %}" alt="WebVirtCloud" />
           <span class="font-medium">WebVirtCloud</span>
-        </div>
+        </a>
         <nav class="mt-5 flex-1 space-y-8" aria-label="Sidebar">
           <div>
             <div class="text-xs uppercase font-medium text-gray-500 mb-2 px-5">
@@ -190,7 +190,7 @@
         </nav>
       </div>
       <div class="flex flex-shrink-0 border-t border-gray-200 p-4">
-        <a href="{% url 'admin_profile' %}" class="group block w-full flex-shrink-0">
+        <button id="dropdownUserMenuButton" data-dropdown-toggle="dropdownUserMenu" type="button" class="group block w-full text-start flex-shrink-0">
           <div class="flex items-center">
             <div>
               <div class="inline-block h-9 w-9 rounded-full bg-gray-200"></div>
@@ -204,7 +204,21 @@
               </p>
             </div>
           </div>
-        </a>
+        </button>
+        <!-- User menu -->
+        <div id="dropdownUserMenu" class="z-10 hidden bg-white divide-y divide-gray-100 border border-gray-200 rounded-lg shadow-sm w-44">
+          <ul class="py-2 text-sm text-gray-700" aria-labelledby="dropdownInformdropdownUserMenuButtonationButton">
+            <li>
+              <a href="{% url 'admin_index' %}" class="block px-4 py-2 hover:bg-gray-100">Dashboard</a>
+            </li>
+            <li>
+              <a href="{% url 'admin_profile' %}" class="block px-4 py-2 hover:bg-gray-100">Settings</a>
+            </li>
+          </ul>
+          <div class="py-2">
+            <a href="{% url 'admin_logout' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Logout</a>
+          </div>
+        </div>
       </div>
     </div>
   </div>
