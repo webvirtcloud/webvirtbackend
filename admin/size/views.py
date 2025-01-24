@@ -29,9 +29,9 @@ class AdminSizeCreateView(AdminFormView):
             if Size.objects.filter(type=Size.LBAAS, is_deleted=False).exists():
                 form.add_error("type", "LBaaS already exists.")
                 return self.form_invalid(form)
-        form.instance.disk = form.cleaned_data['disk'] * (1024 ** 3)
-        form.instance.memory = form.cleaned_data['memory'] * (1024 ** 2)
-        form.instance.transfer = form.cleaned_data['transfer'] * (1024 ** 4)
+        form.instance.disk = form.cleaned_data["disk"] * (1024**3)
+        form.instance.memory = form.cleaned_data["memory"] * (1024**2)
+        form.instance.transfer = form.cleaned_data["transfer"] * (1024**4)
         form.save()
         return super().form_valid(form)
 
@@ -68,22 +68,22 @@ class AdminSizeUpdateView(AdminUpdateView):
         )
         form.fields["price"].label = "Price (Hourly)"
         form.fields["disk"].label = "Disk (GB)"
-        form.fields["disk"].widget = forms.NumberInput(attrs={'step': '1'})
-        form.initial["disk"] = form.initial['disk'] // (1024 ** 3)
-        
+        form.fields["disk"].widget = forms.NumberInput(attrs={"step": "1"})
+        form.initial["disk"] = form.initial["disk"] // (1024**3)
+
         form.fields["memory"].label = "Memory (MB)"
-        form.initial["memory"] = form.initial['memory'] // (1024 ** 2)
-        form.fields["memory"].widget = forms.NumberInput(attrs={'step': '1'})
+        form.initial["memory"] = form.initial["memory"] // (1024**2)
+        form.fields["memory"].widget = forms.NumberInput(attrs={"step": "1"})
 
         form.fields["transfer"].label = "Transfer (TB)"
-        form.initial["transfer"] = form.initial['transfer'] // (1024 ** 4)
-        form.fields["transfer"].widget = forms.NumberInput(attrs={'step': '1'})
+        form.initial["transfer"] = form.initial["transfer"] // (1024**4)
+        form.fields["transfer"].widget = forms.NumberInput(attrs={"step": "1"})
         return form
 
     def form_valid(self, form):
-        form.instance.disk = form.cleaned_data['disk'] * (1024 ** 3)
-        form.instance.memory = form.cleaned_data['memory'] * (1024 ** 2)
-        form.instance.transfer = form.cleaned_data['transfer'] * (1024 ** 4)
+        form.instance.disk = form.cleaned_data["disk"] * (1024**3)
+        form.instance.memory = form.cleaned_data["memory"] * (1024**2)
+        form.instance.transfer = form.cleaned_data["transfer"] * (1024**4)
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
