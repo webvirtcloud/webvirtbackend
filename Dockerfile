@@ -12,6 +12,7 @@ RUN set -eux; \
     fc-cache -f; \
     rm -rf /var/cache/apk/*
 
-COPY ./requirements/develop.txt ./requirements/production.txt /app/
+COPY ./pyproject.toml ./uv.lock /app/
 
-RUN uv pip install --system -r develop.txt
+RUN export UV_PROJECT_ENVIRONMENT=$(python3 -c "import sys; print(sys.prefix)"); \
+    uv sync --dev
