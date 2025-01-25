@@ -2,6 +2,7 @@ FROM python:3.10-alpine
 
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
+ENV UV_PROJECT_ENVIRONMENT=/usr/local
 
 WORKDIR /app
 
@@ -14,5 +15,4 @@ RUN set -eux; \
 
 COPY ./pyproject.toml ./uv.lock /app/
 
-RUN export UV_PROJECT_ENVIRONMENT=$(python3 -c "import sys; print(sys.prefix)"); \
-    uv sync --dev
+RUN uv sync --dev
