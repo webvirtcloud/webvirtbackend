@@ -1,4 +1,8 @@
-{% extends "admin/base.html" %} {% block content %}
+{% extends "admin/base.html" %} 
+
+{% load render_table from django_tables2 %}
+
+{% block content %}
 <div class="flex items-center justify-between mb-6">
   <h1 class="text-2xl font-medium">Regions</h1>
   <a
@@ -11,7 +15,9 @@
   <div class="mt-8 flow-root">
     <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
       <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-        {% if regions %}
+        {% render_table table %}
+
+        {% if table %}
         <div
           class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg"
         >

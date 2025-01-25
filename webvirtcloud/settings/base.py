@@ -52,14 +52,18 @@ INSTALLED_APPS += [
 
 # Third party application definition
 INSTALLED_APPS += [
+    "django_htmx",
     "crispy_forms",
     "crispy_tailwind",
     "rest_framework",
+    "django_filters",
+    "django_tables2",
     "django_celery_results",
 ]
 
 # Middleware definition
 MIDDLEWARE = [
+    "django_htmx.middleware.HtmxMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",

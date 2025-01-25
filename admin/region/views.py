@@ -1,22 +1,31 @@
 from django import forms
 from django.urls import reverse_lazy
+from django_tables2 import SingleTableMixin
+from django_filters.views import FilterView
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout
 from crispy_forms.bootstrap import InlineCheckboxes
 
 from compute.models import Compute
 from region.models import Region, Feature
+from .filters import RegionFilter
+from .tables import RegionHTMxTable
 from .forms import FormRegion, CustomModelMultipleChoiceField
-from admin.mixins import AdminTemplateView, AdminFormView, AdminUpdateView, AdminDeleteView
+from admin.mixins import AdminView, AdminFormView, AdminUpdateView, AdminDeleteView
 
 
-class AdminRegionIndexView(AdminTemplateView):
+class AdminRegionIndexView(SingleTableMixin, FilterView, AdminView):
+    table_class = RegionHTMxTable
+    filterset_class = RegionFilter
     template_name = "admin/region/index.html"
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["regions"] = Region.objects.filter(is_deleted=False)
-        return context
+    def get_queryset(self):
+        return Region.objects.filter(is_deleted=False)
+
+    def get_template_names(self):
+        if self.request.htmx:
+            return "django_tables2/table_partial.html"
+        return self.template_name
 
 
 class AdminRegionCreateView(AdminFormView):
