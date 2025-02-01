@@ -3,7 +3,7 @@
     "configurations": [
         {
             "name": "Python: Django",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "cwd": "${workspaceFolder}",
             "program": "${workspaceFolder}/manage.py",
@@ -19,7 +19,10 @@
                 "ANSIBLE_HOST_KEY_CHECKING": "false",
                 "ANSIBLE_PARAMIKO_LOOK_FOR_KEYS": "false",
                 "DJANGO_SETTINGS_MODULE": "webvirtcloud.settings.develop",
-            }
+            },            
+            "console": "integratedTerminal",
+            "stopOnEntry": false,
+            "envFile": "${workspaceFolder}/.env"
         }
     ]
 }

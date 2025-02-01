@@ -2,7 +2,7 @@
     "editor.defaultFormatter": null,
     "[python]": {
       "editor.formatOnSave": true,
-      "editor.defaultFormatter": "ms-python.black-formatter"
+      "editor.defaultFormatter": "ms-python.python"
     },
     "isort.args": ["--profile", "black", "--filter-files"],
     "python.formatting.provider": "none",
