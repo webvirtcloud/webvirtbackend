@@ -5,7 +5,7 @@ from region.models import Region
 
 class RegionHTMxTable(tables.Table):
     active = tables.TemplateColumn(
-        template_name="django-tables2/is_active_column.html",
+        template_name="django_tables2/is_active_column.html",
         verbose_name="Active", 
         accessor="is_active"
     )
