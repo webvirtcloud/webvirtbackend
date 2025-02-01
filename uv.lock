@@ -142,7 +142,7 @@ name = "blessed"
 version = "1.20.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "jinxed", marker = "platform_system == 'Windows'" },
+    { name = "jinxed", marker = "sys_platform == 'win32'" },
     { name = "six" },
     { name = "wcwidth" },
 ]
@@ -412,7 +412,7 @@ name = "click"
 version = "8.1.8"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "colorama", marker = "platform_system == 'Windows'" },
+    { name = "colorama", marker = "sys_platform == 'win32'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/b9/2e/0090cbf739cee7d23781ad4b89a9894a41538e4fcf4c31dcdd705b78eb8b/click-8.1.8.tar.gz", hash = "sha256:ed53c9d8990d83c2a27deae68e4ee337473f6330c040a31d4225c9574d16096a", size = 226593 }
 wheels = [
@@ -684,6 +684,18 @@ wheels = [
 ]
 
 [[package]]
+name = "django-tailwind"
+version = "3.8.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "django" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/3c/ee/1065c57c87213f566d76b398f8391cd544380ef9661f7fdacdfe4264633c/django_tailwind-3.8.0.tar.gz", hash = "sha256:31c2f4a7879d685c2de0feaf0b63f246200b37337bea4d7dbafb59bc3f10c008", size = 8969 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/cf/14/20c40882d9ee91f7a2a20d3c0175cf813340c02ae31c975ce567de2c7c67/django_tailwind-3.8.0-py3-none-any.whl", hash = "sha256:fa969c5b95d314b173fe2b2ed2cb2c03f2e2c94fdc2c01ff73a993fa159085da", size = 12936 },
+]
+
+[[package]]
 name = "djangorestframework"
 version = "3.14.0"
 source = { registry = "https://pypi.org/simple" }
@@ -887,7 +899,7 @@ name = "jinxed"
 version = "1.3.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "ansicon", marker = "platform_system == 'Windows'" },
+    { name = "ansicon", marker = "sys_platform == 'win32'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/20/d0/59b2b80e7a52d255f9e0ad040d2e826342d05580c4b1d7d7747cfb8db731/jinxed-1.3.0.tar.gz", hash = "sha256:1593124b18a41b7a3da3b078471442e51dbad3d77b4d4f2b0c26ab6f7d660dbf", size = 80981 }
 wheels = [
@@ -1122,6 +1134,15 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/cd/00/20f40a935514037b7d3f87adfc87d2c538430ea625b63b3af8c3f5578e72/pillow-11.1.0-pp310-pypy310_pp73-manylinux_2_28_aarch64.whl", hash = "sha256:d44ff19eea13ae4acdaaab0179fa68c0c6f2f45d66a4d8ec1eda7d6cecbcc15f", size = 3446208 },
     { url = "https://files.pythonhosted.org/packages/28/3c/7de681727963043e093c72e6c3348411b0185eab3263100d4490234ba2f6/pillow-11.1.0-pp310-pypy310_pp73-manylinux_2_28_x86_64.whl", hash = "sha256:d3d8da4a631471dfaf94c10c85f5277b1f8e42ac42bade1ac67da4b4a7359b73", size = 3509746 },
     { url = "https://files.pythonhosted.org/packages/41/67/936f9814bdd74b2dfd4822f1f7725ab5d8ff4103919a1664eb4874c58b2f/pillow-11.1.0-pp310-pypy310_pp73-win_amd64.whl", hash = "sha256:4637b88343166249fe8aa94e7c4a62a180c4b3898283bb5d3d2fd5fe10d8e4e0", size = 2626353 },
+]
+
+[[package]]
+name = "pip"
+version = "25.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/47/3e/68beeeeb306ea20ffd30b3ed993f531d16cd884ec4f60c9b1e238f69f2af/pip-25.0.tar.gz", hash = "sha256:8e0a97f7b4c47ae4a494560da84775e9e2f671d415d8d828e052efefb206b30b", size = 1950328 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/85/8a/1ddf40be20103bcc605db840e9ade09c8e8c9f920a03e9cfe88eae97a058/pip-25.0-py3-none-any.whl", hash = "sha256:b6eb97a803356a52b2dd4bb73ba9e65b2ba16caa6bcb25a7497350a4e5859b65", size = 1841506 },
 ]
 
 [[package]]
@@ -1488,6 +1509,7 @@ dependencies = [
     { name = "django-filter" },
     { name = "django-htmx" },
     { name = "django-tables2" },
+    { name = "django-tailwind" },
     { name = "djangorestframework" },
     { name = "gunicorn" },
     { name = "mysqlclient" },
@@ -1515,6 +1537,7 @@ dev = [
     { name = "django-filter" },
     { name = "django-htmx" },
     { name = "django-tables2" },
+    { name = "django-tailwind" },
     { name = "djangorestframework" },
     { name = "drf-yasg" },
     { name = "flake8" },
@@ -1523,6 +1546,7 @@ dev = [
     { name = "numpy" },
     { name = "paramiko" },
     { name = "passlib" },
+    { name = "pip" },
     { name = "requests" },
     { name = "weasyprint" },
     { name = "websockify" },
@@ -1539,6 +1563,7 @@ requires-dist = [
     { name = "django-filter", specifier = ">=24.3" },
     { name = "django-htmx", specifier = ">=1.21.0" },
     { name = "django-tables2", specifier = ">=2.7.5" },
+    { name = "django-tailwind", specifier = ">=3.8.0" },
     { name = "djangorestframework", specifier = "==3.14.0" },
     { name = "gunicorn", specifier = "==20.1.0" },
     { name = "mysqlclient", specifier = "==2.1.1" },
@@ -1566,6 +1591,7 @@ dev = [
     { name = "django-filter", specifier = ">=24.3" },
     { name = "django-htmx", specifier = ">=1.21.0" },
     { name = "django-tables2", specifier = ">=2.7.5" },
+    { name = "django-tailwind", specifier = ">=3.8.0" },
     { name = "djangorestframework", specifier = "==3.14.0" },
     { name = "drf-yasg", specifier = ">=1.21.8" },
     { name = "flake8", specifier = ">=7.1.1" },
@@ -1574,6 +1600,7 @@ dev = [
     { name = "numpy", specifier = "==1.25.2" },
     { name = "paramiko", specifier = "==3.4.1" },
     { name = "passlib", specifier = "==1.7.4" },
+    { name = "pip", specifier = ">=25.0" },
     { name = "requests", specifier = "==2.28.2" },
     { name = "weasyprint", specifier = "==60.2" },
     { name = "websockify", specifier = "==0.10.0" },

@@ -52,6 +52,8 @@ INSTALLED_APPS += [
 
 # Third party application definition
 INSTALLED_APPS += [
+    "theme",
+    "tailwind",
     "django_htmx",
     "crispy_forms",
     "crispy_tailwind",
@@ -190,6 +192,10 @@ LOGIN_REDIRECT_URL = "/admin/"
 # Crispy forms
 CRISPY_TEMPLATE_PACK = "tailwind"
 CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
+
+# Tailwind settings
+TAILWIND_APP_NAME = "theme"
+TAILWIND_CSS_PATH = "admin/css/styles.css"
 
 # Email settings
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"

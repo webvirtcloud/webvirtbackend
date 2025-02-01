@@ -29,6 +29,7 @@ dependencies = [
     "websockify==0.10.0",
     "django-tables2>=2.7.5",
     "django-filter>=24.3",
+    "django-tailwind>=3.8.0",
 ]
 
 [dependency-groups]
@@ -58,4 +59,5 @@ dev = [
     "websockify==0.10.0",
     "django-tables2>=2.7.5",
     "django-filter>=24.3",
+    "django-tailwind>=3.8.0",
 ]

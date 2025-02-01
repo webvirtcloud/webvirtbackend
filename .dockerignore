@@ -2,3 +2,4 @@
 .venv
 .mysql
 .flake8
+theme/static_src
