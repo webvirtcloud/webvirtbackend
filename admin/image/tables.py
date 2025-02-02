@@ -13,5 +13,5 @@ class ImageHTMxTable(tables.Table):
 
     class Meta:
         model = Image
-        fields = ("id", "user", "type", "event", "file_size", "disk_size", "active", "created")
+        fields = ("id", "user", "type", "file_size", "disk_size", "active", "created")
         template_name = "django_tables2/bootstrap.html"

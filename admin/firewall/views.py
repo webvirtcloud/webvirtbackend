@@ -1,21 +1,30 @@
 from django.urls import reverse
 from django.shortcuts import redirect, get_object_or_404
+from django_tables2 import SingleTableMixin
+from django_filters.views import FilterView
 
+from .filters import FirewallFilter
+from .tables import FirewallHTMxTable
 from admin.mixins import AdminView, AdminTemplateView
 from firewall.models import Firewall, Rule, FirewallVirtance, FirewallError
 
 
-class AdminFirewallIndexView(AdminTemplateView):
+class AdminFirewallIndexView(SingleTableMixin, FilterView, AdminView):
+    table_class = FirewallHTMxTable
+    filterset_class = FirewallFilter
     template_name = "admin/firewall/index.html"
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+    def get_queryset(self):
         firewalls = Firewall.objects.filter(is_deleted=False)
         for firewall in firewalls:
             firewall.num_rule = Rule.objects.filter(firewall=firewall).count()
             firewall.num_virtance = FirewallVirtance.objects.filter(firewall=firewall).count()
-        context["firewalls"] = firewalls
-        return context
+        return firewalls
+
+    def get_template_names(self):
+        if self.request.htmx:
+            return "django_tables2/table_partial.html"
+        return self.template_name
 
 
 class AdminFirewallDataView(AdminTemplateView):
