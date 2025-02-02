@@ -4,7 +4,7 @@ from django.db.models import Q
 from image.models import Image
 
 
-class TemplateFilter(django_filters.FilterSet):
+class ImageFilter(django_filters.FilterSet):
     query = django_filters.CharFilter(method="universal_search", label="")
 
     class Meta:
@@ -13,11 +13,7 @@ class TemplateFilter(django_filters.FilterSet):
 
     def universal_search(self, queryset, name, value):
         return Image.objects.filter(
-            (Q(type=Image.DISTRIBUTION) | Q(type=Image.APPLICATION) | Q(type=Image.LBAAS)),
-            Q(slug__icontains=value)
-            | Q(name__icontains=value)
-            | Q(type__icontains=value)
-            | Q(description__icontains=value)
-            | Q(distribution__icontains=value),
+            (Q(type=Image.BACKUP) | Q(type=Image.SNAPSHOT)),
+            Q(id__icontains=value) | Q(user__email__icontains=value) | Q(type__icontains=value),
             is_deleted=False,
         )

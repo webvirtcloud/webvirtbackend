@@ -13,9 +13,9 @@ class CustomModelMultipleChoiceField(forms.ModelMultipleChoiceField):
         return f"{item.name}"
 
 
-class FormImage(forms.ModelForm):
+class FormTemplate(forms.ModelForm):
     def __init__(self, *args, **kwargs):
-        super(FormImage, self).__init__(*args, **kwargs)
+        super(FormTemplate, self).__init__(*args, **kwargs)
         self.fields["type"] = forms.ChoiceField(
             widget=forms.Select, choices=Image.TYPE_CHOICES, initial=Image.DISTRIBUTION
         )

@@ -3,7 +3,7 @@ import django_tables2 as tables
 from image.models import Image
 
 
-class ImageHTMxTable(tables.Table):
+class TemplateHTMxTable(tables.Table):
     active = tables.TemplateColumn(
         template_name="django_tables2/is_active_column.html", verbose_name="Active", accessor="is_active"
     )

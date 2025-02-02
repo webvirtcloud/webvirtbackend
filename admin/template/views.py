@@ -9,15 +9,15 @@ from crispy_forms.bootstrap import InlineCheckboxes
 
 from image.models import Image
 from region.models import Region
-from .filters import ImageFilter
-from .tables import ImageHTMxTable
-from .forms import FormImage, CustomModelMultipleChoiceField
+from .filters import TemplateFilter
+from .tables import TemplateHTMxTable
+from .forms import FormTemplate, CustomModelMultipleChoiceField
 from admin.mixins import AdminView, AdminFormView, AdminUpdateView, AdminDeleteView
 
 
-class AdminImageIndexView(SingleTableMixin, FilterView, AdminView):
-    table_class = ImageHTMxTable
-    filterset_class = ImageFilter
+class AdminTemplateIndexView(SingleTableMixin, FilterView, AdminView):
+    table_class = TemplateHTMxTable
+    filterset_class = TemplateFilter
     template_name = "admin/template/index.html"
 
     def get_queryset(self):
@@ -31,9 +31,9 @@ class AdminImageIndexView(SingleTableMixin, FilterView, AdminView):
         return self.template_name
 
 
-class AdminImageCreateView(AdminFormView):
+class AdminTemplateCreateView(AdminFormView):
     template_name = "admin/template/create.html"
-    form_class = FormImage
+    form_class = FormTemplate
     success_url = reverse_lazy("admin_template_index")
 
     def form_valid(self, form):
@@ -45,7 +45,7 @@ class AdminImageCreateView(AdminFormView):
         return super().form_valid(form)
 
 
-class AdminImageUpdateView(AdminUpdateView):
+class AdminTemplateUpdateView(AdminUpdateView):
     template_name = "admin/template/update.html"
     template_name_suffix = "_form"
     model = Image
@@ -53,7 +53,7 @@ class AdminImageUpdateView(AdminUpdateView):
     fields = "__all__"
 
     def __init__(self, *args, **kwargs):
-        super(AdminImageUpdateView, self).__init__(*args, **kwargs)
+        super(AdminTemplateUpdateView, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_tag = False
         self.helper.layout = Layout(
@@ -70,19 +70,19 @@ class AdminImageUpdateView(AdminUpdateView):
         )
 
     def get_form(self, form_class=None):
-        form = super(AdminImageUpdateView, self).get_form(form_class)
+        form = super(AdminTemplateUpdateView, self).get_form(form_class)
         form.fields["regions"] = CustomModelMultipleChoiceField(
             queryset=Region.objects.filter(is_deleted=False), widget=forms.CheckboxSelectMultiple(), required=False
         )
         return form
 
     def get_context_data(self, **kwargs):
-        context = super(AdminImageUpdateView, self).get_context_data(**kwargs)
+        context = super(AdminTemplateUpdateView, self).get_context_data(**kwargs)
         context["helper"] = self.helper
         return context
 
 
-class AdminImageDeleteView(AdminDeleteView):
+class AdminTemplateDeleteView(AdminDeleteView):
     template_name = "admin/template/delete.html"
     model = Image
     success_url = reverse_lazy("admin_template_index")
@@ -93,11 +93,11 @@ class AdminImageDeleteView(AdminDeleteView):
         return super(self).delete(request, *args, **kwargs)
 
     def __init__(self, *args, **kwargs):
-        super(AdminImageDeleteView, self).__init__(*args, **kwargs)
+        super(AdminTemplateDeleteView, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_tag = False
 
     def get_context_data(self, **kwargs):
-        context = super(AdminImageDeleteView, self).get_context_data(**kwargs)
+        context = super(AdminTemplateDeleteView, self).get_context_data(**kwargs)
         context["helper"] = self.helper
         return context
