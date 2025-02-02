@@ -2,21 +2,30 @@ from django.urls import reverse
 from django.conf import settings
 from django.contrib import messages
 from django.shortcuts import redirect, get_object_or_404
+from django_tables2 import SingleTableMixin
+from django_filters.views import FilterView
 
 from network.models import IPAddress, Network
 from virtance.models import Virtance, VirtanceError
+from .filters import VirtanceFilter
+from .tables import VirtanceHTMxTable
 from admin.mixins import AdminView, AdminTemplateView
 from compute.webvirt import WebVirtCompute
 from virtance.tasks import create_virtance, action_virtance
 
 
-class AdminVirtanceIndexView(AdminTemplateView):
+class AdminVirtanceIndexView(SingleTableMixin, FilterView, AdminView):
+    table_class = VirtanceHTMxTable
+    filterset_class = VirtanceFilter
     template_name = "admin/virtance/index.html"
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["virtances"] = Virtance.objects.filter(is_deleted=False)
-        return context
+    def get_queryset(self):
+        return Virtance.objects.filter(is_deleted=False)
+
+    def get_template_names(self):
+        if self.request.htmx:
+            return "django_tables2/table_partial.html"
+        return self.template_name
 
 
 class AdminVirtanceDataView(AdminTemplateView):
