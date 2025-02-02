@@ -1,24 +1,34 @@
 from django import forms
 from django.db.models import Q
 from django.urls import reverse_lazy
+from django_tables2 import SingleTableMixin
+from django_filters.views import FilterView
 from crispy_forms.layout import Layout
 from crispy_forms.helper import FormHelper
 from crispy_forms.bootstrap import InlineCheckboxes
-from .forms import FormImage, CustomModelMultipleChoiceField
+
 from image.models import Image
 from region.models import Region
-from admin.mixins import AdminFormView, AdminUpdateView, AdminDeleteView, AdminTemplateView
+from .filters import ImageFilter
+from .tables import ImageHTMxTable
+from .forms import FormImage, CustomModelMultipleChoiceField
+from admin.mixins import AdminView, AdminFormView, AdminUpdateView, AdminDeleteView
 
 
-class AdminImageIndexView(AdminTemplateView):
+class AdminImageIndexView(SingleTableMixin, FilterView, AdminView):
+    table_class = ImageHTMxTable
+    filterset_class = ImageFilter
     template_name = "admin/template/index.html"
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["images"] = Image.objects.filter(
+    def get_queryset(self):
+        return Image.objects.filter(
             Q(type=Image.DISTRIBUTION) | Q(type=Image.APPLICATION) | Q(type=Image.LBAAS), is_deleted=False
         )
-        return context
+
+    def get_template_names(self):
+        if self.request.htmx:
+            return "django_tables2/table_partial.html"
+        return self.template_name
 
 
 class AdminImageCreateView(AdminFormView):

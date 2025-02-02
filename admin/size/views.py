@@ -1,22 +1,28 @@
 from django import forms
 from django.urls import reverse_lazy
+from django_tables2 import SingleTableMixin
+from django_filters.views import FilterView
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout
 from crispy_forms.bootstrap import InlineCheckboxes
 
 from size.models import Size
 from region.models import Region
+from .filters import SizeFilter
+from .tables import SizeHTMxTable
 from .forms import FormSize, CustomModelMultipleChoiceField
-from admin.mixins import AdminTemplateView, AdminFormView, AdminUpdateView, AdminDeleteView
+from admin.mixins import AdminView, AdminFormView, AdminUpdateView, AdminDeleteView
 
 
-class AdminSizeIndexView(AdminTemplateView):
+class AdminSizeIndexView(SingleTableMixin, FilterView, AdminView):
+    table_class = SizeHTMxTable
+    filterset_class = SizeFilter
     template_name = "admin/size/index.html"
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["sizes"] = Size.objects.filter(is_deleted=False)
-        return context
+    def get_template_names(self):
+        if self.request.htmx:
+            return "django_tables2/table_partial.html"
+        return self.template_name
 
 
 class AdminSizeCreateView(AdminFormView):
