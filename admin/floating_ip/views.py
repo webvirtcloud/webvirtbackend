@@ -1,17 +1,26 @@
 from django.urls import reverse
 from django.shortcuts import redirect, get_object_or_404
+from django_tables2 import SingleTableMixin
+from django_filters.views import FilterView
 
+from .filters import FloatIPFilter
+from .tables import FloatIPHTMxTable
 from floating_ip.models import FloatIP, FloatIPError
 from admin.mixins import AdminTemplateView, AdminView
 
 
-class AdminFloatIPIndexView(AdminTemplateView):
+class AdminFloatIPIndexView(SingleTableMixin, FilterView, AdminView):
+    table_class = FloatIPHTMxTable
+    filterset_class = FloatIPFilter
     template_name = "admin/floating_ip/index.html"
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["floating_ips"] = FloatIP.objects.filter(is_deleted=False)
-        return context
+    def get_queryset(self):
+        return FloatIP.objects.filter(is_deleted=False)
+
+    def get_template_names(self):
+        if self.request.htmx:
+            return "django_tables2/table_partial.html"
+        return self.template_name
 
 
 class AdminFloatIPDataView(AdminTemplateView):

@@ -1,108 +1,20 @@
 {% extends "admin/base.html" %} 
+
+{% load render_table from django_tables2 %}
+
 {% block content %}
 <div class="flex items-center justify-between mb-6">
   <h1 class="text-2xl font-medium">Floating IPs</h1>
-</div>
-<div class="">
-  <div class="mt-8 flow-root">
-    <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
-      <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-        {% if floating_ips %}
-        <div
-          class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg"
-        >
-          <table class="min-w-full divide-y divide-gray-300">
-            <thead class="bg-gray-50">
-              <tr>
-                <th
-                  scope="col"
-                  class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
-                >
-                  #
-                </th>
-                <th
-                  scope="col"
-                  class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                >
-                  ID
-                </th>
-                <th
-                  scope="col"
-                  class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                >
-                  User
-                </th>
-                <th
-                  scope="col"
-                  class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                >
-                  CIDR
-                </th>
-                <th
-                  scope="col"
-                  class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                >
-                  Virtance
-                </th>
-                <th
-                  scope="col"
-                  class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                >
-                  Created
-                </th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-200 bg-white">
-              {% for floating_ip in floating_ips %}
-              <tr>
-                <td
-                  class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
-                >
-                  {{ forloop.counter }}
-                </td>
-                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                  <a 
-                    class="text-blue-600 hover:text-blue-900" 
-                    href="{% url 'admin_floating_ip_data' floating_ip.id %}"
-                    >{{ floating_ip.id }}</a
-                  >
-                </td>
-                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                  <a 
-                    class="text-blue-600 hover:text-blue-900" 
-                    href="{% url 'admin_user_data' floating_ip.user.id %}"
-                    >{{ floating_ip.user.email }}</a
-                  >
-                </td>
-                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                  {{ floating_ip.cidr }}
-                </td>
-                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                  {% if floating_ip.ipaddress.virtance %}
-                  <a 
-                    class="text-blue-600 hover:text-blue-900" 
-                    href="{% url 'admin_virtance_data' floating_ip.ipaddress.virtance.id %}"
-                    >{{ floating_ip.ipaddress.virtance.id }}</a
-                  > 
-                  {% else %}
-                  Not assigned                   
-                  {% endif %}
-                </td>
-                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                  {{ floating_ip.created}}
-                </td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
-        {% else %}
-        <div class="bg-white border p-4 md:p-8 rounded-lg text-center">
-          <h2 class="text-xl font-medium">No floating ips found</h2>
-        </div>
-        {% endif %}
+  <div class="flex items-center gap-2">
+    <div class="relative [&_input]:pl-8 [&_input]:max-w-[180px] [&_div]:mb-0">
+      <div class="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none">
+        <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+        </svg>
       </div>
+      <input name="query" hx-get="{% url 'admin_floating_ip_index' %}" hx-trigger="keyup changed delay:500ms" hx-target="div.table-container" hx-swap="outerHTML" hx-indicator=".progress" type="text" class="input" placeholder="Search...">
     </div>
   </div>
 </div>
+{% render_table table %}
 {% endblock %}
