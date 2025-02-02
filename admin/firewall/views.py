@@ -15,11 +15,7 @@ class AdminFirewallIndexView(SingleTableMixin, FilterView, AdminView):
     template_name = "admin/firewall/index.html"
 
     def get_queryset(self):
-        firewalls = Firewall.objects.filter(is_deleted=False)
-        for firewall in firewalls:
-            firewall.num_rule = Rule.objects.filter(firewall=firewall).count()
-            firewall.num_virtance = FirewallVirtance.objects.filter(firewall=firewall).count()
-        return firewalls
+        return Firewall.objects.filter(is_deleted=False)
 
     def get_template_names(self):
         if self.request.htmx:

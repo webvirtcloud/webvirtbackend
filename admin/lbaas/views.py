@@ -1,7 +1,11 @@
 from django.urls import reverse
 from django.http import HttpResponse
 from django.shortcuts import redirect, get_object_or_404
+from django_tables2 import SingleTableMixin
+from django_filters.views import FilterView
 
+from .filters import LBaaSFilter
+from .tables import LBaaSHTMxTable
 from admin.mixins import AdminView, AdminTemplateView
 from network.models import IPAddress, Network
 from lbaas.models import LBaaS, LBaaSForwadRule, LBaaSVirtance
@@ -9,17 +13,18 @@ from lbaas.tasks import create_lbaas, reload_lbaas
 from virtance.utils import make_ssh_private, decrypt_data, encrypt_data
 
 
-class AdminLBaaSIndexView(AdminTemplateView):
+class AdminLBaaSIndexView(SingleTableMixin, FilterView, AdminView):
+    table_class = LBaaSHTMxTable
+    filterset_class = LBaaSFilter
     template_name = "admin/lbaas/index.html"
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        lbaas = LBaaS.objects.filter(is_deleted=False)
-        for lb in lbaas:
-            lb.num_rule = LBaaSForwadRule.objects.filter(lbaas=lb, is_deleted=False).count()
-            lb.num_virtance = LBaaSVirtance.objects.filter(lbaas=lb, is_deleted=False).count()
-        context["lbaas"] = lbaas
-        return context
+    def get_queryset(self):
+        return LBaaS.objects.filter(is_deleted=False)
+
+    def get_template_names(self):
+        if self.request.htmx:
+            return "django_tables2/table_partial.html"
+        return self.template_name
 
 
 class AdminLBaaSDataView(AdminTemplateView):

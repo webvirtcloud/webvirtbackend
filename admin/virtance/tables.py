@@ -7,8 +7,8 @@ class VirtanceHTMxTable(tables.Table):
     id = tables.TemplateColumn(template_name="admin/virtance/id_column.html", verbose_name="ID")
     user = tables.TemplateColumn(template_name="admin/virtance/user_column.html", verbose_name="User")
     compute = tables.TemplateColumn(template_name="admin/virtance/compute_column.html", verbose_name="Compute")
-    active = tables.TemplateColumn(
-        template_name="django_tables2/is_active_column.html", verbose_name="Active", accessor="is_active"
+    status = tables.TemplateColumn(
+        template_name="admin/virtance/status_column.html", verbose_name="Status", accessor="status"
     )
     size = tables.Column(verbose_name="Size", accessor="size.name")
     region = tables.Column(verbose_name="Region", accessor="region.name")
@@ -18,5 +18,5 @@ class VirtanceHTMxTable(tables.Table):
 
     class Meta:
         model = Virtance
-        fields = ("id", "user", "type", "size", "region", "compute", "active", "created")
+        fields = ("id", "user", "type", "size", "region", "compute", "status", "created")
         template_name = "django_tables2/bootstrap.html"
