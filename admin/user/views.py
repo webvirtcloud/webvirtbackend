@@ -3,6 +3,8 @@ from django.db.models import Sum
 from django.utils import timezone
 from django.urls import reverse_lazy
 from django.shortcuts import get_object_or_404
+from django_tables2 import SingleTableMixin
+from django_filters.views import FilterView
 from crispy_forms.helper import FormHelper
 
 from account.models import User
@@ -11,17 +13,24 @@ from firewall.models import Firewall
 from image.models import SnapshotCounter
 from virtance.models import VirtanceCounter
 from floating_ip.models import FloatIPCounter
-from admin.user.forms import FormUser
-from admin.mixins import AdminTemplateView, AdminFormView, AdminUpdateView
+from .forms import FormUser
+from .filters import UserFilter
+from .tables import UserHTMxTable
+from admin.mixins import AdminView, AdminTemplateView, AdminFormView, AdminUpdateView
 
 
-class AdminUserIndexView(AdminTemplateView):
+class AdminUserIndexView(SingleTableMixin, FilterView, AdminView):
+    table_class = UserHTMxTable
+    filterset_class = UserFilter
     template_name = "admin/user/index.html"
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["users"] = User.objects.filter(is_admin=False)
-        return context
+    def get_queryset(self):
+        return User.objects.filter(is_admin=False)
+
+    def get_template_names(self):
+        if self.request.htmx:
+            return "django_tables2/table_partial.html"
+        return self.template_name
 
 
 class AdminUserCreateView(AdminFormView):

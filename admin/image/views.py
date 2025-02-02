@@ -17,7 +17,7 @@ class AdminImageIndexView(SingleTableMixin, FilterView, AdminView):
 
     def get_queryset(self):
         return Image.objects.filter(Q(type=Image.BACKUP) | Q(type=Image.SNAPSHOT), is_deleted=False)
-    
+
     def get_template_names(self):
         if self.request.htmx:
             return "django_tables2/table_partial.html"
