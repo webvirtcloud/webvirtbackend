@@ -1,21 +1,30 @@
 from ipaddress import ip_network
 from django.contrib import messages
 from django.urls import reverse_lazy
+from django_tables2 import SingleTableMixin
+from django_filters.views import FilterView
 from django.shortcuts import redirect
 from crispy_forms.helper import FormHelper
 
-from .forms import FormNetwork
 from network.models import Network, IPAddress
-from admin.mixins import AdminTemplateView, AdminFormView, AdminUpdateView, AdminDeleteView
+from .forms import FormNetwork
+from .filters import NetworkFilter
+from .tables import NetworkHTMxTable
+from admin.mixins import AdminView, AdminTemplateView, AdminFormView, AdminUpdateView, AdminDeleteView
 
 
-class AdminNetworkIndexView(AdminTemplateView):
+class AdminNetworkIndexView(SingleTableMixin, FilterView, AdminView):
+    table_class = NetworkHTMxTable
+    filterset_class = NetworkFilter
     template_name = "admin/network/index.html"
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["networks"] = Network.objects.filter(is_deleted=False)
-        return context
+    def get_queryset(self):
+        return Network.objects.filter(is_deleted=False)
+
+    def get_template_names(self):
+        if self.request.htmx:
+            return "django_tables2/table_partial.html"
+        return self.template_name
 
 
 class AdminNetworkCreateView(AdminFormView):

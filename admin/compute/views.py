@@ -2,24 +2,34 @@ from django.contrib import messages
 from django.urls import reverse_lazy, reverse
 from django.shortcuts import redirect, get_object_or_404
 from crispy_forms.helper import FormHelper
+from django_tables2 import SingleTableMixin
+from django_filters.views import FilterView
+
+from compute.models import Compute
+from virtance.models import Virtance
+from network.models import Network
+from compute.webvirt import WebVirtCompute
+from .filters import ComputeFilter
+from .tables import ComputeHTMxTable
 from .forms import FormNetworkCreate, FormStorageDirCreate, FormStorageRBDCreate
 from .forms import FormCompute, FormStartAction, FormAutostartAction
 from .forms import FormSecretCreateAction, FormSecretValueAction, FormNwfilterCreateAction
 from .forms import FormVolumeCreateAction, FormVolumeCloneAction, FormVolumeResizeAction
-from compute.models import Compute
-from virtance.models import Virtance
-from network.models import Network
 from admin.mixins import AdminView, AdminTemplateView, AdminFormView, AdminUpdateView, AdminDeleteView
-from compute.webvirt import WebVirtCompute
 
 
-class AdminComputeIndexView(AdminTemplateView):
+class AdminComputeIndexView(SingleTableMixin, FilterView, AdminView):
+    table_class = ComputeHTMxTable
+    filterset_class = ComputeFilter
     template_name = "admin/compute/index.html"
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["computes"] = Compute.objects.filter(is_deleted=False)
-        return context
+    def get_queryset(self):
+        return Compute.objects.filter(is_deleted=False)
+
+    def get_template_names(self):
+        if self.request.htmx:
+            return "django_tables2/table_partial.html"
+        return self.template_name
 
 
 class AdminComputeCreateView(AdminFormView):
