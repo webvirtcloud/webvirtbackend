@@ -8,7 +8,7 @@ class UserHTMxTable(tables.Table):
         template_name="django_tables2/is_active_column.html", verbose_name="Active", accessor="is_active"
     )
     verified = tables.TemplateColumn(
-        template_name="django_tables2/is_active_column.html", verbose_name="Active", accessor="is_verified"
+        template_name="django_tables2/is_active_column.html", verbose_name="Verified", accessor="is_verified"
     )
     email = tables.TemplateColumn(template_name="admin/user/user_column.html", verbose_name="Email")
 

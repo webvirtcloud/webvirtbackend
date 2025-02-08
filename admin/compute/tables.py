@@ -4,11 +4,14 @@ from compute.models import Compute
 
 
 class ComputeHTMxTable(tables.Table):
+    name = tables.TemplateColumn(
+        template_name="admin/compute/name_column.html", verbose_name="Namw", accessor="name"
+    )
     active = tables.TemplateColumn(
         template_name="django_tables2/is_active_column.html", verbose_name="Active", accessor="is_active"
     )
     action = tables.TemplateColumn(
-        template_name="admin/size/action_column.html",
+        template_name="admin/compute/action_column.html",
         verbose_name="Action",
         attrs={"th": {"data-type": "action"}, "td": {"data-type": "action"}},
         orderable=False,
