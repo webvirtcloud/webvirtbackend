@@ -1,7 +1,7 @@
 {% extends "admin/base.html" %} {% block content %}
 <a
 href="{% url 'admin_network_index' %}"
-class="inline-flex items-center text-sm p-2 bg-gray-100 rounded-md space-x-2 hover:bg-gray-200 mb-4"
+class="inline-flex items-center text-sm p-2 bg-muted rounded-md space-x-2 mb-4"
 ><svg
   xmlns="http://www.w3.org/2000/svg"
   fill="none"
@@ -34,33 +34,33 @@ class="inline-flex items-center text-sm p-2 bg-gray-100 rounded-md space-x-2 hov
               <tr>
                 <th
                   scope="col"
-                  class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+                  class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold sm:pl-6"
                 >
                   #
                 </th>
                 <th
                   scope="col"
-                  class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                  class="px-3 py-3.5 text-left text-sm font-semibold"
                 >
                   IP Address
                 </th>
                 <th
                   scope="col"
-                  class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                  class="px-3 py-3.5 text-left text-sm font-semibold"
                 >
                   Virtance
                 </th>
                 {% if network.type == "public" %}
                   <th
                     scope="col"
-                    class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    class="px-3 py-3.5 text-left text-sm font-semibold"
                   >
                     Floating IP
                   </th>
                 {% endif %}
                 <th
                   scope="col"
-                  class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                  class="px-3 py-3.5 text-left text-sm font-semibold"
                 >
                   Created
                 </th>
@@ -71,7 +71,7 @@ class="inline-flex items-center text-sm p-2 bg-gray-100 rounded-md space-x-2 hov
               {% for ipaddr in ip_addresses %}
               <tr>
                 <td
-                  class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
+                  class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-6"
                 >
                   {{ forloop.counter }}
                 </td>

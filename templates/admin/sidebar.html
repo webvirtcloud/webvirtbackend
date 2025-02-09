@@ -3,146 +3,274 @@
 <div class="hidden lg:flex lg:flex-shrink-0">
   <div class="flex w-64 flex-col">
     <!-- Sidebar component, swap this element with another sidebar if you like -->
-    <div class="flex min-h-0 flex-1 flex-col border-r border-gray-200 bg-white">
+    <div class="flex min-h-0 flex-1 flex-col border-r bg-sidebar">
       <div class="flex flex-1 flex-col overflow-y-auto pt-5 pb-4">
-        <a href="{% url 'admin_index' %}" class="flex flex-shrink-0 items-center px-4 space-x-4">
-          <img class="h-8 w-auto" src="{% static 'admin/svg/logo.svg' %}" alt="WebVirtCloud" />
-          <span class="font-medium">WebVirtCloud</span>
+        <a
+          href="{% url 'admin_index' %}"
+          class="flex flex-shrink-0 items-center px-4 space-x-2.5"
+        >
+          <img
+            class="h-7 w-auto"
+            src="{% static 'admin/svg/logo.svg' %}"
+            alt="WebVirtCloud"
+          />
+          <span class="font-semibold text-lg">WebVirtCloud</span>
         </a>
         <nav class="mt-5 flex-1 space-y-8" aria-label="Sidebar">
           <div>
-            <div class="text-xs uppercase font-medium text-gray-500 mb-2 px-5">
+            <div
+              class="text-xs uppercase font-semibold text-muted-foreground mb-2 px-5"
+            >
               Dashboard
             </div>
             <div class="space-y-1 px-2">
-              <a href="{% url 'admin_index' %}"
-                class="group flex items-center rounded-md px-2 py-2 text-sm font-medium {% if request.path == '/admin/' %}bg-gray-100 text-gray-900{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900 {% endif %}">
+              <a
+                href="{% url 'admin_index' %}"
+                class="group flex items-center rounded-md px-2 py-2 text-sm font-medium {% if request.path == '/admin/' %}bg-muted text-foreground{% else %}hover:text-foreground hover:bg-muted{% endif %}"
+              >
                 <!-- Current: "text-gray-500", Default: "text-gray-400 group-hover:text-gray-500" -->
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                  stroke="currentColor" class="text-gray-500 mr-3 h-6 w-6">
-                  <path stroke-linecap="round" stroke-linejoin="round"
-                    d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="text-gray-500 mr-2 h-4 w-4"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"
+                  />
                 </svg>
-
                 Overview
               </a>
 
-              <a href="{% url 'admin_region_index' %}"
-                class="group flex items-center rounded-md px-2 py-2 text-sm font-medium {% if 'admin/region' in request.path %}bg-gray-100 text-gray-900{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900 {% endif %}">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                  stroke="currentColor" class="text-gray-400 group-hover:text-gray-500 mr-3 h-6 w-6">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                  <path stroke-linecap="round" stroke-linejoin="round"
-                    d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+              <a
+                href="{% url 'admin_region_index' %}"
+                class="group flex items-center rounded-md px-2 py-2 text-sm font-medium {% if 'admin/region' in request.path %}bg-muted text-foreground{% else %}hover:text-foreground hover:bg-muted{% endif %}"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="text-gray-400 mr-2 h-4 w-4"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                  />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"
+                  />
                 </svg>
                 Regions
               </a>
 
-              <a href="{% url 'admin_size_index' %}"
-                class="group flex items-center rounded-md px-2 py-2 text-sm font-medium {% if 'admin/size' in request.path %}bg-gray-100 text-gray-900{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900 {% endif %}">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                  stroke="currentColor" class="text-gray-400 group-hover:text-gray-500 mr-3 h-6 w-6">
-                  <path stroke-linecap="round" stroke-linejoin="round"
-                    d="M21 7.5l-2.25-1.313M21 7.5v2.25m0-2.25l-2.25 1.313M3 7.5l2.25-1.313M3 7.5l2.25 1.313M3 7.5v2.25m9 3l2.25-1.313M12 12.75l-2.25-1.313M12 12.75V15m0 6.75l2.25-1.313M12 21.75V19.5m0 2.25l-2.25-1.313m0-16.875L12 2.25l2.25 1.313M21 14.25v2.25l-2.25 1.313m-13.5 0L3 16.5v-2.25">
-                  </path>
+              <a
+                href="{% url 'admin_size_index' %}"
+                class="group flex items-center rounded-md px-2 py-2 text-sm font-medium {% if 'admin/size' in request.path %}bg-muted text-foreground{% else %}hover:text-foreground hover:bg-muted{% endif %}"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="text-gray-400 mr-2 h-4 w-4"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M21 7.5l-2.25-1.313M21 7.5v2.25m0-2.25l-2.25 1.313M3 7.5l2.25-1.313M3 7.5l2.25 1.313M3 7.5v2.25m9 3l2.25-1.313M12 12.75l-2.25-1.313M12 12.75V15m0 6.75l2.25-1.313M12 21.75V19.5m0 2.25l-2.25-1.313m0-16.875L12 2.25l2.25 1.313M21 14.25v2.25l-2.25 1.313m-13.5 0L3 16.5v-2.25"
+                  ></path>
                 </svg>
                 Sizes
               </a>
 
-              <a href="{% url 'admin_template_index' %}"
-                class="group flex items-center rounded-md px-2 py-2 text-sm font-medium {% if 'admin/template/' in request.path %}bg-gray-100 text-gray-900{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900 {% endif %}">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                  stroke="currentColor" class="text-gray-400 group-hover:text-gray-500 mr-3 h-6 w-6">
-                  <path stroke-linecap="round" stroke-linejoin="round"
-                    d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" />
+              <a
+                href="{% url 'admin_template_index' %}"
+                class="group flex items-center rounded-md px-2 py-2 text-sm font-medium {% if 'admin/template/' in request.path %}bg-muted text-foreground{% else %}hover:text-foreground hover:bg-muted{% endif %}"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="text-gray-400 mr-2 h-4 w-4"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125"
+                  />
                 </svg>
                 Templates
               </a>
 
-              <a href="{% url 'admin_network_index' %}"
-                class="group flex items-center rounded-md px-2 py-2 text-sm font-medium {% if 'admin/network/' in request.path %}bg-gray-100 text-gray-900{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900 {% endif %}">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                  stroke="currentColor" class="text-gray-400 group-hover:text-gray-500 mr-3 h-6 w-6">
-                  <path stroke-linecap="round" stroke-linejoin="round"
-                    d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418">
-                  </path>
+              <a
+                href="{% url 'admin_network_index' %}"
+                class="group flex items-center rounded-md px-2 py-2 text-sm font-medium {% if 'admin/network/' in request.path %}bg-muted text-foreground{% else %}hover:text-foreground hover:bg-muted{% endif %}"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="text-gray-400 mr-2 h-4 w-4"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418"
+                  ></path>
                 </svg>
                 Networks
               </a>
 
-              <a href="{% url 'admin_compute_index' %}"
-                class="group flex items-center rounded-md px-2 py-2 text-sm font-medium {% if 'admin/compute' in request.path %}bg-gray-100 text-gray-900{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900 {% endif %}">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                  stroke="currentColor" class="text-gray-400 group-hover:text-gray-500 mr-3 h-6 w-6">
-                  <path stroke-linecap="round" stroke-linejoin="round"
-                    d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 002.25-2.25V6.75a2.25 2.25 0 00-2.25-2.25H6.75A2.25 2.25 0 004.5 6.75v10.5a2.25 2.25 0 002.25 2.25zm.75-12h9v9h-9v-9z">
-                  </path>
+              <a
+                href="{% url 'admin_compute_index' %}"
+                class="group flex items-center rounded-md px-2 py-2 text-sm font-medium {% if 'admin/compute' in request.path %}bg-muted text-foreground{% else %}hover:text-foreground hover:bg-muted{% endif %}"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="text-gray-400 mr-2 h-4 w-4"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 002.25-2.25V6.75a2.25 2.25 0 00-2.25-2.25H6.75A2.25 2.25 0 004.5 6.75v10.5a2.25 2.25 0 002.25 2.25zm.75-12h9v9h-9v-9z"
+                  ></path>
                 </svg>
                 Computes
               </a>
-
             </div>
           </div>
 
           <div>
-            <div class="text-xs uppercase font-medium text-gray-500 mb-2 px-5">
+            <div
+              class="text-xs uppercase font-semibold text-muted-foreground mb-2 px-5"
+            >
               Services
             </div>
             <div class="space-y-1 px-2">
-              <a href="{% url 'admin_image_index' %}"
-                class="group flex items-center rounded-md px-2 py-2 text-sm font-medium {% if 'admin/image' in request.path %}bg-gray-100 text-gray-900{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900 {% endif %}">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                  stroke="currentColor" class="text-gray-400 group-hover:text-gray-500 mr-3 h-6 w-6">
-                  <path stroke-linecap="round" stroke-linejoin="round"
-                    d="M9.344 3.071a49.52 49.52 0 015.312 0c.967.052 1.83.585 2.332 1.39l.821 1.317c.24.383.645.643 1.11.71.386.054.77.113 1.152.177 1.432.239 2.429 1.493 2.429 2.909V18a3 3 0 01-3 3h-15a3 3 0 01-3-3V9.574c0-1.416.997-2.67 2.429-2.909.382-.064.766-.123 1.151-.178a1.56 1.56 0 001.11-.71l.822-1.315a2.942 2.942 0 012.332-1.39zM6.75 12.75a5.25 5.25 0 1110.5 0 5.25 5.25 0 01-10.5 0zm12-1.5a.75.75 0 100-1.5.75.75 0 000 1.5z">
-                  </path>
+              <a
+                href="{% url 'admin_image_index' %}"
+                class="group flex items-center rounded-md px-2 py-2 text-sm font-medium {% if 'admin/image' in request.path %}bg-muted text-foreground{% else %}hover:text-foreground hover:bg-muted{% endif %}"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="text-gray-400 mr-2 h-4 w-4"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M9.344 3.071a49.52 49.52 0 015.312 0c.967.052 1.83.585 2.332 1.39l.821 1.317c.24.383.645.643 1.11.71.386.054.77.113 1.152.177 1.432.239 2.429 1.493 2.429 2.909V18a3 3 0 01-3 3h-15a3 3 0 01-3-3V9.574c0-1.416.997-2.67 2.429-2.909.382-.064.766-.123 1.151-.178a1.56 1.56 0 001.11-.71l.822-1.315a2.942 2.942 0 012.332-1.39zM6.75 12.75a5.25 5.25 0 1110.5 0 5.25 5.25 0 01-10.5 0zm12-1.5a.75.75 0 100-1.5.75.75 0 000 1.5z"
+                  ></path>
                 </svg>
                 Images
               </a>
-            </div>
-            <div class="space-y-1 px-2">
-              <a href="{% url 'admin_virtance_index' %}"
-                class="group flex items-center rounded-md px-2 py-2 text-sm font-medium {% if 'admin/virtance' in request.path %}bg-gray-100 text-gray-900{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900 {% endif %}">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                  stroke="currentColor" class="text-gray-400 group-hover:text-gray-500 mr-3 h-6 w-6">
-                  <path stroke-linecap="round" stroke-linejoin="round"
-                    d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 006.16-12.12A14.98 14.98 0 009.631 8.41m5.96 5.96a14.926 14.926 0 01-5.841 2.58m-.119-8.54a6 6 0 00-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 00-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 01-2.448-2.448 14.9 14.9 0 01.06-.312m-2.24 2.39a4.493 4.493 0 00-1.757 4.306 4.493 4.493 0 004.306-1.758M16.5 9a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z">
-                  </path>
+
+              <a
+                href="{% url 'admin_virtance_index' %}"
+                class="group flex items-center rounded-md px-2 py-2 text-sm font-medium {% if 'admin/virtance' in request.path %}bg-muted text-foreground{% else %}hover:text-foreground hover:bg-muted{% endif %}"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="text-gray-400 mr-2 h-4 w-4"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 006.16-12.12A14.98 14.98 0 009.631 8.41m5.96 5.96a14.926 14.926 0 01-5.841 2.58m-.119-8.54a6 6 0 00-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 00-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 01-2.448-2.448 14.9 14.9 0 01.06-.312m-2.24 2.39a4.493 4.493 0 00-1.757 4.306 4.493 4.493 0 004.306-1.758M16.5 9a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"
+                  ></path>
                 </svg>
                 Virtances
               </a>
-            </div>
-            <div class="space-y-1 px-2">
-              <a href="{% url 'admin_firewall_index' %}"
-                class="group flex items-center rounded-md px-2 py-2 text-sm font-medium {% if 'admin/firewall' in request.path %}bg-gray-100 text-gray-900{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900 {% endif %}">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                  stroke="currentColor" class="text-gray-400 group-hover:text-gray-500 mr-3 h-6 w-6">
-                  <path stroke-linecap="round" stroke-linejoin="round"
-                    d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z">
-                  </path>
+
+              <a
+                href="{% url 'admin_firewall_index' %}"
+                class="group flex items-center rounded-md px-2 py-2 text-sm font-medium {% if 'admin/firewall' in request.path %}bg-muted text-foreground{% else %}hover:text-foreground hover:bg-muted{% endif %}"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="text-gray-400 mr-2 h-4 w-4"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"
+                  ></path>
                 </svg>
                 Firewalls
               </a>
-            </div>
-            <div class="space-y-1 px-2">
-              <a href="{% url 'admin_floating_ip_index' %}"
-                class="group flex items-center rounded-md px-2 py-2 text-sm font-medium {% if 'admin/floating_ip' in request.path %}bg-gray-100 text-gray-900{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900 {% endif %}">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                  stroke="currentColor" class="text-gray-400 group-hover:text-gray-500 mr-3 h-6 w-6">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                  <path stroke-linecap="round" stroke-linejoin="round"
-                    d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"></path>
+
+              <a
+                href="{% url 'admin_floating_ip_index' %}"
+                class="group flex items-center rounded-md px-2 py-2 text-sm font-medium {% if 'admin/floating_ip' in request.path %}bg-muted text-foreground{% else %}hover:text-foreground hover:bg-muted{% endif %}"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="text-gray-400 mr-2 h-4 w-4"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"
+                  ></path>
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"
+                  ></path>
                 </svg>
                 Floating IPs
               </a>
-            </div>
-            <div class="space-y-1 px-2">
-              <a href="{% url 'admin_lbaas_index' %}"
-                class="group flex items-center rounded-md px-2 py-2 text-sm font-medium {% if 'admin/lbaas' in request.path %}bg-gray-100 text-gray-900{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900 {% endif %}">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                  stroke="currentColor" class="text-gray-400 group-hover:text-gray-500 mr-3 h-6 w-6">
-                  <path stroke-linecap="round" stroke-linejoin="round"
-                    d="M12 3v17.25m0 0c-1.472 0-2.882.265-4.185.75M12 20.25c1.472 0 2.882.265 4.185.75M18.75 4.97A48.416 48.416 0 0 0 12 4.5c-2.291 0-4.545.16-6.75.47m13.5 0c1.01.143 2.01.317 3 .52m-3-.52 2.62 10.726c.122.499-.106 1.028-.589 1.202a5.988 5.988 0 0 1-2.031.352 5.988 5.988 0 0 1-2.031-.352c-.483-.174-.711-.703-.59-1.202L18.75 4.971Zm-16.5.52c.99-.203 1.99-.377 3-.52m0 0 2.62 10.726c.122.499-.106 1.028-.589 1.202a5.989 5.989 0 0 1-2.031.352 5.989 5.989 0 0 1-2.031-.352c-.483-.174-.711-.703-.59-1.202L5.25 4.971Z" />
+
+              <a
+                href="{% url 'admin_lbaas_index' %}"
+                class="group flex items-center rounded-md px-2 py-2 text-sm font-medium {% if 'admin/lbaas' in request.path %}bg-muted text-foreground{% else %}hover:text-foreground hover:bg-muted{% endif %}"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="text-gray-400 mr-2 h-4 w-4"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M12 3v17.25m0 0c-1.472 0-2.882.265-4.185.75M12 20.25c1.472 0 2.882.265 4.185.75M18.75 4.97A48.416 48.416 0 0 0 12 4.5c-2.291 0-4.545.16-6.75.47m13.5 0c1.01.143 2.01.317 3 .52m-3-.52 2.62 10.726c.122.499-.106 1.028-.589 1.202a5.988 5.988 0 0 1-2.031.352 5.988 5.988 0 0 1-2.031-.352c-.483-.174-.711-.703-.59-1.202L18.75 4.971Zm-16.5.52c.99-.203 1.99-.377 3-.52m0 0 2.62 10.726c.122.499-.106 1.028-.589 1.202a5.989 5.989 0 0 1-2.031.352 5.989 5.989 0 0 1-2.031-.352c-.483-.174-.711-.703-.59-1.202L5.25 4.971Z"
+                  />
                 </svg>
                 Load Balancers
               </a>
@@ -150,16 +278,29 @@
           </div>
 
           <div>
-            <div class="text-xs uppercase font-medium text-gray-500 mb-2 px-5">
+            <div
+              class="text-xs uppercase font-semibold text-muted-foreground mb-2 px-5"
+            >
               Accounts
             </div>
             <div class="space-y-1 px-2">
-              <a href="{% url 'admin_user_index' %}"
-                class="group flex items-center rounded-md px-2 py-2 text-sm font-medium {% if 'admin/user' in request.path %}bg-gray-100 text-gray-900{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900 {% endif %}">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                  stroke="currentColor" class="text-gray-400 group-hover:text-gray-500 mr-3 h-6 w-6">
-                  <path stroke-linecap="round" stroke-linejoin="round"
-                    d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+              <a
+                href="{% url 'admin_user_index' %}"
+                class="group flex items-center rounded-md px-2 py-2 text-sm font-medium {% if 'admin/user' in request.path %}bg-muted text-foreground{% else %}hover:text-foreground hover:bg-muted{% endif %}"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="text-gray-400 mr-2 h-4 w-4"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"
+                  />
                 </svg>
 
                 Users
@@ -168,58 +309,151 @@
           </div>
 
           <div>
-            <div class="text-xs uppercase font-medium text-gray-500 mb-2 px-5">
+            <div
+              class="text-xs uppercase font-semibold text-muted-foreground mb-2 px-5"
+            >
               Issues
             </div>
             <div class="space-y-1 px-2">
-              <a href="{% url 'admin_issue_index' %}"
-                class="group flex items-center rounded-md px-2 py-2 text-sm font-medium {% if 'admin/issue' in request.path %}bg-gray-100 text-gray-900{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900 {% endif %}">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                  stroke="currentColor" class="text-gray-400 group-hover:text-gray-500 mr-3 h-6 w-6">
-                  <path stroke-linecap="round" stroke-linejoin="round"
-                    d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z">
-                  </path>
+              <a
+                href="{% url 'admin_issue_index' %}"
+                class="group flex items-center rounded-md px-2 py-2 text-sm font-medium {% if 'admin/issue' in request.path %}bg-muted text-foreground{% else %}hover:text-foreground hover:bg-muted{% endif %}"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="text-gray-400 mr-2 h-4 w-4"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"
+                  ></path>
                 </svg>
 
                 Errors
               </a>
             </div>
-
           </div>
-
         </nav>
       </div>
-      <div class="flex flex-shrink-0 border-t border-gray-200 p-4">
-        <button id="dropdownUserMenuButton" data-dropdown-toggle="dropdownUserMenu" type="button" class="group block w-full text-start flex-shrink-0">
+      <div class="flex flex-shrink-0 border-t p-2">
+        <button
+          id="dropdownUserMenuButton"
+          data-dropdown-toggle="dropdownUserMenu"
+          type="button"
+          class="group flex items-center justify-between w-full text-start flex-shrink-0 hover:bg-muted p-2 rounded-md"
+        >
           <div class="flex items-center">
             <div>
-              <div class="inline-block h-9 w-9 rounded-full bg-gray-200"></div>
+              <img
+                src="{% static 'admin/user-pic.png' %}"
+                class="w-9 h-9"
+                alt="User profile picture"
+              />
             </div>
             <div class="ml-3 flex-1">
-              <p class="text-sm font-medium text-gray-700 group-hover:text-gray-900">
+              <p class="text-sm font-medium">
                 {{ request.user.first_name }} {{ request.user.last_name }}
               </p>
-              <p class="text-xs font-medium text-gray-500 group-hover:text-gray-700 flex items-center justify-between">
+              <p class="text-xs font-medium text-muted-foreground">
                 View Profile
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-4 w-4">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-                </svg>
               </p>
             </div>
           </div>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-chevrons-up-down"
+          >
+            <path d="m7 15 5 5 5-5" />
+            <path d="m7 9 5-5 5 5" />
+          </svg>
         </button>
         <!-- User menu -->
-        <div id="dropdownUserMenu" class="z-10 hidden bg-white divide-y divide-gray-100 border border-gray-200 rounded-lg shadow-sm w-44">
-          <ul class="py-2 text-sm text-gray-700" aria-labelledby="dropdownInformdropdownUserMenuButtonationButton">
+        <div
+          id="dropdownUserMenu"
+          class="z-10 hidden divide-y bg-popover border rounded-lg shadow-sm w-44"
+        >
+          <ul
+            class="py-2 text-sm"
+            aria-labelledby="dropdownInformdropdownUserMenuButtonationButton"
+          >
             <li>
-              <a href="{% url 'admin_index' %}" class="block px-4 py-2 hover:bg-gray-100">Dashboard</a>
+              <a
+                href="{% url 'admin_index' %}"
+                class="block px-4 py-2 hover:bg-muted"
+                >Dashboard</a
+              >
             </li>
             <li>
-              <a href="{% url 'admin_profile' %}" class="block px-4 py-2 hover:bg-gray-100">Settings</a>
+              <a
+                href="{% url 'admin_profile' %}"
+                class="block px-4 py-2 hover:bg-muted"
+                >Settings</a
+              >
+            </li>
+            <li>
+              <button
+                id="doubleDropdownButton"
+                data-dropdown-toggle="doubleDropdown"
+                data-dropdown-placement="right-start"
+                type="button"
+                class="flex items-center justify-between w-full px-4 py-2 hover:bg-muted"
+              >
+                Theme<svg
+                  class="w-2.5 h-2.5 ms-3 rtl:rotate-180"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 6 10"
+                >
+                  <path
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="m1 9 4-4-4-4"
+                  />
+                </svg>
+              </button>
+              <div
+                id="doubleDropdown"
+                class="z-10 hidden bg-popover border divide-y rounded-lg shadow-sm w-44"
+              >
+                <ul
+                  class="py-2 text-sm"
+                  aria-labelledby="doubleDropdownButton"
+                >
+                  <li>
+                    <button type="button" data-theme-toggle="light" class="block w-full text-start px-4 py-2 hover:bg-muted">Light</button>
+                  </li>
+                  <li>
+                    <button type="button" data-theme-toggle="dark" class="block w-full text-start px-4 py-2 hover:bg-muted">Dark</button>
+                  </li>
+                  <li>
+                    <button type="button" data-theme-toggle="system" class="block w-full text-start px-4 py-2 hover:bg-muted">System</button>
+                  </li>
+                </ul>
+              </div>
             </li>
           </ul>
           <div class="py-2">
-            <a href="{% url 'admin_sign_out' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Logout</a>
+            <a
+              href="{% url 'admin_sign_out' %}"
+              class="block px-4 py-2 text-sm hover:bg-muted"
+              >Logout</a
+            >
           </div>
         </div>
       </div>

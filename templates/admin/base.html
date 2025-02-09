@@ -1,13 +1,16 @@
-{% load static %}
-{% load static tailwind_tags %}
+{% load static %} {% load static tailwind_tags %}
 <!DOCTYPE html>
-<html lang="en" class="h-full bg-gray-100">
+<html lang="en" class="h-full bg-neutral-950">
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     {% tailwind_css %}
-    <link rel="icon" type="image/svg+xml" href="{% static 'admin/svg/favicon.svg' %}" />
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="{% static 'admin/svg/favicon.svg' %}"
+    />
     <script src="{% static 'admin/js/htmx.min.js' %}" defer></script>
     <title>WebVirtCloud — Admin Dashboard</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -16,6 +19,39 @@
       href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
+    <script>
+      const theme = localStorage.getItem("theme") || "system";
+      const prefersQuery = window.matchMedia("(prefers-color-scheme: dark)");
+      const root = document.documentElement;
+
+      function setTheme(theme) {
+        root.setAttribute("data-theme", theme);
+      }
+
+      prefersQuery.addEventListener("change", (e) => {
+        if (
+          localStorage.getItem("theme") === "system" ||
+          !localStorage.getItem("theme")
+        ) {
+          setTheme(e.matches ? "dark" : "light");
+        }
+      });
+
+      if (theme === "system" || !theme) {
+        setTheme(prefersQuery.matches ? "dark" : "light");
+      } else {
+        setTheme(theme);
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const toggleEls = document.querySelectorAll('[data-theme-toggle]');
+        toggleEls.forEach((el) => el.addEventListener('click', () => {
+          const newTheme = el.getAttribute('data-theme-toggle');
+          setTheme(newTheme);
+          localStorage.setItem("theme", newTheme);
+        }))
+      });
+    </script>
   </head>
   <body class="h-full overflow-hidden">
     <div class="flex h-full">

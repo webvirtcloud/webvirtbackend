@@ -1,7 +1,7 @@
 {% extends "admin/base.html" %} {% block content %}
 <div class="space-y-4">
   <a href="{% url 'admin_virtance_index' %}"
-    class="inline-flex items-center text-sm p-2 bg-gray-100 rounded-md space-x-2 hover:bg-gray-200"><svg
+    class="inline-flex items-center text-sm p-2 bg-muted rounded-md space-x-2"><svg
       xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
       class="w-5 h-5">
       <path stroke-linecap="round" stroke-linejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
@@ -14,7 +14,7 @@
   <div class="flex justify-between items-center">
     <div>
       <div class="flex items-center gap-2">
-        <h3 class="text-2xl font-semibold leading-6 text-gray-900">
+        <h3 class="text-2xl font-semibold leading-6">
           {% if virtance.type == virtance.VIRTANCE %}Virtance
           {% elif virtance.type == virtance.LBAAS %}LBaaS
           {% elif virtance.type == virtance.DBAAS %}DBaaS
@@ -61,7 +61,7 @@
           >
             {% csrf_token %}
             <button
-              class="flex items-center justify-center gap-1 rounded-md bg-gray-200 py-0.5 px-1.5 text-center text-xs font-semibold shadow-sm hover:bg-gray-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
+              class="flex items-center justify-center gap-1 rounded-md bg-muted py-0.5 px-1.5 text-center text-xs font-semibold shadow-sm hover:bg-muted/50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
               name="reset"
               type="submit"
             >
@@ -218,17 +218,17 @@
   </div>
   
   <div class="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-4">
-    <div class="overflow-hidden bg-white shadow sm:rounded-lg">
+    <div class="overflow-hidden bg-card border shadow-sm sm:rounded-lg">
       <div class="px-4 py-5 sm:px-6">
           <h2 class="mb-4 font-semibold text-lg">Info</h2>
           <div class="space-y-2">
             <div class="flex items-center justify-between">
               <dt class="text-sm font-medium text-gray-500">ID</dt>
-              <dd class="mt-1 text-sm text-gray-900">{{ virtance.id }}</dd>
+              <dd class="mt-1 text-sm">{{ virtance.id }}</dd>
             </div>
             <div class="flex items-center justify-between">
               <dt class="text-sm font-medium text-gray-500">User</dt>
-              <dd class="mt-1 text-sm text-gray-900">
+              <dd class="mt-1 text-sm">
                 <a
                   class="text-blue-600 hover:text-blue-900"
                   href="{% url 'admin_user_data' virtance.user.id %}"
@@ -238,11 +238,11 @@
             </div>
             <div class="flex items-center justify-between">
               <dt class="text-sm font-medium text-gray-500">Locked</dt>
-              <dd class="mt-1 text-sm text-gray-900">{{ virtance.is_locked }}</dd>
+              <dd class="mt-1 text-sm">{{ virtance.is_locked }}</dd>
             </div>
             <div class="flex items-center justify-between">
               <dt class="text-sm font-medium text-gray-500">Compute</dt>
-              <dd class="mt-1 text-sm text-gray-900">
+              <dd class="mt-1 text-sm">
                 {% if virtance.compute %}<a
                   class="text-blue-600 hover:text-blue-900"
                   href="{% url 'admin_compute_overview' virtance.compute.id %}"
@@ -253,56 +253,56 @@
           </div>
       </div>
     </div>
-    <div class="overflow-hidden bg-white shadow sm:rounded-lg">
+    <div class="overflow-hidden bg-card border shadow-sm sm:rounded-lg">
       <div class="px-4 py-5 sm:px-6">
           <h2 class="mb-4 font-semibold text-lg">Image</h2>
           <div class="space-y-2">
             <div class="flex items-center justify-between">
               <dt class="text-sm font-medium text-gray-500">Disk</dt>
-              <dd class="mt-1 text-sm text-gray-900">{{ virtance.disk|filesizeformat }}</dd>
+              <dd class="mt-1 text-sm">{{ virtance.disk|filesizeformat }}</dd>
             </div>
             <div class="flex items-center justify-between">
               <dt class="text-sm font-medium text-gray-500">Size</dt>
-              <dd class="mt-1 text-sm text-gray-900">{{ virtance.size.slug }}</dd>
+              <dd class="mt-1 text-sm">{{ virtance.size.slug }}</dd>
             </div>
             <div class="flex items-center justify-between">
               <dt class="text-sm font-medium text-gray-500">Template</dt>
-              <dd class="mt-1 text-sm text-gray-900">
+              <dd class="mt-1 text-sm">
                 {{ virtance.template.description }}
               </dd>
             </div>
             <div class="flex items-center justify-between">
               <dt class="text-sm font-medium text-gray-500">Deployed</dt>
-              <dd class="mt-1 text-sm text-gray-900">
+              <dd class="mt-1 text-sm">
                 {{ virtance.created }}
               </dd>
             </div>
           </div>
       </div>
     </div>
-    <div class="overflow-hidden bg-white shadow sm:rounded-lg">
+    <div class="overflow-hidden bg-card border shadow-sm sm:rounded-lg">
       <div class="px-4 py-5 sm:px-6">
           <h2 class="mb-4 font-semibold text-lg">Network</h2>
           <div class="space-y-2">
             <div class="flex items-center justify-between">
               <dt class="text-sm font-medium text-gray-500">Region</dt>
-              <dd class="mt-1 text-sm text-gray-900">{{ virtance.region.name }}</dd>
+              <dd class="mt-1 text-sm">{{ virtance.region.name }}</dd>
             </div>
             <div class="flex items-center justify-between">
               <dt class="text-sm font-medium text-gray-500">IPv4 Public</dt>
-              <dd class="mt-1 text-sm text-gray-900">
+              <dd class="mt-1 text-sm">
                 {{ ipv4public.address }}/{{ ipv4public.network.netmask }}
               </dd>
             </div>
             <div class="flex items-center justify-between">
               <dt class="text-sm font-medium text-gray-500">IPv4 Private</dt>
-              <dd class="mt-1 text-sm text-gray-900">
+              <dd class="mt-1 text-sm">
                 {{ ipv4private.address }}/{{ ipv4private.network.netmask }}
               </dd>
             </div>
             <div class="flex items-center justify-between">
               <dt class="text-sm font-medium text-gray-500">IPv4 Compute</dt>
-              <dd class="mt-1 text-sm text-gray-900">
+              <dd class="mt-1 text-sm">
                 {{ ipv4compute.address }}/{{ ipv4compute.network.netmask }}
               </dd>
             </div>
@@ -321,25 +321,25 @@
           <tr>
             <th
               scope="col"
-              class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+              class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold sm:pl-6"
             >
               #
             </th>
             <th
               scope="col"
-              class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              class="px-3 py-3.5 text-left text-sm font-semibold"
             >
               Event
             </th>
             <th
               scope="col"
-              class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              class="px-3 py-3.5 text-left text-sm font-semibold"
             >
               Message
             </th>
             <th
               scope="col"
-              class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              class="px-3 py-3.5 text-left text-sm font-semibold"
             >
               Created
             </th>
@@ -350,7 +350,7 @@
             {% for error in virtance_errors %}
             <tr>
               <td
-                class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
+                class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-6"
               >
                 {{ forloop.counter }}
               </td>

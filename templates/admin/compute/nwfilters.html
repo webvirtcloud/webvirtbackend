@@ -19,7 +19,7 @@
           <tr>
             <th
               scope="col"
-              class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+              class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold sm:pl-6"
             >
               Name
             </th>
@@ -32,7 +32,7 @@
           {% for nwfilter in nwfilters %}
           <tr>
             <td
-              class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
+              class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-6"
             >
             <a
               href="{% url 'admin_compute_nwfilter' compute.id nwfilter.name %}"
