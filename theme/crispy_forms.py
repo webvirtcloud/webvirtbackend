@@ -1,5 +1,5 @@
-custom_crispy_field_styles = {
-    "textinput": "form-control",
+webvirtcloud_crispy_class_converters = {
+    "textinput": "form-control 1111",
     "passwordinput": "form-control",
     "emailinput": "form-control",
     "urlinput": "form-control",
