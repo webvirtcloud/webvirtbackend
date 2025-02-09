@@ -47,6 +47,11 @@
         const toggleEls = document.querySelectorAll('[data-theme-toggle]');
         toggleEls.forEach((el) => el.addEventListener('click', () => {
           const newTheme = el.getAttribute('data-theme-toggle');
+          if (newTheme === 'system') {
+            setTheme(prefersQuery.matches ? "dark" : "light");
+            localStorage.setItem("theme", newTheme);
+            return;
+          }
           setTheme(newTheme);
           localStorage.setItem("theme", newTheme);
         }))
