@@ -1,0 +1,18 @@
+custom_crispy_field_styles = {
+    "textinput": "form-control",
+    "passwordinput": "form-control",
+    "emailinput": "form-control",
+    "urlinput": "form-control",
+    "numberinput": "form-control",
+    "dateinput": "form-control",
+    "textarea": "form-control",
+    "radioset": "form-check",
+    "checkboxinput": "form-check-input",
+    "checkboxselectmultiple": "form-check",
+    "radioselect": "form-check",
+    "fileinput": "form-control",
+    "select": "form-select",
+    "selectmultiple": "form-select",
+    "password": "form-control",
+    "hidden": "form-control",
+}
