@@ -5,7 +5,7 @@ Django settings for webvirtcloud project.
 import os
 from pathlib import Path
 from celery.schedules import crontab
-from theme.crispy_forms import webvirtcloud_crispy_class_converters
+from theme.crispy_forms import WEBVIRTCLOUD_CRISPY_CLASS_CONVERTERS
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -193,7 +193,7 @@ LOGIN_REDIRECT_URL = "/admin/"
 # Crispy forms
 CRISPY_TEMPLATE_PACK = "webvirtcloud"
 CRISPY_ALLOWED_TEMPLATE_PACKS = ("webvirtcloud",)
-CRISPY_CLASS_CONVERTERS = webvirtcloud_crispy_class_converters
+CRISPY_CLASS_CONVERTERS = WEBVIRTCLOUD_CRISPY_CLASS_CONVERTERS
 
 # Tailwind settings
 TAILWIND_APP_NAME = "theme"

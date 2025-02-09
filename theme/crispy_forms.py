@@ -1,18 +1,20 @@
-webvirtcloud_crispy_class_converters = {
-    "textinput": "form-control 1111",
-    "passwordinput": "form-control",
-    "emailinput": "form-control",
-    "urlinput": "form-control",
-    "numberinput": "form-control",
-    "dateinput": "form-control",
-    "textarea": "form-control",
+base_class = "form-control"
+
+WEBVIRTCLOUD_CRISPY_CLASS_CONVERTERS = {
+    "textinput": f"{base_class} test-class",
+    "passwordinput": base_class,
+    "emailinput": base_class,
+    "urlinput": base_class,
+    "fileinput": base_class,
+    "numberinput": base_class,
+    "dateinput": base_class,
+    "textarea": base_class,
+    "password": base_class,
+    "hidden": base_class,
     "radioset": "form-check",
     "checkboxinput": "form-check-input",
     "checkboxselectmultiple": "form-check",
     "radioselect": "form-check",
-    "fileinput": "form-control",
     "select": "form-select",
     "selectmultiple": "form-select",
-    "password": "form-control",
-    "hidden": "form-control",
 }
