@@ -2,13 +2,68 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  :root {
+    --background: 0 0% 97%;
+    --foreground: 222.2 47.4% 11.2%;
+    --muted: 210 0% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 47.4% 11.2%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 47.4% 11.2%;
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 100% 50%;
+    --destructive-foreground: 210 40% 98%;
+    --ring: 215 20.2% 65.1%;
+    --radius: 0.5rem;
+    --sidebar: 0 0% 100%;
+  }
+
+  [data-theme="dark"] {
+    --background: 220 0% 5%;
+    --foreground: 213 31% 91%;
+    --muted: 220 0% 15%;
+    --muted-foreground: 215.4 0% 56.9%;
+    --accent: 216 34% 17%;
+    --accent-foreground: 210 40% 98%;
+    --popover: 224 0% 6%;
+    --popover-foreground: 215 20.2% 65.1%;
+    --border: 220 0% 17%;
+    --input: 216 0% 7%;
+    --card: 224 0% 7%;
+    --card-foreground: 213 31% 91%;
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 1.2%;
+    --secondary: 222.2 47.4% 11.2%;
+    --secondary-foreground: 210 40% 98%;
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 210 40% 98%;
+    --ring: 216 34% 17%;
+
+    --sidebar: 0 0% 8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+  }
+}
+
 @layer components {
   .table-container {
-    --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-    --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color),
-      0 1px 2px -1px var(--tw-shadow-color);
-    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
-      var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+    @apply shadow-sm border;
     overflow: hidden;
     border-radius: 0.5rem;
   }
@@ -30,17 +85,11 @@
   }
 
   .table-container table > thead {
-    --tw-bg-opacity: 1;
-    background-color: rgb(249 250 251 / var(--tw-bg-opacity, 1));
+    @apply bg-muted/50 text-muted-foreground border-b;
     text-align: left;
     font-size: 0.75rem;
     line-height: 1rem;
     text-transform: uppercase;
-    --tw-text-opacity: 1;
-    color: rgb(64 64 64 / var(--tw-text-opacity));
-    --tw-divide-opacity: 1;
-    border-color: rgb(209 213 219 / var(--tw-divide-opacity, 1));
-    border-bottom-width: 1px;
   }
 
   .table-container table > thead > tr > th {
@@ -48,23 +97,21 @@
     padding: 0.75rem;
     font-weight: 600;
   }
+  
+  .table-container table > tbody > tr {
+    @apply hover:bg-muted/50;
+  }
 
   .table-container table > tbody > tr:not(:last-child) {
-    border-bottom-width: 1px;
-    --tw-border-opacity: 1;
-    border-color: rgb(245 245 245 / var(--tw-border-opacity));
+    @apply border-b border-border/50;
   }
 
   .table-container table > tbody > tr > td {
-    white-space: nowrap;
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-    padding-left: 0.75rem;
-    padding-right: 0.75rem;
+    @apply whitespace-nowrap p-3;
   }
 
   .table-container table > tbody {
-    background-color: white;
+    @apply bg-white dark:bg-background;
   }
 
   .table-container > nav > ul {
@@ -199,29 +246,7 @@
   }
 
   .input {
-    display: block;
-    height: 2.5rem;
-    width: 100%;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    border-radius: 0.5rem;
-    border-width: 1px;
-    border-color: rgb(212 212 212 / var(--tw-border-opacity));
-    --tw-border-opacity: 1;
-    border-color: rgb(209 213 219 / var(--tw-border-opacity));
-    background-color: rgb(250 250 250 / var(--tw-bg-opacity));
-    --tw-bg-opacity: 1;
-    background-color: rgb(255 255 255 / var(--tw-bg-opacity));
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
-    padding-left: 1rem;
-    padding-right: 1rem;
-    line-height: 1.5;
-    --tw-text-opacity: 1;
-    color: rgb(55 65 81 / var(--tw-text-opacity));
-    outline: 2px solid transparent;
-    outline-offset: 2px;
+    @apply appearance-none bg-input border !border-border rounded-md;
   }
 
   .input:focus {

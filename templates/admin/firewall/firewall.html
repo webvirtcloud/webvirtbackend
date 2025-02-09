@@ -1,7 +1,7 @@
 {% extends "admin/base.html" %} {% block content %}
 <div class="space-y-4">
   <a href="{% url 'admin_firewall_index' %}"
-    class="inline-flex items-center text-sm p-2 bg-gray-100 rounded-md space-x-2 hover:bg-gray-200"><svg
+    class="inline-flex items-center text-sm p-2 bg-muted rounded-md space-x-2"><svg
       xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
       class="w-5 h-5">
       <path stroke-linecap="round" stroke-linejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
@@ -11,7 +11,7 @@
 
   <h2 class="text-2xl font-medium mb-4">Firewall</h2>
 
-  <div class="overflow-hidden bg-white shadow sm:rounded-lg">
+  <div class="overflow-hidden bg-card border shadow-sm sm:rounded-lg">
     <div class="px-4 py-5 sm:px-6">
       
       {% include 'admin/alerts.html' %}
@@ -19,7 +19,7 @@
       <div class="flex justify-between items-center">
         <div class="flex items-center gap-2">
           <div>
-            <p class="font-semibold leading-6 text-gray-900">
+            <p class="font-semibold leading-6">
               {{ firewall.name }}
             </p>
           </div>
@@ -56,7 +56,7 @@
             >
               {% csrf_token %}
               <button
-                class="flex items-center justify-center gap-1 rounded-md bg-gray-200 py-0.5 px-1.5 text-center text-xs font-semibold shadow-sm hover:bg-gray-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
+                class="flex items-center justify-center gap-1 rounded-md bg-muted py-0.5 px-1.5 text-center text-xs font-semibold shadow-sm hover:bg-muted/50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
                 name="reset"
                 type="submit"
               >
@@ -87,15 +87,15 @@
       >
         <div class="sm:col-span-1">
           <dt class="text-sm font-medium text-gray-500">ID</dt>
-          <dd class="mt-1 text-sm text-gray-900">{{ firewall.id }}</dd>
+          <dd class="mt-1 text-sm">{{ firewall.id }}</dd>
         </div>
         <div class="sm:col-span-1">
           <dt class="text-sm font-medium text-gray-500">UUID</dt>
-          <dd class="mt-1 text-sm text-gray-900">{{ firewall.uuid }}</dd>
+          <dd class="mt-1 text-sm">{{ firewall.uuid }}</dd>
         </div>
         <div class="sm:col-span-1">
           <dt class="text-sm font-medium text-gray-500">User</dt>
-          <dd class="mt-1 text-sm text-gray-900">
+          <dd class="mt-1 text-sm">
             <a
               class="text-blue-600 hover:text-blue-900"
               href="{% url 'admin_user_data' firewall.user.id %}"
@@ -105,19 +105,19 @@
         </div>
         <div class="sm:col-span-1">
           <dt class="text-sm font-medium text-gray-500">Rules</dt>
-          <dd class="mt-1 text-sm text-gray-900">
+          <dd class="mt-1 text-sm">
             {{ rules|length }}
           </dd>
         </div>
         <div class="sm:col-span-1">
           <dt class="text-sm font-medium text-gray-500">Virtances</dt>
-          <dd class="mt-1 text-sm text-gray-900">
+          <dd class="mt-1 text-sm">
             {{ virtances|length }}
           </dd>
         </div>
         <div class="sm:col-span-1">
           <dt class="text-sm font-medium text-gray-500">Created</dt>
-          <dd class="mt-1 text-sm text-gray-900">{{ firewall.created }}</dd>
+          <dd class="mt-1 text-sm">{{ firewall.created }}</dd>
         </div>
       </dl>
     </div>
@@ -133,43 +133,43 @@
           <tr>
             <th
               scope="col"
-              class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+              class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold sm:pl-6"
             >
               #
             </th>
             <th
               scope="col"
-              class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              class="px-3 py-3.5 text-left text-sm font-semibold"
             >
               Direction
             </th>
             <th
               scope="col"
-              class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              class="px-3 py-3.5 text-left text-sm font-semibold"
             >
               Protocol
             </th>
             <th
               scope="col"
-              class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              class="px-3 py-3.5 text-left text-sm font-semibold"
             >
               Ports
             </th>
             <th
               scope="col"
-              class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              class="px-3 py-3.5 text-left text-sm font-semibold"
             >
               Action
             </th>
             <th
               scope="col"
-              class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              class="px-3 py-3.5 text-left text-sm font-semibold"
             > 
               Type
             </th>            
             <th
               scope="col"
-              class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              class="px-3 py-3.5 text-left text-sm font-semibold"
             >
               Created
             </th>
@@ -179,7 +179,7 @@
           {% for rule in rules %}
           <tr>
             <td
-              class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
+              class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-6"
             >
               {{ forloop.counter }}
             </td>
@@ -230,19 +230,19 @@
           <tr>
             <th
               scope="col"
-              class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+              class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold sm:pl-6"
             >
               #
             </th>
             <th
               scope="col"
-              class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              class="px-3 py-3.5 text-left text-sm font-semibold"
             >
               ID
             </th>       
             <th
               scope="col"
-              class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              class="px-3 py-3.5 text-left text-sm font-semibold"
             >
               Attached
             </th>
@@ -252,7 +252,7 @@
           {% for f_v in virtances %}
           <tr>
             <td
-              class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
+              class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-6"
             >
               {{ forloop.counter }}
             </td>
@@ -283,25 +283,25 @@
           <tr>
             <th
               scope="col"
-              class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+              class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold sm:pl-6"
             >
               #
             </th>
             <th
               scope="col"
-              class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              class="px-3 py-3.5 text-left text-sm font-semibold"
             >
               Event
             </th>
             <th
               scope="col"
-              class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              class="px-3 py-3.5 text-left text-sm font-semibold"
             >
               Message
             </th>
             <th
               scope="col"
-              class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              class="px-3 py-3.5 text-left text-sm font-semibold"
             >
               Created
             </th>
@@ -311,7 +311,7 @@
           {% for fw in firewall_errors %}
           <tr>
             <td
-              class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
+              class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-6"
             >
               {{ forloop.counter }}
             </td>

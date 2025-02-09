@@ -5,7 +5,7 @@
 <main>
   <a
     href="{% url 'admin_compute_storages' compute.id %}"
-    class="inline-flex items-center text-sm p-2 bg-gray-100 rounded-md space-x-2 hover:bg-gray-200 mb-4"
+    class="inline-flex items-center text-sm p-2 bg-muted rounded-md space-x-2 mb-4"
     ><svg
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
@@ -24,7 +24,7 @@
   </a>
   <div class="overflow-hidden bg-white sm:rounded-lg sm:shadow mb-8">
     <div class="border-b border-gray-200 bg-white px-4 py-5 sm:px-6">
-      <h3 class="text-base font-semibold leading-6 text-gray-900">Storage</h3>
+      <h3 class="text-base font-semibold leading-6">Storage</h3>
     </div>
     <div class="grid md:grid-cols-3">
       <div class="px-4 py-4 sm:px-6">
@@ -134,19 +134,19 @@
           <tr>
             <th
               scope="col"
-              class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+              class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold sm:pl-6"
             >
               Name
             </th>
             <th
               scope="col"
-              class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+              class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold sm:pl-6"
             >
               Size
             </th>
             <th
               scope="col"
-              class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+              class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold sm:pl-6"
             >
               Type
             </th>
@@ -159,17 +159,17 @@
           {% for volume in storage_pool.volumes %}
           <tr>
             <td
-              class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
+              class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-6"
             >
               {{ volume.name }}
             </td>
             <td
-              class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
+              class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-6"
             >
               {{ volume.size|filesizeformat }}
             </td>
             <td
-              class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
+              class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-6"
             >
               {{ volume.type|upper }}
             </td>

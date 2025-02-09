@@ -2,7 +2,7 @@
 {% block content %}
 <div class="space-y-4">
   <a href="{% url 'admin_user_index' %}"
-    class="inline-flex items-center text-sm p-2 bg-gray-100 rounded-md space-x-2 hover:bg-gray-200"><svg
+    class="inline-flex items-center text-sm p-2 bg-muted rounded-md space-x-2"><svg
       xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
       class="w-5 h-5">
       <path stroke-linecap="round" stroke-linejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
@@ -32,7 +32,7 @@
 
 
 
-  <div class="text-sm font-medium text-center text-gray-500 border-b border-gray-200">
+  <div class="text-sm font-medium text-center text-muted-foreground border-b">
     <ul class="flex flex-wrap -mb-px">
       <li class="me-2">
         <a href="{% url 'admin_user_data' user.id %}" class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300"
@@ -59,31 +59,31 @@
           <tr>
             <th
               scope="col"
-              class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+              class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold sm:pl-6"
             >
               #
             </th>
             <th
               scope="col"
-              class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              class="px-3 py-3.5 text-left text-sm font-semibold"
             >
               Amount
             </th>
             <th
               scope="col"
-              class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              class="px-3 py-3.5 text-left text-sm font-semibold"
             >
               Invoice
             </th>
             <th
               scope="col"
-              class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              class="px-3 py-3.5 text-left text-sm font-semibold"
             >
               Description
             </th>
             <th
               scope="col"
-              class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              class="px-3 py-3.5 text-left text-sm font-semibold"
             >
               Created
             </th>
@@ -94,7 +94,7 @@
             {% for bal in balance %}
             <tr>
               <td
-                class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
+                class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-6"
               >
                 {{ forloop.counter }}
               </td>

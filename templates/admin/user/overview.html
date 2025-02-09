@@ -2,7 +2,7 @@
 {% block content %}
 <div class="space-y-4">
   <a href="{% url 'admin_user_index' %}"
-    class="inline-flex items-center text-sm p-2 bg-gray-100 rounded-md space-x-2 hover:bg-gray-200"><svg
+    class="inline-flex items-center text-sm p-2 bg-muted rounded-md space-x-2"><svg
       xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
       class="w-5 h-5">
       <path stroke-linecap="round" stroke-linejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
@@ -32,7 +32,7 @@
 
 
 
-  <div class="text-sm font-medium text-center text-gray-500 border-b border-gray-200">
+  <div class="text-sm font-medium text-center text-muted-foreground border-b">
     <ul class="flex flex-wrap -mb-px">
       <li class="me-2">
         <a href="#" class="inline-block p-4 text-blue-600 border-b-2 border-blue-600 rounded-t-lg active"
@@ -51,80 +51,80 @@
   </div>
 
   <div class="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-4">
-    <div class="overflow-hidden bg-white shadow sm:rounded-lg">
+    <div class="overflow-hidden bg-card border shadow-sm sm:rounded-lg">
       <div class="px-4 py-5 sm:px-6">
         <h2 class="mb-4 font-semibold text-lg">User Info</h2>
         <dl class="space-y-2">
           <div class="flex items-center justify-between gap-x-8">
             <dt class="text-sm font-medium text-gray-500">ID</dt>
-            <dd class="mt-1 text-sm text-gray-900">{{ user.id }}</dd>
+            <dd class="mt-1 text-sm">{{ user.id }}</dd>
           </div>
           <div class="flex items-center justify-between gap-x-8">
             <dt class="text-sm font-medium text-gray-500">Firtname</dt>
-            <dd class="mt-1 text-sm text-gray-900">{{ user.first_name }}</dd>
+            <dd class="mt-1 text-sm">{{ user.first_name }}</dd>
           </div>
           <div class="flex items-center justify-between gap-x-8">
             <dt class="text-sm font-medium text-gray-500">Lastname</dt>
-            <dd class="mt-1 text-sm text-gray-900">{{ user.last_name }}</dd>
+            <dd class="mt-1 text-sm">{{ user.last_name }}</dd>
           </div>
           <div class="flex items-center justify-between gap-x-8">
             <dt class="text-sm font-medium text-gray-500">Created</dt>
-            <dd class="mt-1 text-sm text-gray-900">{{ user.created }}</dd>
+            <dd class="mt-1 text-sm">{{ user.created }}</dd>
           </div>
           <div class="flex items-center justify-between gap-x-8">
             <dt class="text-sm font-medium text-gray-500">Updated</dt>
-            <dd class="mt-1 text-sm text-gray-900">{{ user.updated }}</dd>
+            <dd class="mt-1 text-sm">{{ user.updated }}</dd>
           </div>
         </dl>
       </div>
     </div>
-    <div class="overflow-hidden flex flex-col justify-between bg-white shadow sm:rounded-lg">
+    <div class="overflow-hidden flex flex-col justify-between bg-card shadow-sm border sm:rounded-lg">
       <div class="px-4 py-5 sm:px-6">
         <h2 class="mb-4 font-semibold text-lg">Billing</h2>
         <dl class="space-y-2">
           <div class="flex items-center justify-between gap-x-8">
             <dt class="text-sm font-medium text-gray-500">Account balance</dt>
-            <dd class="mt-1 text-sm text-gray-900">${{ balance|floatformat:-2 }}</dd>
+            <dd class="mt-1 text-sm">${{ balance|floatformat:-2 }}</dd>
           </div>
           <div class="flex items-center justify-between gap-x-8">
             <dt class="text-sm font-medium text-gray-500">Current usage</dt>
-            <dd class="mt-1 text-sm text-gray-900">${{ month_to_date_usage|floatformat:-2 }}</dd>
+            <dd class="mt-1 text-sm">${{ month_to_date_usage|floatformat:-2 }}</dd>
           </div>
           <div class="flex items-center justify-between gap-x-8">
             <dt class="text-sm font-medium text-gray-500">Current balance</dt>
-            <dd class="mt-1 text-sm text-gray-900">${{ get_month_to_date_balance|floatformat:-2 }}</dd>
+            <dd class="mt-1 text-sm">${{ get_month_to_date_balance|floatformat:-2 }}</dd>
           </div>
         </dl>
       </div>
       <div class="px-4 py-5 sm:px-6">
-        <a href="{% url 'admin_user_billing' user.id %}" class="block rounded-md bg-gray-100 py-2 px-3 text-center text-sm font-semibold hover:bg-gray-200">
+        <a href="{% url 'admin_user_billing' user.id %}" class="block rounded-md bg-muted py-2 px-3 text-center text-sm font-semibold">
           See billing history</a>
       </div>
     </div>
-    <div class="overflow-hidden flex flex-col justify-between bg-white shadow sm:rounded-lg">
+    <div class="overflow-hidden flex flex-col justify-between bg-card shadow-sm border sm:rounded-lg">
       <div class="px-4 py-5 sm:px-6">
         <h2 class="mb-4 font-semibold text-lg">Services</h2>
         <dl class="space-y-2">
           <div class="flex items-center justify-between gap-x-8">
             <dt class="text-sm font-medium text-gray-500">Virtances</dt>
-            <dd class="mt-1 text-sm text-gray-900">{{ virtances_len }}</dd>
+            <dd class="mt-1 text-sm">{{ virtances_len }}</dd>
           </div>
           <div class="flex items-center justify-between gap-x-8">
             <dt class="text-sm font-medium text-gray-500">Firewalls</dt>
-            <dd class="mt-1 text-sm text-gray-900">{{ firewalls_len }}</dd>
+            <dd class="mt-1 text-sm">{{ firewalls_len }}</dd>
           </div>
           <div class="flex items-center justify-between gap-x-8">
             <dt class="text-sm font-medium text-gray-500">Floating IPs</dt>
-            <dd class="mt-1 text-sm text-gray-900">{{ floating_ips_len }}</dd>
+            <dd class="mt-1 text-sm">{{ floating_ips_len }}</dd>
           </div>
           <div class="flex items-center justify-between gap-x-8">
             <dt class="text-sm font-medium text-gray-500">Images</dt>
-            <dd class="mt-1 text-sm text-gray-900">{{ snapshots_len }}</dd>
+            <dd class="mt-1 text-sm">{{ snapshots_len }}</dd>
           </div>
         </dl>
       </div>
       <div class="px-4 py-5 sm:px-6">
-        <a href="#" class="block rounded-md bg-gray-100 py-2 px-3 text-center text-sm font-semibold hover:bg-gray-200">
+        <a href="#" class="block rounded-md bg-muted py-2 px-3 text-center text-sm font-semibold">
           See actions history</a>
       </div>
     </div>
