@@ -1,0 +1,40 @@
+<script>
+  const theme = localStorage.getItem("theme") || "system";
+  const prefersQuery = window.matchMedia("(prefers-color-scheme: dark)");
+  const root = document.documentElement;
+
+  function setTheme(theme) {
+    root.setAttribute("data-theme", theme);
+  }
+
+  prefersQuery.addEventListener("change", (e) => {
+    if (
+      localStorage.getItem("theme") === "system" ||
+      !localStorage.getItem("theme")
+    ) {
+      setTheme(e.matches ? "dark" : "light");
+    }
+  });
+
+  if (theme === "system" || !theme) {
+    setTheme(prefersQuery.matches ? "dark" : "light");
+  } else {
+    setTheme(theme);
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const toggleEls = document.querySelectorAll("[data-theme-toggle]");
+    toggleEls.forEach((el) =>
+      el.addEventListener("click", () => {
+        const newTheme = el.getAttribute("data-theme-toggle");
+        if (newTheme === "system") {
+          setTheme(prefersQuery.matches ? "dark" : "light");
+          localStorage.setItem("theme", newTheme);
+          return;
+        }
+        setTheme(newTheme);
+        localStorage.setItem("theme", newTheme);
+      })
+    );
+  });
+</script>

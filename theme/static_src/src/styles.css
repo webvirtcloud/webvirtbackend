@@ -11,7 +11,7 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 47.4% 11.2%;
     --border: 214.3 31.8% 91.4%;
-    --input: 0 0% 100%;
+    --input: 240 4.9% 83.9%;
     --card: 0 0% 100%;
     --card-foreground: 222.2 47.4% 11.2%;
     --primary: 222.2 47.4% 11.2%;
@@ -22,7 +22,7 @@
     --accent-foreground: 222.2 47.4% 11.2%;
     --destructive: 0 100% 50%;
     --destructive-foreground: 210 40% 98%;
-    --ring: 215 20.2% 65.1%;
+    --ring: 220 0% 85.1%;
     --radius: 0.5rem;
     --sidebar: 0 0% 100%;
   }
@@ -37,7 +37,7 @@
     --popover: 224 0% 6%;
     --popover-foreground: 215 20.2% 65.1%;
     --border: 220 0% 17%;
-    --input: 216 0% 7%;
+    --input: 0 0% 16.9%;
     --card: 224 0% 7%;
     --card-foreground: 213 31% 91%;
     --primary: 210 40% 98%;
@@ -46,7 +46,7 @@
     --secondary-foreground: 210 40% 98%;
     --destructive: 0 63% 31%;
     --destructive-foreground: 210 40% 98%;
-    --ring: 216 34% 17%;
+    --ring: 0 0% 25%;
 
     --sidebar: 0 0% 8%;
   }
@@ -58,6 +58,18 @@
   }
   body {
     @apply font-sans antialiased bg-background text-foreground;
+  }
+
+  [type='checkbox'], [type='radio'] {
+    @apply w-5 h-5 border-input bg-transparent;
+  }
+  
+  [type='checkbox']:focus, [type='radio']:focus {
+    @apply ring-offset-background;
+  }
+
+  [type='checkbox'] {
+    @apply rounded;
   }
 }
 
@@ -97,7 +109,7 @@
     padding: 0.75rem;
     font-weight: 600;
   }
-  
+
   .table-container table > tbody > tr {
     @apply hover:bg-muted/50;
   }
@@ -245,11 +257,8 @@
     }
   }
 
-  .input {
-    @apply appearance-none bg-input border !border-border rounded-md;
-  }
-
-  .input:focus {
+  .search-input {
+    @apply appearance-none h-9 bg-background border !border-input shadow-sm shadow-black/5 rounded-lg focus-visible:border-ring focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50;
   }
 
   @media (min-width: 640px) {
@@ -258,4 +267,10 @@
       line-height: 1.25rem;
     }
   }
+}
+
+@layer components {
+}
+.textinput {
+  @apply flex h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground shadow-sm shadow-black/5 transition-shadow placeholder:text-muted-foreground/70 focus-visible:border-ring focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50;
 }

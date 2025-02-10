@@ -1,15 +1,15 @@
-base_class = "form-control"
+base_class = "textinput"
 
 WEBVIRTCLOUD_CRISPY_CLASS_CONVERTERS = {
-    "textinput": f"{base_class} test-class",
+    "textinput": "textinput",
     "passwordinput": base_class,
-    "emailinput": base_class,
+    "emailinput": 'textinput',
     "urlinput": base_class,
     "fileinput": base_class,
-    "numberinput": base_class,
+    "numberinput": 'textinput',
     "dateinput": base_class,
     "textarea": base_class,
-    "password": base_class,
+    "password": 'textinput',
     "hidden": base_class,
     "radioset": "form-check",
     "checkboxinput": "form-check-input",

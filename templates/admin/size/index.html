@@ -12,7 +12,7 @@
           <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
         </svg>
       </div>
-      <input name="query" hx-get="{% url 'admin_size_index' %}" hx-trigger="keyup changed delay:500ms" hx-target="div.table-container" hx-swap="outerHTML" hx-indicator=".progress" type="text" class="input" placeholder="Search...">
+      <input name="query" hx-get="{% url 'admin_size_index' %}" hx-trigger="keyup changed delay:500ms" hx-target="div.table-container" hx-swap="outerHTML" hx-indicator=".progress" type="text" class="search-input" placeholder="Search...">
     </div>
     <a
       href="{% url 'admin_size_create' %}"
