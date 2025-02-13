@@ -62,7 +62,7 @@ class AdminSizeUpdateView(AdminUpdateView):
             "memory",
             "transfer",
             "price",
-            InlineCheckboxes("regions", css_class="checkboxinput"),
+            InlineCheckboxes("regions"),
             "is_active",
         )
 

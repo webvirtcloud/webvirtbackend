@@ -65,7 +65,7 @@ class AdminTemplateUpdateView(AdminUpdateView):
             "distribution",
             "arch",
             "file_name",
-            InlineCheckboxes("regions", css_class="checkboxinput"),
+            InlineCheckboxes("regions"),
             "is_active",
         )
 

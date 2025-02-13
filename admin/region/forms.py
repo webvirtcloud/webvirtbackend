@@ -23,9 +23,7 @@ class FormRegion(forms.ModelForm):
         )
         self.helper = FormHelper(self)
         self.helper.form_tag = False
-        self.helper.layout = Layout(
-            "name", "slug", "description", InlineCheckboxes("features", css_class="checkboxinput")
-        )
+        self.helper.layout = Layout("name", "slug", "description", InlineCheckboxes("features"))
 
     class Meta:
         model = Region

@@ -54,7 +54,7 @@ class AdminRegionUpdateView(AdminUpdateView):
             "slug",
             "description",
             "is_active",
-            InlineCheckboxes("features", css_class="checkboxinput"),
+            InlineCheckboxes("features"),
         )
 
     def get_form(self, form_class=None):

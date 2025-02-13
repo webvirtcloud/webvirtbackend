@@ -32,7 +32,7 @@ class FormSize(forms.ModelForm):
             "type",
             "transfer",
             "price",
-            InlineCheckboxes("regions", css_class="checkboxinput"),
+            InlineCheckboxes("regions"),
         )
 
     class Meta:

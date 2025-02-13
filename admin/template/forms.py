@@ -36,7 +36,7 @@ class FormTemplate(forms.ModelForm):
             "distribution",
             "arch",
             "file_name",
-            InlineCheckboxes("regions", css_class="checkboxinput"),
+            InlineCheckboxes("regions"),
         )
 
     class Meta:
