@@ -16,22 +16,22 @@
     {% if field|is_select %}
         <div class="{% if field_class %}{{ field_class }}{% else %}mb-3{% endif %}"{% if flat_attrs %} {{ flat_attrs|safe }}{% endif %}>
 
-        {% include 'tailwind/layout/select.html' %}
+        {% include 'webvirtcloud/layout/select.html' %}
     {% elif field|is_radioselect %}
         <div class="{% if field_class %}{{ field_class }}{% else %}mb-3{% endif %}"{% if flat_attrs %} {{ flat_attrs|safe }}{% endif %}>
 
-        {% include 'tailwind/layout/radioselect.html' %}
+        {% include 'webvirtcloud/layout/radioselect.html' %}
     {% elif field|is_checkboxselectmultiple %}
 
         <div class="{% if field_class %}{{ field_class }}{% else %}mb-3{% endif %}"{% if flat_attrs %} {{ flat_attrs|safe }}{% endif %}>
-        {% include 'tailwind/layout/checkboxselectmultiple.html' %}
+        {% include 'webvirtcloud/layout/checkboxselectmultiple.html' %}
     {% else %}
 
         {# otherwise use django rendering with additional classes added #}
         {% tailwind_field field %}
     {% endif %}
 
-    {% include 'tailwind/layout/help_text_and_errors.html' %}
+    {% include 'webvirtcloud/layout/help_text_and_errors.html' %}
 
     </{% if tag %}{{ tag }}{% else %}div{% endif %}>
 

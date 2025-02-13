@@ -14,7 +14,7 @@
         {{ formset.management_form|crispy }}
     </div>
 
-  {% include "tailwind/errors_formset.html" %}
+  {% include "webvirtcloud/errors_formset.html" %}
 
     <table{% if form_id %} id="{{ form_id }}_table"{% endif%} class="table-auto">
         <thead>
@@ -36,12 +36,12 @@
 
             {% for form in formset %}
                 {% if form_show_errors and not form.is_extra %}
-                    {% include "tailwind/errors.html" %}
+                    {% include "webvirtcloud/errors.html" %}
                 {% endif %}
 
                 <tr>
                     {% for field in form %}
-                        {% include 'tailwind/field.html' with tag="td" form_show_labels=False field_class="border px-4 py-2" %}
+                        {% include 'webvirtcloud/field.html' with tag="td" form_show_labels=False field_class="border px-4 py-2" %}
                     {% endfor %}
                 </tr>
             {% endfor %}
@@ -49,7 +49,7 @@
     </table>
 
     <div class="mt-3">
-    {% include "tailwind/inputs.html" %}
+    {% include "webvirtcloud/inputs.html" %}
     </div>
 {% if formset_tag %}</form>{% endif %}
 {% endspecialspaceless %}
