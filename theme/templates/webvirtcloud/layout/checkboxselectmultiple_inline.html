@@ -9,7 +9,7 @@
         </label>
     {% endif %}
 
-    <div id="div_{{ field.auto_id }}" class="flex flex-row{% if wrapper_class %} {{ wrapper_class }}{% endif %}{% if field.css_classes %} {{ field.css_classes }}{% endif %}">
+    <div id="div_{{ field.auto_id }}" class="flex flex-row gap-4 flex-wrap{% if wrapper_class %} {{ wrapper_class }}{% endif %}{% if field.css_classes %} {{ field.css_classes }}{% endif %}">
         {% include 'webvirtcloud/layout/checkboxselectmultiple.html' %}
     </div>
 {% endif %}

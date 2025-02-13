@@ -2,7 +2,7 @@
 {% load l10n %}
 
 <div class="relative">
-<select class="{% if field.errors %}border border-red-500 {% endif %}bg-white focus:outline-none border border-gray-300 rounded-lg py-2 px-4 block w-full appearance-none leading-normal text-gray-700" name="{{ field.html_name }}" {{ field.field.widget.attrs|flatatt }}>
+<select class="{% if field.errors %}border border-red-500 {% endif %}bg-background focus:outline-none border border-input rounded-lg h-10 text-sm shadow-sm shadow-black/5 transition-shadow placeholder:text-muted-foreground/70 focus-visible:border-ring focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 px-4 block w-full appearance-none text-foreground" name="{{ field.html_name }}" {{ field.field.widget.attrs|flatatt }}>
     {% for value, label in field.field.choices %}
         {% include "webvirtcloud/layout/select_option.html" with value=value label=label %}
     {% endfor %}

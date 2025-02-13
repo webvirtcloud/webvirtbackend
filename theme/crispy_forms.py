@@ -8,7 +8,7 @@ WEBVIRTCLOUD_CRISPY_CLASS_CONVERTERS = {
     "fileinput": base_class,
     "numberinput": 'textinput',
     "dateinput": base_class,
-    "textarea": base_class,
+    "textarea": "textareainput",
     "password": 'textinput',
     "hidden": base_class,
     "radioset": "form-check",
