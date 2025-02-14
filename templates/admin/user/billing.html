@@ -1,4 +1,7 @@
 {% extends "admin/base.html" %}
+
+{% load render_table from django_tables2 %}
+
 {% block content %}
 <div class="space-y-4">
   <a href="{% url 'admin_user_index' %}"
@@ -50,76 +53,20 @@
   </div>
 
   <div>
-    <h2 class="text-2xl font-medium mb-4">Billing history</h2>
-    <div
-      class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg"
-    >
-      <table class="min-w-full divide-y divide-gray-300">
-        <thead class="bg-gray-50">
-          <tr>
-            <th
-              scope="col"
-              class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold sm:pl-6"
-            >
-              #
-            </th>
-            <th
-              scope="col"
-              class="px-3 py-3.5 text-left text-sm font-semibold"
-            >
-              Amount
-            </th>
-            <th
-              scope="col"
-              class="px-3 py-3.5 text-left text-sm font-semibold"
-            >
-              Invoice
-            </th>
-            <th
-              scope="col"
-              class="px-3 py-3.5 text-left text-sm font-semibold"
-            >
-              Description
-            </th>
-            <th
-              scope="col"
-              class="px-3 py-3.5 text-left text-sm font-semibold"
-            >
-              Created
-            </th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-gray-200 bg-white">
-          {% if balance %}
-            {% for bal in balance %}
-            <tr>
-              <td
-                class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-6"
-              >
-                {{ forloop.counter }}
-              </td>
-              <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                ${{ bal.amount|floatformat:2 }}
-              </td>
-              <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                {% if bal.invoice %}{{ bal.invoice.id }}{% else %}N/A{% endif %}
-              </td>
-              <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                {{ bal.description }}
-              </td>
-              <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                {{ bal.create }}
-              </td>
-            </tr>
-            {% endfor %}
-          {% else %}
-          <tr>
-            <td colspan="5" class="text-center py-8 font-medium text-xl">No billing history</td>
-          </tr>
-          {% endif %}
-        </tbody>
-      </table>
+    <div class="flex items-center justify-between mb-6">
+      <h1 class="text-2xl font-medium">Billing history</h1>
+      <div class="flex items-center gap-2">
+        <div class="relative [&_input]:pl-8 [&_input]:max-w-[180px] [&_div]:mb-0">
+          <div class="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none">
+            <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+            </svg>
+          </div>
+          <input name="query" hx-get="{% url 'admin_user_billing' user.pk %}" hx-trigger="keyup changed delay:500ms" hx-target="div.table-container" hx-swap="outerHTML" hx-indicator=".progress" type="text" class="search-input" placeholder="Search...">
+        </div>
+      </div>
     </div>
+    {% render_table table %}
   </div>
 </div>
 {% endblock %}

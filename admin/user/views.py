@@ -14,8 +14,8 @@ from image.models import SnapshotCounter
 from virtance.models import VirtanceCounter
 from floating_ip.models import FloatIPCounter
 from .forms import FormUser
-from .filters import UserFilter
-from .tables import UserHTMxTable
+from .filters import UserFilter, UserBillingFilter
+from .tables import UserHTMxTable, UserBillingHTMxTable
 from admin.mixins import AdminView, AdminTemplateView, AdminFormView, AdminUpdateView
 
 
@@ -137,15 +137,25 @@ class AdminUserDataView(AdminTemplateView):
         return context
 
 
-class AdminUserBillingView(AdminTemplateView):
+class AdminUserBillingView(SingleTableMixin, FilterView, AdminView):
+    table_class = UserBillingHTMxTable
+    filterset_class = UserBillingFilter
     template_name = "admin/user/billing.html"
 
     def get_object(self):
-        return get_object_or_404(User, pk=self.kwargs.get("pk"), is_admin=False)
+        return Balance.objects.filter(user_id=self.kwargs.get("pk"))
+
+    def get_filterset_kwargs(self, filterset_class):
+        kwargs = super().get_filterset_kwargs(filterset_class)
+        kwargs["user_id"] = self.kwargs.get("pk")
+        return kwargs
+
+    def get_template_names(self):
+        if self.request.htmx:
+            return "django_tables2/table_partial.html"
+        return self.template_name
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        user = self.get_object()
-        context["user"] = user
-        context["balance"] = Balance.objects.filter(user=user)
+        context["user"] = get_object_or_404(User, pk=self.kwargs.get("pk"), is_admin=False)
         return context
