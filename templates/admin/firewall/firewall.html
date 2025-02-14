@@ -1,4 +1,8 @@
-{% extends "admin/base.html" %} {% block content %}
+{% extends "admin/base.html" %} 
+
+{% load render_table from django_tables2 %}
+
+{% block content %}
 <div class="space-y-4">
   <a href="{% url 'admin_firewall_index' %}"
     class="inline-flex items-center text-sm p-2 bg-muted rounded-md space-x-2"><svg
@@ -128,95 +132,7 @@
     <div
       class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg"
     >
-      <table class="min-w-full divide-y divide-gray-300">
-        <thead class="bg-gray-50">
-          <tr>
-            <th
-              scope="col"
-              class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold sm:pl-6"
-            >
-              #
-            </th>
-            <th
-              scope="col"
-              class="px-3 py-3.5 text-left text-sm font-semibold"
-            >
-              Direction
-            </th>
-            <th
-              scope="col"
-              class="px-3 py-3.5 text-left text-sm font-semibold"
-            >
-              Protocol
-            </th>
-            <th
-              scope="col"
-              class="px-3 py-3.5 text-left text-sm font-semibold"
-            >
-              Ports
-            </th>
-            <th
-              scope="col"
-              class="px-3 py-3.5 text-left text-sm font-semibold"
-            >
-              Action
-            </th>
-            <th
-              scope="col"
-              class="px-3 py-3.5 text-left text-sm font-semibold"
-            > 
-              Type
-            </th>            
-            <th
-              scope="col"
-              class="px-3 py-3.5 text-left text-sm font-semibold"
-            >
-              Created
-            </th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-gray-200 bg-white">
-          {% for rule in rules %}
-          <tr>
-            <td
-              class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-6"
-            >
-              {{ forloop.counter }}
-            </td>
-            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                {{ rule.direction|capfirst }}
-            </td>
-            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-              {% if not rule.protocol %}
-                All
-              {% else %}
-                {{ rule.protocol|upper }}
-              {% endif %}
-            </td>
-            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-              {% if rule.ports == '0' %}
-                All
-              {% else %}
-                {{ rule.ports }}
-              {% endif %}
-            </td>
-            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-              {{ rule.action }}
-            </td>
-            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-              {% if rule.is_system %}
-                System
-              {% else %}
-                User
-              {% endif %}
-            </td>
-            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-              {{ rule.created }}
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+      {% render_table firewall_rules_table %}
     </div>
   </div>
 
@@ -225,51 +141,7 @@
     <div
       class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg"
     >
-      <table class="min-w-full divide-y divide-gray-300">
-        <thead class="bg-gray-50">
-          <tr>
-            <th
-              scope="col"
-              class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold sm:pl-6"
-            >
-              #
-            </th>
-            <th
-              scope="col"
-              class="px-3 py-3.5 text-left text-sm font-semibold"
-            >
-              ID
-            </th>       
-            <th
-              scope="col"
-              class="px-3 py-3.5 text-left text-sm font-semibold"
-            >
-              Attached
-            </th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-gray-200 bg-white">
-          {% for f_v in virtances %}
-          <tr>
-            <td
-              class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-6"
-            >
-              {{ forloop.counter }}
-            </td>
-            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-              <a
-                class="text-blue-600 hover:text-blue-900"
-                href="{% url 'admin_virtance_data' f_v.virtance.id  %}"
-                >{{ f_v.virtance.id }}</a
-              >
-            </td>
-            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-              {{ f_v.created }}
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+      {% render_table firewall_virtances_table %}
     </div>
   </div>
 
@@ -278,56 +150,7 @@
     <div
       class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg"
     >
-      <table class="min-w-full divide-y divide-gray-300">
-        <thead class="bg-gray-50">
-          <tr>
-            <th
-              scope="col"
-              class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold sm:pl-6"
-            >
-              #
-            </th>
-            <th
-              scope="col"
-              class="px-3 py-3.5 text-left text-sm font-semibold"
-            >
-              Event
-            </th>
-            <th
-              scope="col"
-              class="px-3 py-3.5 text-left text-sm font-semibold"
-            >
-              Message
-            </th>
-            <th
-              scope="col"
-              class="px-3 py-3.5 text-left text-sm font-semibold"
-            >
-              Created
-            </th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-gray-200 bg-white">
-          {% for fw in firewall_errors %}
-          <tr>
-            <td
-              class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-6"
-            >
-              {{ forloop.counter }}
-            </td>
-            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-              {{ fw.event }}
-            </td>
-            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-              {{ fw.message }}
-            </td>
-            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-              {{ fw.created }}
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+      {% render_table firewall_errors_table %}
     </div>
   </div>
 

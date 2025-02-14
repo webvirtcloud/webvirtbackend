@@ -76,7 +76,6 @@ class AdminVirtanceDataView(AdminTemplateView):
         return context
 
 
-
 class AdminVirtanceConsoleView(AdminTemplateView):
     template_name = "admin/virtance/console.html"
 

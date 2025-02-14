@@ -1,10 +1,10 @@
 from django.urls import reverse
 from django.shortcuts import redirect, get_object_or_404
-from django_tables2 import SingleTableMixin
 from django_filters.views import FilterView
+from django_tables2 import SingleTableMixin, RequestConfig
 
 from .filters import FirewallFilter
-from .tables import FirewallHTMxTable
+from .tables import FirewallHTMxTable, FirewallRuleTable, FirewallVirtanceTable, FirewallErrorTable
 from admin.mixins import AdminView, AdminTemplateView
 from firewall.models import Firewall, Rule, FirewallVirtance, FirewallError
 
@@ -32,10 +32,23 @@ class AdminFirewallDataView(AdminTemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         firewall = self.get_object()
+
+        rules = Rule.objects.filter(firewall=firewall)
+        firewall_rules_table = FirewallRuleTable(rules)
+        RequestConfig(self.request).configure(firewall_rules_table)
+
+        virtances = FirewallVirtance.objects.filter(firewall=firewall)
+        firewall_virtances_table = FirewallVirtanceTable(virtances)
+        RequestConfig(self.request).configure(firewall_virtances_table)
+
+        firewall_errors = FirewallError.objects.filter(firewall=firewall)
+        firewall_errors_table = FirewallErrorTable(firewall_errors)
+        RequestConfig(self.request).configure(firewall_errors_table)
+
         context["firewall"] = firewall
-        context["rules"] = Rule.objects.filter(firewall=firewall)
-        context["virtances"] = FirewallVirtance.objects.filter(firewall=firewall)
-        context["firewall_errors"] = FirewallError.objects.filter(firewall=firewall)
+        context["firewall_rules_table"] = firewall_rules_table
+        context["firewall_errors_table"] = firewall_errors_table
+        context["firewall_virtances_table"] = firewall_virtances_table
         return context
 
 

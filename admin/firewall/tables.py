@@ -1,6 +1,6 @@
 import django_tables2 as tables
 
-from firewall.models import Firewall, Rule, FirewallVirtance
+from firewall.models import Firewall, Rule, FirewallVirtance, FirewallError
 
 
 class FirewallHTMxTable(tables.Table):
@@ -19,3 +19,39 @@ class FirewallHTMxTable(tables.Table):
         model = Firewall
         fields = ("id", "user", "name", "rules", "virtances", "created")
         template_name = "django_tables2/bootstrap.html"
+
+
+class FirewallRuleTable(tables.Table):
+    type = tables.Column(empty_values=(), verbose_name="Type")
+    ports = tables.Column(empty_values=(), verbose_name="Ports")
+
+    def render_type(self, value, record):
+        if record.is_system == True:
+            return "System"
+        return "User"
+
+    def render_ports(self, value, record):
+        if value == "0":
+            return "All"
+        return value
+
+    class Meta:
+        model = Rule
+        template_name = "django_tables2/bootstrap_no_query.html"
+        fields = ("direction", "protocol", "ports", "action", "type", "created")
+
+
+class FirewallVirtanceTable(tables.Table):
+    attached = tables.TemplateColumn(template_name="admin/firewall/virtance_column.html", verbose_name="Attached")
+
+    class Meta:
+        model = FirewallVirtance
+        template_name = "django_tables2/bootstrap_no_query.html"
+        fields = ("virtance", "created")
+
+
+class FirewallErrorTable(tables.Table):
+    class Meta:
+        model = FirewallError
+        template_name = "django_tables2/bootstrap_no_query.html"
+        fields = ("event", "message", "created")
