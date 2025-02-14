@@ -8,9 +8,9 @@ from crispy_forms.helper import FormHelper
 
 from network.models import Network, IPAddress
 from .forms import FormNetwork
-from .filters import NetworkFilter
-from .tables import NetworkHTMxTable
-from admin.mixins import AdminView, AdminTemplateView, AdminFormView, AdminUpdateView, AdminDeleteView
+from .filters import NetworkFilter, NetworkListFilter
+from .tables import NetworkHTMxTable, NetworkListHTMxTable
+from admin.mixins import AdminView, AdminFormView, AdminUpdateView, AdminDeleteView
 
 
 class AdminNetworkIndexView(SingleTableMixin, FilterView, AdminView):
@@ -97,13 +97,26 @@ class AdminNetworkDeleteView(AdminDeleteView):
         return context
 
 
-class AdminNetworkListView(AdminTemplateView):
+class AdminNetworkListView(SingleTableMixin, FilterView, AdminView):
+    table_class = NetworkListHTMxTable
+    filterset_class = NetworkListFilter
     template_name = "admin/network/list.html"
+
+    def get_queryset(self):
+        network = Network.objects.filter(pk=self.kwargs.get("pk")).first()
+        return IPAddress.objects.filter(network=network)
+
+    def get_filterset_kwargs(self, filterset_class):
+        kwargs = super().get_filterset_kwargs(filterset_class)
+        kwargs["network_id"] = self.kwargs.get("pk")
+        return kwargs
 
     def get_context_data(self, **kwargs):
         context = super(AdminNetworkListView, self).get_context_data(**kwargs)
-        network = Network.objects.filter(pk=kwargs.get("pk")).first()
-        ip_addresses = IPAddress.objects.filter(network=network)
-        context["network"] = network
-        context["ip_addresses"] = ip_addresses
+        context["network"] = Network.objects.filter(pk=self.kwargs.get("pk")).first()
         return context
+
+    def get_template_names(self):
+        if self.request.htmx:
+            return "django_tables2/table_partial.html"
+        return self.template_name

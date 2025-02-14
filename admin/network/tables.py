@@ -1,6 +1,6 @@
 import django_tables2 as tables
 
-from network.models import Network
+from network.models import Network, IPAddress
 
 
 class NetworkHTMxTable(tables.Table):
@@ -21,4 +21,14 @@ class NetworkHTMxTable(tables.Table):
     class Meta:
         model = Network
         fields = ("network", "region", "type", "active", "created")
+        template_name = "django_tables2/bootstrap.html"
+
+
+class NetworkListHTMxTable(tables.Table):
+    virtance = tables.TemplateColumn(template_name="admin/network/virtance_column.html", verbose_name="Virtance")
+    is_float = tables.Column(verbose_name="Floating IP", accessor="is_float")
+
+    class Meta:
+        model = Network
+        fields = ("address", "virtance", "is_float", "created")
         template_name = "django_tables2/bootstrap.html"

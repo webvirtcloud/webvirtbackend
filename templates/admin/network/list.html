@@ -1,4 +1,8 @@
-{% extends "admin/base.html" %} {% block content %}
+{% extends "admin/base.html" %} 
+
+{% load render_table from django_tables2 %}
+
+{% block content %}
 <a
 href="{% url 'admin_network_index' %}"
 class="inline-flex items-center text-sm p-2 bg-muted rounded-md space-x-2 mb-4"
@@ -19,92 +23,22 @@ class="inline-flex items-center text-sm p-2 bg-muted rounded-md space-x-2 mb-4"
 <span>Back to the list</span>
 </a>
 <div class="flex items-center justify-between mb-6">
-  <h1 class="text-2xl font-medium">Assigned ip address list ({{ network.cidr }}/{{ network.netmask }})</h1>
+  <h1 class="text-2xl font-medium"></h1>
 </div>
 <div class="">
-  <div class="mt-8 flow-root">
-    <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
-      <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-        {% if ip_addresses %}
-        <div
-          class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg"
-        >
-          <table class="min-w-full divide-y divide-gray-300">
-            <thead class="bg-gray-50">
-              <tr>
-                <th
-                  scope="col"
-                  class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold sm:pl-6"
-                >
-                  #
-                </th>
-                <th
-                  scope="col"
-                  class="px-3 py-3.5 text-left text-sm font-semibold"
-                >
-                  IP Address
-                </th>
-                <th
-                  scope="col"
-                  class="px-3 py-3.5 text-left text-sm font-semibold"
-                >
-                  Virtance
-                </th>
-                {% if network.type == "public" %}
-                  <th
-                    scope="col"
-                    class="px-3 py-3.5 text-left text-sm font-semibold"
-                  >
-                    Floating IP
-                  </th>
-                {% endif %}
-                <th
-                  scope="col"
-                  class="px-3 py-3.5 text-left text-sm font-semibold"
-                >
-                  Created
-                </th>
-
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-200 bg-white">
-              {% for ipaddr in ip_addresses %}
-              <tr>
-                <td
-                  class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-6"
-                >
-                  {{ forloop.counter }}
-                </td>
-                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                  {{ ipaddr.address }}
-                </td>
-                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                  {% if ipaddr.virtance is not None %}
-                  <a
-                    href="{% url 'admin_virtance_data' ipaddr.virtance.id %}"
-                    class="text-blue-600 hover:text-blue-900"
-                    >{{ ipaddr.virtance.id }}<span class="sr-only">{{ ipaddr.virtance.id }}</span></a
-                  >
-                  {% endif %}
-                </td>
-                {% if network.type == "public" %}
-                	<td>{{ ipaddr.is_float }}</td>
-                {% endif %}
-                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                  {{ network.created }}
-                </td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
+  <div class="flex items-center justify-between mb-6">
+    <h1 class="text-2xl font-medium">Assigned IPs ({{ network.cidr }}/{{ network.netmask }})</h1>
+    <div class="flex items-center gap-2">
+      <div class="relative [&_input]:pl-8 [&_input]:max-w-[180px] [&_div]:mb-0">
+        <div class="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none">
+          <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+          </svg>
         </div>
-        {% else %}
-        <div class="bg-white border p-4 md:p-8 rounded-lg text-center">
-          <h2 class="text-xl font-medium mb-4">No IP Addresses found</h2>
-        </div>
-        {% endif %}
+        <input name="query" hx-get="{% url 'admin_network_list' network.pk %}" hx-trigger="keyup changed delay:500ms" hx-target="div.table-container" hx-swap="outerHTML" hx-indicator=".progress" type="text" class="search-input" placeholder="Search...">
       </div>
     </div>
   </div>
+  {% render_table table %}        
 </div>
 {% endblock %}

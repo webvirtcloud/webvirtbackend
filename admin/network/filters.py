@@ -1,7 +1,7 @@
 import django_filters
 from django.db.models import Q
 
-from network.models import Network
+from network.models import Network, IPAddress
 
 
 class NetworkFilter(django_filters.FilterSet):
@@ -19,4 +19,22 @@ class NetworkFilter(django_filters.FilterSet):
             | Q(type__icontains=value)
             | Q(version__icontains=value),
             is_deleted=False,
+        )
+
+
+class NetworkListFilter(django_filters.FilterSet):
+    query = django_filters.CharFilter(method="universal_search", label="")
+
+    class Meta:
+        model = IPAddress
+        fields = ["query"]
+
+    def __init__(self, *args, **kwargs):
+        self.network_id = kwargs.pop("network_id", None)
+        super().__init__(*args, **kwargs)
+
+    def universal_search(self, queryset, name, value):
+        return IPAddress.objects.filter(
+            Q(address__icontains=value) | Q(virtance__id__icontains=value),
+            network_id=self.network_id,
         )
