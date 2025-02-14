@@ -1,6 +1,6 @@
 import django_tables2 as tables
 
-from virtance.models import Virtance
+from virtance.models import Virtance, VirtanceError
 
 
 class VirtanceHTMxTable(tables.Table):
@@ -20,3 +20,10 @@ class VirtanceHTMxTable(tables.Table):
         model = Virtance
         fields = ("id", "user", "type", "size", "region", "compute", "status", "created")
         template_name = "django_tables2/bootstrap.html"
+
+
+class VirtanceErrorTable(tables.Table):
+    class Meta:
+        model = VirtanceError
+        template_name = "django_tables2/bootstrap_no_query.html"
+        fields = ("event", "message", "created")

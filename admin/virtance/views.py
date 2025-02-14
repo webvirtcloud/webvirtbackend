@@ -2,13 +2,13 @@ from django.urls import reverse
 from django.conf import settings
 from django.contrib import messages
 from django.shortcuts import redirect, get_object_or_404
-from django_tables2 import SingleTableMixin
 from django_filters.views import FilterView
+from django_tables2 import SingleTableMixin, RequestConfig, Table
 
 from network.models import IPAddress, Network
 from virtance.models import Virtance, VirtanceError
 from .filters import VirtanceFilter
-from .tables import VirtanceHTMxTable
+from .tables import VirtanceHTMxTable, VirtanceErrorTable
 from admin.mixins import AdminView, AdminTemplateView
 from compute.webvirt import WebVirtCompute
 from virtance.tasks import create_virtance, action_virtance
@@ -64,13 +64,17 @@ class AdminVirtanceDataView(AdminTemplateView):
         if ipv4compute is None:
             messages.error(self.request, "No compute IP address assigned to this virtance")
 
+        virtance_errors_table = VirtanceErrorTable(virtance_errors)
+        RequestConfig(self.request).configure(virtance_errors_table)
+
         context["status"] = status
         context["virtance"] = virtance
         context["ipv4public"] = ipv4public
         context["ipv4private"] = ipv4private
         context["ipv4compute"] = ipv4compute
-        context["virtance_errors"] = virtance_errors
+        context["virtance_errors_table"] = virtance_errors_table
         return context
+
 
 
 class AdminVirtanceConsoleView(AdminTemplateView):

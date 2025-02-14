@@ -1,4 +1,8 @@
-{% extends "admin/base.html" %} {% block content %}
+{% extends "admin/base.html" %} 
+
+{% load render_table from django_tables2 %}
+
+{% block content %}
 <div class="space-y-4">
   <a href="{% url 'admin_virtance_index' %}"
     class="inline-flex items-center text-sm p-2 bg-muted rounded-md space-x-2"><svg
@@ -315,63 +319,10 @@
     <h2 class="text-2xl font-medium mb-4">Errors</h2>
     <div
       class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg"
-    >
-      <table class="min-w-full divide-y divide-gray-300">
-        <thead class="bg-gray-50">
-          <tr>
-            <th
-              scope="col"
-              class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold sm:pl-6"
-            >
-              #
-            </th>
-            <th
-              scope="col"
-              class="px-3 py-3.5 text-left text-sm font-semibold"
-            >
-              Event
-            </th>
-            <th
-              scope="col"
-              class="px-3 py-3.5 text-left text-sm font-semibold"
-            >
-              Message
-            </th>
-            <th
-              scope="col"
-              class="px-3 py-3.5 text-left text-sm font-semibold"
-            >
-              Created
-            </th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-gray-200 bg-white">
-          {% if virtance_errors %}
-            {% for error in virtance_errors %}
-            <tr>
-              <td
-                class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-6"
-              >
-                {{ forloop.counter }}
-              </td>
-              <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                {{ error.event }}
-              </td>
-              <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                {{ error.message }}
-              </td>
-              <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                {{ error.created }}
-              </td>
-            </tr>
-            {% endfor %}
-          {% else %}
-          <tr>
-            <td colspan="4" class="text-center py-8 font-medium text-xl">No errors</td>
-          </tr>
-          {% endif %}
-        </tbody>
-      </table>
+      >
+
+      {% render_table virtance_errors_table %}
+
     </div>
   </div>
 </div>
