@@ -160,9 +160,9 @@ def create_virtance(virtance_id, password=None, send_email=True):
             virtance.active()
             virtance.reset_event()
 
-            try:
-                VirtanceCounter.objects.get(virtance=virtance, stopped=None)
-            except VirtanceCounter.DoesNotExist:
+            current_time = timezone.now()
+            first_day_month = current_time.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+            if not VirtanceCounter.objects.filter(started__gt=first_day_month, virtance=virtance, stopped=None):
                 VirtanceCounter.objects.create(
                     virtance=virtance,
                     size=virtance.size,
