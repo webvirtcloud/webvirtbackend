@@ -16,6 +16,7 @@ from .tables import (
     ComputeStoragesTable,
     ComputeNetworksTable,
     ComputeNwfilterTable,
+    ComputeSecretsTable,
 )
 from .forms import FormNetworkCreate, FormStorageDirCreate, FormStorageRBDCreate
 from .forms import FormCompute, FormStartAction, FormAutostartAction
@@ -512,8 +513,22 @@ class AdminComputeSecretsView(AdminTemplateView):
         wvcomp = WebVirtCompute(compute.token, compute.hostname)
         res = wvcomp.get_secrets()
         messages.error(self.request, res.get("detail"))
+
+        secrets_table_data = []
+        for secret in res.get("secrets"):
+            secrets_table_data.append(
+                {
+                    "uuid": secret.get("uuid"),
+                    "type": secret.get("usageType"),
+                    "usage": secret.get("usage"),
+                    "value": secret.get("value"),
+                }
+            )
+        secrets_table = ComputeSecretsTable(secrets_table_data)
+        RequestConfig(self.request).configure(secrets_table)
+
         context["compute"] = compute
-        context["secrets"] = res.get("secrets")
+        context["secrets_table"] = secrets_table
         return context
 
 

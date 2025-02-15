@@ -77,3 +77,28 @@ class ComputeNwfilterTable(tables.Table):
         model = Compute
         fields = ("name", "action")
         template_name = "django_tables2/bootstrap_no_query.html"
+
+
+class ComputeSecretsTable(tables.Table):
+    uuid = tables.TemplateColumn(template_name="admin/compute/secret_uuid_column.html", verbose_name="Name")
+    type = tables.Column(empty_values=(), verbose_name="Type")
+    action = tables.TemplateColumn(
+        template_name="admin/compute/secret_action_column.html",
+        verbose_name="Action",
+        attrs={"th": {"data-type": "action"}, "td": {"data-type": "action"}},
+        orderable=False,
+    )
+
+    def render_type(self, value, record):
+        if value == 0:
+            return "volume"
+        elif value == 1:
+            return "iscsi"
+        elif value == 2:
+            return "ceph"
+        return "unknown"
+
+    class Meta:
+        model = Compute
+        fields = ("uuid", "type", "usage", "value", "action")
+        template_name = "django_tables2/bootstrap_no_query.html"
