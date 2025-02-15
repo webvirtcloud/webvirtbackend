@@ -85,19 +85,19 @@
         class="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-3"
       >
         <div class="sm:col-span-1">
-          <dt class="text-sm font-medium text-gray-500">ID</dt>
+          <dt class="text-sm font-medium text-muted-foreground">ID</dt>
           <dd class="mt-1 text-sm">{{ image.id }}</dd>
         </div>
         <div class="sm:col-span-1">
-          <dt class="text-sm font-medium text-gray-500">UUID</dt>
+          <dt class="text-sm font-medium text-muted-foreground">UUID</dt>
           <dd class="mt-1 text-sm">{{ image.uuid }}</dd>
         </div>
         <div class="sm:col-span-1">
-          <dt class="text-sm font-medium text-gray-500">MD5</dt>
+          <dt class="text-sm font-medium text-muted-foreground">MD5</dt>
           <dd class="mt-1 text-sm">{{ image.md5sum }}</dd>
         </div>
         <div class="sm:col-span-1">
-          <dt class="text-sm font-medium text-gray-500">Virtance</dt>
+          <dt class="text-sm font-medium text-muted-foreground">Virtance</dt>
           <dd class="mt-1 text-sm">
             {% if image.source.is_deleted == False %}
             <a
@@ -109,27 +109,27 @@
           </dd>
         </div>
         <div class="sm:col-span-1">
-          <dt class="text-sm font-medium text-gray-500">Type</dt>
+          <dt class="text-sm font-medium text-muted-foreground">Type</dt>
           <dd class="mt-1 text-sm">{{ image.type }}</dd>
         </div>
         <div class="sm:col-span-1">
-          <dt class="text-sm font-medium text-gray-500">File Size</dt>
+          <dt class="text-sm font-medium text-muted-foreground">File Size</dt>
           <dd class="mt-1 text-sm">
             {{ image.file_size|filesizeformat }}
           </dd>
         </div>
         <div class="sm:col-span-1">
-          <dt class="text-sm font-medium text-gray-500">Disk Size</dt>
+          <dt class="text-sm font-medium text-muted-foreground">Disk Size</dt>
           <dd class="mt-1 text-sm">
             {{ image.disk_size|filesizeformat }}
           </dd>
         </div>
         <div class="sm:col-span-1">
-          <dt class="text-sm font-medium text-gray-500">Distro</dt>
+          <dt class="text-sm font-medium text-muted-foreground">Distro</dt>
           <dd class="mt-1 text-sm">{{ image.description }}</dd>
         </div>
         <div class="sm:col-span-1">
-          <dt class="text-sm font-medium text-gray-500">Created</dt>
+          <dt class="text-sm font-medium text-muted-foreground">Created</dt>
           <dd class="mt-1 text-sm">{{ image.created }}</dd>
         </div>
       </dl>
@@ -177,13 +177,13 @@
             >
               {{ forloop.counter }}
             </td>
-            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+            <td class="whitespace-nowrap px-3 py-4 text-sm text-muted-foreground">
               {{ error.event }}
             </td>
-            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+            <td class="whitespace-nowrap px-3 py-4 text-sm text-muted-foreground">
               {{ error.message }}
             </td>
-            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+            <td class="whitespace-nowrap px-3 py-4 text-sm text-muted-foreground">
               {{ error.created }}
             </td>
           </tr>

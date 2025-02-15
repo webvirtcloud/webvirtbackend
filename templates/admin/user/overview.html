@@ -23,7 +23,7 @@
           </span>
         </div>
       </h2> 
-      <p class="text-gray-500 text-sm">UUID: {{ user.uuid }}</p>
+      <p class="text-muted-foreground text-sm">UUID: {{ user.uuid }}</p>
     </div>
     <a href="{% url 'admin_user_update' user.id %}"
       class="block rounded-md bg-blue-600 py-2 px-3 text-center text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">
@@ -56,23 +56,23 @@
         <h2 class="mb-4 font-semibold text-lg">User Info</h2>
         <dl class="space-y-2">
           <div class="flex items-center justify-between gap-x-8">
-            <dt class="text-sm font-medium text-gray-500">ID</dt>
+            <dt class="text-sm font-medium text-muted-foreground">ID</dt>
             <dd class="mt-1 text-sm">{{ user.id }}</dd>
           </div>
           <div class="flex items-center justify-between gap-x-8">
-            <dt class="text-sm font-medium text-gray-500">Firtname</dt>
+            <dt class="text-sm font-medium text-muted-foreground">Firtname</dt>
             <dd class="mt-1 text-sm">{{ user.first_name }}</dd>
           </div>
           <div class="flex items-center justify-between gap-x-8">
-            <dt class="text-sm font-medium text-gray-500">Lastname</dt>
+            <dt class="text-sm font-medium text-muted-foreground">Lastname</dt>
             <dd class="mt-1 text-sm">{{ user.last_name }}</dd>
           </div>
           <div class="flex items-center justify-between gap-x-8">
-            <dt class="text-sm font-medium text-gray-500">Created</dt>
+            <dt class="text-sm font-medium text-muted-foreground">Created</dt>
             <dd class="mt-1 text-sm">{{ user.created }}</dd>
           </div>
           <div class="flex items-center justify-between gap-x-8">
-            <dt class="text-sm font-medium text-gray-500">Updated</dt>
+            <dt class="text-sm font-medium text-muted-foreground">Updated</dt>
             <dd class="mt-1 text-sm">{{ user.updated }}</dd>
           </div>
         </dl>
@@ -83,15 +83,15 @@
         <h2 class="mb-4 font-semibold text-lg">Billing</h2>
         <dl class="space-y-2">
           <div class="flex items-center justify-between gap-x-8">
-            <dt class="text-sm font-medium text-gray-500">Account balance</dt>
+            <dt class="text-sm font-medium text-muted-foreground">Account balance</dt>
             <dd class="mt-1 text-sm">${{ balance|floatformat:-2 }}</dd>
           </div>
           <div class="flex items-center justify-between gap-x-8">
-            <dt class="text-sm font-medium text-gray-500">Current usage</dt>
+            <dt class="text-sm font-medium text-muted-foreground">Current usage</dt>
             <dd class="mt-1 text-sm">${{ month_to_date_usage|floatformat:-2 }}</dd>
           </div>
           <div class="flex items-center justify-between gap-x-8">
-            <dt class="text-sm font-medium text-gray-500">Current balance</dt>
+            <dt class="text-sm font-medium text-muted-foreground">Current balance</dt>
             <dd class="mt-1 text-sm">${{ get_month_to_date_balance|floatformat:-2 }}</dd>
           </div>
         </dl>
@@ -106,19 +106,19 @@
         <h2 class="mb-4 font-semibold text-lg">Services</h2>
         <dl class="space-y-2">
           <div class="flex items-center justify-between gap-x-8">
-            <dt class="text-sm font-medium text-gray-500">Virtances</dt>
+            <dt class="text-sm font-medium text-muted-foreground">Virtances</dt>
             <dd class="mt-1 text-sm">{{ virtances_len }}</dd>
           </div>
           <div class="flex items-center justify-between gap-x-8">
-            <dt class="text-sm font-medium text-gray-500">Firewalls</dt>
+            <dt class="text-sm font-medium text-muted-foreground">Firewalls</dt>
             <dd class="mt-1 text-sm">{{ firewalls_len }}</dd>
           </div>
           <div class="flex items-center justify-between gap-x-8">
-            <dt class="text-sm font-medium text-gray-500">Floating IPs</dt>
+            <dt class="text-sm font-medium text-muted-foreground">Floating IPs</dt>
             <dd class="mt-1 text-sm">{{ floating_ips_len }}</dd>
           </div>
           <div class="flex items-center justify-between gap-x-8">
-            <dt class="text-sm font-medium text-gray-500">Images</dt>
+            <dt class="text-sm font-medium text-muted-foreground">Images</dt>
             <dd class="mt-1 text-sm">{{ snapshots_len }}</dd>
           </div>
         </dl>

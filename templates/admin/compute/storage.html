@@ -28,7 +28,7 @@
     </div>
     <div class="grid md:grid-cols-3">
       <div class="px-4 py-4 sm:px-6">
-        <div class="flex items-center text-sm text-gray-500 mb-1">
+        <div class="flex items-center text-sm text-muted-foreground mb-1">
           <span class="font-medium">
             Name
           </span>
@@ -36,7 +36,7 @@
         <div class="truncate text-sm font-medium">{{ storage_pool.name }}</div>
       </div>
       <div class="px-4 py-4 sm:px-6">
-        <div class="flex items-center text-sm text-gray-500 mb-1">
+        <div class="flex items-center text-sm text-muted-foreground mb-1">
           <span class="font-medium">
             Active
           </span>
@@ -53,7 +53,7 @@
         </form>
       </div>
       <div class="px-4 py-4 sm:px-6">
-        <div class="flex items-center text-sm text-gray-500 mb-1">
+        <div class="flex items-center text-sm text-muted-foreground mb-1">
           <span class="font-medium">
             Type
           </span>
@@ -61,7 +61,7 @@
         <div class="truncate text-sm font-medium">{{ storage_pool.type|upper }}</div>
       </div>
       <div class="px-4 py-4 sm:px-6">
-        <div class="flex items-center text-sm text-gray-500 mb-1">
+        <div class="flex items-center text-sm text-muted-foreground mb-1">
           <span class="font-medium">
             Size (Total / Usage)
           </span>
@@ -69,7 +69,7 @@
         <div class="truncate text-sm font-medium">{{ storage_pool.size.total|filesizeformat }} / {{ storage_pool.size.used|filesizeformat }}</div>
       </div>
       <div class="px-4 py-4 sm:px-6">
-        <div class="flex items-center text-sm text-gray-500 mb-1">
+        <div class="flex items-center text-sm text-muted-foreground mb-1">
           <span class="font-medium">
             Autostart
           </span>
@@ -99,7 +99,7 @@
       </div>
       <div class="px-4 py-4 sm:px-6">
         {% if storage_pool.active is True %}
-          <div class="flex items-center text-sm text-gray-500 mb-1">
+          <div class="flex items-center text-sm text-muted-foreground mb-1">
             <span class="font-medium">
               Path
             </span>

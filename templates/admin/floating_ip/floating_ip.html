@@ -86,11 +86,11 @@
         class="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-3"
       >
         <div class="sm:col-span-1">
-          <dt class="text-sm font-medium text-gray-500">ID</dt>
+          <dt class="text-sm font-medium text-muted-foreground">ID</dt>
           <dd class="mt-1 text-sm">{{ floating_ip.id }}</dd>
         </div>
         <div class="sm:col-span-1">
-          <dt class="text-sm font-medium text-gray-500">User</dt>
+          <dt class="text-sm font-medium text-muted-foreground">User</dt>
           <dd class="mt-1 text-sm">
             <a
               class="text-blue-600 hover:text-blue-900"
@@ -100,7 +100,7 @@
           </dd>
         </div>
         <div class="sm:col-span-1">
-          <dt class="text-sm font-medium text-gray-500">Virtance</dt>
+          <dt class="text-sm font-medium text-muted-foreground">Virtance</dt>
           <dd class="mt-1 text-sm">
             {% if floating_ip.ipaddress.virtance %}
             <a
@@ -112,7 +112,7 @@
           </dd>
         </div>
         <div class="sm:col-span-1">
-          <dt class="text-sm font-medium text-gray-500">Created</dt>
+          <dt class="text-sm font-medium text-muted-foreground">Created</dt>
           <dd class="mt-1 text-sm">{{ floating_ip.created }}</dd>
         </div>
       </dl>
@@ -160,13 +160,13 @@
             >
               {{ forloop.counter }}
             </td>
-            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+            <td class="whitespace-nowrap px-3 py-4 text-sm text-muted-foreground">
               {{ floatip.event }}
             </td>
-            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+            <td class="whitespace-nowrap px-3 py-4 text-sm text-muted-foreground">
               {{ floatip.message }}
             </td>
-            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+            <td class="whitespace-nowrap px-3 py-4 text-sm text-muted-foreground">
               {{ floatip.created }}
             </td>
           </tr>

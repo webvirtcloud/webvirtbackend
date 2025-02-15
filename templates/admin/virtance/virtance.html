@@ -88,7 +88,7 @@
         </div>
         {% endif %}
       </div>
-      <p class="mt-1 max-w-2xl text-sm text-gray-500">
+      <p class="mt-1 max-w-2xl text-sm text-muted-foreground">
         UUID: {{ virtance.uuid }}
       </p>
     </div>
@@ -96,7 +96,7 @@
     <div class="flex items-center gap-2">
       <button
         title="Console"
-        class="text-gray-500 hover:bg-gray-100 block w-9 flex items-center justify-center h-9 rounded-md border"
+        class="text-muted-foreground hover:bg-gray-100 block w-9 flex items-center justify-center h-9 rounded-md border"
         onclick="window.open(`{% url 'admin_virtance_console' virtance.id %}`, 
           'newwindow', 
           'width=800,height=600'
@@ -172,7 +172,7 @@
           type="submit"
           name="reset"
           title="Reset"
-          class="text-gray-500 hover:bg-gray-100 block w-9 flex items-center justify-center h-9 rounded-md border"
+          class="text-muted-foreground hover:bg-gray-100 block w-9 flex items-center justify-center h-9 rounded-md border"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -198,7 +198,7 @@
           type="submit"
           name="recreate"
           title="Recreate"
-          class="text-gray-500 hover:bg-gray-100 block w-9 flex items-center justify-center h-9 rounded-md border"
+          class="text-muted-foreground hover:bg-gray-100 block w-9 flex items-center justify-center h-9 rounded-md border"
           onclick="return confirm('Are you sure you want to recreate this Virtance? This will delete all existing data and cannot be undone.');"
         >
           <svg 
@@ -227,11 +227,11 @@
           <h2 class="mb-4 font-semibold text-lg">Info</h2>
           <div class="space-y-2">
             <div class="flex items-center justify-between">
-              <dt class="text-sm font-medium text-gray-500">ID</dt>
+              <dt class="text-sm font-medium text-muted-foreground">ID</dt>
               <dd class="mt-1 text-sm">{{ virtance.id }}</dd>
             </div>
             <div class="flex items-center justify-between">
-              <dt class="text-sm font-medium text-gray-500">User</dt>
+              <dt class="text-sm font-medium text-muted-foreground">User</dt>
               <dd class="mt-1 text-sm">
                 <a
                   class="text-blue-600 hover:text-blue-900"
@@ -241,11 +241,11 @@
               </dd>
             </div>
             <div class="flex items-center justify-between">
-              <dt class="text-sm font-medium text-gray-500">Locked</dt>
+              <dt class="text-sm font-medium text-muted-foreground">Locked</dt>
               <dd class="mt-1 text-sm">{{ virtance.is_locked }}</dd>
             </div>
             <div class="flex items-center justify-between">
-              <dt class="text-sm font-medium text-gray-500">Compute</dt>
+              <dt class="text-sm font-medium text-muted-foreground">Compute</dt>
               <dd class="mt-1 text-sm">
                 {% if virtance.compute %}<a
                   class="text-blue-600 hover:text-blue-900"
@@ -262,21 +262,21 @@
           <h2 class="mb-4 font-semibold text-lg">Image</h2>
           <div class="space-y-2">
             <div class="flex items-center justify-between">
-              <dt class="text-sm font-medium text-gray-500">Disk</dt>
+              <dt class="text-sm font-medium text-muted-foreground">Disk</dt>
               <dd class="mt-1 text-sm">{{ virtance.disk|filesizeformat }}</dd>
             </div>
             <div class="flex items-center justify-between">
-              <dt class="text-sm font-medium text-gray-500">Size</dt>
+              <dt class="text-sm font-medium text-muted-foreground">Size</dt>
               <dd class="mt-1 text-sm">{{ virtance.size.slug }}</dd>
             </div>
             <div class="flex items-center justify-between">
-              <dt class="text-sm font-medium text-gray-500">Template</dt>
+              <dt class="text-sm font-medium text-muted-foreground">Template</dt>
               <dd class="mt-1 text-sm">
                 {{ virtance.template.description }}
               </dd>
             </div>
             <div class="flex items-center justify-between">
-              <dt class="text-sm font-medium text-gray-500">Deployed</dt>
+              <dt class="text-sm font-medium text-muted-foreground">Deployed</dt>
               <dd class="mt-1 text-sm">
                 {{ virtance.created }}
               </dd>
@@ -289,23 +289,23 @@
           <h2 class="mb-4 font-semibold text-lg">Network</h2>
           <div class="space-y-2">
             <div class="flex items-center justify-between">
-              <dt class="text-sm font-medium text-gray-500">Region</dt>
+              <dt class="text-sm font-medium text-muted-foreground">Region</dt>
               <dd class="mt-1 text-sm">{{ virtance.region.name }}</dd>
             </div>
             <div class="flex items-center justify-between">
-              <dt class="text-sm font-medium text-gray-500">IPv4 Public</dt>
+              <dt class="text-sm font-medium text-muted-foreground">IPv4 Public</dt>
               <dd class="mt-1 text-sm">
                 {{ ipv4public.address }}/{{ ipv4public.network.netmask }}
               </dd>
             </div>
             <div class="flex items-center justify-between">
-              <dt class="text-sm font-medium text-gray-500">IPv4 Private</dt>
+              <dt class="text-sm font-medium text-muted-foreground">IPv4 Private</dt>
               <dd class="mt-1 text-sm">
                 {{ ipv4private.address }}/{{ ipv4private.network.netmask }}
               </dd>
             </div>
             <div class="flex items-center justify-between">
-              <dt class="text-sm font-medium text-gray-500">IPv4 Compute</dt>
+              <dt class="text-sm font-medium text-muted-foreground">IPv4 Compute</dt>
               <dd class="mt-1 text-sm">
                 {{ ipv4compute.address }}/{{ ipv4compute.network.netmask }}
               </dd>

@@ -2,13 +2,13 @@
 {% load static %} 
 {% block computecontent %}
 <main>
-  <div class="overflow-hidden bg-white sm:rounded-lg sm:shadow mb-8">
-    <div class="border-b border-gray-200 bg-white px-4 py-5 sm:px-6">
+  <div class="overflow-hidden bg-card border sm:rounded-lg sm:shadow mb-8">
+    <div class="border-b bg-card px-4 py-5 sm:px-6">
       <h3 class="text-base font-semibold leading-6">Overview</h3>
     </div>
     <div class="grid md:grid-cols-3">
       <div class="px-4 py-4 sm:px-6">
-        <div class="flex items-center text-sm text-gray-500 mb-1">
+        <div class="flex items-center text-sm text-muted-foreground mb-1">
           <span class="font-medium">
             Hostname
           </span>
@@ -16,7 +16,7 @@
         <div class="truncate text-sm font-medium">{{ host_overview.host.hostname }}</div>
       </div>
       <div class="px-4 py-4 sm:px-6">
-        <div class="flex items-center text-sm text-gray-500 mb-1">
+        <div class="flex items-center text-sm text-muted-foreground mb-1">
           <span class="font-medium">
             Region
           </span>
@@ -24,7 +24,7 @@
         <div class="truncate text-sm font-medium">{{ compute.region.name }}</div>
       </div>
       <div class="px-4 py-4 sm:px-6">
-        <div class="flex items-center text-sm text-gray-500 mb-1">
+        <div class="flex items-center text-sm text-muted-foreground mb-1">
           <span class="font-medium">
             URI
           </span>
@@ -32,7 +32,7 @@
         <a href="{{ host_overview.host.connection }}" class="truncate text-sm font-medium text-blue-600">{{ host_overview.host.connection }}</a>
       </div>
       <div class="px-4 py-4 sm:px-6">
-        <div class="flex items-center text-sm text-gray-500 mb-1">
+        <div class="flex items-center text-sm text-muted-foreground mb-1">
           <span class="font-medium">
             CPU (Cores)
           </span>
@@ -40,7 +40,7 @@
         <div class="truncate text-sm font-medium">{{ host_overview.host.processor }} x {{ host_overview.host.cpus }}</div>
       </div>
       <div class="px-4 py-4 sm:px-6">
-        <div class="flex items-center text-sm text-gray-500 mb-1">
+        <div class="flex items-center text-sm text-muted-foreground mb-1">
           <span class="font-medium">
             RAM
           </span>
@@ -48,7 +48,7 @@
         <div class="truncate text-sm font-medium">{{ host_overview.host.memory|filesizeformat }}</div>
       </div>
       <div class="px-4 py-4 sm:px-6">
-        <div class="flex items-center text-sm text-gray-500 mb-1">
+        <div class="flex items-center text-sm text-muted-foreground mb-1">
           <span class="font-medium">
             Arch
           </span>
@@ -56,7 +56,7 @@
         <div class="truncate text-sm font-medium">{{ host_overview.host.arch }}</div>
       </div>
       <div class="px-4 py-4 sm:px-6">
-        <div class="flex items-center text-sm text-gray-500 mb-1">
+        <div class="flex items-center text-sm text-muted-foreground mb-1">
           <span class="font-medium">
             CPU Usage
           </span>
@@ -64,7 +64,7 @@
         <div class="truncate text-sm font-medium">{{ host_overview.cpu.usage }}%</div>
       </div>
       <div class="px-4 py-4 sm:px-6">
-        <div class="flex items-center text-sm text-gray-500 mb-1">
+        <div class="flex items-center text-sm text-muted-foreground mb-1">
           <span class="font-medium">
             RAM Usage
           </span>
@@ -148,7 +148,7 @@
           >
             {{ forloop.counter }}
           </td>
-          <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+          <td class="whitespace-nowrap px-3 py-4 text-sm text-muted-foreground">
 
             <a 
               class="text-blue-600 hover:text-blue-900" 
@@ -156,7 +156,7 @@
               >{{ virtance.id }}</a
             >
           </td>
-          <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+          <td class="whitespace-nowrap px-3 py-4 text-sm text-muted-foreground">
             <a 
               class="text-blue-600 hover:text-blue-900" 
               href="{% url 'admin_user_data' virtance.user.id %}"
@@ -164,24 +164,24 @@
             >
             
           </td>
-          <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+          <td class="whitespace-nowrap px-3 py-4 text-sm text-muted-foreground">
             {{ virtance.size.name }}
           </td>
-          <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+          <td class="whitespace-nowrap px-3 py-4 text-sm text-muted-foreground">
             {{ virtance.region.name }}
           </td>
-          <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+          <td class="whitespace-nowrap px-3 py-4 text-sm text-muted-foreground">
             {% if virtance.compute %}
               {{ virtance.compute.name }}
             {% endif %}
           </td>
-          <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+          <td class="whitespace-nowrap px-3 py-4 text-sm text-muted-foreground">
             {{ virtance.status|capfirst }} {% if virtance.event %}({{ virtance.event|capfirst }}){% endif %}
           </td>
-          <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+          <td class="whitespace-nowrap px-3 py-4 text-sm text-muted-foreground">
             {{ virtance.is_locked }}
           </td>
-          <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+          <td class="whitespace-nowrap px-3 py-4 text-sm text-muted-foreground">
             {{ virtance.created}}
           </td>
         </tr>

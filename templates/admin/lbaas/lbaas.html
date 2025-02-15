@@ -22,7 +22,7 @@
             <p class="font-semibold leading-6">
               {{ lbaas.name }}
             </p>
-            <p class="mt-1 max-w-2xl text-sm text-gray-500">
+            <p class="mt-1 max-w-2xl text-sm text-muted-foreground">
               Used Virtance: <a class="text-blue-600 hover:text-blue-900"
                 href="{% url 'admin_virtance_data' lbaas.virtance.id %}">{{ lbaas.virtance.id }}</a>
             </p>
@@ -58,7 +58,7 @@
         </div>
         <div class="flex items-center gap-2">
           <button title="Download SSH Private Key"
-            class="text-gray-500 hover:bg-gray-100 block flex pl-2 pr-4 gap-1.5 items-center justify-center h-9 rounded-md border"
+            class="text-muted-foreground hover:bg-gray-100 block flex pl-2 pr-4 gap-1.5 items-center justify-center h-9 rounded-md border"
             onclick="window.open(`{% url 'admin_lbaas_download_private_key' lbaas.id %}`);">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
               stroke="currentColor" class="w-5 h-5">
@@ -74,7 +74,7 @@
               type="submit"
               name="reload"
               title="Reload Haproxy"
-              class="text-gray-500 hover:bg-gray-100 block w-9 flex items-center justify-center h-9 rounded-md border"
+              class="text-muted-foreground hover:bg-gray-100 block w-9 flex items-center justify-center h-9 rounded-md border"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -96,7 +96,7 @@
               type="submit" 
               name="recreate" 
               title="Recreate"
-              class="text-gray-500 hover:bg-gray-100 block w-9 flex items-center justify-center h-9 rounded-md border"
+              class="text-muted-foreground hover:bg-gray-100 block w-9 flex items-center justify-center h-9 rounded-md border"
               onclick="return confirm('Are you sure you want to recreate this Virtance? This will delete all existing data and cannot be undone.');">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5">
                 <path fill-rule="evenodd"
@@ -113,52 +113,52 @@
     <div class="border-t border-gray-200 px-4 py-5 sm:px-6">
       <dl class="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
         <div class="sm:col-span-1">
-          <dt class="text-sm font-medium text-gray-500">ID</dt>
+          <dt class="text-sm font-medium text-muted-foreground">ID</dt>
           <dd class="mt-1 text-sm">{{ lbaas.id }}</dd>
         </div>
         <div class="sm:col-span-1">
-          <dt class="text-sm font-medium text-gray-500">UUID</dt>
+          <dt class="text-sm font-medium text-muted-foreground">UUID</dt>
           <dd class="mt-1 text-sm">{{ lbaas.uuid }}</dd>
         </div>
         <div class="sm:col-span-1">
-          <dt class="text-sm font-medium text-gray-500">User</dt>
+          <dt class="text-sm font-medium text-muted-foreground">User</dt>
           <dd class="mt-1 text-sm">
             <a class="text-blue-600 hover:text-blue-900" href="{% url 'admin_user_data' lbaas.user.id %}">
               {{ lbaas.user.email }}</a>
           </dd>
         </div>
         <div class="sm:col-span-1">
-          <dt class="text-sm font-medium text-gray-500">IPv4 Public</dt>
+          <dt class="text-sm font-medium text-muted-foreground">IPv4 Public</dt>
           <dd class="mt-1 text-sm">
             {{ ipv4_public.address }}
           </dd>
         </div>
         <div class="sm:col-span-1">
-          <dt class="text-sm font-medium text-gray-500">IPv4 Private</dt>
+          <dt class="text-sm font-medium text-muted-foreground">IPv4 Private</dt>
           <dd class="mt-1 text-sm">
             {{ ipv4_private.address }}
           </dd>
         </div>
         <div class="sm:col-span-1">
-          <dt class="text-sm font-medium text-gray-500">IPv4 Compute</dt>
+          <dt class="text-sm font-medium text-muted-foreground">IPv4 Compute</dt>
           <dd class="mt-1 text-sm">
             {{ ipv4_compute.address }}
           </dd>
         </div>
         <div class="sm:col-span-1">
-          <dt class="text-sm font-medium text-gray-500">Rules</dt>
+          <dt class="text-sm font-medium text-muted-foreground">Rules</dt>
           <dd class="mt-1 text-sm">
             {{ rules|length }}
           </dd>
         </div>
         <div class="sm:col-span-1">
-          <dt class="text-sm font-medium text-gray-500">Virtances</dt>
+          <dt class="text-sm font-medium text-muted-foreground">Virtances</dt>
           <dd class="mt-1 text-sm">
             {{ virtances|length }}
           </dd>
         </div>
         <div class="sm:col-span-1">
-          <dt class="text-sm font-medium text-gray-500">Created</dt>
+          <dt class="text-sm font-medium text-muted-foreground">Created</dt>
           <dd class="mt-1 text-sm">{{ lbaas.created }}</dd>
         </div>
       </dl>
@@ -196,29 +196,29 @@
         </thead>
         <tbody class="divide-y divide-gray-200 bg-white">
           <tr>
-            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+            <td class="whitespace-nowrap px-3 py-4 text-sm text-muted-foreground">
               {{ lbaas.check_protocol|upper }}
             </td>
-            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+            <td class="whitespace-nowrap px-3 py-4 text-sm text-muted-foreground">
               {{ lbaas.check_port }}
             </td>
-            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+            <td class="whitespace-nowrap px-3 py-4 text-sm text-muted-foreground">
               {% if lbaas.check_protocol == 'http' %}
                 {{ lbaas.check_path }}
               {% else %}
                 N/A
               {% endif %}
             </td>
-            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+            <td class="whitespace-nowrap px-3 py-4 text-sm text-muted-foreground">
               {{ lbaas.check_interval_seconds }}
             </td>
-            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+            <td class="whitespace-nowrap px-3 py-4 text-sm text-muted-foreground">
               {{ lbaas.check_timeout_seconds }}
             </td>
-            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+            <td class="whitespace-nowrap px-3 py-4 text-sm text-muted-foreground">
               {{ lbaas.check_healthy_threshold }}
             </td>
-            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+            <td class="whitespace-nowrap px-3 py-4 text-sm text-muted-foreground">
               {{ lbaas.check_unhealthy_threshold }}
             </td>
           </tr>
@@ -259,19 +259,19 @@
             <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-6">
               {{ forloop.counter }}
             </td>
-            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+            <td class="whitespace-nowrap px-3 py-4 text-sm text-muted-foreground">
               {{ rule.entry_port }}
             </td>
-            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+            <td class="whitespace-nowrap px-3 py-4 text-sm text-muted-foreground">
               {{ rule.entry_protocol|upper }}
             </td>
-            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+            <td class="whitespace-nowrap px-3 py-4 text-sm text-muted-foreground">
               {{ rule.target_port }}
             </td>
-            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+            <td class="whitespace-nowrap px-3 py-4 text-sm text-muted-foreground">
               {{ rule.target_protocol|upper }}
             </td>
-            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+            <td class="whitespace-nowrap px-3 py-4 text-sm text-muted-foreground">
               {{ rule.created }}
             </td>
           </tr>
@@ -307,11 +307,11 @@
             <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-6">
               {{ forloop.counter }}
             </td>
-            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+            <td class="whitespace-nowrap px-3 py-4 text-sm text-muted-foreground">
               <a class="text-blue-600 hover:text-blue-900" href="{% url 'admin_virtance_data' lb_v.virtance.id  %}">{{
                 lb_v.virtance.id }}</a>
             </td>
-            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+            <td class="whitespace-nowrap px-3 py-4 text-sm text-muted-foreground">
               {{ lb_v.created }}
             </td>
           </tr>

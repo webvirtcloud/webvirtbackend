@@ -22,13 +22,13 @@
     </svg>
     <span>Back to the list</span>
   </a>
-  <div class="overflow-hidden bg-white sm:rounded-lg sm:shadow mb-8">
-    <div class="border-b border-gray-200 bg-white px-4 py-5 sm:px-6">
+  <div class="overflow-hidden bg-card sm:rounded-lg sm:shadow mb-8">
+    <div class="border-b border-gray-200 bg-card px-4 py-5 sm:px-6">
       <h3 class="text-base font-semibold leading-6">Network</h3>
     </div>
     <div class="grid md:grid-cols-3">
       <div class="px-4 py-4 sm:px-6">
-        <div class="flex items-center text-sm text-gray-500 mb-1">
+        <div class="flex items-center text-sm text-muted-foreground mb-1">
           <span class="font-medium">
             Name
           </span>
@@ -36,7 +36,7 @@
         <div class="truncate text-sm font-medium">{{ network_pool.name }}</div>
       </div>
       <div class="px-4 py-4 sm:px-6">
-        <div class="flex items-center text-sm text-gray-500 mb-1">
+        <div class="flex items-center text-sm text-muted-foreground mb-1">
           <span class="font-medium">
             Active
           </span>
@@ -53,7 +53,7 @@
         </form>
       </div>
       <div class="px-4 py-4 sm:px-6">
-        <div class="flex items-center text-sm text-gray-500 mb-1">
+        <div class="flex items-center text-sm text-muted-foreground mb-1">
           <span class="font-medium">
             Device
           </span>
@@ -61,7 +61,7 @@
         <div class="truncate text-sm font-medium">{{ network_pool.device }}</div>
       </div>
       <div class="px-4 py-4 sm:px-6">
-        <div class="flex items-center text-sm text-gray-500 mb-1">
+        <div class="flex items-center text-sm text-muted-foreground mb-1">
           <span class="font-medium">
             Forward
           </span>
@@ -69,7 +69,7 @@
         <div class="truncate text-sm font-medium">{{ network_pool.forward|upper }}</div>
       </div>
       <div class="px-4 py-4 sm:px-6">
-        <div class="flex items-center text-sm text-gray-500 mb-1">
+        <div class="flex items-center text-sm text-muted-foreground mb-1">
           <span class="font-medium">
             Autostart
           </span>
@@ -99,7 +99,7 @@
       </div>
       <div class="px-4 py-4 sm:px-6">
         {% if network_pool.active is True %}
-        <div class="flex items-center text-sm text-gray-500 mb-1">
+        <div class="flex items-center text-sm text-muted-foreground mb-1">
           <span class="font-medium">
             Open vSwitch
           </span>
