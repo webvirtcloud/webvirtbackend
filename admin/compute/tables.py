@@ -47,8 +47,6 @@ class ComputeStoragesTable(tables.Table):
     volumes = tables.Column(accessor="volumes", verbose_name="Volumes")
 
     class Meta:
-        model = Compute
-        fields = ("name", "type", "size", "active", "volumes")
         template_name = "django_tables2/bootstrap_no_query.html"
 
 
@@ -59,8 +57,6 @@ class ComputeNetworksTable(tables.Table):
     forward = tables.TemplateColumn("{{ value|capfirst }}", verbose_name="Forward")
 
     class Meta:
-        model = Compute
-        fields = ("name", "device", "active", "forward")
         template_name = "django_tables2/bootstrap_no_query.html"
 
 
@@ -74,14 +70,14 @@ class ComputeNwfilterTable(tables.Table):
     )
 
     class Meta:
-        model = Compute
-        fields = ("name", "action")
         template_name = "django_tables2/bootstrap_no_query.html"
 
 
 class ComputeSecretsTable(tables.Table):
     uuid = tables.TemplateColumn(template_name="admin/compute/secrets/uuid_column.html", verbose_name="Name")
     type = tables.Column(empty_values=(), verbose_name="Type")
+    usage = tables.Column(accessor="usage", verbose_name="Usage")
+    value = tables.Column(accessor="value", verbose_name="Value")
     action = tables.TemplateColumn(
         template_name="admin/compute/secrets/action_column.html",
         verbose_name="Action",
@@ -99,6 +95,19 @@ class ComputeSecretsTable(tables.Table):
         return "unknown"
 
     class Meta:
-        model = Compute
-        fields = ("uuid", "type", "usage", "value", "action")
+        template_name = "django_tables2/bootstrap_no_query.html"
+
+
+class ComputeStorageVolumesTable(tables.Table):
+    name = tables.Column(accessor="name", verbose_name="Name")
+    size = tables.TemplateColumn("{{ value|filesizeformat }}", verbose_name="Size")
+    type = tables.TemplateColumn("{{ value|upper }}", verbose_name="Type")
+    action = tables.TemplateColumn(
+        template_name="admin/compute/storages/volumes/action_column.html",
+        verbose_name="Action",
+        attrs={"th": {"data-type": "action"}, "td": {"data-type": "action"}},
+        orderable=False,
+    )
+
+    class Meta:
         template_name = "django_tables2/bootstrap_no_query.html"

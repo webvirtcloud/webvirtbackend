@@ -1,0 +1,18 @@
+{% if 'raw' == record.type or 'qcow' == record.type or 'qcow2' == record.type %}
+<a
+  href="{% url 'admin_compute_storage_volume_resize' compute.id storage_pool.name record.name %}"
+  class="text-blue-600 hover:text-blue-900"
+  >Resize</a
+>
+<a
+  href="{% url 'admin_compute_storage_volume_clone' compute.id storage_pool.name record.name %}"
+  class="text-blue-600 hover:text-blue-900"
+  >Clone</a
+>
+{% endif %}
+<a
+  href="{% url 'admin_compute_storage_volume_delete' compute.id storage_pool.name record.name %}"
+  class="text-red-600 hover:text-red-900"
+  onclick="return confirm('Are you sure you would like to deelete this volume?');"
+  >Delete</a
+>

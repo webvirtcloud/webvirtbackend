@@ -17,6 +17,7 @@ from .tables import (
     ComputeNetworksTable,
     ComputeNwfilterTable,
     ComputeSecretsTable,
+    ComputeStorageVolumesTable,
 )
 from .forms import FormNetworkCreate, FormStorageDirCreate, FormStorageRBDCreate
 from .forms import FormCompute, FormStartAction, FormAutostartAction
@@ -234,16 +235,36 @@ class AdminComputeStorageRBDCreateView(AdminFormView):
 class AdminComputeStorageView(AdminTemplateView):
     template_name = "admin/compute/storages/storage.html"
 
+    def get_template_names(self):
+        if self.request.htmx:
+            return "django_tables2/table_partial.html"
+        return self.template_name
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         compute = get_object_or_404(Compute, pk=kwargs.get("pk"), is_deleted=False)
         wvcomp = WebVirtCompute(compute.token, compute.hostname)
         res = wvcomp.get_storage(kwargs.get("pool"))
+        storage_pool = res.get("storage")
         messages.error(self.request, res.get("detail"))
-        context["compute"] = compute
+
+        volumes_table_data = []
+        for volume in storage_pool.get("volumes"):
+            volumes_table_data.append(
+                {
+                    "name": volume.get("name"),
+                    "size": volume.get("size"),
+                    "type": volume.get("type"),
+                }
+            )
+        volumes_table = ComputeStorageVolumesTable(volumes_table_data)
+        RequestConfig(self.request).configure(volumes_table)
+
         context["form_start"] = FormStartAction()
         context["form_autostart"] = FormAutostartAction()
-        context["storage_pool"] = res.get("storage")
+        context["compute"] = compute
+        context["storage_pool"] = storage_pool
+        context["volumes_table"] = volumes_table
         return context
 
     def post(self, request, *args, **kwargs):

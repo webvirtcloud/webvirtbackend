@@ -1,6 +1,7 @@
 {% extends "admin/compute/base.html" %} 
 {% load static %}
 {% load crispy_forms_tags %}
+{% load render_table from django_tables2 %}
 {% block computecontent %}
 <main>
   <a
@@ -125,85 +126,6 @@
       >Add Volume</a
     >
   </div>
-  {% if storage_pool.volumes %}
-    <div
-      class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg"
-    >
-      <table class="min-w-full divide-y divide-gray-300">
-        <thead class="bg-gray-50">
-          <tr>
-            <th
-              scope="col"
-              class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold sm:pl-6"
-            >
-              Name
-            </th>
-            <th
-              scope="col"
-              class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold sm:pl-6"
-            >
-              Size
-            </th>
-            <th
-              scope="col"
-              class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold sm:pl-6"
-            >
-              Type
-            </th>
-            <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
-              <span class="sr-only">Edit</span>
-            </th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-gray-200 bg-white">
-          {% for volume in storage_pool.volumes %}
-          <tr>
-            <td
-              class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-6"
-            >
-              {{ volume.name }}
-            </td>
-            <td
-              class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-6"
-            >
-              {{ volume.size|filesizeformat }}
-            </td>
-            <td
-              class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-6"
-            >
-              {{ volume.type|upper }}
-            </td>
-            <td
-              class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6 space-x-2"
-            >
-              {% if 'raw' == volume.type or 'qcow' == volume.type or 'qcow2' == volume.type %}
-              <a
-                href="{% url 'admin_compute_storage_volume_resize' compute.id storage_pool.name volume.name %}"
-                class="text-blue-600 hover:text-blue-900"
-                >Resize</a
-              >
-              <a
-                href="{% url 'admin_compute_storage_volume_clone' compute.id storage_pool.name volume.name %}"
-                class="text-blue-600 hover:text-blue-900"
-                >Clone</a
-              >
-              {% endif %}
-              <a
-                href="{% url 'admin_compute_storage_volume_delete' compute.id storage_pool.name volume.name %}"
-                class="text-red-600 hover:text-red-900"
-                onclick="return confirm('Are you sure you would like to deelete this volume?');"
-                >Delete</a
-              >
-          </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-    {% else %}
-    <div class="bg-white border p-4 md:p-8 rounded-lg text-center">
-      <h2 class="text-xl font-medium">No volumes</h2>
-    </div>
-  {% endif %}
+  {% render_table volumes_table %}
 </main>
 {% endblock %}
