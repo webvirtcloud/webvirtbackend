@@ -50,3 +50,15 @@ class ComputeStoragesTable(tables.Table):
         model = Compute
         fields = ("name", "type", "size", "active", "volumes")
         template_name = "django_tables2/bootstrap_no_query.html"
+
+
+class ComputeNetworksTable(tables.Table):
+    name = tables.TemplateColumn(template_name="admin/compute/network_name_column.html", verbose_name="Name")
+    device = tables.Column(accessor="device", verbose_name="Device")
+    active = tables.Column(accessor="active", verbose_name="Active")
+    forward = tables.TemplateColumn("{{ value|capfirst }}", verbose_name="Forward")
+
+    class Meta:
+        model = Compute
+        fields = ("name", "device", "active", "forward")
+        template_name = "django_tables2/bootstrap_no_query.html"

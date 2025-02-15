@@ -10,7 +10,7 @@ from virtance.models import Virtance
 from network.models import Network
 from compute.webvirt import WebVirtCompute
 from .filters import ComputeFilter, ComputeOverviewFilter
-from .tables import ComputeHTMxTable, ComputeOverviewHTMxTable, ComputeStoragesTable
+from .tables import ComputeHTMxTable, ComputeOverviewHTMxTable, ComputeStoragesTable, ComputeNetworksTable
 from .forms import FormNetworkCreate, FormStorageDirCreate, FormStorageRBDCreate
 from .forms import FormCompute, FormStartAction, FormAutostartAction
 from .forms import FormSecretCreateAction, FormSecretValueAction, FormNwfilterCreateAction
@@ -412,14 +412,33 @@ class AdminComputeNetworkCreateView(AdminFormView):
 class AdminComputeNetworksView(AdminTemplateView):
     template_name = "admin/compute/networks.html"
 
+    def get_template_names(self):
+        if self.request.htmx:
+            return "django_tables2/table_partial.html"
+        return self.template_name
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         compute = get_object_or_404(Compute, pk=kwargs.get("pk"), is_deleted=False)
         wvcomp = WebVirtCompute(compute.token, compute.hostname)
         res = wvcomp.get_networks()
         messages.error(self.request, res.get("detail"))
+
+        networks_table_data = []
+        for storage in res.get("networks"):
+            networks_table_data.append(
+                {
+                    "name": storage.get("name"),
+                    "device": storage.get("device"),
+                    "active": storage.get("active"),
+                    "forward": storage.get("forward"),
+                }
+            )
+        networks_table = ComputeNetworksTable(networks_table_data)
+        RequestConfig(self.request).configure(networks_table)
+
         context["compute"] = compute
-        context["networks"] = res.get("networks")
+        context["networks_table"] = networks_table
         return context
 
 

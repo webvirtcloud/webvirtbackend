@@ -1,5 +1,6 @@
 {% extends "admin/compute/base.html" %} 
 {% load static %} 
+{% load render_table from django_tables2 %}
 {% block computecontent %}
 <main>
   <div class="flex items-center justify-between mb-6">
@@ -10,74 +11,6 @@
       >Add Network</a
     >
   </div>
-  {% if networks %}
-    <div
-      class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg"
-    >
-      <table class="min-w-full divide-y divide-gray-300">
-        <thead class="bg-gray-50">
-          <tr>
-            <th
-              scope="col"
-              class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold sm:pl-6"
-            >
-              Name
-            </th>
-            <th
-              scope="col"
-              class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold sm:pl-6"
-            >
-              Active
-            </th>
-            <th
-              scope="col"
-              class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold sm:pl-6"
-            >
-              Device
-            </th>
-            <th
-              scope="col"
-              class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold sm:pl-6"
-            >
-              Forward
-            </th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-gray-200 bg-white">
-          {% for network in networks %}
-          <tr>
-            <td
-              class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-6"
-            >
-              <a 
-                href="{% url 'admin_compute_network' compute.id network.name %}"
-                class="font-medium text-blue-600">{{ network.name }}</a
-              >
-            </td>
-            <td
-              class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-6"
-            >
-              {{ network.active }}
-            </td>
-            <td
-              class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-6"
-            >
-              {{ network.device }}
-            </td>
-            <td
-              class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-6"
-            >
-              {{ network.forward|upper }}
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-    {% else %}
-    <div class="bg-white border p-4 md:p-8 rounded-lg text-center">
-      <h2 class="text-xl font-medium">No networks</h2>
-    </div>
-  {% endif %}
+  {% render_table networks_table %}
 </main>
 {% endblock %}
