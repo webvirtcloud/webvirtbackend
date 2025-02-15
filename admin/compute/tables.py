@@ -62,3 +62,18 @@ class ComputeNetworksTable(tables.Table):
         model = Compute
         fields = ("name", "device", "active", "forward")
         template_name = "django_tables2/bootstrap_no_query.html"
+
+
+class ComputeNwfilterTable(tables.Table):
+    name = tables.TemplateColumn(template_name="admin/compute/nwfilter_name_column.html", verbose_name="Name")
+    action = tables.TemplateColumn(
+        template_name="admin/compute/nwfilter_action_column.html",
+        verbose_name="Action",
+        attrs={"th": {"data-type": "action"}, "td": {"data-type": "action"}},
+        orderable=False,
+    )
+
+    class Meta:
+        model = Compute
+        fields = ("name", "action")
+        template_name = "django_tables2/bootstrap_no_query.html"

@@ -10,7 +10,13 @@ from virtance.models import Virtance
 from network.models import Network
 from compute.webvirt import WebVirtCompute
 from .filters import ComputeFilter, ComputeOverviewFilter
-from .tables import ComputeHTMxTable, ComputeOverviewHTMxTable, ComputeStoragesTable, ComputeNetworksTable
+from .tables import (
+    ComputeHTMxTable,
+    ComputeOverviewHTMxTable,
+    ComputeStoragesTable,
+    ComputeNetworksTable,
+    ComputeNwfilterTable,
+)
 from .forms import FormNetworkCreate, FormStorageDirCreate, FormStorageRBDCreate
 from .forms import FormCompute, FormStartAction, FormAutostartAction
 from .forms import FormSecretCreateAction, FormSecretValueAction, FormNwfilterCreateAction
@@ -593,8 +599,19 @@ class AdminComputeNwfiltersView(AdminTemplateView):
         wvcomp = WebVirtCompute(compute.token, compute.hostname)
         res = wvcomp.get_nwfilters()
         messages.error(self.request, res.get("detail"))
+
+        nwfilters_table_data = []
+        for storage in res.get("nwfilters"):
+            nwfilters_table_data.append(
+                {
+                    "name": storage.get("name"),
+                }
+            )
+        nwfilters_table = ComputeNwfilterTable(nwfilters_table_data)
+        RequestConfig(self.request).configure(nwfilters_table)
+
         context["compute"] = compute
-        context["nwfilters"] = res.get("nwfilters")
+        context["nwfilters_table"] = nwfilters_table
         return context
 
 
