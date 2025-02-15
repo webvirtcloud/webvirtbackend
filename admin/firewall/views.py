@@ -29,6 +29,11 @@ class AdminFirewallDataView(AdminTemplateView):
     def get_object(self):
         return get_object_or_404(Firewall, pk=self.kwargs["pk"], is_deleted=False)
 
+    def get_template_names(self):
+        if self.request.htmx:
+            return "django_tables2/table_partial.html"
+        return self.template_name
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         firewall = self.get_object()

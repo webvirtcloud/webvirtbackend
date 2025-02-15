@@ -1,10 +1,10 @@
 from django.urls import reverse
 from django.shortcuts import redirect, get_object_or_404
-from django_tables2 import SingleTableMixin
+from django_tables2 import SingleTableMixin, RequestConfig
 from django_filters.views import FilterView
 
 from .filters import FloatIPFilter
-from .tables import FloatIPHTMxTable
+from .tables import FloatIPHTMxTable, FloatIPErrorTable
 from floating_ip.models import FloatIP, FloatIPError
 from admin.mixins import AdminTemplateView, AdminView
 
@@ -29,11 +29,21 @@ class AdminFloatIPDataView(AdminTemplateView):
     def get_object(self):
         return get_object_or_404(FloatIP, pk=self.kwargs["pk"], is_deleted=False)
 
+    def get_template_names(self):
+        if self.request.htmx:
+            return "django_tables2/table_partial.html"
+        return self.template_name
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         floatip = self.get_object()
+
+        floating_ip_errors = FloatIPError.objects.filter(floatip=floatip)
+        floating_ip_errors_table = FloatIPErrorTable(floating_ip_errors)
+        RequestConfig(self.request).configure(floating_ip_errors_table)
+
         context["floating_ip"] = floatip
-        context["floating_ip_errors"] = FloatIPError.objects.filter(floatip=floatip)
+        context["floating_ip_errors_table"] = floating_ip_errors_table
         return context
 
 

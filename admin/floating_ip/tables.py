@@ -1,6 +1,6 @@
 import django_tables2 as tables
 
-from floating_ip.models import FloatIP
+from floating_ip.models import FloatIP, FloatIPError
 
 
 class FloatIPHTMxTable(tables.Table):
@@ -14,3 +14,10 @@ class FloatIPHTMxTable(tables.Table):
         model = FloatIP
         fields = ("id", "user", "cidr", "virtance", "created")
         template_name = "django_tables2/bootstrap.html"
+
+
+class FloatIPErrorTable(tables.Table):
+    class Meta:
+        model = FloatIPError
+        template_name = "django_tables2/bootstrap_no_query.html"
+        fields = ("event", "message", "created")
