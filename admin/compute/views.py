@@ -107,7 +107,7 @@ class AdminComputeDeleteView(AdminDeleteView):
 class AdminComputeOverviewView(SingleTableMixin, FilterView, AdminView):
     table_class = ComputeOverviewHTMxTable
     filterset_class = ComputeOverviewFilter
-    template_name = "admin/compute/overview.html"
+    template_name = "admin/compute/overview/index.html"
 
     def get_queryset(self):
         compute = get_object_or_404(Compute, pk=self.kwargs.get("pk"), is_deleted=False)
@@ -135,7 +135,7 @@ class AdminComputeOverviewView(SingleTableMixin, FilterView, AdminView):
 
 
 class AdminComputeStoragesView(AdminTemplateView):
-    template_name = "admin/compute/storages.html"
+    template_name = "admin/compute/storages/index.html"
 
     def get_template_names(self):
         if self.request.htmx:
@@ -170,7 +170,7 @@ class AdminComputeStoragesView(AdminTemplateView):
 
 
 class AdminComputeStorageDirCreateView(AdminFormView):
-    template_name = "admin/compute/storage_dir_create.html"
+    template_name = "admin/compute/storages/storage_dir_create.html"
     form_class = FormStorageDirCreate
 
     def form_valid(self, form):
@@ -193,7 +193,7 @@ class AdminComputeStorageDirCreateView(AdminFormView):
 
 
 class AdminComputeStorageRBDCreateView(AdminFormView):
-    template_name = "admin/compute/storage_rbd_create.html"
+    template_name = "admin/compute/storages/storage_rbd_create.html"
     form_class = FormStorageRBDCreate
 
     def get_form(self, form_class=None):
@@ -232,7 +232,7 @@ class AdminComputeStorageRBDCreateView(AdminFormView):
 
 
 class AdminComputeStorageView(AdminTemplateView):
-    template_name = "admin/compute/storage.html"
+    template_name = "admin/compute/storages/storage.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -287,7 +287,7 @@ class AdminComputeStorageDeleteView(AdminView):
 
 
 class AdminComputeStorageVolumeCreateView(AdminFormView):
-    template_name = "admin/compute/volume_create.html"
+    template_name = "admin/compute/storages/volume_create.html"
     form_class = FormVolumeCreateAction
 
     def form_valid(self, form):
@@ -316,7 +316,7 @@ class AdminComputeStorageVolumeCreateView(AdminFormView):
 
 
 class AdminComputeStorageVolumeCloneView(AdminFormView):
-    template_name = "admin/compute/volume_clone.html"
+    template_name = "admin/compute/storages/volume_clone.html"
     form_class = FormVolumeCloneAction
 
     def form_valid(self, form):
@@ -343,7 +343,7 @@ class AdminComputeStorageVolumeCloneView(AdminFormView):
 
 
 class AdminComputeStorageVolumeResizeView(AdminFormView):
-    template_name = "admin/compute/volume_resize.html"
+    template_name = "admin/compute/storages/volume_resize.html"
     form_class = FormVolumeResizeAction
 
     def form_valid(self, form):
@@ -382,7 +382,7 @@ class AdminComputeStorageVolumeDeleteView(AdminView):
 
 
 class AdminComputeNetworkCreateView(AdminFormView):
-    template_name = "admin/compute/network_create.html"
+    template_name = "admin/compute/networks/create.html"
     form_class = FormNetworkCreate
 
     def get_form(self, form_class=None):
@@ -417,7 +417,7 @@ class AdminComputeNetworkCreateView(AdminFormView):
 
 
 class AdminComputeNetworksView(AdminTemplateView):
-    template_name = "admin/compute/networks.html"
+    template_name = "admin/compute/networks/index.html"
 
     def get_template_names(self):
         if self.request.htmx:
@@ -432,13 +432,13 @@ class AdminComputeNetworksView(AdminTemplateView):
         messages.error(self.request, res.get("detail"))
 
         networks_table_data = []
-        for storage in res.get("networks"):
+        for network in res.get("networks"):
             networks_table_data.append(
                 {
-                    "name": storage.get("name"),
-                    "device": storage.get("device"),
-                    "active": storage.get("active"),
-                    "forward": storage.get("forward"),
+                    "name": network.get("name"),
+                    "device": network.get("device"),
+                    "active": network.get("active"),
+                    "forward": network.get("forward"),
                 }
             )
         networks_table = ComputeNetworksTable(networks_table_data)
@@ -450,7 +450,7 @@ class AdminComputeNetworksView(AdminTemplateView):
 
 
 class AdminComputeNetworkView(AdminTemplateView):
-    template_name = "admin/compute/network.html"
+    template_name = "admin/compute/networks/network.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -505,7 +505,12 @@ class AdminComputeNetworkDeleteView(AdminView):
 
 
 class AdminComputeSecretsView(AdminTemplateView):
-    template_name = "admin/compute/secrets.html"
+    template_name = "admin/compute/secrets/index.html"
+
+    def get_template_names(self):
+        if self.request.htmx:
+            return "django_tables2/table_partial.html"
+        return self.template_name
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -533,7 +538,7 @@ class AdminComputeSecretsView(AdminTemplateView):
 
 
 class AdminComputeSecretCreateView(AdminFormView):
-    template_name = "admin/compute/secret_create.html"
+    template_name = "admin/compute/secrets/create.html"
     form_class = FormSecretCreateAction
 
     def form_valid(self, form):
@@ -561,7 +566,7 @@ class AdminComputeSecretCreateView(AdminFormView):
 
 
 class AdminComputeSecretValueView(AdminFormView):
-    template_name = "admin/compute/secret_value.html"
+    template_name = "admin/compute/secrets/value.html"
     form_class = FormSecretValueAction
 
     def get_form(self, form_class=None):
@@ -606,7 +611,12 @@ class AdminComputeSecretDeleteView(AdminView):
 
 
 class AdminComputeNwfiltersView(AdminTemplateView):
-    template_name = "admin/compute/nwfilters.html"
+    template_name = "admin/compute/nwfilters/index.html"
+
+    def get_template_names(self):
+        if self.request.htmx:
+            return "django_tables2/table_partial.html"
+        return self.template_name
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -616,10 +626,10 @@ class AdminComputeNwfiltersView(AdminTemplateView):
         messages.error(self.request, res.get("detail"))
 
         nwfilters_table_data = []
-        for storage in res.get("nwfilters"):
+        for nwfilter in res.get("nwfilters"):
             nwfilters_table_data.append(
                 {
-                    "name": storage.get("name"),
+                    "name": nwfilter.get("name"),
                 }
             )
         nwfilters_table = ComputeNwfilterTable(nwfilters_table_data)
@@ -631,7 +641,7 @@ class AdminComputeNwfiltersView(AdminTemplateView):
 
 
 class AdminComputeNwfilterCreateView(AdminFormView):
-    template_name = "admin/compute/nwfilter_create.html"
+    template_name = "admin/compute/nwfilters/create.html"
     form_class = FormNwfilterCreateAction
 
     def form_valid(self, form):
@@ -654,7 +664,7 @@ class AdminComputeNwfilterCreateView(AdminFormView):
 
 
 class AdminComputeNwfilterView(AdminTemplateView):
-    template_name = "admin/compute/nwfilter.html"
+    template_name = "admin/compute/nwfilters/nwfilter.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

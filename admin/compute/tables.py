@@ -27,8 +27,8 @@ class ComputeHTMxTable(tables.Table):
 
 
 class ComputeOverviewHTMxTable(tables.Table):
-    id = tables.TemplateColumn(template_name="admin/compute/virtance_id_column.html", verbose_name="ID")
-    user = tables.TemplateColumn(template_name="admin/compute/user_column.html", verbose_name="User")
+    id = tables.TemplateColumn(template_name="admin/compute/overview/id_column.html", verbose_name="ID")
+    user = tables.TemplateColumn(template_name="admin/compute/overview/user_column.html", verbose_name="User")
     size = tables.Column(accessor="size.name", verbose_name="Size")
     region = tables.Column(accessor="region.name", verbose_name="Region")
     locked = tables.Column(accessor="is_locked", verbose_name="Locked")
@@ -40,7 +40,7 @@ class ComputeOverviewHTMxTable(tables.Table):
 
 
 class ComputeStoragesTable(tables.Table):
-    name = tables.TemplateColumn(template_name="admin/compute/storage_name_column.html", verbose_name="Name")
+    name = tables.TemplateColumn(template_name="admin/compute/storages/storage_name_column.html", verbose_name="Name")
     size = tables.TemplateColumn("{{ value|filesizeformat }}", verbose_name="Size")
     type = tables.TemplateColumn("{{ value|upper }}", verbose_name="Type")
     active = tables.Column(accessor="active", verbose_name="Active")
@@ -53,7 +53,7 @@ class ComputeStoragesTable(tables.Table):
 
 
 class ComputeNetworksTable(tables.Table):
-    name = tables.TemplateColumn(template_name="admin/compute/network_name_column.html", verbose_name="Name")
+    name = tables.TemplateColumn(template_name="admin/compute/networks/name_column.html", verbose_name="Name")
     device = tables.Column(accessor="device", verbose_name="Device")
     active = tables.Column(accessor="active", verbose_name="Active")
     forward = tables.TemplateColumn("{{ value|capfirst }}", verbose_name="Forward")
@@ -65,9 +65,9 @@ class ComputeNetworksTable(tables.Table):
 
 
 class ComputeNwfilterTable(tables.Table):
-    name = tables.TemplateColumn(template_name="admin/compute/nwfilter_name_column.html", verbose_name="Name")
+    name = tables.TemplateColumn(template_name="admin/compute/nwfilters/name_column.html", verbose_name="Name")
     action = tables.TemplateColumn(
-        template_name="admin/compute/nwfilter_action_column.html",
+        template_name="admin/compute/nwfilters/action_column.html",
         verbose_name="Action",
         attrs={"th": {"data-type": "action"}, "td": {"data-type": "action"}},
         orderable=False,
@@ -80,10 +80,10 @@ class ComputeNwfilterTable(tables.Table):
 
 
 class ComputeSecretsTable(tables.Table):
-    uuid = tables.TemplateColumn(template_name="admin/compute/secret_uuid_column.html", verbose_name="Name")
+    uuid = tables.TemplateColumn(template_name="admin/compute/secrets/uuid_column.html", verbose_name="Name")
     type = tables.Column(empty_values=(), verbose_name="Type")
     action = tables.TemplateColumn(
-        template_name="admin/compute/secret_action_column.html",
+        template_name="admin/compute/secrets/action_column.html",
         verbose_name="Action",
         attrs={"th": {"data-type": "action"}, "td": {"data-type": "action"}},
         orderable=False,
