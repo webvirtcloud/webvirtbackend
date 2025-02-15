@@ -40,7 +40,7 @@ class ComputeOverviewHTMxTable(tables.Table):
 
 
 class ComputeStoragesTable(tables.Table):
-    name = tables.TemplateColumn(template_name="admin/compute/storages/storage_name_column.html", verbose_name="Name")
+    name = tables.TemplateColumn(template_name="admin/compute/storages/name_column.html", verbose_name="Name")
     size = tables.TemplateColumn("{{ value|filesizeformat }}", verbose_name="Size")
     type = tables.TemplateColumn("{{ value|upper }}", verbose_name="Type")
     active = tables.Column(accessor="active", verbose_name="Active")

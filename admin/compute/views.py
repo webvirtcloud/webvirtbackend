@@ -170,7 +170,7 @@ class AdminComputeStoragesView(AdminTemplateView):
 
 
 class AdminComputeStorageDirCreateView(AdminFormView):
-    template_name = "admin/compute/storages/storage_dir_create.html"
+    template_name = "admin/compute/storages/create_dir_storage.html"
     form_class = FormStorageDirCreate
 
     def form_valid(self, form):
@@ -193,7 +193,7 @@ class AdminComputeStorageDirCreateView(AdminFormView):
 
 
 class AdminComputeStorageRBDCreateView(AdminFormView):
-    template_name = "admin/compute/storages/storage_rbd_create.html"
+    template_name = "admin/compute/storages/create_rbd_storage.html"
     form_class = FormStorageRBDCreate
 
     def get_form(self, form_class=None):
@@ -287,7 +287,7 @@ class AdminComputeStorageDeleteView(AdminView):
 
 
 class AdminComputeStorageVolumeCreateView(AdminFormView):
-    template_name = "admin/compute/storages/volume_create.html"
+    template_name = "admin/compute/storages/volumes/create.html"
     form_class = FormVolumeCreateAction
 
     def form_valid(self, form):
@@ -316,7 +316,7 @@ class AdminComputeStorageVolumeCreateView(AdminFormView):
 
 
 class AdminComputeStorageVolumeCloneView(AdminFormView):
-    template_name = "admin/compute/storages/volume_clone.html"
+    template_name = "admin/compute/storages/volumes/clone.html"
     form_class = FormVolumeCloneAction
 
     def form_valid(self, form):
@@ -343,7 +343,7 @@ class AdminComputeStorageVolumeCloneView(AdminFormView):
 
 
 class AdminComputeStorageVolumeResizeView(AdminFormView):
-    template_name = "admin/compute/storages/volume_resize.html"
+    template_name = "admin/compute/storages/volumes/resize.html"
     form_class = FormVolumeResizeAction
 
     def form_valid(self, form):
