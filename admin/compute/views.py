@@ -9,8 +9,8 @@ from compute.models import Compute
 from virtance.models import Virtance
 from network.models import Network
 from compute.webvirt import WebVirtCompute
-from .filters import ComputeFilter
-from .tables import ComputeHTMxTable
+from .filters import ComputeFilter, ComputeOverviewFilter
+from .tables import ComputeHTMxTable, ComputeOverviewHTMxTable
 from .forms import FormNetworkCreate, FormStorageDirCreate, FormStorageRBDCreate
 from .forms import FormCompute, FormStartAction, FormAutostartAction
 from .forms import FormSecretCreateAction, FormSecretValueAction, FormNwfilterCreateAction
@@ -97,18 +97,32 @@ class AdminComputeDeleteView(AdminDeleteView):
         return context
 
 
-class AdminComputeOverviewView(AdminTemplateView):
+class AdminComputeOverviewView(SingleTableMixin, FilterView, AdminView):
+    table_class = ComputeOverviewHTMxTable
+    filterset_class = ComputeOverviewFilter
     template_name = "admin/compute/overview.html"
+
+    def get_queryset(self):
+        compute = get_object_or_404(Compute, pk=self.kwargs.get("pk"), is_deleted=False)
+        return Virtance.objects.filter(compute=compute, is_deleted=False)
+
+    def get_filterset_kwargs(self, filterset_class):
+        kwargs = super().get_filterset_kwargs(filterset_class)
+        kwargs["compute_id"] = self.kwargs.get("pk")
+        return kwargs
+
+    def get_template_names(self):
+        if self.request.htmx:
+            return "django_tables2/table_partial.html"
+        return self.template_name
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        compute = get_object_or_404(Compute, pk=kwargs.get("pk"), is_deleted=False)
-        virtances = Virtance.objects.filter(compute=compute, is_deleted=False)
+        compute = get_object_or_404(Compute, pk=self.kwargs.get("pk"), is_deleted=False)
         wvcomp = WebVirtCompute(compute.token, compute.hostname)
         res = wvcomp.get_host_overview()
         messages.error(self.request, res.get("detail"))
         context["compute"] = compute
-        context["virtances"] = virtances
         context["host_overview"] = res
         return context
 

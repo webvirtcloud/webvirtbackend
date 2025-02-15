@@ -1,6 +1,7 @@
 import django_tables2 as tables
 
 from compute.models import Compute
+from virtance.models import Virtance
 
 
 class ComputeHTMxTable(tables.Table):
@@ -22,4 +23,17 @@ class ComputeHTMxTable(tables.Table):
     class Meta:
         model = Compute
         fields = ("name", "hostname", "arch", "description", "region", "active", "created")
+        template_name = "django_tables2/bootstrap.html"
+
+
+class ComputeOverviewHTMxTable(tables.Table):
+    id = tables.TemplateColumn(template_name="admin/compute/virtance_id_column.html", verbose_name="ID")
+    user = tables.TemplateColumn(template_name="admin/compute/user_column.html", verbose_name="User")
+    size = tables.Column(accessor="size.name", verbose_name="Size")
+    region = tables.Column(accessor="region.name", verbose_name="Region")
+    locked = tables.Column(accessor="is_locked", verbose_name="Locked")
+
+    class Meta:
+        model = Virtance
+        fields = ("id", "user", "size", "region", "status", "locked", "created")
         template_name = "django_tables2/bootstrap.html"

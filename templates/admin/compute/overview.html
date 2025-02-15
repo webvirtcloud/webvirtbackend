@@ -1,5 +1,6 @@
 {% extends "admin/compute/base.html" %} 
 {% load static %} 
+{% load render_table from django_tables2 %}
 {% block computecontent %}
 <main>
   <div class="overflow-hidden bg-card border sm:rounded-lg sm:shadow mb-8">
@@ -75,124 +76,18 @@
   </div>
   
   <div class="flex items-center justify-between mb-6">
-    <h1 class="text-2xl font-medium">Virtances</h1>
+    <h1 class="text-2xl font-medium">Computes</h1>
+    <div class="flex items-center gap-2">
+      <div class="relative [&_input]:pl-8 [&_input]:max-w-[180px] [&_div]:mb-0">
+        <div class="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none">
+          <svg class="w-4 h-4 text-muted-foreground dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+          </svg>
+        </div>
+        <input name="query" hx-get="{% url 'admin_compute_overview' compute.pk %}" hx-trigger="keyup changed delay:500ms" hx-target="div.table-container" hx-swap="outerHTML" hx-indicator=".progress" type="text" class="search-input" placeholder="Search...">
+      </div>
+    </div>
   </div>
-  {% if virtances %}
-  <div
-    class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg"
-  >
-    <table class="min-w-full divide-y divide-gray-300">
-      <thead class="bg-gray-50">
-        <tr>
-          <th
-            scope="col"
-            class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold sm:pl-6"
-          >
-            #
-          </th>
-          <th
-            scope="col"
-            class="px-3 py-3.5 text-left text-sm font-semibold"
-          >
-            ID
-          </th>
-          <th
-            scope="col"
-            class="px-3 py-3.5 text-left text-sm font-semibold"
-          >
-            User
-          </th>
-          <th
-            scope="col"
-            class="px-3 py-3.5 text-left text-sm font-semibold"
-          >
-            Size
-          </th>
-          <th
-            scope="col"
-            class="px-3 py-3.5 text-left text-sm font-semibold"
-          >
-            Region
-          </th>
-          <th
-            scope="col"
-            class="px-3 py-3.5 text-left text-sm font-semibold"
-          >
-            Compute
-          </th>
-          <th
-            scope="col"
-            class="px-3 py-3.5 text-left text-sm font-semibold"
-          >
-            Status
-          </th>
-          <th
-            scope="col"
-            class="px-3 py-3.5 text-left text-sm font-semibold"
-          >
-            Locked
-          </th>
-          <th
-            scope="col"
-            class="px-3 py-3.5 text-left text-sm font-semibold"
-          >
-            Created
-          </th>
-        </tr>
-      </thead>
-      <tbody class="divide-y divide-gray-200 bg-white">
-        {% for virtance in virtances %}
-        <tr>
-          <td
-            class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-6"
-          >
-            {{ forloop.counter }}
-          </td>
-          <td class="whitespace-nowrap px-3 py-4 text-sm text-muted-foreground">
-
-            <a 
-              class="text-blue-600 hover:text-blue-900" 
-              href="{% url 'admin_virtance_data' virtance.id %}"
-              >{{ virtance.id }}</a
-            >
-          </td>
-          <td class="whitespace-nowrap px-3 py-4 text-sm text-muted-foreground">
-            <a 
-              class="text-blue-600 hover:text-blue-900" 
-              href="{% url 'admin_user_data' virtance.user.id %}"
-              >{{ virtance.user.email }}</a
-            >
-            
-          </td>
-          <td class="whitespace-nowrap px-3 py-4 text-sm text-muted-foreground">
-            {{ virtance.size.name }}
-          </td>
-          <td class="whitespace-nowrap px-3 py-4 text-sm text-muted-foreground">
-            {{ virtance.region.name }}
-          </td>
-          <td class="whitespace-nowrap px-3 py-4 text-sm text-muted-foreground">
-            {% if virtance.compute %}
-              {{ virtance.compute.name }}
-            {% endif %}
-          </td>
-          <td class="whitespace-nowrap px-3 py-4 text-sm text-muted-foreground">
-            {{ virtance.status|capfirst }} {% if virtance.event %}({{ virtance.event|capfirst }}){% endif %}
-          </td>
-          <td class="whitespace-nowrap px-3 py-4 text-sm text-muted-foreground">
-            {{ virtance.is_locked }}
-          </td>
-          <td class="whitespace-nowrap px-3 py-4 text-sm text-muted-foreground">
-            {{ virtance.created}}
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
-  {% else %}
-  <div class="bg-white border p-4 md:p-8 rounded-lg text-center">
-    <h2 class="text-xl font-medium">No virtances found</h2>
-  </div>
-  {% endif %}
+  {% render_table table %}
 </main>
 {% endblock %}
