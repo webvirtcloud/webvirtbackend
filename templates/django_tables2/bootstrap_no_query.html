@@ -8,13 +8,7 @@
 <thead {{ table.attrs.thead.as_html }}>
 <tr>
     {% for column in table.columns %}
-    <th {{ column.attrs.th.as_html }}
-        hx-get="{% querystring table.prefixed_order_by_field=column.order_by_alias.next %}"
-        hx-trigger="click"
-        hx-target="div.table-container"
-        hx-swap="outerHTML"
-        hx-indicator=".progress"
-        style="cursor: pointer;">
+    <th {{ column.attrs.th.as_html }}>
         {{ column.header }}
     </th>
     {% endfor %}
