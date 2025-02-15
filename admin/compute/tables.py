@@ -37,3 +37,16 @@ class ComputeOverviewHTMxTable(tables.Table):
         model = Virtance
         fields = ("id", "user", "size", "region", "status", "locked", "created")
         template_name = "django_tables2/bootstrap.html"
+
+
+class ComputeStoragesTable(tables.Table):
+    name = tables.TemplateColumn(template_name="admin/compute/storage_name_column.html", verbose_name="Name")
+    size = tables.TemplateColumn("{{ value|filesizeformat }}", verbose_name="Size")
+    type = tables.TemplateColumn("{{ value|upper }}", verbose_name="Type")
+    active = tables.Column(accessor="active", verbose_name="Active")
+    volumes = tables.Column(accessor="volumes", verbose_name="Volumes")
+
+    class Meta:
+        model = Compute
+        fields = ("name", "type", "size", "active", "volumes")
+        template_name = "django_tables2/bootstrap_no_query.html"

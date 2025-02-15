@@ -1,5 +1,6 @@
 {% extends "admin/compute/base.html" %} 
 {% load static %} 
+{% load render_table from django_tables2 %}
 {% block computecontent %}
 <main>
   <div class="flex items-center justify-between mb-6">
@@ -17,7 +18,10 @@
       >
     </div>
   </div>
-  {% if storages %}
+  {% render_table storages_table %}
+
+
+  <!-- {% if storages %}
     <div
       class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg"
     >
@@ -90,7 +94,7 @@
     <div class="bg-white border p-4 md:p-8 rounded-lg text-center">
       <h2 class="text-xl font-medium">No storages</h2>
     </div>
-  {% endif %}
+  {% endif %} -->
 
 </main>
 {% endblock %}

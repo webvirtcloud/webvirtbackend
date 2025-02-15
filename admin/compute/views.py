@@ -2,15 +2,15 @@ from django.contrib import messages
 from django.urls import reverse_lazy, reverse
 from django.shortcuts import redirect, get_object_or_404
 from crispy_forms.helper import FormHelper
-from django_tables2 import SingleTableMixin
 from django_filters.views import FilterView
+from django_tables2 import SingleTableMixin, RequestConfig
 
 from compute.models import Compute
 from virtance.models import Virtance
 from network.models import Network
 from compute.webvirt import WebVirtCompute
 from .filters import ComputeFilter, ComputeOverviewFilter
-from .tables import ComputeHTMxTable, ComputeOverviewHTMxTable
+from .tables import ComputeHTMxTable, ComputeOverviewHTMxTable, ComputeStoragesTable
 from .forms import FormNetworkCreate, FormStorageDirCreate, FormStorageRBDCreate
 from .forms import FormCompute, FormStartAction, FormAutostartAction
 from .forms import FormSecretCreateAction, FormSecretValueAction, FormNwfilterCreateAction
@@ -130,14 +130,35 @@ class AdminComputeOverviewView(SingleTableMixin, FilterView, AdminView):
 class AdminComputeStoragesView(AdminTemplateView):
     template_name = "admin/compute/storages.html"
 
+    def get_template_names(self):
+        if self.request.htmx:
+            return "django_tables2/table_partial.html"
+        return self.template_name
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         compute = get_object_or_404(Compute, pk=kwargs.get("pk"), is_deleted=False)
         wvcomp = WebVirtCompute(compute.token, compute.hostname)
         res = wvcomp.get_storages()
         messages.error(self.request, res.get("detail"))
+
+        stotages_table_data = []
+        for storage in res.get("storages"):
+            stotages_table_data.append(
+                {
+                    "name": storage.get("name"),
+                    "type": storage.get("type"),
+                    "size": storage.get("size"),
+                    "active": storage.get("active"),
+                    "state": storage.get("state"),
+                    "volumes": storage.get("volumes"),
+                }
+            )
+        storages_table = ComputeStoragesTable(stotages_table_data)
+        RequestConfig(self.request).configure(storages_table)
+
         context["compute"] = compute
-        context["storages"] = res.get("storages")
+        context["storages_table"] = storages_table
         return context
 
 
