@@ -1,6 +1,6 @@
 import django_tables2 as tables
 
-from image.models import Image
+from image.models import Image, ImageError
 
 
 class ImageHTMxTable(tables.Table):
@@ -12,3 +12,10 @@ class ImageHTMxTable(tables.Table):
         model = Image
         fields = ("id", "user", "type", "file_size", "disk_size", "created")
         template_name = "django_tables2/bootstrap.html"
+
+
+class ImageErrorTable(tables.Table):
+    class Meta:
+        model = ImageError
+        template_name = "django_tables2/bootstrap_no_query.html"
+        fields = ("event", "message", "created")
