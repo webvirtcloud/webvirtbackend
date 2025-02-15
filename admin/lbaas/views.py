@@ -1,11 +1,11 @@
 from django.urls import reverse
 from django.http import HttpResponse
 from django.shortcuts import redirect, get_object_or_404
-from django_tables2 import SingleTableMixin
 from django_filters.views import FilterView
+from django_tables2 import SingleTableMixin, RequestConfig
 
 from .filters import LBaaSFilter
-from .tables import LBaaSHTMxTable
+from .tables import LBaaSHTMxTable, HealthTable, RulesTable, VirtancesTable
 from admin.mixins import AdminView, AdminTemplateView
 from network.models import IPAddress, Network
 from lbaas.models import LBaaS, LBaaSForwadRule, LBaaSVirtance
@@ -36,9 +36,33 @@ class AdminLBaaSDataView(AdminTemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         lbaas = self.get_object()
+
+        health = [
+            {
+                "protocol": lbaas.check_protocol,
+                "port": lbaas.check_port,
+                "path": lbaas.check_path,
+                "interval": lbaas.check_interval_seconds,
+                "timeout": lbaas.check_timeout_seconds,
+                "healthy": lbaas.check_healthy_threshold,
+                "unhealthy": lbaas.check_unhealthy_threshold,
+            },
+        ]
+        health_table = HealthTable(health)
+        RequestConfig(self.request).configure(health_table)
+
+        rules = LBaaSForwadRule.objects.filter(lbaas=lbaas, is_deleted=False)
+        rules_table = RulesTable(rules)
+        RequestConfig(self.request).configure(rules_table)
+
+        virtances = LBaaSVirtance.objects.filter(lbaas=lbaas, is_deleted=False)
+        virtances_table = VirtancesTable(virtances)
+        RequestConfig(self.request).configure(virtances_table)
+
         context["lbaas"] = lbaas
-        context["rules"] = LBaaSForwadRule.objects.filter(lbaas=lbaas, is_deleted=False)
-        context["virtances"] = LBaaSVirtance.objects.filter(lbaas=lbaas, is_deleted=False)
+        context["rules_table"] = rules_table
+        context["health_table"] = health_table
+        context["virtances_table"] = virtances_table
         context["ipv4_public"] = IPAddress.objects.get(network__type=Network.PUBLIC, virtance=lbaas.virtance)
         context["ipv4_private"] = IPAddress.objects.get(network__type=Network.PRIVATE, virtance=lbaas.virtance)
         context["ipv4_compute"] = IPAddress.objects.get(network__type=Network.COMPUTE, virtance=lbaas.virtance)
