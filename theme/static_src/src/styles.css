@@ -258,7 +258,7 @@
   }
 
   .search-input {
-    @apply appearance-none h-9 bg-background border !border-input shadow-sm shadow-black/5 rounded-lg focus-visible:border-ring focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50;
+    @apply appearance-none placeholder:text-muted-foreground h-9 bg-background border !border-input shadow-sm shadow-black/5 rounded-lg focus-visible:border-ring focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50;
   }
 
   @media (min-width: 640px) {
