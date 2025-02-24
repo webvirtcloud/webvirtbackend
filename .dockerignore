@@ -1,5 +1,7 @@
 .git
 .venv
+.idea
 .mysql
 .flake8
+.vscode
 theme/static_src
