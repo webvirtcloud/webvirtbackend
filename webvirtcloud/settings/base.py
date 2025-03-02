@@ -3,6 +3,8 @@ Django settings for webvirtcloud project.
 """
 
 import os
+import uuid
+import base64
 from pathlib import Path
 from celery.schedules import crontab
 from theme.crispy_forms import WEBVIRTCLOUD_CRISPY_CLASS_CONVERTERS
@@ -227,9 +229,11 @@ CSRF_TRUSTED_ORIGINS = os.environ.get("CSRF_TRUSTED_ORIGINS", [f"https://{BASE_D
 # Panel settings
 #
 # Encryption key
-# Generate a new key with the following command:
+# Generate a new own key with the following command:
 # python3 -c 'import os, base64; print(base64.urlsafe_b64encode(os.urandom(32)).decode())'
-ENCRYPTION_KEY = os.environ.get("ENCRYPTION_KEY", "5yxdlGC9Dj-65vcwNBD_vTIeiyALevCLIJq89OCaToY=")
+# or use the default key generated unique static node ID
+UNIQ_NODE_ID = f"webvirtcloud-{uuid.getnode():x}".ljust(32, "0").encode()
+ENCRYPTION_KEY = os.environ.get("ENCRYPTION_KEY", base64.urlsafe_b64encode(UNIQ_NODE_ID).decode())
 
 # Public images URL storage (Distributions, Applicatons)
 PUBLIC_IMAGES_URL = os.environ.get("PUBLIC_IMAGES_URL", "https://cloud-images.webvirt.cloud/")
