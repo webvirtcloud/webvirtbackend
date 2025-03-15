@@ -41,3 +41,20 @@ class SizeSerializer(serializers.ModelSerializer):
 
     def get_regions(self, obj):
         return [region.slug for region in obj.regions.all()]
+
+
+class DBMSSerializer(serializers.ModelSerializer):
+    available = serializers.BooleanField(source="is_active")
+    required_size = SizeSerializer()
+
+    class Meta:
+        model = Size
+        fields = (
+            "slug",
+            "name",
+            "description",
+            "engine",
+            "version",
+            "available",
+            "required_size",
+        )
