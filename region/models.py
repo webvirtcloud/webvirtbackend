@@ -12,6 +12,7 @@ class Feature(models.Model):
         ("one_click", "1Click"),
         ("floating_ip", "Float-IP"),
         ("load_balancer", "LBaaS"),
+        ("database", "DBaaS"),
     )
 
     name = models.CharField(choices=FEATURE_CHOICES, unique=True, max_length=100)

@@ -9,6 +9,7 @@ urlpatterns = [
     re_path(r"user/", include("admin.user.urls")),
     re_path(r"account/", include("admin.account.urls")),
     re_path(r"region/", include("admin.region.urls")),
+    re_path(r"dbms/", include("admin.dbms.urls")),
     re_path(r"size/", include("admin.size.urls")),
     re_path(r"template/", include("admin.template.urls")),
     re_path(r"image/", include("admin.image.urls")),
