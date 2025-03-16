@@ -3,10 +3,9 @@ from django.urls import reverse_lazy
 from django_tables2 import SingleTableMixin
 from django_filters.views import FilterView
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout
 from crispy_forms.bootstrap import InlineCheckboxes
 
-from size.models import DBMS
+from size.models import Size, DBMS
 from .filters import DBMSFilter
 from .tables import DBMSHTMxTable
 from .forms import FormDBMS, CustomModelChoiceField, MIN_MEMORY_SIZE
@@ -17,6 +16,9 @@ class AdminDBMSIndexView(SingleTableMixin, FilterView, AdminView):
     table_class = DBMSHTMxTable
     filterset_class = DBMSFilter
     template_name = "admin/dbms/index.html"
+
+    def get_queryset(self):
+        return DBMS.objects.filter(is_deleted=False)
 
     def get_template_names(self):
         if self.request.htmx:
@@ -29,37 +31,44 @@ class AdminDBMSCreateView(AdminFormView):
     form_class = FormDBMS
     success_url = reverse_lazy("admin_dbms_index")
 
+    def form_valid(self, form):
+        print(form.cleaned_data)
+        form.save()
+        return super(AdminDBMSCreateView, self).form_valid(form)
+
 
 class AdminDBMSUpdateView(AdminUpdateView):
     template_name = "admin/dbms/update.html"
     template_name_suffix = "_form"
     model = DBMS
     success_url = reverse_lazy("admin_dbms_index")
-    fields = "__all__"
+    fields = (
+        "name",
+        "slug",
+        "description",
+        "engine",
+        "version",
+        "required_size",
+        "is_active",
+    )
 
     def __init__(self, *args, **kwargs):
-        super(AdminSizeUpdateView, self).__init__(*args, **kwargs)
+        super(AdminDBMSUpdateView, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_tag = False
-        self.helper.layout = Layout(
-            "name",
-            "slug",
-            "description",
-            "engine",
-            "version",
-            "required_size",
-            "is_active",
-        )
 
     def get_form(self, form_class=None):
-        form = super(AdminSizeUpdateView, self).get_form(form_class)
+        form = super(AdminDBMSUpdateView, self).get_form(form_class)
+        form.fields["engine"].empty_label = None
         form.fields["required_size"] = CustomModelChoiceField(
-            queryset=Size.objects.filter(memory__gte=MIN_MEMORY_SIZE, is_deleted=False)
+            empty_label=None,
+            label="Minimal Required Size",
+            queryset=Size.objects.filter(memory__gte=MIN_MEMORY_SIZE, is_deleted=False),
         )
         return form
 
     def get_context_data(self, **kwargs):
-        context = super(AdminSizeUpdateView, self).get_context_data(**kwargs)
+        context = super(AdminDBMSUpdateView, self).get_context_data(**kwargs)
         context["helper"] = self.helper
         return context
 

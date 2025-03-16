@@ -19,6 +19,9 @@ class AdminSizeIndexView(SingleTableMixin, FilterView, AdminView):
     filterset_class = SizeFilter
     template_name = "admin/size/index.html"
 
+    def get_queryset(self):
+        return Size.objects.filter(is_deleted=False)
+
     def get_template_names(self):
         if self.request.htmx:
             return "django_tables2/table_partial.html"

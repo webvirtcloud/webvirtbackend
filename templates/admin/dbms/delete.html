@@ -3,7 +3,7 @@
 {% load crispy_forms_tags %}
 {% block content %}
 <div class="flex min-h-screen items-start justify-center py-12 px-4 sm:px-6 lg:px-8">
-  <div class="w-full max-w-md space-y-4 bg-white border p-4 rounded-lg md:p-8">
+  <div class="w-full max-w-md space-y-4 bg-card p-4 md:p-8 rounded-lg border shadow-sm">
     <a href="{% url 'admin_dbms_index' %}"
       class="inline-flex items-center text-sm p-2 bg-muted rounded-md space-x-2"><svg
         xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
@@ -17,7 +17,7 @@
     </div>
 
     <p class="text-muted-foreground text-sm">
-      Are you sure you want to delete "<strong>{{ object.name }}</strong>" size?
+      Are you sure you want to delete "<strong>{{ object.name }}</strong>" version?
     </p>
 
     <form class="mt-8 space-y-6" method="post">

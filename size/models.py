@@ -32,7 +32,7 @@ class Size(models.Model):
         ordering = ["-type", "memory", "vcpu", "disk", "transfer"]
 
     def save(self, *args, **kwargs):
-        self.updated_at = timezone.now()
+        self.updated = timezone.now()
         super(Size, self).save(*args, **kwargs)
 
     def delete(self):
@@ -67,8 +67,8 @@ class DBMS(models.Model):
         ordering = ["-id"]
 
     def save(self, *args, **kwargs):
-        self.updated_at = timezone.now()
-        super(Size, self).save(*args, **kwargs)
+        self.updated = timezone.now()
+        super(DBMS, self).save(*args, **kwargs)
 
     def delete(self):
         self.is_active = False

@@ -205,5 +205,90 @@
                 1
             ]
         }
+    },
+    {
+        "model": "size.dbms",
+        "pk": 1,
+        "fields": {
+            "name": "PostreSQL 13",
+            "slug": "pgsql-13",
+            "description": "Community Edition",
+            "required_size": 3,
+            "engine": "pgsql",
+            "version": "13",
+            "is_active": true,
+            "is_deleted": false,
+            "created": "2025-03-16T17:21:43.407Z",
+            "updated": "2025-03-16T17:21:43.690Z",
+            "deleted": null
+        }
+    },
+    {
+        "model": "size.dbms",
+        "pk": 2,
+        "fields": {
+            "name": "PostreSQL 14",
+            "slug": "pgsql-14",
+            "description": "Community Edition",
+            "required_size": 3,
+            "engine": "pgsql",
+            "version": "14",
+            "is_active": true,
+            "is_deleted": false,
+            "created": "2025-03-16T17:22:17.407Z",
+            "updated": "2025-03-16T17:22:17.690Z",
+            "deleted": null
+        }
+    },
+    {
+        "model": "size.dbms",
+        "pk": 3,
+        "fields": {
+            "name": "PostreSQL 15",
+            "slug": "pgsql-15",
+            "description": "Community Edition",
+            "required_size": 3,
+            "engine": "pgsql",
+            "version": "15",
+            "is_active": true,
+            "is_deleted": false,
+            "created": "2025-03-16T17:23:55.407Z",
+            "updated": "2025-03-16T17:23:55.690Z",
+            "deleted": null
+        }
+    },
+    {
+        "model": "size.dbms",
+        "pk": 4,
+        "fields": {
+            "name": "PostreSQL 16",
+            "slug": "pgsql-16",
+            "description": "Community Edition",
+            "required_size": 3,
+            "engine": "pgsql",
+            "version": "16",
+            "is_active": true,
+            "is_deleted": false,
+            "created": "2025-03-16T17:24:38.407Z",
+            "updated": "2025-03-16T17:24:38.690Z",
+            "deleted": null
+        }
+    },
+    {
+        "model": "size.dbms",
+        "pk": 5,
+        "fields": {
+            "name": "PostreSQL 17",
+            "slug": "pgsql-17",
+            "description": "Community Edition",
+            "required_size": 3,
+            "engine": "pgsql",
+            "version": "17",
+            "is_active": true,
+            "is_deleted": false,
+            "created": "2025-03-16T17:25:17.407Z",
+            "updated": "2025-03-16T17:25:17.690Z",
+            "deleted": null
+        }
     }
 ]
