@@ -23,7 +23,7 @@ class FormDBMS(forms.ModelForm):
         self.helper.form_tag = False
         self.fields["engine"] = forms.ChoiceField(choices=DBMS.ENGINE_CHOICES)
         self.fields["required_size"] = CustomModelChoiceField(
-            queryset=Size.objects.filter(memory__gte=MIN_MEMORY_SIZE, is_deleted=False),
+            queryset=Size.objects.filter(memory__gte=MIN_MEMORY_SIZE, type=Size.VIRTANCE, is_deleted=False),
             empty_label=None,
         )
 

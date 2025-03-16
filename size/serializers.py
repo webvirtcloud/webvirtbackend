@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Size
+from .models import Size, DBMS
 
 
 class SizeSerializer(serializers.ModelSerializer):
@@ -45,10 +45,10 @@ class SizeSerializer(serializers.ModelSerializer):
 
 class DBMSSerializer(serializers.ModelSerializer):
     available = serializers.BooleanField(source="is_active")
-    required_size = SizeSerializer()
+    required_size = serializers.SerializerMethodField()
 
     class Meta:
-        model = Size
+        model = DBMS
         fields = (
             "slug",
             "name",
@@ -58,3 +58,11 @@ class DBMSSerializer(serializers.ModelSerializer):
             "available",
             "required_size",
         )
+
+    def get_required_size(self, obj):
+        size_list = []
+        sizes = Size.objects.filter(type=Size.VIRTANCE, is_deleted=False)
+        for size in sizes:
+            if obj.required_size.memory <= size.memory:
+                size_list.append(size)
+        return SizeSerializer(size_list, many=True).data

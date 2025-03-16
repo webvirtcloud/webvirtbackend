@@ -63,7 +63,7 @@ class AdminDBMSUpdateView(AdminUpdateView):
         form.fields["required_size"] = CustomModelChoiceField(
             empty_label=None,
             label="Minimal Required Size",
-            queryset=Size.objects.filter(memory__gte=MIN_MEMORY_SIZE, is_deleted=False),
+            queryset=Size.objects.filter(memory__gte=MIN_MEMORY_SIZE, type=Size.VIRTANCE, is_deleted=False),
         )
         return form
 
