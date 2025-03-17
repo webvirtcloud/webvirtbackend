@@ -2,8 +2,8 @@ from django import forms
 from django.urls import reverse_lazy
 from django_tables2 import SingleTableMixin
 from django_filters.views import FilterView
-from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout
+from crispy_forms.helper import FormHelper
 from crispy_forms.bootstrap import InlineCheckboxes
 
 from size.models import Size

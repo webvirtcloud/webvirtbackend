@@ -1,5 +1,7 @@
 from django import forms
+from crispy_forms.layout import Layout
 from crispy_forms.helper import FormHelper
+from crispy_forms.bootstrap import InlineCheckboxes
 
 from size.models import Size, DBMS
 
@@ -22,12 +24,13 @@ class FormDBMS(forms.ModelForm):
         self.helper = FormHelper(self)
         self.helper.form_tag = False
         self.fields["engine"] = forms.ChoiceField(choices=DBMS.ENGINE_CHOICES)
-        self.fields["required_size"] = CustomModelChoiceField(
-            queryset=Size.objects.filter(memory__gte=MIN_MEMORY_SIZE, type=Size.VIRTANCE, is_deleted=False),
+        self.fields["sizes"] = CustomModelChoiceField(
             empty_label=None,
+            queryset=Size.objects.filter(memory__gte=MIN_MEMORY_SIZE, type=Size.VIRTANCE, is_deleted=False),
         )
+        self.helper.layout = Layout("name", "slug", "description", "engine", "version", InlineCheckboxes("sizes"))
 
     class Meta:
         model = DBMS
-        labels = {"required_size": "Minimal Required Size"}
-        fields = ("name", "slug", "description", "engine", "version", "required_size")
+        labels = {"sizes": "Available for Sizes"}
+        fields = "__all__"

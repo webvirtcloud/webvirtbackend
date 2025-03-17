@@ -52,7 +52,7 @@ class DBMS(models.Model):
     name = models.CharField(max_length=100)
     slug = models.SlugField(max_length=100, unique=True)
     description = models.CharField(max_length=255, blank=True)
-    required_size = models.ForeignKey(Size, models.SET_NULL, blank=True, null=True)
+    sizes = models.ManyToManyField(Size, related_name="sizes")
     engine = models.CharField(max_length=10, choices=ENGINE_CHOICES)
     version = models.CharField(max_length=20)
     is_active = models.BooleanField("Active", default=False)

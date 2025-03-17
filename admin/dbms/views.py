@@ -2,6 +2,7 @@ from django import forms
 from django.urls import reverse_lazy
 from django_tables2 import SingleTableMixin
 from django_filters.views import FilterView
+from crispy_forms.layout import Layout
 from crispy_forms.helper import FormHelper
 from crispy_forms.bootstrap import InlineCheckboxes
 
@@ -42,27 +43,28 @@ class AdminDBMSUpdateView(AdminUpdateView):
     template_name_suffix = "_form"
     model = DBMS
     success_url = reverse_lazy("admin_dbms_index")
-    fields = (
-        "name",
-        "slug",
-        "description",
-        "engine",
-        "version",
-        "required_size",
-        "is_active",
-    )
+    fields = "__all__"
 
     def __init__(self, *args, **kwargs):
         super(AdminDBMSUpdateView, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_tag = False
+        self.helper.layout = Layout(
+            "name",
+            "slug",
+            "description",
+            "engine",
+            "version",
+            InlineCheckboxes("sizes"),
+            "is_active",
+        )
 
     def get_form(self, form_class=None):
         form = super(AdminDBMSUpdateView, self).get_form(form_class)
         form.fields["engine"].empty_label = None
-        form.fields["required_size"] = CustomModelChoiceField(
+        form.fields["sizes"] = CustomModelChoiceField(
             empty_label=None,
-            label="Minimal Required Size",
+            label="Available for Sizes",
             queryset=Size.objects.filter(memory__gte=MIN_MEMORY_SIZE, type=Size.VIRTANCE, is_deleted=False),
         )
         return form

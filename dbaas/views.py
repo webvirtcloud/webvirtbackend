@@ -4,9 +4,7 @@ from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 
 from .models import DBaaS
-from .serializers import (
-    DBaaSSerializer,
-)
+from .serializers import DBaaSSerializer
 
 
 class DBaaSListAPI(APIView):
