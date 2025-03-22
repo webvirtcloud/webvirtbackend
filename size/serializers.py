@@ -44,25 +44,23 @@ class SizeSerializer(serializers.ModelSerializer):
 
 
 class DBMSSerializer(serializers.ModelSerializer):
+    sizes = serializers.SerializerMethodField()
     available = serializers.BooleanField(source="is_active")
-    required_size = serializers.SerializerMethodField()
 
     class Meta:
         model = DBMS
         fields = (
             "slug",
             "name",
-            "description",
+            "sizes",
             "engine",
             "version",
             "available",
-            "required_size",
+            "description",
         )
 
-    def get_required_size(self, obj):
+    def get_sizes(self, obj):
         size_list = []
-        sizes = Size.objects.filter(type=Size.VIRTANCE, is_deleted=False)
-        for size in sizes:
-            if obj.required_size.memory <= size.memory:
-                size_list.append(size)
+        for size in obj.sizes.all():
+            size_list.append(size)
         return SizeSerializer(size_list, many=True).data
