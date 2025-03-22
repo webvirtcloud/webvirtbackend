@@ -8,9 +8,9 @@ class DBaaSSerializer(serializers.ModelSerializer):
     name = serializers.CharField()
     size = serializers.CharField()
     event = serializers.SerializerMethodField(read_only=True)
-    engine = serializers.CharField(source="dbms.engine")
+    engine = serializers.CharField(source="dbms.engine", read_only=True)
     region = serializers.CharField(write_only=True)
-    version = serializers.CharField(source="db.version")
+    version = serializers.CharField(source="db.version", read_only=True)
     conection = serializers.SerializerMethodField(read_only=True)
     created_at = serializers.DateTimeField(read_only=True, source="created")
 

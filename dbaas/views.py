@@ -20,3 +20,43 @@ class DBaaSListAPI(APIView):
         """
         serilizator = self.class_serializer(self.get_queryset(), many=True)
         return Response({"databases": serilizator.data})
+
+    def post(self, request, *args, **kwargs):
+        """
+        Create a New Database
+        ---
+            parameters:
+                - name: name
+                  description: Database Name
+                  required: true
+                  type: string
+
+                - name: region
+                  description: Region
+                  required: true
+                  type: string
+
+                - name: size
+                  description: Size
+                  required: true
+                  type: string
+        """
+        serializer = self.class_serializer(data=request.data, context={"user": request.user})
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({"database": serializer.data}, status=status.HTTP_201_CREATED)
+
+
+class DBaaSDataAPI(APIView):
+    class_serializer = DBaaSSerializer
+
+    def get_object(self):
+        return get_object_or_404(DBaaS, uuid=self.kwargs.get("uuid"), user=self.request.user, is_deleted=False)
+
+    def get(self, request, *args, **kwargs):
+        """
+        Get Existing Database
+        ---
+        """
+        serializer = self.class_serializer(self.get_object(), many=False)
+        return Response({"database": serializer.data})
