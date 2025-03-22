@@ -13,9 +13,8 @@ class DBMSHTMxTable(tables.Table):
         attrs={"th": {"data-type": "action"}, "td": {"data-type": "action"}},
         orderable=False,
     )
-    required_size = tables.Column(accessor="required_size.slug", verbose_name="Required Size")
 
     class Meta:
         model = DBMS
-        fields = ("slug", "name", "description", "required_size", "active", "created")
+        fields = ("slug", "name", "description", "active", "created")
         template_name = "django_tables2/bootstrap.html"

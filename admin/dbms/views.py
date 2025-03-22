@@ -9,7 +9,7 @@ from crispy_forms.bootstrap import InlineCheckboxes
 from size.models import Size, DBMS
 from .filters import DBMSFilter
 from .tables import DBMSHTMxTable
-from .forms import FormDBMS, CustomModelChoiceField, MIN_MEMORY_SIZE
+from .forms import FormDBMS, CustomModelMultipleChoiceField, MIN_MEMORY_SIZE
 from admin.mixins import AdminView, AdminFormView, AdminUpdateView, AdminDeleteView
 
 
@@ -33,7 +33,6 @@ class AdminDBMSCreateView(AdminFormView):
     success_url = reverse_lazy("admin_dbms_index")
 
     def form_valid(self, form):
-        print(form.cleaned_data)
         form.save()
         return super(AdminDBMSCreateView, self).form_valid(form)
 
@@ -62,9 +61,10 @@ class AdminDBMSUpdateView(AdminUpdateView):
     def get_form(self, form_class=None):
         form = super(AdminDBMSUpdateView, self).get_form(form_class)
         form.fields["engine"].empty_label = None
-        form.fields["sizes"] = CustomModelChoiceField(
-            empty_label=None,
+        form.fields["sizes"] = CustomModelMultipleChoiceField(
+            required=False,
             label="Available for Sizes",
+            widget=forms.CheckboxSelectMultiple(),
             queryset=Size.objects.filter(memory__gte=MIN_MEMORY_SIZE, type=Size.VIRTANCE, is_deleted=False),
         )
         return form
