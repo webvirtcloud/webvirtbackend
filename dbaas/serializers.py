@@ -1,6 +1,12 @@
 from rest_framework import serializers
 
 from .models import DBaaS
+from size.models import Size, DBMS
+from image.models import Image
+from region.models import Region
+from virtance.models import Virtance
+from .tasks import create_dbaas
+from virtance.utils import make_ssh_private, encrypt_data, make_passwd
 
 
 class DBaaSSerializer(serializers.ModelSerializer):
@@ -27,3 +33,42 @@ class DBaaSSerializer(serializers.ModelSerializer):
             "conection",
             "created_at",
         )
+
+    def create(self, validated_data):
+        user = self.context.get("user")
+        name = validated_data.get("name")
+        size = validated_data.get("size")
+        engine = validated_data.get("engine")
+        region_slug = validated_data.get("region")
+        enc_private_key = encrypt_data(make_ssh_private())
+        enc_admin_secret = encrypt_data(make_passwd(length=16))
+        enc_master_secret = encrypt_data(make_passwd(length=16))
+
+        dbms = DBMS.objects.filter(slug=engine, is_deleted=False).first()
+        size = Size.objects.filter(type=Size.VIRTANCE, is_deleted=False).first()
+        region = Region.objects.get(slug=region_slug, is_deleted=False)
+        template = Image.objects.filter(type=Image.DBAAS, is_deleted=False).first()
+
+        virtance = Virtance.objects.create(
+            name=name,
+            user=user,
+            size=size,
+            type=Virtance.DBAAS,
+            region=region,
+            disk=size.disk,
+            template=template,
+        )
+
+        dbass = DBaaS.objects.create(
+            name=name,
+            user=user,
+            dbms=dbms,
+            private_key=enc_private_key,
+            virtance=virtance,
+            admin_secret=enc_admin_secret,
+            master_secret=enc_master_secret,
+        )
+
+        create_dbaas.delay(dbass.id)
+
+        return dbass
