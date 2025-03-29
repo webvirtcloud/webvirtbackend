@@ -9,8 +9,12 @@
 			"extensions": [
 				"ms-python.isort",
 				"ms-python.python",
-				"GitHub.copilot"
-		  	]
+				"GitHub.copilot",
+				"ms-python.black-formatter",
+				"ms-python.flake8",
+				"ms-python.vscode-pylance",
+				"ms-python.debugpy"
+			]
 		}
 	},
 	"service": "backend",
