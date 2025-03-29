@@ -390,5 +390,33 @@
                 1
             ]
         }
+    },
+    {
+        "model": "image.image",
+        "pk": 15,
+        "fields": {
+            "user": null,
+            "source": null,
+            "uuid": "322a495b-2d39-4267-926d-1c429004dea3",
+            "name": "12 dbaas x64",
+            "slug": "debian-12-dbaas-x64",
+            "arch": "x86_64",
+            "type": "dbaas",
+            "event": null,
+            "md5sum": "014d037e30c0b88f81afe8f22807aee9",
+            "distribution": "debian",
+            "description": "Debian 12 DBaaS x64",
+            "file_name": "debian-12-x64.qcow2",
+            "file_size": null,
+            "disk_size": null,
+            "is_active": true,
+            "is_deleted": false,
+            "created": "2025-03-29T21:28:27.066Z",
+            "updated": "2025-03-29T21:32:29.531Z",
+            "deleted": null,
+            "regions": [
+                1
+            ]
+        }
     }
 ]

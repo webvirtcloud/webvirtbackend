@@ -13,11 +13,11 @@ class TemplateFilter(django_filters.FilterSet):
 
     def universal_search(self, queryset, name, value):
         return Image.objects.filter(
-            (Q(type=Image.DISTRIBUTION) | Q(type=Image.APPLICATION) | Q(type=Image.LBAAS)),
+            (Q(type=Image.DISTRIBUTION) | Q(type=Image.APPLICATION) | Q(type=Image.LBAAS) | Q(type=Image.DBAAS)),
             Q(slug__icontains=value)
             | Q(name__icontains=value)
             | Q(type__icontains=value)
             | Q(description__icontains=value)
             | Q(distribution__icontains=value),
             is_deleted=False,
-        )
+        ).order_by("id", "type")

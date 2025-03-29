@@ -22,8 +22,9 @@ class AdminTemplateIndexView(SingleTableMixin, FilterView, AdminView):
 
     def get_queryset(self):
         return Image.objects.filter(
-            Q(type=Image.DISTRIBUTION) | Q(type=Image.APPLICATION) | Q(type=Image.LBAAS), is_deleted=False
-        )
+            Q(type=Image.DISTRIBUTION) | Q(type=Image.APPLICATION) | Q(type=Image.LBAAS) | Q(type=Image.DBAAS),
+            is_deleted=False,
+        ).order_by("id", "type")
 
     def get_template_names(self):
         if self.request.htmx:
