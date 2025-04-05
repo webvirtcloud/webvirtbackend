@@ -1,0 +1,11 @@
+*filter
+:INPUT ACCEPT [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+[0:0] -A INPUT -s {{ ipv4_private_gateway }} -i eth1 -j ACCEPT
+{% for ipaddr in ipv4_lbaas_access_list %}
+[0:0] -A INPUT -s {{ ipaddr }} -i eth1 -j ACCEPT
+{% endfor %}
+[0:0] -A INPUT -p tcp --dport 22 -i eth1 -j DROP
+[0:0] -A INPUT -p tcp --dport 9090 -i eth1 -j DROP
+COMMIT

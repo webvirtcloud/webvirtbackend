@@ -10,6 +10,36 @@ from virtance.utils import check_ssh_connect, decrypt_data, virtance_error
 
 provision_tasks = [
     {
+        "name": "Disable systemd-resolved service",
+        "action": {
+            "module": "systemd",
+            "args": {"name": "systemd-resolved", "state": "stopped", "enabled": "no"},
+        },
+    },
+    {
+        "name": "Remove resolv.conf symlink",
+        "action": {
+            "module": "file",
+            "args": {
+                "path": "/etc/resolv.conf",
+                "state": "absent",
+            },
+        },
+    },
+    {
+        "name": "Create resolv.conf",
+        "action": {
+            "module": "template",
+            "args": {
+                "src": "ansible/lbaas/resolv.conf.j2",
+                "dest": "/etc/resolv.conf",
+                "owner": "root",
+                "group": "root",
+                "mode": "0644",
+            },
+        },
+    },
+    {
         "name": "Template HAProxy configuration",
         "action": {
             "module": "template",
@@ -67,36 +97,6 @@ provision_tasks = [
     {
         "name": "Restart prometheus service",
         "action": {"module": "systemd", "args": {"name": "prometheus", "state": "restarted"}},
-    },
-    {
-        "name": "Disable systemd-resolved service",
-        "action": {
-            "module": "systemd",
-            "args": {"name": "systemd-resolved", "state": "stopped", "enabled": "no"},
-        },
-    },
-    {
-        "name": "Remove resolv.conf symlink",
-        "action": {
-            "module": "file",
-            "args": {
-                "path": "/etc/resolv.conf",
-                "state": "absent",
-            },
-        },
-    },
-    {
-        "name": "Create resolv.conf",
-        "action": {
-            "module": "template",
-            "args": {
-                "src": "ansible/lbaas/resolv.conf.j2",
-                "dest": "/etc/resolv.conf",
-                "owner": "root",
-                "group": "root",
-                "mode": "0644",
-            },
-        },
     },
     {
         "name": "Listen SSH on private IP address",
