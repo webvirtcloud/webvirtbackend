@@ -47,32 +47,6 @@ provision_tasks = [
         },
     },
     {
-        "name": "Install package dependencies",
-        "action": {
-            "module": "apt",
-            "args": {
-                "pkg": [
-                    "   ",
-                    "prometheus-node-exporter",
-                    "prometheus-postgres-exporter",
-                    "python3-psycopg2",
-                    "postgresql-common",
-                    "iptables-persistent",
-                ],
-                "state": "latest",
-                "update_cache": True,
-            },
-        },
-    },
-    {
-        "name": "Add PostgreSQL apt repository",
-        "action": {
-            "module": "shell",
-            "args": "echo '\n' | /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh",
-            "warn": False,
-        },
-    },
-    {
         "name": "Install PostgreSQL server package",
         "action": {
             "module": "apt",
@@ -182,19 +156,6 @@ provision_tasks = [
         },
     },
     {
-        "name": "Configure prometheus node exporter",
-        "action": {
-            "module": "template",
-            "args": {
-                "src": "ansible/dbaas/postgres-queries.yaml.j2",
-                "dest": "/etc/prometheus/postgres-queries.yaml",
-                "owner": "root",
-                "group": "root",
-                "mode": "0644",
-            },
-        },
-    },
-    {
         "name": "Configure prometheus postgres exporter data source name",
         "action": {
             "module": "lineinfile",
@@ -207,39 +168,10 @@ provision_tasks = [
         },
     },
     {
-        "name": "Configure prometheus postgres exporter args",
-        "action": {
-            "module": "lineinfile",
-            "args": {
-                "path": "/etc/default/prometheus-postgres-exporter",
-                "regexp": "^ARGS=",
-                "line": 'ARGS="--extend.query-path=/etc/prometheus/postgres-queries.yaml"',
-            },
-        },
-    },
-    {
         "name": "Restart prometheus postgres exporter service",
         "action": {
             "module": "systemd",
             "args": {"name": "prometheus-postgres-exporter", "state": "restarted", "enabled": "yes"},
-        },
-    },
-    {
-        "name": "Add prometheus postgres exporter to prometheus config",
-        "action": {
-            "module": "blockinfile",
-            "args": {
-                "path": "/etc/prometheus/prometheus.yml",
-                "block": "  - job_name: postgres\n    static_configs:\n      - targets: ['localhost:9187']",
-                "marker": "# {mark} ANSIBLE MANAGED BLOCK - PostgreSQL Exporter",
-            },
-        },
-    },
-    {
-        "name": "Restart prometheus service",
-        "action": {
-            "module": "systemd",
-            "args": {"name": "prometheus", "state": "restarted", "enabled": "yes"},
         },
     },
     {
