@@ -27,12 +27,12 @@ provision_tasks = [
         },
     },
     {
-        "name": "Create resolv.conf",
+        "name": "Create resolv.conf file with custom DNS servers",
         "action": {
-            "module": "template",
+            "module": "copy",
             "args": {
-                "src": "ansible/lbaas/resolv.conf.j2",
                 "dest": "/etc/resolv.conf",
+                "content": "nameserver 1.1.1.1\nnameserver 8.8.8.8\n",
                 "owner": "root",
                 "group": "root",
                 "mode": "0644",

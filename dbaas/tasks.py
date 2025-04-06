@@ -27,12 +27,12 @@ provision_tasks = [
         },
     },
     {
-        "name": "Create resolv.conf",
+        "name": "Create resolv.conf file with custom DNS servers",
         "action": {
-            "module": "template",
+            "module": "copy",
             "args": {
-                "src": "ansible/dbaas/resolv.conf.j2",
                 "dest": "/etc/resolv.conf",
+                "content": "nameserver 1.1.1.1\nnameserver 8.8.8.8\n",
                 "owner": "root",
                 "group": "root",
                 "mode": "0644",
@@ -80,15 +80,15 @@ provision_tasks = [
     },
     {
         "name": "Create PostgreSQL master user",
-        "action": {"module": "user", "args": {"name": "{{ account.master.name }}", "shell": "/bin/bash"}},
+        "action": {"module": "user", "args": {"name": "{{ master_login }}", "shell": "/bin/bash"}},
     },
     {
         "name": "Create PostgreSQL dbadmin user",
         "action": {
             "module": "postgresql_user",
             "args": {
-                "user": "{{ account.admin.name }}",
-                "password": "{{ account.admin.password }}",
+                "user": "{{ admin_login }}",
+                "password": "{{ admin_password }}",
                 "role_attr_flags": "NOSUPERUSER,CREATEROLE,CREATEDB,INHERIT,BYPASSRLS",
             },
         },
@@ -100,8 +100,7 @@ provision_tasks = [
         "name": "Update master user role name",
         "action": {
             "module": "shell",
-            "args": r'psql -c "UPDATE pg_authid SET rolname \= \'{{ account.master.name }}\' '
-            r'WHERE rolname \= \'postgres\'"',
+            "args": r'psql -c "UPDATE pg_authid SET rolname \= \'{{ master_login }}\' WHERE rolname \= \'postgres\'"',
         },
         "become": True,
         "become_method": "sudo",
@@ -111,42 +110,41 @@ provision_tasks = [
         "name": "Update master user password",
         "action": {
             "module": "shell",
-            "args": 'psql -d postgres -c "ALTER USER {{ account.master.name }} '
-            "PASSWORD '{{ account.master.password }}'\"",
+            "args": 'psql -d postgres -c "ALTER USER {{ master_login }} PASSWORD {{ master_password }}"',
         },
         "become": True,
         "become_method": "sudo",
-        "become_user": "{{ account.master.name }}",
+        "become_user": "{{ master_login }}",
     },
     {
         "name": "Update postgres database owner to dbadmin user",
         "action": {
             "module": "shell",
-            "args": 'psql -d postgres -c "ALTER DATABASE postgres OWNER TO {{ account.admin.name }}"',
+            "args": 'psql -d postgres -c "ALTER DATABASE postgres OWNER TO {{ admin_login }}"',
         },
         "become": True,
         "become_method": "sudo",
-        "become_user": "{{ account.master.name }}",
+        "become_user": "{{ master_login }}",
     },
     {
         "name": "Create PostgreSQL master databases",
         "action": {
             "module": "shell",
-            "args": 'psql -d postgres -c "CREATE DATABASE {{ account.master.name }} OWNER {{ account.master.name }}"',
+            "args": 'psql -d postgres -c "CREATE DATABASE {{ master_login }} OWNER {{ master_login }}"',
         },
         "become": True,
         "become_method": "sudo",
-        "become_user": "{{ account.master.name }}",
+        "become_user": "{{ master_login }}",
     },
     {
         "name": "Create PostgreSQL dbadmin databases",
         "action": {
             "module": "shell",
-            "args": 'psql -d postgres -c "CREATE DATABASE {{ account.admin.name }} OWNER {{ account.admin.name }}"',
+            "args": 'psql -d postgres -c "CREATE DATABASE {{ admin_login }} OWNER {{ admin_login }}"',
         },
         "become": True,
         "become_method": "sudo",
-        "become_user": "{{ account.master.name }}",
+        "become_user": "{{ master_login }}",
     },
     {
         "name": "Restart PostgreSQL service",
@@ -162,7 +160,7 @@ provision_tasks = [
             "args": {
                 "path": "/etc/default/prometheus-postgres-exporter",
                 "regexp": "^DATA_SOURCE_NAME=",
-                "line": 'DATA_SOURCE_NAME="postgresql://{{ account.master.name }}:{{ account.master.password }}@'
+                "line": 'DATA_SOURCE_NAME="postgresql://{{ master_login }}:{{ master_password }}@'
                 'localhost:5432/postgres?sslmode=disable"',
             },
         },
@@ -198,7 +196,7 @@ provision_tasks = [
             "args": {
                 "dest": "/etc/ssh/sshd_config",
                 "regexp": "#ListenAddress 0.0.0.0",
-                "replace": "ListenAddress {{ network.private.v4.address }}",
+                "replace": "ListenAddress {{ ipv4_private_address }}",
             },
         },
     },
@@ -237,6 +235,11 @@ def create_dbaas(dbaas_id):
 
         if check_ssh_connect(ipv4_public.address, private_key=private_key):
             dbaas_vars = {
+                "version": "",
+                "admin_login": "",
+                "admin_password": "",
+                "master_login": "",
+                "master_password": "",
                 "ipv4_public_address": ipv4_public.address,
                 "ipv4_private_address": ipv4_private.address,
                 "ipv4_dbaas_access_list": settings.DBAAS_IPV4_ACCESS_LIST,
