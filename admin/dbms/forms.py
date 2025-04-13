@@ -1,12 +1,10 @@
 from django import forms
+from django.conf import settings
 from crispy_forms.layout import Layout
 from crispy_forms.helper import FormHelper
 from crispy_forms.bootstrap import InlineCheckboxes
 
 from size.models import Size, DBMS
-
-
-MIN_MEMORY_SIZE = 2 * (1024**3)
 
 
 class CustomModelMultipleChoiceField(forms.ModelMultipleChoiceField):
@@ -24,7 +22,9 @@ class FormDBMS(forms.ModelForm):
             required=False,
             label="Available for Sizes",
             widget=forms.CheckboxSelectMultiple(),
-            queryset=Size.objects.filter(memory__gte=MIN_MEMORY_SIZE, type=Size.VIRTANCE, is_deleted=False),
+            queryset=Size.objects.filter(
+                memory__gte=settings.DBASS_MIN_VM_MEM_SIZE, type=Size.VIRTANCE, is_deleted=False
+            ),
         )
         self.helper = FormHelper(self)
         self.helper.form_tag = False

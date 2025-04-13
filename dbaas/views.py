@@ -28,7 +28,7 @@ class DBaaSListAPI(APIView):
         ---
             parameters:
                 - name: name
-                  description: Database Name
+                  description: Slug name of the engine
                   required: true
                   type: string
 

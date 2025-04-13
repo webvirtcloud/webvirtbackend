@@ -266,6 +266,7 @@ RECOVERY_ISO_NAME = os.environ.get("RECOVERY_ISO_NAME", "finnix-125.iso")
 LBAAS_IPV4_ACCESS_LIST = os.environ.get("LBAAS_IPV4_ACCESS_LIST", [])
 
 # DBaaS settings
+DBASS_MIN_VM_MEM_SIZE = os.environ.get("DBASS_MIN_VM_MEM_SIZE", 2147483648)
 DBAAS_IPV4_ACCESS_LIST = os.environ.get("DBAAS_IPV4_ACCESS_LIST", [])
 
 # Backup settings
