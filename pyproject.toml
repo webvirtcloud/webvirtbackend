@@ -61,4 +61,5 @@ dev = [
     "django-filter>=24.3",
     "django-tailwind>=3.8.0",
     "django-stubs>=5.1.3",
+    "ruff>=0.11.5",
 ]
