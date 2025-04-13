@@ -9,7 +9,7 @@ class SizeListAPI(APIView):
     class_serializer = SizeSerializer
 
     def get_queryset(self):
-        return Size.objects.filter(type=Size.VIRTACE, is_deleted=False)
+        return Size.objects.filter(type=Size.VIRTANCE, is_deleted=False)
 
     def get(self, request, *args, **kwargs):
         """

@@ -27,7 +27,10 @@ INSTALLED_APPS += [  # noqa: F405
 CORS_ORIGIN_ALLOW_ALL = True
 
 # Security settings
-SESSION_COOKIE_DOMAIN = os.environ.get("SESSION_COOKIE_DOMAIN", None)
+SESSION_COOKIE_DOMAIN = None
+
+# Encryption key
+ENCRYPTION_KEY = "31kXwnNCYWDydZyhcHEG0fymS4yyPUfLlpJmw2hxmuM="
 
 # DebugToolBar
 hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())

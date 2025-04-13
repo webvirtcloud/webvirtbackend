@@ -4,6 +4,8 @@ from image.models import Image
 from region.models import Region
 from size.models import DBMS, Size
 from virtance.models import Virtance
+from size.serializers import SizeSerializer
+from region.serializers import RegionSerializer
 from virtance.utils import encrypt_data, make_passwd, make_ssh_private
 
 from .models import DBaaS
@@ -13,9 +15,9 @@ from .tasks import create_dbaas
 class DBaaSSerializer(serializers.ModelSerializer):
     id = serializers.UUIDField(required=False, read_only=True, source="uuid")
     name = serializers.CharField()
-    size = serializers.CharField(required=True)
+    size = serializers.SerializerMethodField(required=True)
     event = serializers.SerializerMethodField(read_only=True)
-    engine = serializers.CharField(required=True, source="dbms.engine", read_only=True)
+    engine = serializers.SerializerMethodField(required=True)
     region = serializers.CharField(required=True, write_only=True)
     version = serializers.CharField(source="db.version", read_only=True)
     conection = serializers.SerializerMethodField(read_only=True)
@@ -34,6 +36,22 @@ class DBaaSSerializer(serializers.ModelSerializer):
             "conection",
             "created_at",
         )
+
+    def get_size(self, obj):
+        size = obj.virtance.size
+        return SizeSerializer(size).data
+
+    def get_event(self, obj):
+        if obj.event is None:
+            return None
+        return {"name": obj.event, "description": next((i[1] for i in obj.EVENT_CHOICES if i[0] == obj.event))}
+
+    def get_engine(self, obj):
+        engine = obj.dbms
+        return {"name": engine.name, "slug": engine.slug, "version": engine.version}
+
+    def get_conection(self, obj):
+        return ""
 
     def validate(self, attrs):
         size = attrs.get("size")
@@ -71,6 +89,12 @@ class DBaaSSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({"size": ["Size not available for this engine"]})
 
         return attrs
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data["size"] = SizeSerializer(instance.virtance.size).data
+        data["region"] = RegionSerializer(instance.virtance.region).data
+        return data
 
     def create(self, validated_data):
         user = self.context.get("user")

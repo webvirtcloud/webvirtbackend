@@ -7,8 +7,6 @@ services:
     image: webvirtbackend:dev
     container_name: webvirtcloud-dev-backend
     hostname: backend
-    ports:
-      - 8000:8000
     volumes:
       - .:/app
     command: python3 manage.py runserver 0:8000
@@ -25,13 +23,13 @@ services:
       CELERY_BROKER_URL: "amqp://guest:guest@rabbitmq:5672"
     depends_on:
       - mariadb
+    ports:
+      - 8000:8000  
   
   novnc:
     image: webvirtbackend:dev
     container_name: webvirtcloud-dev-novnc
     hostname: novnc
-    ports:
-      - 127.0.0.1:6080:6080
     volumes:
       - .:/app
     command: python3 manage.py novncd --verbose
@@ -44,6 +42,8 @@ services:
       DJANGO_SETTINGS_MODULE: webvirtcloud.settings.develop
     depends_on:
       - mariadb
+    ports:
+      - 127.0.0.1:6080:6080
   
   worker:
     image: webvirtbackend:dev
@@ -95,13 +95,13 @@ services:
     hostname: mariadb
     volumes:
       - ./.mysql:/var/lib/mysql
-    ports:
-      - 127.0.0.1:3306:3306
     environment:
       MARIADB_DATABASE: webvirtcloud
       MARIADB_USER: django
       MARIADB_PASSWORD: django
       MARIADB_ROOT_PASSWORD: root
+    ports:
+      - 127.0.0.1:3306:3306
   
   rabbitmq:
     image: rabbitmq:3.10.13
@@ -110,6 +110,8 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
+    ports:
+      - 127.0.0.1:5672:5672
   
   cloudinit-proxy:
     image: haproxy:lts
