@@ -228,6 +228,8 @@ def provision_dbaas(host, private_key, tasks, dbaas_vars=None):
 def create_dbaas(dbaas_id):
     dbaas = DBaaS.objects.get(id=dbaas_id)
     private_key = decrypt_data(dbaas.private_key)
+    admin_password = decrypt_data(dbaas.admin_secret)
+    master_password = decrypt_data(dbaas.master_secret)
 
     if create_virtance(dbaas.virtance.id, send_email=False):
         ipv4_public = IPAddress.objects.get(virtance=dbaas.virtance, network__type=Network.PUBLIC, is_float=False)
@@ -235,11 +237,11 @@ def create_dbaas(dbaas_id):
 
         if check_ssh_connect(ipv4_public.address, private_key=private_key):
             dbaas_vars = {
-                "version": "",
-                "admin_login": "",
-                "admin_password": "",
-                "master_login": "",
-                "master_password": "",
+                "version": dbaas.dbms.version,
+                "admin_login": settings.DBAAS_ADMIN_LOGIN,
+                "admin_password": admin_password,
+                "master_login": settings.DBAAS_MASTER_LOGIN,
+                "master_password": master_password,
                 "ipv4_public_address": ipv4_public.address,
                 "ipv4_private_address": ipv4_private.address,
                 "ipv4_dbaas_access_list": settings.DBAAS_IPV4_ACCESS_LIST,
