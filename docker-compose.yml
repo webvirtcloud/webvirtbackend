@@ -116,7 +116,7 @@ services:
     container_name: webvirtcloud-dev-cloudinit-proxy
     hostname: cloudinit-proxy
     volumes:
-      - ./.devcontainer/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
+      - ./config/dev/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
     network_mode: host
   
   mailpit:
