@@ -26,7 +26,7 @@ class FirewallRuleTable(tables.Table):
     ports = tables.Column(empty_values=(), verbose_name="Ports")
 
     def render_type(self, value, record):
-        if record.is_system == True:
+        if record.is_system:
             return "System"
         return "User"
 

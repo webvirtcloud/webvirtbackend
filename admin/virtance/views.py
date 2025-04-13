@@ -3,7 +3,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.shortcuts import redirect, get_object_or_404
 from django_filters.views import FilterView
-from django_tables2 import SingleTableMixin, RequestConfig, Table
+from django_tables2 import SingleTableMixin, RequestConfig
 
 from network.models import IPAddress, Network
 from virtance.models import Virtance, VirtanceError

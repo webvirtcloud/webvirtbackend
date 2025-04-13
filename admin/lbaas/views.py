@@ -108,7 +108,7 @@ class AdminLBaaSDownlodPrivateKeyAction(AdminView):
             private_key,
             content_type="application/text",
             charset="utf-8",
-            headers={"Content-Disposition": f"attachment; filename=private.pem"},
+            headers={"Content-Disposition": "attachment; filename=private.pem"},
         )
 
 
