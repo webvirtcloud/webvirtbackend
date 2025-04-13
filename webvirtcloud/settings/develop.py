@@ -3,6 +3,7 @@ Django develop settings for WebVirtCloud project.
 
 """
 
+import os
 import socket
 
 from .base import *
