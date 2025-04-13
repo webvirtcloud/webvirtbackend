@@ -1,16 +1,18 @@
-from django import forms
-from django.urls import reverse_lazy
-from django_tables2 import SingleTableMixin
-from django_filters.views import FilterView
-from crispy_forms.layout import Layout
-from crispy_forms.helper import FormHelper
 from crispy_forms.bootstrap import InlineCheckboxes
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout
+from django import forms
+from django.conf import settings
+from django.urls import reverse_lazy
+from django_filters.views import FilterView
+from django_tables2 import SingleTableMixin
 
-from size.models import Size, DBMS
+from admin.mixins import AdminDeleteView, AdminFormView, AdminUpdateView, AdminView
+from size.models import DBMS, Size
+
 from .filters import DBMSFilter
+from .forms import CustomModelMultipleChoiceField, FormDBMS
 from .tables import DBMSHTMxTable
-from .forms import FormDBMS, CustomModelMultipleChoiceField, MIN_MEMORY_SIZE
-from admin.mixins import AdminView, AdminFormView, AdminUpdateView, AdminDeleteView
 
 
 class AdminDBMSIndexView(SingleTableMixin, FilterView, AdminView):
@@ -65,7 +67,9 @@ class AdminDBMSUpdateView(AdminUpdateView):
             required=False,
             label="Available for Sizes",
             widget=forms.CheckboxSelectMultiple(),
-            queryset=Size.objects.filter(memory__gte=MIN_MEMORY_SIZE, type=Size.VIRTANCE, is_deleted=False),
+            queryset=Size.objects.filter(
+                memory__gte=settings.DBASS_MIN_VM_MEM_SIZE, type=Size.VIRTANCE, is_deleted=False
+            ),
         )
         return form
 

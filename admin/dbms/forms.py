@@ -1,17 +1,17 @@
+from crispy_forms.bootstrap import InlineCheckboxes
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout
 from django import forms
 from django.conf import settings
-from crispy_forms.layout import Layout
-from crispy_forms.helper import FormHelper
-from crispy_forms.bootstrap import InlineCheckboxes
 
-from size.models import Size, DBMS
+from size.models import DBMS, Size
 
 
 class CustomModelMultipleChoiceField(forms.ModelMultipleChoiceField):
     type_input = "checkbox"
 
     def label_from_instance(self, item):
-        return f"{item.description} (Mem: {item.memory//(1024**3)}Gb)"
+        return f"{item.description} (Mem: {item.memory // (1024**3)}Gb)"
 
 
 class FormDBMS(forms.ModelForm):
