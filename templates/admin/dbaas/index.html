@@ -1,0 +1,20 @@
+{% extends "admin/base.html" %} 
+
+{% load render_table from django_tables2 %}
+
+{% block content %}
+<div class="flex items-center justify-between mb-6">
+  <h1 class="text-2xl font-medium">Databases</h1>
+  <div class="flex items-center gap-2">
+    <div class="relative [&_input]:pl-8 [&_input]:max-w-[180px] [&_div]:mb-0">
+      <div class="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none">
+        <svg class="w-4 h-4 text-muted-foreground" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+        </svg>
+      </div>
+      <input name="query" hx-get="{% url 'admin_dbaas_index' %}" hx-trigger="keyup changed delay:500ms" hx-target="div.table-container" hx-swap="outerHTML" hx-indicator=".progress" type="text" class="search-input" placeholder="Search...">
+    </div>
+  </div>
+</div>
+{% render_table table %}
+{% endblock %}
