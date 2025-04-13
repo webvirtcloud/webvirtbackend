@@ -12,10 +12,10 @@ from virtance.utils import make_ssh_private, encrypt_data, make_passwd
 class DBaaSSerializer(serializers.ModelSerializer):
     id = serializers.UUIDField(required=False, read_only=True, source="uuid")
     name = serializers.CharField()
-    size = serializers.CharField()
+    size = serializers.CharField(required=True)
     event = serializers.SerializerMethodField(read_only=True)
-    engine = serializers.CharField(source="dbms.engine", read_only=True)
-    region = serializers.CharField(write_only=True)
+    engine = serializers.CharField(required=True, source="dbms.engine", read_only=True)
+    region = serializers.CharField(required=True, write_only=True)
     version = serializers.CharField(source="db.version", read_only=True)
     conection = serializers.SerializerMethodField(read_only=True)
     created_at = serializers.DateTimeField(read_only=True, source="created")
@@ -33,6 +33,43 @@ class DBaaSSerializer(serializers.ModelSerializer):
             "conection",
             "created_at",
         )
+
+    def validate(self, attrs):
+        size = attrs.get("size")
+        engine = attrs.get("engine")
+        region = attrs.get("region")
+
+        # Check if region is active
+        try:
+            check_region = Region.objects.get(slug=region, is_deleted=False)
+            if check_region.is_active is False:
+                raise serializers.ValidationError({"region": ["Region is not active."]})
+            if check_region.features.filter(name="load_balancer").exists() is False:
+                raise serializers.ValidationError({"region": ["Region does not support load balancer."]})
+        except Region.DoesNotExist:
+            raise serializers.ValidationError({"region": ["Region not found."]})
+
+        # Check if size is active
+        try:
+            check_size = Size.objects.get(slug=size, is_deleted=False)
+            if check_size.is_active is False:
+                raise serializers.ValidationError({"size": ["Size is not active."]})
+        except Size.DoesNotExist:
+            raise serializers.ValidationError({"size": ["Size not found."]})
+
+        # Check if engine is active
+        try:
+            check_engine = DBMS.objects.get(slug=engine, is_deleted=False)
+            if check_engine.is_active is False:
+                raise serializers.ValidationError({"engine": ["Engine is not active."]})
+        except DBMS.DoesNotExist:
+            raise serializers.ValidationError({"engine": ["Engine not found."]})
+
+        # Check if engine is compatible with size
+        if check_size not in check_engine.sizes.all():
+            raise serializers.ValidationError({"size": ["Size not available for this engine"]})
+
+        return attrs
 
     def create(self, validated_data):
         user = self.context.get("user")
