@@ -1,12 +1,12 @@
 from django.conf import settings
+
+from network.models import IPAddress, Network
+from virtance.provision import ansible_play
+from virtance.tasks import create_virtance
+from virtance.utils import check_ssh_connect, decrypt_data, virtance_error
 from webvirtcloud.celery import app
 
 from .models import DBaaS
-from network.models import Network, IPAddress
-from virtance.tasks import create_virtance
-from virtance.provision import ansible_play
-from virtance.utils import check_ssh_connect, decrypt_data, virtance_error
-
 
 provision_tasks = [
     {
