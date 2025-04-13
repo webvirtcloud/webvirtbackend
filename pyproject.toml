@@ -60,4 +60,5 @@ dev = [
     "django-tables2>=2.7.5",
     "django-filter>=24.3",
     "django-tailwind>=3.8.0",
+    "django-stubs>=5.1.3",
 ]
