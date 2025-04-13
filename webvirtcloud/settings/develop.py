@@ -6,7 +6,7 @@ Django develop settings for WebVirtCloud project.
 import os
 import socket
 
-from .base import *
+from .base import *  # noqa: F403
 
 
 # Django settings
@@ -16,7 +16,7 @@ DEBUG = True
 ALLOWED_HOSTS = ["*"]
 
 # Application definition
-INSTALLED_APPS += [
+INSTALLED_APPS += [  # noqa: F405
     "drf_yasg",
     "corsheaders",
     "debug_toolbar",
@@ -34,7 +34,7 @@ hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
 INTERNAL_IPS = [ip[: ip.rfind(".")] + ".1" for ip in ips] + ["127.0.0.1", "localhost"]
 
 # Middleware definition
-MIDDLEWARE += [
+MIDDLEWARE += [  # noqa: F405
     "corsheaders.middleware.CorsMiddleware",
     "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django_browser_reload.middleware.BrowserReloadMiddleware",
@@ -57,6 +57,6 @@ EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "")
 EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "")
 
 try:
-    from .local import *
+    from .local import *  # noqa: F403
 except ImportError:
     pass
