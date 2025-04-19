@@ -15,6 +15,7 @@ from network.helper import (
     assign_free_ipv4_compute,
     assign_free_ipv4_private,
 )
+from dbaas.models import DBaaS
 from lbaas.models import LBaaS, LBaaSVirtance
 from image.tasks import image_delete
 from firewall.tasks import firewall_detach
@@ -99,10 +100,15 @@ def create_virtance(virtance_id, password=None, send_email=True):
         private_key = decrypt_data(lbaas.private_key)
         keypairs.append(make_ssh_public(private_key))
 
+    if virtance.type == Virtance.DBAAS:
+        dbaas = DBaaS.objects.get(virtance_id=virtance_id)
+        private_key = decrypt_data(dbaas.private_key)
+        keypairs.append(make_ssh_public(private_key))
+
     if compute and ipv4_public and ipv4_compute and ipv4_private:
         # TODO: rebuild webvirtcompute with new API for LBAAS type images
         image_type = virtance.template.type
-        if virtance.template.type == Image.LBAAS:
+        if virtance.template.type == Image.LBAAS or virtance.template.type == Image.DBAAS:
             image_type = "distribution"
         images = [
             {
