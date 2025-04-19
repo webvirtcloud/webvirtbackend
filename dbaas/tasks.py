@@ -2,7 +2,7 @@ from django.conf import settings
 
 from network.models import IPAddress, Network
 from virtance.provision import ansible_play
-from virtance.tasks import create_virtance
+from virtance.tasks import create_virtance, delete_virtance
 from virtance.utils import check_ssh_connect, decrypt_data, virtance_error
 from webvirtcloud.celery import app
 
@@ -194,6 +194,20 @@ provision_tasks = [
 ]
 
 
+update_admin_password_tasks = [
+    {
+        "name": "Update admin user password",
+        "action": {
+            "module": "shell",
+            "args": "psql -d postgres -c \"ALTER USER {{ admin_login }} WITH PASSWORD '{{ admin_password }}'\"",
+        },
+        "become": True,
+        "become_method": "sudo",
+        "become_user": "{{ master_login }}",
+    }
+]
+
+
 def provision_dbaas(host, private_key, tasks, dbaas_vars=None):
     task = None
     error = None
@@ -244,3 +258,36 @@ def create_dbaas(dbaas_id):
                 virtance_error(dbaas.virtance.id, error_message, event="dbaas_provision")
             else:
                 dbaas.reset_event()
+
+
+@app.task
+def update_admin_password_dbaas(dbaas_id):
+    dbaas = DBaaS.objects.get(id=dbaas_id)
+    private_key = decrypt_data(dbaas.private_key)
+    ipv4_private = IPAddress.objects.get(virtance=dbaas.virtance, network__type=Network.PRIVATE, is_float=False)
+
+    if check_ssh_connect(ipv4_private.address, private_key=private_key):
+        dbaas_vars = {
+            "admin_login": settings.DBAAS_ADMIN_LOGIN,
+            "admin_password": decrypt_data(dbaas.admin_secret),
+            "master_login": settings.DBAAS_MASTER_LOGIN,
+        }
+        error, task = provision_dbaas(
+            ipv4_private.address, private_key, update_admin_password_tasks, dbaas_vars=dbaas_vars
+        )
+        if error:
+            error_message = error
+            if task:
+                error_message = f"Task: {task}. Error: {error}"
+            virtance_error(dbaas.virtance.id, error_message, event="update_admin_password")
+        else:
+            dbaas.reset_event()
+
+
+@app.task
+def delete_lbaas(dbaas_id):
+    dbaas = DBaaS.objects.get(id=dbaas_id)
+
+    if delete_virtance(dbaas.virtance.id):
+        dbaas.reset_event()
+        dbaas.delete()
