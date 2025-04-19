@@ -110,7 +110,7 @@ provision_tasks = [
         "name": "Update master user password",
         "action": {
             "module": "shell",
-            "args": 'psql -d postgres -c "ALTER USER {{ master_login }} PASSWORD {{ master_password }}"',
+            "args": "psql -d postgres -c \"ALTER USER {{ master_login }} WITH PASSWORD '{{ master_password }}'\"",
         },
         "become": True,
         "become_method": "sudo",
@@ -127,20 +127,10 @@ provision_tasks = [
         "become_user": "{{ master_login }}",
     },
     {
-        "name": "Create PostgreSQL master databases",
+        "name": "Create default database",
         "action": {
             "module": "shell",
-            "args": 'psql -d postgres -c "CREATE DATABASE {{ master_login }} OWNER {{ master_login }}"',
-        },
-        "become": True,
-        "become_method": "sudo",
-        "become_user": "{{ master_login }}",
-    },
-    {
-        "name": "Create PostgreSQL dbadmin databases",
-        "action": {
-            "module": "shell",
-            "args": 'psql -d postgres -c "CREATE DATABASE {{ admin_login }} OWNER {{ admin_login }}"',
+            "args": 'psql -d postgres -c "CREATE DATABASE {{ default_db_name }} OWNER {{ admin_login }}"',
         },
         "become": True,
         "become_method": "sudo",
@@ -228,8 +218,6 @@ def provision_dbaas(host, private_key, tasks, dbaas_vars=None):
 def create_dbaas(dbaas_id):
     dbaas = DBaaS.objects.get(id=dbaas_id)
     private_key = decrypt_data(dbaas.private_key)
-    admin_password = decrypt_data(dbaas.admin_secret)
-    master_password = decrypt_data(dbaas.master_secret)
 
     if create_virtance(dbaas.virtance.id, send_email=False):
         ipv4_public = IPAddress.objects.get(virtance=dbaas.virtance, network__type=Network.PUBLIC, is_float=False)
@@ -239,11 +227,13 @@ def create_dbaas(dbaas_id):
             dbaas_vars = {
                 "version": dbaas.dbms.version,
                 "admin_login": settings.DBAAS_ADMIN_LOGIN,
-                "admin_password": admin_password,
+                "admin_password": decrypt_data(dbaas.admin_secret),
                 "master_login": settings.DBAAS_MASTER_LOGIN,
-                "master_password": master_password,
+                "master_password": decrypt_data(dbaas.master_secret),
+                "default_db_name": settings.DBAAS_DEFAULT_DB_NAME,
                 "ipv4_public_address": ipv4_public.address,
                 "ipv4_private_address": ipv4_private.address,
+                "ipv4_private_gateway": ipv4_private.network.gateway,
                 "ipv4_dbaas_access_list": settings.DBAAS_IPV4_ACCESS_LIST,
             }
             error, task = provision_dbaas(ipv4_public.address, private_key, provision_tasks, dbaas_vars=dbaas_vars)

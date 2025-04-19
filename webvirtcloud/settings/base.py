@@ -269,6 +269,8 @@ LBAAS_IPV4_ACCESS_LIST = os.environ.get("LBAAS_IPV4_ACCESS_LIST", [])
 # DBaaS settings
 DBAAS_ADMIN_LOGIN = os.environ.get("DBAAS_ADMIN_LOGIN", "admin")
 DBAAS_MASTER_LOGIN = os.environ.get("DBAAS_MASTER_LOGIN", "master")
+DBAAS_PGSQL_PORT = os.environ.get("DBAAS_PGSQL_PORT", 5432)
+DBAAS_DEFAULT_DB_NAME = os.environ.get("DBAAS_DEFAULT_DB_NAME", "defaultdb")
 DBASS_MIN_VM_MEM_SIZE = os.environ.get("DBASS_MIN_VM_MEM_SIZE", 2147483648)
 DBAAS_IPV4_ACCESS_LIST = os.environ.get("DBAAS_IPV4_ACCESS_LIST", [])
 

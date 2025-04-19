@@ -1,3 +1,4 @@
+from django.conf import settings
 from rest_framework import serializers
 
 from image.models import Image
@@ -6,7 +7,7 @@ from size.models import DBMS, Size
 from virtance.models import Virtance
 from size.serializers import SizeSerializer
 from region.serializers import RegionSerializer
-from virtance.utils import encrypt_data, make_passwd, make_ssh_private
+from virtance.utils import encrypt_data, decrypt_data, make_passwd, make_ssh_private
 
 from .models import DBaaS
 from .tasks import create_dbaas
@@ -15,9 +16,9 @@ from .tasks import create_dbaas
 class DBaaSSerializer(serializers.ModelSerializer):
     id = serializers.UUIDField(required=False, read_only=True, source="uuid")
     name = serializers.CharField()
-    size = serializers.SerializerMethodField(required=True)
+    size = serializers.CharField(write_only=True)
     event = serializers.SerializerMethodField(read_only=True)
-    engine = serializers.SerializerMethodField(required=True)
+    engine = serializers.CharField(write_only=True)
     region = serializers.CharField(required=True, write_only=True)
     version = serializers.CharField(source="db.version", read_only=True)
     conection = serializers.SerializerMethodField(read_only=True)
@@ -37,21 +38,21 @@ class DBaaSSerializer(serializers.ModelSerializer):
             "created_at",
         )
 
-    def get_size(self, obj):
-        size = obj.virtance.size
-        return SizeSerializer(size).data
-
     def get_event(self, obj):
         if obj.event is None:
             return None
         return {"name": obj.event, "description": next((i[1] for i in obj.EVENT_CHOICES if i[0] == obj.event))}
 
-    def get_engine(self, obj):
-        engine = obj.dbms
-        return {"name": engine.name, "slug": engine.slug, "version": engine.version}
-
     def get_conection(self, obj):
-        return ""
+        return {
+            "uri": f"postgres://{settings.DBAAS_ADMIN_LOGIN}:{decrypt_data(obj.admin_secret)}"
+            f"@host:{settings.DBAAS_PGSQL_PORT}/{settings.DBAAS_DEFAULT_DB_NAME}",
+            "host": obj.virtance.name,
+            "user": settings.DBAAS_ADMIN_LOGIN,
+            "password": decrypt_data(obj.admin_secret),
+            "port": settings.DBAAS_PGSQL_PORT,
+            "ssl": False,
+        }
 
     def validate(self, attrs):
         size = attrs.get("size")
@@ -92,8 +93,14 @@ class DBaaSSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
+
         data["size"] = SizeSerializer(instance.virtance.size).data
         data["region"] = RegionSerializer(instance.virtance.region).data
+        data["engine"] = {
+            "slug": instance.dbms.slug,
+            "name": instance.dbms.name,
+            "version": instance.dbms.version,
+        }
         return data
 
     def create(self, validated_data):
