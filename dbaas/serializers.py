@@ -5,6 +5,7 @@ from image.models import Image
 from region.models import Region
 from size.models import DBMS, Size
 from virtance.models import Virtance
+from network.models import Network, IPAddress
 from size.serializers import SizeSerializer
 from region.serializers import RegionSerializer
 from virtance.utils import encrypt_data, decrypt_data, make_passwd, make_ssh_private
@@ -44,10 +45,21 @@ class DBaaSSerializer(serializers.ModelSerializer):
         return {"name": obj.event, "description": next((i[1] for i in obj.EVENT_CHOICES if i[0] == obj.event))}
 
     def get_conection(self, obj):
+        if obj.virtance is None:
+            return None
+        ipv4_public = IPAddress.objects.get(network__type=Network.PUBLIC, virtance=obj.virtance)
+        ipv4_private = IPAddress.objects.get(network__type=Network.PRIVATE, virtance=obj.virtance)
         return {
-            "uri": f"postgres://{settings.DBAAS_ADMIN_LOGIN}:{decrypt_data(obj.admin_secret)}"
-            f"@host:{settings.DBAAS_PGSQL_PORT}/{settings.DBAAS_DEFAULT_DB_NAME}",
-            "host": obj.virtance.name,
+            "public": {
+                "uri": f"postgres://{settings.DBAAS_ADMIN_LOGIN}:{decrypt_data(obj.admin_secret)}"
+                f"@{ipv4_public.address}:{settings.DBAAS_PGSQL_PORT}/{settings.DBAAS_DEFAULT_DB_NAME}?sslmode=disable",
+                "host": ipv4_public.address,
+            },
+            "private": {
+                "uri": f"postgres://{settings.DBAAS_ADMIN_LOGIN}:{decrypt_data(obj.admin_secret)}"
+                f"@{ipv4_private.address}:{settings.DBAAS_PGSQL_PORT}/{settings.DBAAS_DEFAULT_DB_NAME}?sslmode=disable",
+                "host": ipv4_private.address,
+            },
             "user": settings.DBAAS_ADMIN_LOGIN,
             "password": decrypt_data(obj.admin_secret),
             "port": settings.DBAAS_PGSQL_PORT,
