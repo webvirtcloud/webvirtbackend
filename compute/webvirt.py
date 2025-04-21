@@ -3,7 +3,7 @@ import requests
 from base64 import b64encode
 from django.conf import settings
 from urllib.parse import urlencode
-from requests.exceptions import ConnectTimeout
+from requests.exceptions import ConnectTimeout, ConnectionError
 
 
 urllib3.disable_warnings()
@@ -38,6 +38,8 @@ class WebVirtCompute(object):
             return response
         except ConnectTimeout:
             return {"detail": "Connection to compute timeout."}
+        except ConnectionError:
+            return {"detail": "Failed to establish a new connection to compoute. Check the hostname or IP address."}
 
     def _make_post(self, url, params):
         url = self._url() + url
@@ -46,6 +48,8 @@ class WebVirtCompute(object):
             return response
         except ConnectTimeout:
             return {"detail": "Connection to compute timeout."}
+        except ConnectionError:
+            return {"detail": "Failed to establish a new connection to compoute. Check the hostname or IP address ."}
 
     def _make_put(self, url, params):
         url = self._url() + url
@@ -54,6 +58,8 @@ class WebVirtCompute(object):
             return response
         except ConnectTimeout:
             return {"detail": "Connection to compute timeout."}
+        except ConnectionError:
+            return {"detail": "Failed to establish a new connection to compoute. Check the hostname or IP address."}
 
     def _make_delete(self, url, params=None):
         url = self._url() + url
@@ -62,6 +68,8 @@ class WebVirtCompute(object):
             return response
         except ConnectTimeout:
             return {"detail": "Connection to compute timeout."}
+        except ConnectionError:
+            return {"detail": "Failed to establish a new connection to compoute. Check the hostname or IP address."}
 
     def _process_response(self, response, json=True):
         if isinstance(response, dict):

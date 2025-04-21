@@ -1,29 +1,40 @@
-from django.contrib import messages
-from django.urls import reverse_lazy, reverse
-from django.shortcuts import redirect, get_object_or_404
 from crispy_forms.helper import FormHelper
+from django.contrib import messages
+from django.shortcuts import get_object_or_404, redirect
+from django.urls import reverse, reverse_lazy
 from django_filters.views import FilterView
-from django_tables2 import SingleTableMixin, RequestConfig
+from django_tables2 import RequestConfig, SingleTableMixin
 
+from admin.mixins import AdminDeleteView, AdminFormView, AdminTemplateView, AdminUpdateView, AdminView
 from compute.models import Compute
-from virtance.models import Virtance
-from network.models import Network
 from compute.webvirt import WebVirtCompute
+from network.models import Network
+from virtance.models import Virtance
+
 from .filters import ComputeFilter, ComputeOverviewFilter
+from .forms import (
+    FormAutostartAction,
+    FormCompute,
+    FormNetworkCreate,
+    FormNwfilterCreateAction,
+    FormSecretCreateAction,
+    FormSecretValueAction,
+    FormStartAction,
+    FormStorageDirCreate,
+    FormStorageRBDCreate,
+    FormVolumeCloneAction,
+    FormVolumeCreateAction,
+    FormVolumeResizeAction,
+)
 from .tables import (
     ComputeHTMxTable,
-    ComputeOverviewHTMxTable,
-    ComputeStoragesTable,
     ComputeNetworksTable,
     ComputeNwfilterTable,
+    ComputeOverviewHTMxTable,
     ComputeSecretsTable,
+    ComputeStoragesTable,
     ComputeStorageVolumesTable,
 )
-from .forms import FormNetworkCreate, FormStorageDirCreate, FormStorageRBDCreate
-from .forms import FormCompute, FormStartAction, FormAutostartAction
-from .forms import FormSecretCreateAction, FormSecretValueAction, FormNwfilterCreateAction
-from .forms import FormVolumeCreateAction, FormVolumeCloneAction, FormVolumeResizeAction
-from admin.mixins import AdminView, AdminTemplateView, AdminFormView, AdminUpdateView, AdminDeleteView
 
 
 class AdminComputeIndexView(SingleTableMixin, FilterView, AdminView):
