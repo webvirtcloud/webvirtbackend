@@ -12,12 +12,16 @@ class MetadataV1Json(MetadataMixin):
         """
         Retrieve an Metadata JSON for a Virtance
         """
+        user_data = ""
         vendor_data = ""
         nameservers = []
         public_keys = []
 
         if self.virtance is None:
             return HttpResponse("Not Found", status=404)
+
+        if self.virtance.user_data:
+            user_data = self.virtance.user_data
 
         for i in KeyPairVirtance.objects.filter(virtance=self.virtance):
             public_keys.append(i.keypair.public_key)
@@ -66,7 +70,7 @@ class MetadataV1Json(MetadataMixin):
         response = {
             "id": self.virtance.id,
             "hostname": self.virtance.name,
-            "user-data": self.virtance.user_data,
+            "user-data": user_data,
             "vendor-data": vendor_data,
             "public-keys": public_keys,
             "region": self.virtance.region.slug,

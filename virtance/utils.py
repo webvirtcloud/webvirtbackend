@@ -64,16 +64,14 @@ def decrypt_data(data, key=None):
     return decrypted_data.decode()
 
 
-def check_ssh_auth(hostname, password=None, private_key=None, username="root", timeout=180):
+def check_ssh_auth(hostname, password=None, private_key=None, username="root"):
     pkey = None
-    elapsed_time = 0
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
     if private_key:
         pkey = paramiko.RSAKey.from_private_key(StringIO(private_key))
 
-    while elapsed_time < timeout:
         try:
             ssh.connect(
                 hostname=hostname,
@@ -85,7 +83,7 @@ def check_ssh_auth(hostname, password=None, private_key=None, username="root", t
             )
             return True
         except Exception:
-            time.sleep(1)
+            pass
 
         finally:
             ssh.close()
