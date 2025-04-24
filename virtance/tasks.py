@@ -478,7 +478,7 @@ def delete_virtance(virtance_id):
         unassign_floating_ip(floatip.id, virtance_reset_event=False)
 
     # Check if virtance has attached  and delete them if so
-    if LBaaSVirtance.objects.filter(lbaas__is_delted=False, virtance=virtance, is_deleted=False).exists():
+    if LBaaSVirtance.objects.filter(lbaas__is_deleted=False, virtance=virtance, is_deleted=False).exists():
         lbaas_virtance = LBaaSVirtance.objects.filter(virtance=virtance, is_deleted=False).filter()
         lbaas_virtance.is_deleted = True
         lbaas_virtance.save()
