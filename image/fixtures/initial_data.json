@@ -319,7 +319,7 @@
             "arch": "x86_64",
             "type": "distribution",
             "event": null,
-            "md5sum": "014d037e30c0b88f81afe8f22807aee9",
+            "md5sum": "14cf89b0e144d004e9be4e2d491f0a24",
             "distribution": "debian",
             "description": "Debian 12 x64",
             "file_name": "debian-12-x64.qcow2",
