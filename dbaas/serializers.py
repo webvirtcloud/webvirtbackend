@@ -34,7 +34,7 @@ class DBaaSSerializer(serializers.ModelSerializer):
     version = serializers.CharField(source="db.version", read_only=True)
     conection = serializers.SerializerMethodField(read_only=True)
     created_at = serializers.DateTimeField(read_only=True, source="created")
-    backups_enabled = serializers.BooleanField(source="virtance.is_backup_enabled")
+    backups_enabled = serializers.BooleanField(required=False, source="virtance.is_backup_enabled")
 
     class Meta:
         model = DBaaS
@@ -140,6 +140,7 @@ class DBaaSSerializer(serializers.ModelSerializer):
         size = validated_data.get("size")
         engine = validated_data.get("engine")
         region_slug = validated_data.get("region")
+        backups_enabled = validated_data.get("backups_enabled", False)
         enc_private_key = encrypt_data(make_ssh_private())
         enc_admin_secret = encrypt_data(make_passwd(length=16))
         enc_master_secret = encrypt_data(make_passwd(length=16))
@@ -157,6 +158,7 @@ class DBaaSSerializer(serializers.ModelSerializer):
             region=region,
             disk=size.disk,
             template=template,
+            is_backup_enabled=backups_enabled,
         )
 
         dbass = DBaaS.objects.create(
