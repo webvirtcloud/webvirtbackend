@@ -1,9 +1,11 @@
 from decimal import Decimal
+
 from django.utils import timezone
 
-from webvirtcloud.celery import app
-from compute.webvirt import WebVirtCompute
 from compute.models import Compute
+from compute.webvirt import WebVirtCompute
+from webvirtcloud.celery import app
+
 from .models import Image, SnapshotCounter
 from .utils import image_error
 
@@ -32,7 +34,7 @@ def image_delete(image_id):
                                         image.regions.remove(region)
                                         break
                 if res.get("detail"):
-                    image_error(image.id, f'Region: {region}, Error:{res.get("detail")}', f"delete_image_{image.type}")
+                    image_error(image.id, f"Region: {region}, Error:{res.get('detail')}", f"delete_image_{image.type}")
                     return False
 
         if image.regions.count() == 0:

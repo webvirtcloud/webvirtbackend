@@ -5,6 +5,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from virtance.models import Virtance
 from webvirtcloud.views import error_message_response
 
 from .models import Image
@@ -32,8 +33,8 @@ class ImageListAPI(APIView):
                 | Q(type=Image.APPLICATION)
                 | Q(type=Image.DISTRIBUTION)
                 | Q(type=Image.CUSTOM, user=user)
-                | Q(type=Image.BACKUP, user=user)
-                | Q(type=Image.SNAPSHOT, user=user),
+                | Q(type=Image.BACKUP, user=user, source__type=Virtance.VIRTANCE)
+                | Q(type=Image.SNAPSHOT, user=user, source__type=Virtance.VIRTANCE),
                 is_deleted=False,
             )
 
@@ -57,6 +58,8 @@ class ImageDataAPI(APIView):
             raise Http404
         if image.type == Image.SNAPSHOT or image.type == Image.BACKUP or image.type == Image.CUSTOM:
             if image.user != self.request.user:
+                raise Http404
+            if image.source and image.source.type != Virtance.VIRTANCE:
                 raise Http404
         return image
 
@@ -107,6 +110,8 @@ class ImageActionAPI(APIView):
             raise Http404
         if image.type == Image.SNAPSHOT or image.type == Image.BACKUP or image.type == Image.CUSTOM:
             if image.user != self.request.user:
+                raise Http404
+            if image.source and image.source.type != Virtance.VIRTANCE:
                 raise Http404
         return image
 

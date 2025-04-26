@@ -1,7 +1,8 @@
 from rest_framework import serializers
 
-from .models import Image
 from region.models import Region
+
+from .models import Image
 
 
 class ImageSerializer(serializers.ModelSerializer):
