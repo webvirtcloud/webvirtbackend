@@ -1,17 +1,19 @@
+import re
 from django.conf import settings
+from django.db.models import Q
 from rest_framework import serializers
 
 from image.models import Image
+from network.models import IPAddress, Network
 from region.models import Region
-from size.models import DBMS, Size
-from virtance.models import Virtance
-from network.models import Network, IPAddress
-from size.serializers import SizeSerializer
 from region.serializers import RegionSerializer
-from virtance.utils import encrypt_data, decrypt_data, make_passwd, make_ssh_private
+from size.models import DBMS, Size
+from size.serializers import SizeSerializer
+from virtance.models import Virtance
+from virtance.utils import decrypt_data, encrypt_data, make_passwd, make_ssh_private
 
 from .models import DBaaS
-from .tasks import create_dbaas
+from .tasks import create_dbaas, action_dbaas, resize_dbaas
 
 
 class DBaaSSerializer(serializers.ModelSerializer):
@@ -153,3 +155,157 @@ class DBaaSSerializer(serializers.ModelSerializer):
         create_dbaas.delay(dbass.id)
 
         return dbass
+
+
+class DBaaSActionSerializer(serializers.Serializer):
+    size = serializers.SlugField(required=False)
+    name = serializers.CharField(max_length=100, required=False)
+    image = serializers.CharField(required=False)
+    action = serializers.CharField(max_length=30)
+    password = serializers.CharField(required=False)
+
+    def validate_action(self, value):
+        actions = [
+            "reboot",
+            "resize",
+            "rename",
+            "restore",
+            "snapshot",
+            "shutdown",
+            "power_on",
+            "power_off",
+            "power_cyrcle",
+            "password_reset",
+            "enable_backups",
+            "disable_backups",
+        ]
+        if value not in actions:
+            raise serializers.ValidationError({"action": ["Invalid action."]})
+        return value
+
+    def validate(self, attrs):
+        dbaas = self.context.get("dbaas")
+        virtance = dbaas.virtance
+
+        if attrs.get("action") == "resize":
+            if virtance.region.features.filter(name="resize").exists() is False:
+                raise serializers.ValidationError("Resizing is not supported in this region.")
+
+            if attrs.get("size") is None:
+                raise serializers.ValidationError({"size": ["This field is required."]})
+            try:
+                size = Size.objects.get(slug=attrs.get("size"))
+            except Size.DoesNotExist:
+                raise serializers.ValidationError({"size": ["Invalid size."]})
+
+            if size not in dbaas.dbms.sizes.all():
+                raise serializers.ValidationError({"size": ["Size not available for this engine"]})
+
+            if size.is_active is False:
+                raise serializers.ValidationError({"size": ["Size is not active."]})
+
+            if virtance.region not in size.regions.all():
+                raise serializers.ValidationError({"size": ["Size is not available in the region."]})
+
+            if size.disk < virtance.size.disk or size.vcpu < virtance.size.vcpu or size.memory < virtance.size.memory:
+                raise serializers.ValidationError({"size": ["New size is smaller than the current size."]})
+
+        if attrs.get("action") == "rename":
+            if attrs.get("name") is None:
+                raise serializers.ValidationError({"name": ["This field is required."]})
+
+        if attrs.get("action") == "password_reset":
+            if attrs.get("password"):
+                if len(attrs.get("password")) == 8:
+                    if not re.match(r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$", attrs.get("password")):
+                        raise serializers.ValidationError(
+                            {
+                                "password": [
+                                    "Password must contain at least one uppercase letter, "
+                                    "one lowercase letter and one digit."
+                                ]
+                            }
+                        )
+
+        if attrs.get("action") == "restore":
+            if attrs.get("image") is None:
+                raise serializers.ValidationError({"image": ["This field is required."]})
+            try:
+                Image.objects.get(
+                    Q(type=Image.SNAPSHOT) | Q(type=Image.BACKUP),
+                    source_id=dbaas.id,
+                    id=attrs.get("image"),
+                    user=dbaas.user,
+                )
+            except Image.DoesNotExist:
+                raise serializers.ValidationError({"image": ["Image not found."]})
+
+        if attrs.get("action") == "snapshot":
+            if virtance.region.features.filter(name="snapshot").exists() is False:
+                raise serializers.ValidationError("Snapshots are not supported in this region.")
+            if attrs.get("name") is None:
+                raise serializers.ValidationError({"name": ["This field is required."]})
+
+        if attrs.get("action") == "enable_backups":
+            if virtance.region.features.filter(name="backup").exists() is False:
+                raise serializers.ValidationError("Backups are not supported in this region.")
+            if virtance.is_backup_enabled is True:
+                raise serializers.ValidationError("Backups are already enabled.")
+
+        if attrs.get("action") == "disable_backups":
+            if virtance.is_backup_enabled is False:
+                raise serializers.ValidationError("Backups are already disabled.")
+
+        return attrs
+
+    def create(self, validated_data):
+        dbaas = self.context.get("dbaas")
+        virtance = dbaas.virtance
+        name = validated_data.get("name")
+        size = validated_data.get("size")
+        image = validated_data.get("image")
+        action = validated_data.get("action")
+        password = validated_data.get("password")
+
+        # Set new task event
+        virtance.event = action
+        virtance.status = dbaas.virtance.PENDING
+        virtance.save()
+
+        if action in ["power_on", "power_off", "power_cyrcle", "shutdown", "reboot"]:
+            action_dbaas.delay(dbaas.id, action)
+
+        if action == "rename":
+            dbaas.name = name
+            dbaas.save()
+            dbaas.reset_event()
+
+        if action == "resize":
+            size = Size.objects.get(slug=size)
+            resize_dbaas.delay(dbaas.id, size.id)
+
+        if action == "password_reset":
+            reset_admin_password.delay(dbaas.id, password)
+
+        if action == "snapshot":
+            snapshot_dbaas.delay(dbaas.id, name)
+
+        if action == "restore":
+            snapshot = Image.objects.get(id=image)
+
+            if snapshot.event is not None:
+                raise serializers.ValidationError("The image already has event.")
+
+            snapshot.event = Image.RESTORE
+            snapshot.save()
+            restore_dbaas.delay(dbaas.id, snapshot.id)
+
+        if action == "enable_backups":
+            virtance.enable_backups()
+            virtance.active()
+            virtance.reset_event()
+
+        if action == "disable_backups":
+            backups_delete.delay(dbaas.id)
+
+        return validated_data

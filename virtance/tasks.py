@@ -292,6 +292,7 @@ def action_virtance(virtance_id, action):
                 virtance.active()
     if error is None:
         virtance.reset_event()
+    return error
 
 
 @app.task
@@ -302,7 +303,8 @@ def resize_virtance(virtance_id, size_id):
 
     wvcomp = wvcomp_conn(virtance.compute)
     res = wvcomp.resize_virtance(virtance.id, size.vcpu, size.memory, size.disk)
-    if res.get("detail") is None:
+    error = res.get("detail")
+    if error is None:
         virtance.active()
         virtance.reset_event()
         virtance.size = size
@@ -331,7 +333,8 @@ def resize_virtance(virtance_id, size_id):
             started=current_time,
         )
     else:
-        virtance_error(virtance_id, res.get("detail"), "resize")
+        virtance_error(virtance_id, error, "resize")
+    return error
 
 
 @app.task

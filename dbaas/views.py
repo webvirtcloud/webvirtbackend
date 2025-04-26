@@ -7,7 +7,7 @@ from rest_framework.views import APIView
 from webvirtcloud.views import error_message_response
 
 from .models import DBaaS
-from .serializers import DBaaSSerializer
+from .serializers import DBaaSSerializer, DBaaSActionSerializer
 from .tasks import delete_dbaas
 
 
@@ -69,6 +69,60 @@ class DBaaSDataAPI(APIView):
         """
         serializer = self.class_serializer(self.get_object(), many=False)
         return Response({"database": serializer.data})
+
+    def post(self, request, *args, **kwargs):
+        """
+        Database Actions
+        ---
+            parameters:
+                - name: action
+                  description: Database action
+                  required: true
+                  type: string
+                  action:
+                    - reboot
+                    - resize
+                    - reboot
+                    - rename
+                    - restore
+                    - snapshot
+                    - shutdown
+                    - power_on
+                    - power_off
+                    - power_cyrcle
+                    - password_reset
+                    - enable_backups
+                    - disable_backups
+
+                - name: size
+                  description: For "resize" action
+                  required: false
+                  type: string
+
+                - name: name
+                  description: For "rename" and "snapshot" actions
+                  required: false
+                  type: string
+
+                - name: image
+                  description: For "restore" actions
+                  required: false
+                  type: string
+
+                - name: password
+                  description: For "password_reset" action
+                  required: false
+                  type: string
+        """
+        dbaas = self.get_object()
+
+        if dbaas.event is not None:
+            return error_message_response("The database already has event.")
+
+        serializer = DBaaSActionSerializer(dbaas, data=request.data, context={"dbaas": dbaas})
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
 
     def delete(self, request, *args, **kwargs):
         """

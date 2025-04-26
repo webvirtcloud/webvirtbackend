@@ -2,13 +2,14 @@ from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from rest_framework import status
-from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from webvirtcloud.views import error_message_response
+
 from .models import Image
+from .serializers import ImageActionSerializer, ImageSerializer, SnapshotsSerializer
 from .tasks import image_delete
-from .serializers import ImageSerializer, ImageActionSerializer, SnapshotsSerializer
 
 
 class ImageListAPI(APIView):
@@ -27,6 +28,7 @@ class ImageListAPI(APIView):
         if i_type is None:
             queryset = Image.objects.filter(
                 ~Q(type=Image.LBAAS)
+                | ~Q(type=Image.DBAAS)
                 | Q(type=Image.APPLICATION)
                 | Q(type=Image.DISTRIBUTION)
                 | Q(type=Image.CUSTOM, user=user)
@@ -51,7 +53,7 @@ class ImageDataAPI(APIView):
 
     def get_object(self):
         image = get_object_or_404(Image, pk=self.kwargs.get("id"), is_deleted=False)
-        if image.type == Image.LBAAS:
+        if image.type == Image.LBAAS or image.type == Image.DBAAS:
             raise Http404
         if image.type == Image.SNAPSHOT or image.type == Image.BACKUP or image.type == Image.CUSTOM:
             if image.user != self.request.user:
@@ -101,7 +103,7 @@ class ImageActionAPI(APIView):
 
     def get_object(self):
         image = get_object_or_404(Image, pk=self.kwargs.get("id"), is_deleted=False)
-        if image.type == Image.LBAAS:
+        if image.type == Image.LBAAS or image.type == Image.DBAAS:
             raise Http404
         if image.type == Image.SNAPSHOT or image.type == Image.BACKUP or image.type == Image.CUSTOM:
             if image.user != self.request.user:

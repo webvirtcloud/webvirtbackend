@@ -2,7 +2,7 @@ from django.conf import settings
 
 from network.models import IPAddress, Network
 from virtance.provision import ansible_play
-from virtance.tasks import create_virtance, delete_virtance
+from virtance.tasks import action_virtance, create_virtance, delete_virtance, resize_virtance
 from virtance.utils import check_ssh_connect, decrypt_data, virtance_error
 from webvirtcloud.celery import app
 
@@ -285,9 +285,27 @@ def update_admin_password_dbaas(dbaas_id):
 
 
 @app.task
-def delete_lbaas(dbaas_id):
+def delete_dbaas(dbaas_id):
     dbaas = DBaaS.objects.get(id=dbaas_id)
 
     if delete_virtance(dbaas.virtance.id):
+        dbaas.reset_event()
+        dbaas.delete()
+
+
+@app.task
+def action_dbaas(dbaas_id, action):
+    dbaas = DBaaS.objects.get(id=dbaas_id)
+
+    if not action_virtance(dbaas.virtance.id, action):
+        dbaas.reset_event()
+        dbaas.delete()
+
+
+@app.task
+def resize_dbaas(dbaas_id, flavor_id):
+    dbaas = DBaaS.objects.get(id=dbaas_id)
+
+    if not resize_virtance(dbaas.virtance.id, flavor_id):
         dbaas.reset_event()
         dbaas.delete()
