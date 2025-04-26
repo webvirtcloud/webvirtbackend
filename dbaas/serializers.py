@@ -233,8 +233,8 @@ class DBaaSActionSerializer(serializers.Serializer):
             try:
                 Image.objects.get(
                     Q(type=Image.SNAPSHOT) | Q(type=Image.BACKUP),
-                    source_id=dbaas.id,
                     id=attrs.get("image"),
+                    source=dbaas.virtance,
                     user=dbaas.user,
                 )
             except Image.DoesNotExist:
@@ -289,13 +289,13 @@ class DBaaSActionSerializer(serializers.Serializer):
             resize_dbaas.delay(dbaas.id, size.id)
 
         if action == "password_reset":
-            reset_admin_password.delay(dbaas.id, password)
+            reset_password_dbaas.delay(dbaas.id, password)
 
         if action == "snapshot":
             snapshot_dbaas.delay(dbaas.id, name)
 
         if action == "restore":
-            snapshot = Image.objects.get(id=image)
+            snapshot = Image.objects.get(id=image, source=dbaas.virtance)
 
             if snapshot.event is not None:
                 raise serializers.ValidationError("The image already has event.")

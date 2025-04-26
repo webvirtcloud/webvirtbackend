@@ -340,7 +340,9 @@ class VirtanceActionSerializer(serializers.Serializer):
             if attrs.get("image") is None:
                 raise serializers.ValidationError({"image": ["This field is required."]})
             try:
-                Image.objects.get(Q(type=Image.SNAPSHOT) | Q(type=Image.BACKUP), id=attrs.get("image"), user=user)
+                Image.objects.get(
+                    Q(type=Image.SNAPSHOT) | Q(type=Image.BACKUP), id=attrs.get("image"), source=virtance, user=user
+                )
             except Image.DoesNotExist:
                 raise serializers.ValidationError({"image": ["Image not found."]})
 
@@ -408,7 +410,7 @@ class VirtanceActionSerializer(serializers.Serializer):
             snapshot_virtance.delay(virtance.id, name)
 
         if action == "restore":
-            snapshot = Image.objects.get(id=image)
+            snapshot = Image.objects.get(id=image, source=virtance)
 
             if snapshot.event is not None:
                 raise serializers.ValidationError("The image already has event.")

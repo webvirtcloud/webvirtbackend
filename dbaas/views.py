@@ -131,8 +131,8 @@ class DBaaSDataAPI(APIView):
         """
         dbaas = self.get_object()
 
-        if dbaas.event is not None:
-            return error_message_response("The database already has event.")
+        if dbaas.event is not None or dbaas.virtance.event is not None:
+            return error_message_response("The database already has event, please try again later.")
 
         dbaas.event = DBaaS.DELETE
         dbaas.save()
