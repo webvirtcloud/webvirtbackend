@@ -29,13 +29,13 @@ class ComputeHTMxTable(tables.Table):
 class ComputeOverviewHTMxTable(tables.Table):
     id = tables.TemplateColumn(template_name="admin/compute/overview/id_column.html", verbose_name="ID")
     user = tables.TemplateColumn(template_name="admin/compute/overview/user_column.html", verbose_name="User")
-    size = tables.Column(accessor="size.name", verbose_name="Size")
-    region = tables.Column(accessor="region.name", verbose_name="Region")
+    type = tables.Column(accessor="type", verbose_name="Type")
+    size = tables.Column(accessor="size.description", verbose_name="Size")
     locked = tables.Column(accessor="is_locked", verbose_name="Locked")
 
     class Meta:
         model = Virtance
-        fields = ("id", "user", "size", "region", "status", "locked", "created")
+        fields = ("id", "user", "type", "size", "status", "locked", "created")
         template_name = "django_tables2/bootstrap.html"
 
 

@@ -627,3 +627,19 @@ def backups_delete(virtance_id):
         virtance.reset_event()
     else:
         return "When deleting backups, some of them were not deleted."
+
+@app.task
+def snapshots_delete(virtance_id):
+    virtance = Virtance.objects.get(pk=virtance_id)
+    snapshots = Image.objects.filter(source=virtance, type=Image.SNAPSHOT, is_deleted=False)
+    number_of_snapshots = len(snapshots)
+
+    for snapshot in snapshots:
+        if image_delete(snapshot.id) is True:
+            number_of_snapshots -= 1
+
+    if number_of_snapshots == 0:
+        virtance.active()
+        virtance.reset_event()
+    else:
+        return "When deleting snapshots, some of them were not deleted."

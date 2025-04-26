@@ -1,5 +1,6 @@
 from django.conf import settings
 
+from image.models import Image
 from network.models import IPAddress, Network
 from virtance.provision import ansible_play
 from virtance.tasks import (
@@ -10,6 +11,7 @@ from virtance.tasks import (
     resize_virtance,
     restore_virtance,
     snapshot_virtance,
+    image_delete,
 )
 from virtance.utils import check_ssh_connect, decrypt_data, encrypt_data, virtance_error
 from webvirtcloud.celery import app
@@ -298,9 +300,18 @@ def update_admin_password_dbaas(dbaas_id, password):
 def delete_dbaas(dbaas_id):
     dbaas = DBaaS.objects.get(id=dbaas_id)
 
-    if delete_virtance(dbaas.virtance.id):
-        dbaas.reset_event()
-        dbaas.delete()
+    # Check if virtance has backups enabled
+    images = Image.objects.filter(source=dbaas.virtance, is_deleted=False)
+    number_of_images = len(images)
+    for image in images:
+        image_delete(image.id)
+        number_of_images -= 1
+
+    # If there are no images left, delete the virtance
+    if number_of_images == 0:
+        if delete_virtance(dbaas.virtance.id):
+            dbaas.reset_event()
+            dbaas.delete()
 
 
 @app.task
@@ -341,3 +352,8 @@ def backups_delete_dbaas(dbaas_id):
 
     if not backups_delete(dbaas.virtance.id):
         dbaas.reset_event()
+
+
+@app.task
+def delete_snapshot_dbaas(image_id):
+    image_delete(image_id)

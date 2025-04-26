@@ -60,10 +60,14 @@ class ImageSerializer(serializers.ModelSerializer):
     def get_min_disk_size(self, obj):
         if obj.type == obj.DISTRIBUTION or obj.type == obj.APPLICATION:
             return 0
+        if obj.disk_size is None:
+            return 0
         return obj.disk_size // 1073741824
 
     def get_size_gigabytes(self, obj):
         if obj.type == obj.DISTRIBUTION or obj.type == obj.APPLICATION:
+            return 0
+        if obj.file_size is None:
             return 0
         return round(obj.file_size / 1073741824, 2)
 

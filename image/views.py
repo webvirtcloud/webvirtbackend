@@ -23,14 +23,14 @@ class ImageListAPI(APIView):
         if i_type:
             if i_type == Image.LBAAS:
                 i_type = None
+            if i_type == Image.DBAAS:
+                i_type = None
             if i_type in (Image.DISTRIBUTION, Image.APPLICATION):
                 queryset = Image.objects.filter(type=i_type, user=None, is_deleted=False)
 
-        if i_type is None:
+        if not i_type:
             queryset = Image.objects.filter(
-                ~Q(type=Image.LBAAS)
-                | ~Q(type=Image.DBAAS)
-                | Q(type=Image.APPLICATION)
+                Q(type=Image.APPLICATION)
                 | Q(type=Image.DISTRIBUTION)
                 | Q(type=Image.CUSTOM, user=user)
                 | Q(type=Image.BACKUP, user=user, source__type=Virtance.VIRTANCE)
@@ -145,7 +145,9 @@ class ImageSnapshotsAPI(APIView):
     class_serializer = SnapshotsSerializer
 
     def get_queryset(self):
-        return Image.objects.filter(type=Image.SNAPSHOT, user=self.request.user, is_deleted=False)
+        return Image.objects.filter(
+            type=Image.SNAPSHOT, user=self.request.user, source__type=Virtance.VIRTANCE, is_deleted=False
+        )
 
     def get(self, request, *args, **kwargs):
         """
