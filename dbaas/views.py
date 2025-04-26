@@ -4,8 +4,11 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from webvirtcloud.views import error_message_response
+
 from .models import DBaaS
 from .serializers import DBaaSSerializer
+from .tasks import delete_dbaas
 
 
 class DBaaSListAPI(APIView):
@@ -66,3 +69,19 @@ class DBaaSDataAPI(APIView):
         """
         serializer = self.class_serializer(self.get_object(), many=False)
         return Response({"database": serializer.data})
+
+    def delete(self, request, *args, **kwargs):
+        """
+        Delete The Database
+        ---
+        """
+        dbaas = self.get_object()
+
+        if dbaas.event is not None:
+            return error_message_response("The database already has event.")
+
+        dbaas.event = DBaaS.DELETE
+        dbaas.save()
+
+        delete_dbaas.delay(dbaas.id)
+        return Response(status=status.HTTP_204_NO_CONTENT)
