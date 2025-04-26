@@ -118,7 +118,12 @@ class DBaaSSerializer(serializers.ModelSerializer):
         data = super().to_representation(instance)
 
         data["size"] = SizeSerializer(instance.virtance.size).data
-        data["region"] = RegionSerializer(instance.virtance.region).data
+        data["region"] = {
+            "slug": instance.virtance.region.slug,
+            "name": instance.virtance.region.name,
+            "sizes": [size.slug for size in instance.dbms.sizes.all()],
+            "features": [feature.name for feature in instance.virtance.region.features.all()],
+        }
         data["engine"] = {
             "slug": instance.dbms.slug,
             "name": instance.dbms.name,
