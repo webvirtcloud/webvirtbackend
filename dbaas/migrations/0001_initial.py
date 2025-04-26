@@ -23,7 +23,7 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('uuid', models.UUIDField(default=uuid.uuid4, editable=False, unique=True)),
                 ('name', models.CharField(max_length=100)),
-                ('event', models.CharField(blank=True, choices=[('create', 'Create'), ('reload', 'Reload'), ('delete', 'Delete')], default='create', max_length=40, null=True)),
+                ('event', models.CharField(blank=True, choices=[('create', 'Create'), ('delete', 'Delete'), ('reboot', 'Reboot'), ('resize', 'Resize'), ('rename', 'Rename'), ('restore', 'Restore'), ('snapshot', 'Snapshot'), ('shutdown', 'Shutdown'), ('power_on', 'Power On'), ('power_off', 'Power Off'), ('power_cycle', 'Power Cycle'), ('password_reset', 'Password Reset'), ('enable_backups', 'Enable Backups'), ('disable_backups', 'Disable Backups')], default='create', max_length=40, null=True)),
                 ('private_key', models.TextField()),
                 ('admin_secret', models.TextField()),
                 ('master_secret', models.TextField()),

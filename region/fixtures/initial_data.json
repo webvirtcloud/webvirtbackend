@@ -68,5 +68,12 @@
         "fields": {
             "name": "load_balancer"
         }
+    },
+    {
+        "model": "region.feature",
+        "pk": 9,
+        "fields": {
+            "name": "database"
+        }
     }
 ]
