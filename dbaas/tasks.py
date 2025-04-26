@@ -279,7 +279,7 @@ def update_admin_password_dbaas(dbaas_id, password):
     if check_ssh_connect(ipv4_private.address, private_key=private_key):
         dbaas_vars = {
             "admin_login": settings.DBAAS_ADMIN_LOGIN,
-            "admin_password": decrypt_data(dbaas.admin_secret),
+            "admin_password": password,
             "master_login": settings.DBAAS_MASTER_LOGIN,
         }
         error, task = provision_dbaas(
@@ -294,6 +294,7 @@ def update_admin_password_dbaas(dbaas_id, password):
             dbaas.admin_secret = encrypt_data(password)
             dbaas.save()
             dbaas.reset_event()
+            dbaas.virtance.reset_event()
 
 
 @app.task

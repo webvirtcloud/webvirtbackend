@@ -1,3 +1,4 @@
+from django.conf import settings
 from rest_framework import serializers
 
 from image.models import Image
@@ -220,9 +221,9 @@ class LBaaSSerializer(serializers.ModelSerializer):
         redirect_http_to_https = validated_data.get("redirect_http_to_https")
         enc_private_key = encrypt_data(make_ssh_private())
 
-        size = Size.objects.filter(type=Size.LBAAS, is_deleted=False).first()
+        size = Size.objects.get(slug=settings.LBAAS_SIZE_NAME, type=Size.LBAAS, is_deleted=False)
         region = Region.objects.get(slug=region_slug, is_deleted=False)
-        template = Image.objects.filter(type=Image.LBAAS, is_deleted=False).first()
+        template = Image.objects.get(slug=settings.LBAAS_TEMPLATE_NAME, type=Image.LBAAS, is_deleted=False)
 
         stick_session_enabled = True if sticky_sessions else False
         stick_session_cookie_name = "WVC-LB"

@@ -264,7 +264,9 @@ NOVNC_PASSWD_SUFFIX_LENGHT = os.environ.get("NOVNC_PASSWD_SUFFIX_LENGHT", 12)
 RECOVERY_ISO_NAME = os.environ.get("RECOVERY_ISO_NAME", "finnix-125.iso")
 
 # LBaaS settings
+LBAAS_SIZE_NAME = os.environ.get("LBAAS_SIZE_NAME", "lbaas-2vcpu-2gb-20gb")
 LBAAS_IPV4_ACCESS_LIST = os.environ.get("LBAAS_IPV4_ACCESS_LIST", [])
+LBAAS_TEMPLATE_NAME = os.environ.get("LBAAS_TEMPLATE_NAME", "debian-12-lbass-x64")
 
 # DBaaS settings
 DBAAS_ADMIN_LOGIN = os.environ.get("DBAAS_ADMIN_LOGIN", "admin")
@@ -273,6 +275,7 @@ DBAAS_PGSQL_PORT = os.environ.get("DBAAS_PGSQL_PORT", 5432)
 DBAAS_DEFAULT_DB_NAME = os.environ.get("DBAAS_DEFAULT_DB_NAME", "defaultdb")
 DBASS_MIN_VM_MEM_SIZE = os.environ.get("DBASS_MIN_VM_MEM_SIZE", 2147483648)
 DBAAS_IPV4_ACCESS_LIST = os.environ.get("DBAAS_IPV4_ACCESS_LIST", [])
+DBAAS_TEMPLATE_NAME = os.environ.get("DBAAS_TEMPLATE_NAME", "debian-12-dbaas-x64")
 
 # Backup settings
 BACKUP_PER_MONTH = os.environ.get("BACKUP_PER_MONTH", 4)

@@ -34,6 +34,7 @@ class DBaaSSerializer(serializers.ModelSerializer):
     version = serializers.CharField(source="db.version", read_only=True)
     conection = serializers.SerializerMethodField(read_only=True)
     created_at = serializers.DateTimeField(read_only=True, source="created")
+    backups_enabled = serializers.BooleanField(source="virtance.is_backup_enabled")
 
     class Meta:
         model = DBaaS
@@ -47,6 +48,7 @@ class DBaaSSerializer(serializers.ModelSerializer):
             "version",
             "conection",
             "created_at",
+            "backups_enabled",
         )
 
     def get_event(self, obj):
@@ -57,8 +59,10 @@ class DBaaSSerializer(serializers.ModelSerializer):
     def get_conection(self, obj):
         if obj.virtance is None:
             return None
-        ipv4_public = IPAddress.objects.get(network__type=Network.PUBLIC, virtance=obj.virtance)
-        ipv4_private = IPAddress.objects.get(network__type=Network.PRIVATE, virtance=obj.virtance)
+        ipv4_public = IPAddress.objects.filter(network__type=Network.PUBLIC, virtance=obj.virtance).first()
+        ipv4_private = IPAddress.objects.filter(network__type=Network.PRIVATE, virtance=obj.virtance).first()
+        if ipv4_public is None or ipv4_private is None:
+            return None
         return {
             "public": {
                 "uri": f"postgres://{settings.DBAAS_ADMIN_LOGIN}:{decrypt_data(obj.admin_secret)}"
@@ -140,10 +144,10 @@ class DBaaSSerializer(serializers.ModelSerializer):
         enc_admin_secret = encrypt_data(make_passwd(length=16))
         enc_master_secret = encrypt_data(make_passwd(length=16))
 
-        dbms = DBMS.objects.filter(slug=engine, is_deleted=False).first()
-        size = Size.objects.filter(type=Size.VIRTANCE, is_deleted=False).first()
+        dbms = DBMS.objects.get(slug=engine, is_deleted=False)
+        size = Size.objects.get(slug=size, type=Size.VIRTANCE, is_deleted=False)
         region = Region.objects.get(slug=region_slug, is_deleted=False)
-        template = Image.objects.filter(type=Image.DBAAS, is_deleted=False).first()
+        template = Image.objects.get(slug=settings.DBAAS_TEMPLATE_NAME, type=Image.DBAAS, is_deleted=False)
 
         virtance = Virtance.objects.create(
             name=name,
@@ -302,6 +306,8 @@ class DBaaSActionSerializer(serializers.Serializer):
             resize_dbaas.delay(dbaas.id, size.id)
 
         if action == "password_reset":
+            if password is None:
+                password = make_passwd(length=16)
             update_admin_password_dbaas.delay(dbaas.id, password)
 
         if action == "snapshot":
