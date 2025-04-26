@@ -403,7 +403,7 @@
             "arch": "x86_64",
             "type": "dbaas",
             "event": null,
-            "md5sum": "344ee8aa87f0b2c2736cbc7b904775a4",
+            "md5sum": "90b9e2a19b19b69d8b8bc236b88488ff",
             "distribution": "debian",
             "description": "Debian 12 DBaaS x64",
             "file_name": "debian-12-dbaas-x64.qcow2",
