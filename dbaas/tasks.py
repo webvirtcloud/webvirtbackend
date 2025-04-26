@@ -299,7 +299,6 @@ def action_dbaas(dbaas_id, action):
 
     if not action_virtance(dbaas.virtance.id, action):
         dbaas.reset_event()
-        dbaas.delete()
 
 
 @app.task
@@ -308,4 +307,3 @@ def resize_dbaas(dbaas_id, flavor_id):
 
     if not resize_virtance(dbaas.virtance.id, flavor_id):
         dbaas.reset_event()
-        dbaas.delete()

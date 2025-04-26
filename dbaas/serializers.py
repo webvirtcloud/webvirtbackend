@@ -268,8 +268,12 @@ class DBaaSActionSerializer(serializers.Serializer):
         password = validated_data.get("password")
 
         # Set new task event
+        dbaas.event = action
+        dbaas.save()
+
+        # Set new task event
         virtance.event = action
-        virtance.status = dbaas.virtance.PENDING
+        virtance.status = virtance.PENDING
         virtance.save()
 
         if action in ["power_on", "power_off", "power_cyrcle", "shutdown", "reboot"]:

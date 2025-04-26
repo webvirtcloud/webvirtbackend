@@ -7,12 +7,34 @@ from django.utils import timezone
 
 class DBaaS(models.Model):
     CREATE = "create"
-    RELOAD = "reload"
     DELETE = "delete"
+    REBOOT = "reboot"
+    RESIZE = "resize"
+    RENAME = "rename"
+    RESTORE = "restore"
+    SNAPSHOT = "snapshot"
+    SHUTDOWN = "shutdown"
+    POWER_ON = "power_on"
+    POWER_OFF = "power_off"
+    POWER_CYCLE = "power_cycle"
+    PASSWORD_RESET = "password_reset"
+    ENABLE_BACKUPS = "enable_backups"
+    DISABLE_BACKUPS = "disable_backups"
     EVENT_CHOICES = (
         (CREATE, "Create"),
-        (RELOAD, "Reload"),
         (DELETE, "Delete"),
+        (REBOOT, "Reboot"),
+        (RESIZE, "Resize"),
+        (RENAME, "Rename"),
+        (RESTORE, "Restore"),
+        (SNAPSHOT, "Snapshot"),
+        (SHUTDOWN, "Shutdown"),
+        (POWER_ON, "Power On"),
+        (POWER_OFF, "Power Off"),
+        (POWER_CYCLE, "Power Cycle"),
+        (PASSWORD_RESET, "Password Reset"),
+        (ENABLE_BACKUPS, "Enable Backups"),
+        (DISABLE_BACKUPS, "Disable Backups"),
     )
 
     uuid = models.UUIDField(unique=True, editable=False, default=uuid4)
