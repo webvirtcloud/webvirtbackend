@@ -342,7 +342,8 @@ def snapshot_virtance(virtance_id, display_name):
     virtance = Virtance.objects.get(pk=virtance_id)
     wvcomp = wvcomp_conn(virtance.compute)
     res = wvcomp.snapshot_virtance(virtance.id, uuid4().hex)
-    if res.get("detail") is None:
+    error = res.get("detail")
+    if error is None:
         image = Image.objects.create(
             user=virtance.user,
             source=virtance,
@@ -362,7 +363,8 @@ def snapshot_virtance(virtance_id, display_name):
         image.reset_event()
         virtance.reset_event()
     else:
-        virtance_error(virtance_id, res.get("detail"), "snapshot")
+        virtance_error(virtance_id, error, "snapshot")
+    return error
 
 
 @app.task
@@ -399,12 +401,14 @@ def restore_virtance(virtance_id, image_id):
     virtance = Virtance.objects.get(pk=virtance_id)
     wvcomp = wvcomp_conn(virtance.compute)
     res = wvcomp.restore_virtance(virtance_id, image.file_name, image.disk_size)
-    if res.get("detail") is None:
+    error = res.get("detail")
+    if error is None:
         image.reset_event()
         virtance.active()
         virtance.reset_event()
     else:
-        virtance_error(virtance_id, res.get("detail"), "restore")
+        virtance_error(virtance_id, error, "restore")
+    return error
 
 
 @app.task
@@ -621,3 +625,5 @@ def backups_delete(virtance_id):
         virtance.disable_backups()
         virtance.active()
         virtance.reset_event()
+    else:
+        return "When deleting backups, some of them were not deleted."

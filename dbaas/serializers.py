@@ -1,4 +1,5 @@
 import re
+
 from django.conf import settings
 from django.db.models import Q
 from rest_framework import serializers
@@ -13,7 +14,15 @@ from virtance.models import Virtance
 from virtance.utils import decrypt_data, encrypt_data, make_passwd, make_ssh_private
 
 from .models import DBaaS
-from .tasks import create_dbaas, action_dbaas, resize_dbaas
+from .tasks import (
+    action_dbaas,
+    create_dbaas,
+    resize_dbaas,
+    restore_dbaas,
+    snapshot_dbaas,
+    backups_delete,
+    update_admin_password_dbaas,
+)
 
 
 class DBaaSSerializer(serializers.ModelSerializer):
@@ -289,7 +298,7 @@ class DBaaSActionSerializer(serializers.Serializer):
             resize_dbaas.delay(dbaas.id, size.id)
 
         if action == "password_reset":
-            reset_password_dbaas.delay(dbaas.id, password)
+            update_admin_password_dbaas.delay(dbaas.id, password)
 
         if action == "snapshot":
             snapshot_dbaas.delay(dbaas.id, name)

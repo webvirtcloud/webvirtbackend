@@ -2,8 +2,16 @@ from django.conf import settings
 
 from network.models import IPAddress, Network
 from virtance.provision import ansible_play
-from virtance.tasks import action_virtance, create_virtance, delete_virtance, resize_virtance
-from virtance.utils import check_ssh_connect, decrypt_data, virtance_error
+from virtance.tasks import (
+    action_virtance,
+    create_virtance,
+    delete_virtance,
+    resize_virtance,
+    restore_virtance,
+    snapshot_virtance,
+    backups_delete,
+)
+from virtance.utils import check_ssh_connect, decrypt_data, encrypt_data, virtance_error
 from webvirtcloud.celery import app
 
 from .models import DBaaS
@@ -261,7 +269,7 @@ def create_dbaas(dbaas_id):
 
 
 @app.task
-def update_admin_password_dbaas(dbaas_id):
+def update_admin_password_dbaas(dbaas_id, password):
     dbaas = DBaaS.objects.get(id=dbaas_id)
     private_key = decrypt_data(dbaas.private_key)
     ipv4_private = IPAddress.objects.get(virtance=dbaas.virtance, network__type=Network.PRIVATE, is_float=False)
@@ -281,6 +289,8 @@ def update_admin_password_dbaas(dbaas_id):
                 error_message = f"Task: {task}. Error: {error}"
             virtance_error(dbaas.virtance.id, error_message, event="update_admin_password")
         else:
+            dbaas.admin_secret = encrypt_data(password)
+            dbaas.save()
             dbaas.reset_event()
 
 
@@ -306,4 +316,28 @@ def resize_dbaas(dbaas_id, flavor_id):
     dbaas = DBaaS.objects.get(id=dbaas_id)
 
     if not resize_virtance(dbaas.virtance.id, flavor_id):
+        dbaas.reset_event()
+
+
+@app.task
+def snapshot_dbaas(dbaas_id, name):
+    dbaas = DBaaS.objects.get(id=dbaas_id)
+
+    if not snapshot_virtance(dbaas.virtance.id, name):
+        dbaas.reset_event()
+
+
+@app.task
+def restore_dbaas(dbaas_id, snapshot_id):
+    dbaas = DBaaS.objects.get(id=dbaas_id)
+
+    if not restore_virtance(dbaas.virtance.id, snapshot_id):
+        dbaas.reset_event()
+
+
+@app.task
+def backups_delete_dbaas(dbaas_id):
+    dbaas = DBaaS.objects.get(id=dbaas_id)
+
+    if not backups_delete(dbaas.virtance.id):
         dbaas.reset_event()
