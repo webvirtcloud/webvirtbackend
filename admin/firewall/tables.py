@@ -1,6 +1,6 @@
 import django_tables2 as tables
 
-from firewall.models import Firewall, Rule, FirewallVirtance, FirewallError
+from firewall.models import Firewall, FirewallError, FirewallVirtance, Rule
 
 
 class FirewallHTMxTable(tables.Table):

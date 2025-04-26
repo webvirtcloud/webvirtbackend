@@ -1,10 +1,10 @@
-from django import forms
-from crispy_forms.layout import Layout
-from crispy_forms.helper import FormHelper
 from crispy_forms.bootstrap import InlineCheckboxes
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout
+from django import forms
 
-from size.models import Size
 from region.models import Region
+from size.models import Size
 
 
 class CustomModelMultipleChoiceField(forms.ModelMultipleChoiceField):

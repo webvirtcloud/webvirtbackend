@@ -1,6 +1,6 @@
 from django.urls import re_path
 
-from floating_ip.views import FloatingIPListAPI, FloatingIPDataAPI, FloatingIPActionAPI
+from floating_ip.views import FloatingIPActionAPI, FloatingIPDataAPI, FloatingIPListAPI
 
 urlpatterns = [
     re_path(r"$", FloatingIPListAPI.as_view(), name="floating_ip_list_api"),

@@ -1,8 +1,8 @@
-from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
-from .models import Size, DBMS
-from .serializers import SizeSerializer, DBMSSerializer
+from .models import DBMS, Size
+from .serializers import DBMSSerializer, SizeSerializer
 
 
 class SizeListAPI(APIView):

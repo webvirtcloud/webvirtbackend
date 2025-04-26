@@ -1,13 +1,14 @@
 from http import HTTPStatus
+
+from django.http import JsonResponse
+from django.shortcuts import redirect, render
+from django.urls import reverse_lazy
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import ensure_csrf_cookie
+from django.views.generic.base import TemplateView
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import exception_handler
-from django.http import JsonResponse
-from django.urls import reverse_lazy
-from django.shortcuts import render, redirect
-from django.views.generic.base import TemplateView
-from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import ensure_csrf_cookie
 
 
 def success_message_response(message):

@@ -4,12 +4,12 @@ from network.models import IPAddress, Network
 from virtance.provision import ansible_play
 from virtance.tasks import (
     action_virtance,
+    backups_delete,
     create_virtance,
     delete_virtance,
     resize_virtance,
     restore_virtance,
     snapshot_virtance,
-    backups_delete,
 )
 from virtance.utils import check_ssh_connect, decrypt_data, encrypt_data, virtance_error
 from webvirtcloud.celery import app

@@ -1,6 +1,6 @@
 import django_tables2 as tables
 
-from lbaas.models import LBaaS, LBaaSVirtance, LBaaSForwadRule
+from lbaas.models import LBaaS, LBaaSForwadRule, LBaaSVirtance
 
 
 class LBaaSHTMxTable(tables.Table):
@@ -43,7 +43,6 @@ class HealthTable(tables.Table):
 
 
 class RulesTable(tables.Table):
-
     class Meta:
         model = LBaaSForwadRule
         fields = ("id", "entry_protocol", "entry_port", "target_protocol", "target_port", "created")

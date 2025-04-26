@@ -1,6 +1,6 @@
 from django.urls import include, re_path
-from .views import AdminIndexView, AdminSingInView, AdminSingOutView
 
+from .views import AdminIndexView, AdminSingInView, AdminSingOutView
 
 urlpatterns = [
     re_path(r"^$", AdminIndexView.as_view(), name="admin_index"),

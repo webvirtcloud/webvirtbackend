@@ -1,6 +1,6 @@
 from django.urls import re_path
 
-from billing.views import BalanceAPI, BillingHistoryListAPI, InvoiceListAPI, InvoiceDataAPI, InvoicePdfAPI
+from billing.views import BalanceAPI, BillingHistoryListAPI, InvoiceDataAPI, InvoiceListAPI, InvoicePdfAPI
 
 urlpatterns = [
     re_path(r"balance/?$", BalanceAPI.as_view(), name="balance_api"),

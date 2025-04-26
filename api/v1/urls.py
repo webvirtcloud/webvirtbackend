@@ -1,6 +1,5 @@
 from django.urls import include, re_path
 
-
 urlpatterns = [
     re_path(r"^account/?", include("api.v1.account.urls")),
     re_path(r"^billing/?", include("api.v1.billing.urls")),

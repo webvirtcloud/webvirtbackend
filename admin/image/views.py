@@ -1,13 +1,14 @@
 from django.db.models import Q
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
-from django.shortcuts import redirect, get_object_or_404
 from django_filters.views import FilterView
-from django_tables2 import SingleTableMixin, RequestConfig
+from django_tables2 import RequestConfig, SingleTableMixin
+
+from admin.mixins import AdminTemplateView, AdminView
+from image.models import Image, ImageError
 
 from .filters import ImageFilter
-from .tables import ImageHTMxTable, ImageErrorTable
-from image.models import Image, ImageError
-from admin.mixins import AdminView, AdminTemplateView
+from .tables import ImageErrorTable, ImageHTMxTable
 
 
 class AdminImageIndexView(SingleTableMixin, FilterView, AdminView):

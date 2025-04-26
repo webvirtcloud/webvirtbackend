@@ -1,18 +1,16 @@
 # Exclude a variety of commonly ignored directories.
 exclude = [
-    ".idea",
-    ".direnv",
-    ".eggs",
     ".git",
-    ".ruff_cache",
+    ".idea",
+    ".venv",
     ".mysql",
     ".vscode",
-    ".tox",
-    ".venv",
     ".vscode",
-    ".devcontainer",
+    ".ruff_cache",
+    "manage.py",
+    "migrations",
     "__pycahce__",
-    "__pypackages__",
+    "webvirtcloud/settings",
 ]
 line-length = 120
 indent-width = 4

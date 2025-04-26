@@ -1,6 +1,6 @@
 from django.urls import re_path
-from .views import AdminDBMSIndexView, AdminDBMSCreateView, AdminDBMSUpdateView, AdminDBMSDeleteView
 
+from .views import AdminDBMSCreateView, AdminDBMSDeleteView, AdminDBMSIndexView, AdminDBMSUpdateView
 
 urlpatterns = [
     re_path(r"$", AdminDBMSIndexView.as_view(), name="admin_dbms_index"),

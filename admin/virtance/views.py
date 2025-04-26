@@ -1,17 +1,18 @@
-from django.urls import reverse
 from django.conf import settings
 from django.contrib import messages
-from django.shortcuts import redirect, get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
+from django.urls import reverse
 from django_filters.views import FilterView
-from django_tables2 import SingleTableMixin, RequestConfig
+from django_tables2 import RequestConfig, SingleTableMixin
 
+from admin.mixins import AdminTemplateView, AdminView
+from compute.webvirt import WebVirtCompute
 from network.models import IPAddress, Network
 from virtance.models import Virtance, VirtanceError
+from virtance.tasks import action_virtance, create_virtance
+
 from .filters import VirtanceFilter
-from .tables import VirtanceHTMxTable, VirtanceErrorTable
-from admin.mixins import AdminView, AdminTemplateView
-from compute.webvirt import WebVirtCompute
-from virtance.tasks import create_virtance, action_virtance
+from .tables import VirtanceErrorTable, VirtanceHTMxTable
 
 
 class AdminVirtanceIndexView(SingleTableMixin, FilterView, AdminView):

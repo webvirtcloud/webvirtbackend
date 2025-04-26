@@ -1,14 +1,16 @@
 from decimal import Decimal
 from ipaddress import IPv4Network
+
 from django.utils import timezone
 
-from webvirtcloud.celery import app
 from compute.webvirt import WebVirtCompute
-from virtance.utils import virtance_error
-from .utils import floatip_error
-from .models import FloatIP, FloatIPCounter
-from network.models import Network, IPAddress
+from network.models import IPAddress, Network
 from virtance.models import Virtance
+from virtance.utils import virtance_error
+from webvirtcloud.celery import app
+
+from .models import FloatIP, FloatIPCounter
+from .utils import floatip_error
 
 
 @app.task

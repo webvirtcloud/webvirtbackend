@@ -1,10 +1,11 @@
 import json
+
 from django.core.management.base import BaseCommand
 
-from size.models import Size
-from image.models import Image
 from account.models import User
-from region.models import Region, Feature
+from image.models import Image
+from region.models import Feature, Region
+from size.models import Size
 
 
 class Command(BaseCommand):

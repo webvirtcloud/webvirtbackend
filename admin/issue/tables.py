@@ -1,9 +1,9 @@
 import django_tables2 as tables
 
-from image.models import ImageError
 from firewall.models import FirewallError
-from virtance.models import VirtanceError
 from floating_ip.models import FloatIPError
+from image.models import ImageError
+from virtance.models import VirtanceError
 
 
 class IssueVirtanceHTMxTable(tables.Table):

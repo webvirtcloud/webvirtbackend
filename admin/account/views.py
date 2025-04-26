@@ -1,7 +1,9 @@
-from django.urls import reverse_lazy
 from crispy_forms.helper import FormHelper
+from django.urls import reverse_lazy
+
 from account.models import User
-from admin.mixins import AdminUpdateView, AdminFormView
+from admin.mixins import AdminFormView, AdminUpdateView
+
 from .forms import FormChangePasswordAdmin
 
 

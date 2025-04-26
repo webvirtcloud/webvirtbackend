@@ -7,7 +7,7 @@ from rest_framework.views import APIView
 from webvirtcloud.views import error_message_response
 
 from .models import DBaaS
-from .serializers import DBaaSSerializer, DBaaSActionSerializer
+from .serializers import DBaaSActionSerializer, DBaaSSerializer
 from .tasks import delete_dbaas
 
 

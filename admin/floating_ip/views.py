@@ -1,12 +1,13 @@
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
-from django.shortcuts import redirect, get_object_or_404
-from django_tables2 import SingleTableMixin, RequestConfig
 from django_filters.views import FilterView
+from django_tables2 import RequestConfig, SingleTableMixin
+
+from admin.mixins import AdminTemplateView, AdminView
+from floating_ip.models import FloatIP, FloatIPError
 
 from .filters import FloatIPFilter
-from .tables import FloatIPHTMxTable, FloatIPErrorTable
-from floating_ip.models import FloatIP, FloatIPError
-from admin.mixins import AdminTemplateView, AdminView
+from .tables import FloatIPErrorTable, FloatIPHTMxTable
 
 
 class AdminFloatIPIndexView(SingleTableMixin, FilterView, AdminView):

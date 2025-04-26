@@ -1,6 +1,6 @@
 from django.urls import re_path
 
-from firewall.views import FirewallListAPI, FirewallDataAPI, FirewallRuleAPI, FirewallVirtanceAPI
+from firewall.views import FirewallDataAPI, FirewallListAPI, FirewallRuleAPI, FirewallVirtanceAPI
 
 urlpatterns = [
     re_path(r"$", FirewallListAPI.as_view(), name="firewall_list_api"),

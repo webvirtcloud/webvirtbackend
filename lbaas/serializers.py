@@ -1,14 +1,15 @@
 from rest_framework import serializers
 
+from image.models import Image
+from network.models import IPAddress, Network
+from region.models import Region
 from region.serializers import RegionSerializer
 from size.models import Size
-from image.models import Image
-from region.models import Region
 from virtance.models import Virtance
-from network.models import IPAddress, Network
-from virtance.utils import make_ssh_private, encrypt_data
-from .tasks import create_lbaas, reload_lbaas
+from virtance.utils import encrypt_data, make_ssh_private
+
 from .models import LBaaS, LBaaSForwadRule, LBaaSVirtance
+from .tasks import create_lbaas, reload_lbaas
 
 
 class HeathCheckSerializer(serializers.Serializer):
@@ -110,7 +111,7 @@ class LBaaSSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({"forwarding_rules": ["Duplicate forwarding rules."]})
 
         # Check duplicate forwarding rules on entry data
-        entry_data = [f'{rule.get("entry_protcol")}_{rule.get("entry_port")}' for rule in forwarding_rules]
+        entry_data = [f"{rule.get('entry_protcol')}_{rule.get('entry_port')}" for rule in forwarding_rules]
         if len(entry_data) != len(set(entry_data)):
             raise serializers.ValidationError({"forwarding_rules": ["Duplicate entry_protcol and entry_port."]})
 
@@ -506,7 +507,7 @@ class LBaaSAddRuleSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({"forwarding_rules": ["Duplicate forwarding rules."]})
 
         # Check duplicate forwarding rules on entry data
-        entry_data = [f'{rule.get("entry_protcol")}_{rule.get("entry_port")}' for rule in forwarding_rules]
+        entry_data = [f"{rule.get('entry_protcol')}_{rule.get('entry_port')}" for rule in forwarding_rules]
         if len(entry_data) != len(set(entry_data)):
             raise serializers.ValidationError({"forwarding_rules": ["Duplicate entry_protcol and entry_port."]})
 
@@ -605,7 +606,7 @@ class LBaaSUpdateRuleSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({"forwarding_rules": ["Duplicate forwarding rules."]})
 
         # Check duplicate forwarding rules on entry data
-        entry_data = [f'{rule.get("entry_protcol")}_{rule.get("entry_port")}' for rule in forwarding_rules]
+        entry_data = [f"{rule.get('entry_protcol')}_{rule.get('entry_port')}" for rule in forwarding_rules]
         if len(entry_data) != len(set(entry_data)):
             raise serializers.ValidationError({"forwarding_rules": ["Duplicate entry_protcol and entry_port."]})
 

@@ -7,7 +7,6 @@ from rest_framework import serializers
 from image.models import Image
 from network.models import IPAddress, Network
 from region.models import Region
-from region.serializers import RegionSerializer
 from size.models import DBMS, Size
 from size.serializers import SizeSerializer
 from virtance.models import Virtance
@@ -16,11 +15,11 @@ from virtance.utils import decrypt_data, encrypt_data, make_passwd, make_ssh_pri
 from .models import DBaaS
 from .tasks import (
     action_dbaas,
+    backups_delete,
     create_dbaas,
     resize_dbaas,
     restore_dbaas,
     snapshot_dbaas,
-    backups_delete,
     update_admin_password_dbaas,
 )
 

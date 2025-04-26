@@ -1,10 +1,10 @@
-import urllib3
-import requests
 from base64 import b64encode
-from django.conf import settings
 from urllib.parse import urlencode
-from requests.exceptions import ConnectTimeout, ConnectionError
 
+import requests
+import urllib3
+from django.conf import settings
+from requests.exceptions import ConnectionError, ConnectTimeout
 
 urllib3.disable_warnings()
 

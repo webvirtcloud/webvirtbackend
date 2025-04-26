@@ -1,9 +1,11 @@
-import re
 import ipaddress
+import re
+
 from rest_framework import serializers
 
 from virtance.models import Virtance
-from .models import Firewall, Rule, Cidr, FirewallVirtance
+
+from .models import Cidr, Firewall, FirewallVirtance, Rule
 from .tasks import firewall_attach, firewall_detach, firewall_update
 
 

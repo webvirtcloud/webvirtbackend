@@ -2,8 +2,8 @@ import random
 from ipaddress import IPv4Network, IPv6Network, ip_address
 
 from virtance.models import Virtance
-from .models import Network, IPAddress
 
+from .models import IPAddress, Network
 
 # First is a gateway and 2 lasts are reserved for broadcast and system needs
 SUBNET_V4_RANGE = slice(2, -2)

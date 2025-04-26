@@ -1,7 +1,7 @@
-from rest_framework import serializers
 from django.contrib.auth import authenticate
+from rest_framework import serializers
 
-from .models import User, Token
+from .models import Token, User
 from .tasks import email_confirm_register
 
 

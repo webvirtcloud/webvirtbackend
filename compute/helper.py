@@ -1,11 +1,11 @@
-from django.db.models import Sum
 from django.conf import settings
+from django.db.models import Sum
 
 from virtance.models import Virtance
 from virtance.utils import virtance_error
+
 from .models import Compute
 from .webvirt import WebVirtCompute
-
 
 CPU_USAGE_RATIO = settings.COMPUTE_CPU_RATIO_OVERCOMMIT
 MEMORY_USAGE_RATIO = settings.COMPUTE_MEMORY_PERCENTAGE_USAGE / 100

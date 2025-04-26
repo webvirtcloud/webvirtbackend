@@ -1,19 +1,20 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import status
-from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from virtance.models import Virtance
 from virtance.serializers import VirtanceSerializer
-from .tasks import firewall_detach
+
 from .models import Firewall, FirewallVirtance
 from .serializers import (
-    FirewallSerializer,
     FirewallAddRuleSerializer,
-    FirewallDelRuleSerializer,
     FirewallAddVirtanceSerializer,
+    FirewallDelRuleSerializer,
     FirewallDelVirtanceSerializer,
+    FirewallSerializer,
 )
+from .tasks import firewall_detach
 
 
 class FirewallListAPI(APIView):

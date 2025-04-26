@@ -1,13 +1,14 @@
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from rest_framework import status
-from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from webvirtcloud.views import error_message_response
+
 from .models import FloatIP
+from .serializers import FloatIPActionSerializer, FloatIPSerializer
 from .tasks import delete_floating_ip
-from .serializers import FloatIPSerializer, FloatIPActionSerializer
 
 
 class FloatingIPListAPI(APIView):

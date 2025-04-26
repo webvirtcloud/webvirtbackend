@@ -1,7 +1,12 @@
 from django.urls import re_path
-from .views import AdminNetworkIndexView, AdminNetworkCreateView
-from .views import AdminNetworkListView, AdminNetworkUpdateView, AdminNetworkDeleteView
 
+from .views import (
+    AdminNetworkCreateView,
+    AdminNetworkDeleteView,
+    AdminNetworkIndexView,
+    AdminNetworkListView,
+    AdminNetworkUpdateView,
+)
 
 urlpatterns = [
     re_path(r"$", AdminNetworkIndexView.as_view(), name="admin_network_index"),

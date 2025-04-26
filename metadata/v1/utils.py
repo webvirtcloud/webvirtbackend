@@ -1,7 +1,7 @@
 from django.views.generic import View
 
-from virtance.models import Virtance
 from network.models import IPAddress
+from virtance.models import Virtance
 
 
 class MetadataMixin(View):

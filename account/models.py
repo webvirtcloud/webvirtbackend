@@ -1,12 +1,12 @@
-import os
 import binascii
+import os
 from uuid import uuid4
 
-from django.db import models
 from django.conf import settings
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.db import models
 from django.utils import timezone
 from django.utils.crypto import get_random_string
-from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 
 
 class UserManager(BaseUserManager):

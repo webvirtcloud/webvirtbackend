@@ -1,4 +1,5 @@
 from base64 import b64decode, binascii
+
 from rest_framework import serializers
 
 from .models import KeyPair

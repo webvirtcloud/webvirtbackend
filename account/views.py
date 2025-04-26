@@ -1,24 +1,23 @@
 from django.conf import settings
 from rest_framework import status
-from rest_framework.views import APIView
-from rest_framework.response import Response
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
-from webvirtcloud.views import error_message_response
 from project.models import Project
-from .models import User, Token
-from .tasks import email_confirm_register
+from webvirtcloud.views import error_message_response
+
+from .models import Token, User
 from .serializers import (
-    RegisterSerializer,
     AuthTokenSerializer,
-    ResetPasswordSerializer,
-    ResetPasswordHashSerializer,
-)
-from .serializers import (
-    ProfileSerilizer,
     ChangePasswordSerializer,
+    ProfileSerilizer,
+    RegisterSerializer,
+    ResetPasswordHashSerializer,
+    ResetPasswordSerializer,
 )
+from .tasks import email_confirm_register
 
 
 class Login(ObtainAuthToken):

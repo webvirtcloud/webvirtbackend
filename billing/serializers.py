@@ -1,13 +1,15 @@
 from decimal import Decimal
+
 from django.db.models import Sum
 from django.utils import timezone
 from rest_framework import serializers
 
-from .models import Balance, Invoice
 from account.models import User
+from floating_ip.models import FloatIPCounter
 from image.models import SnapshotCounter
 from virtance.models import VirtanceCounter
-from floating_ip.models import FloatIPCounter
+
+from .models import Balance, Invoice
 
 
 class BalanceSerilizer(serializers.Serializer):
@@ -35,9 +37,7 @@ class BalanceSerilizer(serializers.Serializer):
                 virtance__user=obj,
                 started__gte=start_of_month,
                 stopped=None,
-            ).aggregate(
-                total_amount=Sum("amount")
-            )["total_amount"]
+            ).aggregate(total_amount=Sum("amount"))["total_amount"]
             or 0
         )
 
@@ -50,9 +50,7 @@ class BalanceSerilizer(serializers.Serializer):
                 image__user=obj,
                 started__gte=start_of_month,
                 stopped=None,
-            ).aggregate(
-                total_amount=Sum("amount")
-            )["total_amount"]
+            ).aggregate(total_amount=Sum("amount"))["total_amount"]
             or 0
         )
 
@@ -65,9 +63,7 @@ class BalanceSerilizer(serializers.Serializer):
                 floatip__user=obj,
                 started__gte=start_of_month,
                 stopped=None,
-            ).aggregate(
-                total_amount=Sum("amount")
-            )["total_amount"]
+            ).aggregate(total_amount=Sum("amount"))["total_amount"]
             or 0
         )
 

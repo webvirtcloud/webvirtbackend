@@ -1,18 +1,33 @@
 from django.urls import re_path
-from .views import AdminComputeIndexView, AdminComputeCreateView
-from .views import AdminComputeUpdateView, AdminComputeDeleteView
-from .views import AdminComputeOverviewView
-from .views import AdminComputeNetworkCreateView
-from .views import AdminComputeStorageDirCreateView, AdminComputeStorageRBDCreateView
-from .views import AdminComputeStoragesView, AdminComputeStorageView, AdminComputeStorageDeleteView
-from .views import AdminComputeStorageVolumeCreateView, AdminComputeStorageVolumeCloneView
-from .views import AdminComputeStorageVolumeResizeView, AdminComputeStorageVolumeDeleteView
-from .views import AdminComputeNetworksView, AdminComputeNetworkView, AdminComputeNetworkDeleteView
-from .views import AdminComputeSecretsView, AdminComputeSecretCreateView
-from .views import AdminComputeSecretValueView, AdminComputeSecretDeleteView
-from .views import AdminComputeNwfiltersView, AdminComputeNwfilterCreateView
-from .views import AdminComputeNwfilterView, AdminComputeNwfilterDeleteView
 
+from .views import (
+    AdminComputeCreateView,
+    AdminComputeDeleteView,
+    AdminComputeIndexView,
+    AdminComputeNetworkCreateView,
+    AdminComputeNetworkDeleteView,
+    AdminComputeNetworksView,
+    AdminComputeNetworkView,
+    AdminComputeNwfilterCreateView,
+    AdminComputeNwfilterDeleteView,
+    AdminComputeNwfiltersView,
+    AdminComputeNwfilterView,
+    AdminComputeOverviewView,
+    AdminComputeSecretCreateView,
+    AdminComputeSecretDeleteView,
+    AdminComputeSecretsView,
+    AdminComputeSecretValueView,
+    AdminComputeStorageDeleteView,
+    AdminComputeStorageDirCreateView,
+    AdminComputeStorageRBDCreateView,
+    AdminComputeStoragesView,
+    AdminComputeStorageView,
+    AdminComputeStorageVolumeCloneView,
+    AdminComputeStorageVolumeCreateView,
+    AdminComputeStorageVolumeDeleteView,
+    AdminComputeStorageVolumeResizeView,
+    AdminComputeUpdateView,
+)
 
 urlpatterns = [
     re_path(r"$", AdminComputeIndexView.as_view(), name="admin_compute_index"),

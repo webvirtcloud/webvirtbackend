@@ -1,11 +1,11 @@
+from compute.webvirt import WebVirtCompute
+from network.models import IPAddress, Network
+from virtance.models import Virtance
+from virtance.utils import virtance_error
 from webvirtcloud.celery import app
 
-from compute.webvirt import WebVirtCompute
-from virtance.utils import virtance_error
+from .models import Cidr, Firewall, FirewallVirtance, Rule
 from .utils import firewall_error
-from .models import Firewall, FirewallVirtance, Rule, Cidr
-from network.models import Network, IPAddress
-from virtance.models import Virtance
 
 
 @app.task

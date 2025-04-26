@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Size, DBMS
+from .models import DBMS, Size
 
 
 class SizeSerializer(serializers.ModelSerializer):

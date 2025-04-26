@@ -1,13 +1,15 @@
 from ipaddress import IPv4Network
+
 from rest_framework import serializers
+
+from network.helper import assign_free_ipv4_public
+from network.models import IPAddress
+from region.serializers import RegionSerializer
+from virtance.models import Virtance
+from virtance.serializers import VirtanceSerializer
 
 from .models import FloatIP, FloatIPCounter
 from .tasks import assign_floating_ip, reassign_floating_ip, unassign_floating_ip
-from network.helper import assign_free_ipv4_public
-from network.models import IPAddress
-from virtance.models import Virtance
-from region.serializers import RegionSerializer
-from virtance.serializers import VirtanceSerializer
 
 
 class FloatIPSerializer(serializers.ModelSerializer):

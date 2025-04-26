@@ -1,7 +1,8 @@
-from django import forms
-from crispy_forms.layout import Layout
-from crispy_forms.helper import FormHelper
 from crispy_forms.bootstrap import InlineCheckboxes
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout
+from django import forms
+
 from image.models import Image
 from region.models import Region
 
