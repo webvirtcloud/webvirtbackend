@@ -1,16 +1,17 @@
+import importlib
 import os
 import shutil
-import importlib
+
 import ansible.constants as C
 from ansible import context
-from ansible.playbook.play import Play
-from ansible.vars.manager import VariableManager
+from ansible.executor.task_queue_manager import TaskQueueManager
+from ansible.inventory.manager import InventoryManager
+from ansible.module_utils.common.collections import ImmutableDict
 from ansible.parsing.dataloader import DataLoader
+from ansible.playbook.play import Play
 from ansible.plugins.callback import CallbackBase
 from ansible.plugins.loader import init_plugin_loader
-from ansible.inventory.manager import InventoryManager
-from ansible.executor.task_queue_manager import TaskQueueManager
-from ansible.module_utils.common.collections import ImmutableDict
+from ansible.vars.manager import VariableManager
 
 
 # Create a callback plugin so we can return as a result

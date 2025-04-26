@@ -1,29 +1,31 @@
 import time
-from django.db.models import Q
+
 from django.conf import settings
-from django.utils import timezone
+from django.db.models import Q
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from rest_framework import status
-from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from compute.webvirt import WebVirtCompute
-from webvirtcloud.views import error_message_response
-from firewall.serializers import FirewallSerializer
-from image.serializers import ImageSerializer
-from image.models import Image
-from floating_ip.models import FloatIP
-from lbaas.models import LBaaSVirtance
 from firewall.models import FirewallVirtance
-from .utils import make_vnc_hash, virtance_history
+from firewall.serializers import FirewallSerializer
+from floating_ip.models import FloatIP
+from image.models import Image
+from image.serializers import ImageSerializer
+from lbaas.models import LBaaSVirtance
+from webvirtcloud.views import error_message_response
+
 from .models import Virtance, VirtanceHistory
-from .tasks import delete_virtance
 from .serializers import (
-    VirtanceSerializer,
     CreateVirtanceSerializer,
     VirtanceActionSerializer,
     VirtanceHistorySerializer,
+    VirtanceSerializer,
 )
+from .tasks import delete_virtance
+from .utils import make_vnc_hash, virtance_history
 
 
 class VirtanceListAPI(APIView):

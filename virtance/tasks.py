@@ -1,36 +1,37 @@
 import time
-from uuid import uuid4
 from decimal import Decimal
+from uuid import uuid4
+
 from django.conf import settings
+from django.db.models import Count, Exists, F, OuterRef
 from django.utils import timezone
-from django.db.models import F, Count, Exists, OuterRef
 from passlib.hash import sha512_crypt
 
-from webvirtcloud.celery import app
-from webvirtcloud.email import send_email
-from compute.webvirt import WebVirtCompute, vm_name
 from compute.helper import assign_free_compute
+from compute.models import Compute
+from compute.webvirt import WebVirtCompute, vm_name
+from dbaas.models import DBaaS
+from firewall.models import FirewallVirtance
+from firewall.tasks import firewall_detach
+from floating_ip.models import FloatIP
+from floating_ip.tasks import unassign_floating_ip
+from image.models import Image, SnapshotCounter
+from image.tasks import image_delete
+from keypair.models import KeyPairVirtance
+from lbaas.models import LBaaS, LBaaSVirtance
+from lbaas.shared import shared_reload_lbaas
 from network.helper import (
-    assign_free_ipv4_public,
     assign_free_ipv4_compute,
     assign_free_ipv4_private,
+    assign_free_ipv4_public,
 )
-from dbaas.models import DBaaS
-from lbaas.models import LBaaS, LBaaSVirtance
-from image.tasks import image_delete
-from firewall.tasks import firewall_detach
-from floating_ip.tasks import unassign_floating_ip
+from network.models import IPAddress, Network
 from size.models import Size
-from compute.models import Compute
-from floating_ip.models import FloatIP
-from keypair.models import KeyPairVirtance
-from network.models import Network, IPAddress
-from firewall.models import FirewallVirtance
-from image.models import Image, SnapshotCounter
-from lbaas.shared import shared_reload_lbaas
-from .models import Virtance, VirtanceCounter
-from .utils import virtance_error, decrypt_data, make_ssh_public
+from webvirtcloud.celery import app
+from webvirtcloud.email import send_email
 
+from .models import Virtance, VirtanceCounter
+from .utils import decrypt_data, make_ssh_public, virtance_error
 
 BACKUP_COST_RATIO = settings.BACKUP_COST_PERCENTAGE / 100
 

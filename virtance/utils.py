@@ -1,17 +1,16 @@
-import time
 import socket
-import paramiko
+import time
+from base64 import b64decode, b64encode, urlsafe_b64decode
 from io import StringIO
 from random import choice
-from paramiko import RSAKey
-from django.conf import settings
-from cryptography.fernet import Fernet
-from string import digits, ascii_letters
-from base64 import b64encode, b64decode, urlsafe_b64decode
+from string import ascii_letters, digits
 
+import paramiko
+from cryptography.fernet import Fernet
+from django.conf import settings
+from paramiko import RSAKey
 
 from .models import VirtanceError, VirtanceHistory
-
 
 NOVNC_PASSWD_PREFIX = settings.NOVNC_PASSWD_PREFIX_LENGHT
 NOVNC_PASSWD_SUFFIX = settings.NOVNC_PASSWD_SUFFIX_LENGHT

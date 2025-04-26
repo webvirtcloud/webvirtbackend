@@ -1,12 +1,11 @@
-import os
-import django
 import logging
+import os
 from http import cookies
-from websockify import WebSocketProxy
-from websockify import ProxyRequestHandler
+
+import django
 from django.conf import settings
 from django.core.management.base import BaseCommand
-
+from websockify import ProxyRequestHandler, WebSocketProxy
 
 DIR_PATH = os.path.dirname(os.path.abspath(__file__))
 CERT_PATH = os.path.join(DIR_PATH, "cert.pem")
@@ -14,8 +13,8 @@ CERT_PATH = os.path.join(DIR_PATH, "cert.pem")
 
 def get_console_connection(uuid):
     django.setup()
-    from virtance.models import Virtance
     from compute.webvirt import WebVirtCompute
+    from virtance.models import Virtance
 
     virtance = Virtance.objects.filter(uuid=uuid, is_deleted=False).first()
 
