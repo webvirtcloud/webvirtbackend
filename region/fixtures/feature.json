@@ -1,16 +1,65 @@
 [
     {
-        "model": "region.region",
+        "model": "region.feature",
         "pk": 1,
         "fields": {
-            "name": "Default",
-            "slug": "default",
-            "description": "Local region",
-            "is_active": true,
-            "is_deleted": false,
-            "created": "2022-11-11T18:48:33.848Z",
-            "updated": "2022-11-11T18:48:33.848Z",
-            "deleted": null
+            "name": "ipv6"
+        }
+    },
+    {
+        "model": "region.feature",
+        "pk": 2,
+        "fields": {
+            "name": "resize"
+        }
+    },
+    {
+        "model": "region.feature",
+        "pk": 3,
+        "fields": {
+            "name": "volume"
+        }
+    },
+    {
+        "model": "region.feature",
+        "pk": 4,
+        "fields": {
+            "name": "backup"
+        }
+    },
+    {
+        "model": "region.feature",
+        "pk": 5,
+        "fields": {
+            "name": "snapshot"
+        }
+    },
+    {
+        "model": "region.feature",
+        "pk": 6,
+        "fields": {
+            "name": "one_click"
+        }
+    },
+    {
+        "model": "region.feature",
+        "pk": 7,
+        "fields": {
+            "name": "floating_ip"
+        }
+    },
+    {
+        "model": "region.feature",
+        "pk": 8,
+        "fields": {
+            "name": "load_balancer"
+        }
+    },
+    {
+        "model": "region.feature",
+        "pk": 9,
+        "fields": {
+            "name": "database"
         }
     }
 ]

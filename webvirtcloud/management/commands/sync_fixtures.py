@@ -8,6 +8,7 @@ from django.db import transaction
 
 # Applications to skip completely
 SKIP_FIXTURE_APPS = ["account"]
+
 # Models for strict update with field comparison
 STRICT_UPDATE_MODELS = [
     "size.size",
@@ -20,7 +21,16 @@ STRICT_UPDATE_MODELS = [
 class Command(BaseCommand):
     help = "Sync fixtures with selective update for certain models and skip certain apps"
 
+    def add_arguments(self, parser):
+        parser.add_argument(
+            "--dry-run",
+            action="store_true",
+            help="Simulate fixture sync without applying any changes",
+        )
+
     def handle(self, *args, **kwargs):
+        dry_run = kwargs.get("dry_run", False)
+
         self.stdout.write("Searching for fixture files in installed apps...")
 
         total_objects = 0
@@ -32,7 +42,6 @@ class Command(BaseCommand):
 
         for app_config in apps.get_app_configs():
             if app_config.label in SKIP_FIXTURE_APPS:
-                # self.stdout.write(self.style.WARNING(f"Skipped app {app_config.label}: listed in SKIP_FIXTURE_APPS"))
                 continue
 
             fixtures_dir = os.path.join(app_config.path, "fixtures")
@@ -51,7 +60,7 @@ class Command(BaseCommand):
             for fixture in fixtures:
                 fixture_path = os.path.join(fixtures_dir, fixture)
 
-                created, updated, skipped = self.smart_update_fixture(fixture_path)
+                created, updated, skipped = self.smart_update_fixture(fixture_path, dry_run=dry_run)
                 created_objects += created
                 updated_objects += updated
                 skipped_objects += skipped
@@ -65,7 +74,7 @@ class Command(BaseCommand):
             )
         )
 
-    def smart_update_fixture(self, fixture_path):
+    def smart_update_fixture(self, fixture_path, dry_run=False):
         """
         Smart fixture update: creates new objects, updates only changed fields for selected models.
         """
@@ -103,7 +112,11 @@ class Command(BaseCommand):
                 obj, created_flag = model_class.objects.get_or_create(pk=pk, defaults=fields)
                 if created_flag:
                     created += 1
-                    self.stdout.write(self.style.SUCCESS(f"  Created {model_label} id={pk}"))
+                    if dry_run:
+                        self.stdout.write(self.style.WARNING(f"[DRY-RUN] Would create {model_label} id={pk}"))
+                        obj.delete()
+                    else:
+                        self.stdout.write(self.style.SUCCESS(f"  Created {model_label} id={pk}"))
                     continue
 
                 if strict_update:
@@ -141,7 +154,14 @@ class Command(BaseCommand):
                                         pass
 
                                 if str(obj_value) != str(fixture_value):
-                                    setattr(obj, field_name, fixture_value)
+                                    if dry_run:
+                                        self.stdout.write(
+                                            self.style.WARNING(
+                                                f"[DRY-RUN] {model_label} id={pk} field '{field_name}' would change: '{obj_value}' -> '{fixture_value}'"
+                                            )
+                                        )
+                                    else:
+                                        setattr(obj, field_name, fixture_value)
                                     changed = True
 
                     if changed:
@@ -150,19 +170,30 @@ class Command(BaseCommand):
                             for field_name in fields.keys()
                             if field_name in model_fields and not model_fields[field_name].many_to_many
                         ]
-                        obj.save(update_fields=save_fields)
-                        updated += 1
-                        self.stdout.write(self.style.SUCCESS(f"  Updated {model_label} id={pk}"))
+                        if dry_run:
+                            self.stdout.write(
+                                self.style.WARNING(
+                                    f"[DRY-RUN] Would update {model_label} id={pk}: fields {save_fields}"
+                                )
+                            )
+                        else:
+                            obj.save(update_fields=save_fields)
+                            updated += 1
+                            self.stdout.write(self.style.SUCCESS(f"  Updated {model_label} id={pk}"))
 
                         for related_manager, ids in m2m_updates:
-                            related_manager.set(ids)
+                            if dry_run:
+                                self.stdout.write(
+                                    self.style.WARNING(
+                                        f"[DRY-RUN] Would update ManyToMany {related_manager.model.__name__} with ids {ids}"
+                                    )
+                                )
+                            else:
+                                related_manager.set(ids)
                     else:
                         skipped += 1
                 else:
                     # Model is not in STRICT_UPDATE_MODELS — only ensure object exists, do not update fields
                     skipped += 1
-                    # self.stdout.write(
-                    #     self.style.WARNING(f"  Skipped update {model_label} id={pk}: not in STRICT_UPDATE_MODELS")
-                    # )
 
         return (created, updated, skipped)
