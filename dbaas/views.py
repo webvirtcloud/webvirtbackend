@@ -51,6 +51,11 @@ class DBaaSListAPI(APIView):
                   description: Size
                   required: true
                   type: string
+
+                - name: backups_enabled
+                  description: Backups enabled
+                  required: false
+                  type: boolean
         """
         serializer = self.class_serializer(data=request.data, context={"user": request.user})
         serializer.is_valid(raise_exception=True)
@@ -231,4 +236,3 @@ class DBaaSSnapshotAPI(APIView):
 
         delete_snapshot_dbaas.delay(snapshot.id)
         return Response(status=status.HTTP_204_NO_CONTENT)
-  
