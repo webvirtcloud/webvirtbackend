@@ -38,17 +38,17 @@ class DBaaSListAPI(APIView):
                   type: string
 
                 - name: region
-                  description: Region
+                  description: Region slug
                   required: true
                   type: string
 
                 - name: engine
-                  description: Engine
+                  description: DBMS slug
                   required: true
                   type: string
 
                 - name: size
-                  description: Size
+                  description: Size slug
                   required: true
                   type: string
 
