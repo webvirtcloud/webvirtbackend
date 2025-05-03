@@ -38,6 +38,7 @@ docker compose exec backend python3 manage.py migrate
 
 6. Load the initial data:
 ```bash
+docker compose exec backend python3 manage.py sync_fixtures --dry-run
 docker compose exec backend python3 manage.py sync_fixtures
 ```
 
