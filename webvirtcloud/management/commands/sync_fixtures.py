@@ -33,6 +33,10 @@ class Command(BaseCommand):
 
         self.stdout.write("Searching for fixture files in installed apps...")
 
+        is_fresh_database = not any(
+            model.objects.exists() for model in apps.get_models() if not model._meta.auto_created
+        )
+
         total_objects = 0
         updated_objects = 0
         created_objects = 0
@@ -40,7 +44,7 @@ class Command(BaseCommand):
         total_fixtures = 0
         skipped_fixtures = 0
 
-        for app_config in apps.get_app_configs():
+        for app_config in sorted(apps.get_app_configs(), key=lambda a: 0 if a.label == "region" else 1):
             if app_config.label in SKIP_FIXTURE_APPS:
                 continue
 
@@ -48,9 +52,13 @@ class Command(BaseCommand):
             if not os.path.exists(fixtures_dir):
                 continue
 
-            fixtures = [
-                f for f in os.listdir(fixtures_dir) if f.endswith(".json") or f.endswith(".yaml") or f.endswith(".yml")
-            ]
+            fixtures = sorted(
+                [
+                    f
+                    for f in os.listdir(fixtures_dir)
+                    if f.endswith(".json") or f.endswith(".yaml") or f.endswith(".yml")
+                ]
+            )
 
             if not fixtures:
                 continue
@@ -60,7 +68,9 @@ class Command(BaseCommand):
             for fixture in fixtures:
                 fixture_path = os.path.join(fixtures_dir, fixture)
 
-                created, updated, skipped = self.smart_update_fixture(fixture_path, dry_run=dry_run)
+                created, updated, skipped = self.smart_update_fixture(
+                    fixture_path, dry_run=dry_run, force_create=is_fresh_database
+                )
                 created_objects += created
                 updated_objects += updated
                 skipped_objects += skipped
@@ -74,10 +84,7 @@ class Command(BaseCommand):
             )
         )
 
-    def smart_update_fixture(self, fixture_path, dry_run=False):
-        """
-        Smart fixture update: creates new objects, updates only changed fields for selected models.
-        """
+    def smart_update_fixture(self, fixture_path, dry_run=False, force_create=False):
         created = 0
         updated = 0
         skipped = 0
@@ -108,8 +115,43 @@ class Command(BaseCommand):
                 self.stdout.write(self.style.ERROR(f"Unknown model: {model_label}"))
                 continue
 
+            model_fields = {f.name: f for f in model_class._meta.get_fields()}
+            m2m_fields = {}
+            non_m2m_fields = {}
+
+            for field_name, value in fields.items():
+                field = model_fields.get(field_name)
+                if not field:
+                    continue
+                if field.many_to_many:
+                    m2m_fields[field_name] = value
+                else:
+                    non_m2m_fields[field_name] = value
+
+            # ✅ Resolve ForeignKey fields to objects (before get_or_create)
+            for field_name, value in list(non_m2m_fields.items()):
+                field = model_fields[field_name]
+                if field.is_relation and not field.many_to_many and not field.one_to_many:
+                    related_model = field.related_model
+                    if isinstance(value, int):
+                        try:
+                            related_instance = related_model.objects.get(pk=value)
+                            non_m2m_fields[field_name] = related_instance
+                        except related_model.DoesNotExist:
+                            self.stdout.write(
+                                self.style.ERROR(
+                                    f"  ERROR: Related object for {model_label}.{field_name} id={value} does not exist"
+                                )
+                            )
+                            continue
+
             with transaction.atomic():
-                obj, created_flag = model_class.objects.get_or_create(pk=pk, defaults=fields)
+                try:
+                    obj, created_flag = model_class.objects.get_or_create(pk=pk, defaults=non_m2m_fields)
+                except Exception as e:
+                    self.stdout.write(self.style.ERROR(f"  ERROR creating {model_label} id={pk}: {e}"))
+                    continue
+
                 if created_flag:
                     created += 1
                     if dry_run:
@@ -117,12 +159,12 @@ class Command(BaseCommand):
                         obj.delete()
                     else:
                         self.stdout.write(self.style.SUCCESS(f"  Created {model_label} id={pk}"))
+                        for field_name, values in m2m_fields.items():
+                            getattr(obj, field_name).set(values)
                     continue
 
                 if strict_update:
-                    # Object exists — compare and update only changed fields
                     changed = False
-                    model_fields = {f.name: f for f in model_class._meta.get_fields()}
                     m2m_updates = []
 
                     for field_name, fixture_value in fields.items():
@@ -130,39 +172,45 @@ class Command(BaseCommand):
                             continue
 
                         field = model_fields.get(field_name)
-                        if field is None:
+                        if not field or field.name in [
+                            "regions",
+                            "created",
+                            "updated",
+                            "deleted",
+                            "is_active",
+                            "is_deleted",
+                        ]:
                             continue
 
-                        if field.name not in ["regions", "created", "updated", "deleted", "is_active", "is_deleted"]:
-                            if field.many_to_many:
-                                related_manager = getattr(obj, field_name)
-                                existing_ids = set(related_manager.all().values_list("id", flat=True))
-                                desired_ids = set(fixture_value)
+                        if field.many_to_many:
+                            related_manager = getattr(obj, field_name)
+                            existing_ids = set(related_manager.all().values_list("id", flat=True))
+                            desired_ids = set(fixture_value)
 
-                                if existing_ids != desired_ids:
-                                    m2m_updates.append((related_manager, desired_ids))
-                                    changed = True
-                            else:
-                                obj_value = getattr(obj, field_name)
+                            if existing_ids != desired_ids:
+                                m2m_updates.append((related_manager, desired_ids))
+                                changed = True
+                        else:
+                            obj_value = getattr(obj, field_name)
 
-                                if isinstance(obj_value, bool):
-                                    fixture_value = bool(fixture_value)
-                                elif isinstance(obj_value, (int, float)) and isinstance(fixture_value, str):
-                                    try:
-                                        fixture_value = type(obj_value)(fixture_value)
-                                    except ValueError:
-                                        pass
+                            if isinstance(obj_value, bool):
+                                fixture_value = bool(fixture_value)
+                            elif isinstance(obj_value, (int, float)) and isinstance(fixture_value, str):
+                                try:
+                                    fixture_value = type(obj_value)(fixture_value)
+                                except ValueError:
+                                    pass
 
-                                if str(obj_value) != str(fixture_value):
-                                    if dry_run:
-                                        self.stdout.write(
-                                            self.style.WARNING(
-                                                f"[DRY-RUN] {model_label} id={pk} field '{field_name}' would change: '{obj_value}' -> '{fixture_value}'"
-                                            )
+                            if str(obj_value) != str(fixture_value):
+                                if dry_run:
+                                    self.stdout.write(
+                                        self.style.WARNING(
+                                            f"[DRY-RUN] {model_label} id={pk} field '{field_name}' would change: '{obj_value}' -> '{fixture_value}'"
                                         )
-                                    else:
-                                        setattr(obj, field_name, fixture_value)
-                                    changed = True
+                                    )
+                                else:
+                                    setattr(obj, field_name, fixture_value)
+                                changed = True
 
                     if changed:
                         save_fields = [
@@ -192,8 +240,23 @@ class Command(BaseCommand):
                                 related_manager.set(ids)
                     else:
                         skipped += 1
+
+                elif force_create:
+                    try:
+                        model_class.objects.get(pk=pk)
+                        skipped += 1
+                    except model_class.DoesNotExist:
+                        if dry_run:
+                            self.stdout.write(
+                                self.style.WARNING(f"[DRY-RUN] Would create {model_label} id={pk} (non-strict)")
+                            )
+                        else:
+                            obj = model_class.objects.create(pk=pk, **non_m2m_fields)
+                            for field_name, values in m2m_fields.items():
+                                getattr(obj, field_name).set(values)
+                            self.stdout.write(self.style.SUCCESS(f"  Created {model_label} id={pk} (non-strict)"))
+                        created += 1
                 else:
-                    # Model is not in STRICT_UPDATE_MODELS — only ensure object exists, do not update fields
                     skipped += 1
 
         return (created, updated, skipped)
