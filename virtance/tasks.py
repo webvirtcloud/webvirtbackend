@@ -628,6 +628,7 @@ def backups_delete(virtance_id):
     else:
         return "When deleting backups, some of them were not deleted."
 
+
 @app.task
 def snapshots_delete(virtance_id):
     virtance = Virtance.objects.get(pk=virtance_id)
