@@ -249,6 +249,9 @@ COMPUTE_STORAGE_PERCENTAGE_USAGE = os.environ.get("COMPUTE_STORAGE_PERCENTAGE_US
 # Virtual machine name prefix
 VM_NAME_PREFIX = os.environ.get("VM_NAME_PREFIX", "Virtance-")
 
+# WebVirtCompute settings
+WEBVIRTCOMPUTE_VERSION = os.environ.get("WEBVIRTCOMPUTE_VERSION", "0.1.0")
+
 # Websocket settings
 WEBSOCKET_HOST = os.environ.get("WEBSOCKET_HOST", "0.0.0.0")
 WEBSOCKET_PORT = os.environ.get("WEBSOCKET_PORT", 6080)

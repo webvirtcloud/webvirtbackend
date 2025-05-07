@@ -8,6 +8,8 @@ from requests.exceptions import ConnectionError, ConnectTimeout
 
 urllib3.disable_warnings()
 
+COMPUTE_VERSION = settings.WEBVIRTCOMPUTE_VERSION
+
 
 def vm_name(virtance_id):
     return f"{settings.VM_NAME_PREFIX}{str(virtance_id)}"
@@ -74,6 +76,10 @@ class WebVirtCompute(object):
     def _process_response(self, response, json=True):
         if isinstance(response, dict):
             return response
+        if hasattr(response, "headers"):
+            version_header = response.headers.get("Version")
+            if version_header is not None and version_header != COMPUTE_VERSION:
+                return {"detail": f"Compute API version mismatch: expected {COMPUTE_VERSION}, got {version_header}"}
         if response.status_code == 204:
             return {}
         if json:
