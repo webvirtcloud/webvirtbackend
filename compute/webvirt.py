@@ -76,13 +76,7 @@ class WebVirtCompute(object):
     def _process_response(self, response, json=True):
         if isinstance(response, dict):
             return response
-        if hasattr(response, "headers"):
-            version_header = response.headers.get("x-api-version")
-            if version_header is None or version_header != COMPUTE_VERSION:
-                return {
-                    "detail": f"WebVirtCompute version mismatch: expected {COMPUTE_VERSION}, got {version_header}. "
-                    "Please update your WebVirtCompute daemon."
-                }
+
         if response.status_code == 204:
             return {}
         if json:
@@ -90,6 +84,13 @@ class WebVirtCompute(object):
             if body:
                 if isinstance(body, bytes) and hasattr(body, "decode"):
                     body = body.decode("utf-8")
+                if hasattr(response, "headers"):
+                    version_header = response.headers.get("x-api-version")
+                    if version_header is None or version_header != COMPUTE_VERSION:
+                        return {
+                            "detail": f"WebVirtCompute version mismatch: expected {COMPUTE_VERSION}, "
+                            f"got {version_header}. Please update your WebVirtCompute daemon."
+                        }
                 return body
         return response.raw
 
