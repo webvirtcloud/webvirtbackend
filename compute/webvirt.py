@@ -77,9 +77,12 @@ class WebVirtCompute(object):
         if isinstance(response, dict):
             return response
         if hasattr(response, "headers"):
-            version_header = response.headers.get("Version")
-            if version_header is not None and version_header != COMPUTE_VERSION:
-                return {"detail": f"Compute API version mismatch: expected {COMPUTE_VERSION}, got {version_header}"}
+            version_header = response.headers.get("x-api-version")
+            if version_header is None or version_header != COMPUTE_VERSION:
+                return {
+                    "detail": f"WebVirtCompute version mismatch: expected {COMPUTE_VERSION}, got {version_header}. "
+                    "Please update your WebVirtCompute daemon."
+                }
         if response.status_code == 204:
             return {}
         if json:
