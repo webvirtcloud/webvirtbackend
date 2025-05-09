@@ -38,9 +38,13 @@ class AdminDBaaSDataView(AdminTemplateView):
         context = super().get_context_data(**kwargs)
         dbaas = self.get_object()
         context["dbaas"] = dbaas
-        context["ipv4_public"] = IPAddress.objects.get(network__type=Network.PUBLIC, virtance=dbaas.virtance)
-        context["ipv4_private"] = IPAddress.objects.get(network__type=Network.PRIVATE, virtance=dbaas.virtance)
-        context["ipv4_compute"] = IPAddress.objects.get(network__type=Network.COMPUTE, virtance=dbaas.virtance)
+        context["ipv4_public"] = IPAddress.objects.filter(network__type=Network.PUBLIC, virtance=dbaas.virtance).first()
+        context["ipv4_private"] = IPAddress.objects.filter(
+            network__type=Network.PRIVATE, virtance=dbaas.virtance
+        ).first()
+        context["ipv4_compute"] = IPAddress.objects.filter(
+            network__type=Network.COMPUTE, virtance=dbaas.virtance
+        ).first()
         return context
 
 

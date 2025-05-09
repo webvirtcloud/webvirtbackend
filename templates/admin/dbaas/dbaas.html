@@ -112,19 +112,31 @@
         <div class="sm:col-span-1">
           <dt class="text-sm font-medium text-muted-foreground">IPv4 Public</dt>
           <dd class="mt-1 text-sm">
-            {{ ipv4_public.address }}
+            {% if ipv4_public %}
+              {{ ipv4_public.address }}
+            {% else %}
+              <span class="text-red-500">No Public IP</span>
+            {% endif %}
           </dd>
         </div>
         <div class="sm:col-span-1">
           <dt class="text-sm font-medium text-muted-foreground">IPv4 Private</dt>
           <dd class="mt-1 text-sm">
-            {{ ipv4_private.address }}
+            {% if ipv4_private %}
+              {{ ipv4_private.address }}
+            {% else %}
+              <span class="text-red-500">No Private IP</span>
+            {% endif %}
           </dd>
         </div>
         <div class="sm:col-span-1">
           <dt class="text-sm font-medium text-muted-foreground">IPv4 Compute</dt>
           <dd class="mt-1 text-sm">
-            {{ ipv4_compute.address }}
+            {% if ipv4_compute %}
+              {{ ipv4_compute.address }}
+            {% else %}
+              <span class="text-red-500">No Compute IP</span>
+            {% endif %}
           </dd>
         </div>
         <div class="sm:col-span-1">
