@@ -11,7 +11,7 @@ from region.models import Region
 from size.models import DBMS, Size
 from size.serializers import SizeSerializer
 from virtance.models import Virtance
-from virtance.utils import decrypt_data, encrypt_data, make_passwd, make_ssh_private
+from virtance.utils import decrypt_data, encrypt_data, make_passwd, make_ssh_private, virtance_error
 
 from .models import DBaaS
 from .tasks import (
@@ -23,7 +23,6 @@ from .tasks import (
     snapshot_dbaas,
     update_admin_password_dbaas,
 )
-from .utils import virtance_error
 
 
 class DBaaSSerializer(serializers.ModelSerializer):
