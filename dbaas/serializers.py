@@ -4,6 +4,7 @@ from django.conf import settings
 from django.db.models import Q
 from rest_framework import serializers
 
+from compute.webvirt import WebVirtCompute
 from image.models import Image
 from network.models import IPAddress, Network
 from region.models import Region
@@ -22,6 +23,7 @@ from .tasks import (
     snapshot_dbaas,
     update_admin_password_dbaas,
 )
+from .utils import virtance_error
 
 
 class DBaaSSerializer(serializers.ModelSerializer):
@@ -30,6 +32,7 @@ class DBaaSSerializer(serializers.ModelSerializer):
     size = serializers.CharField(write_only=True)
     event = serializers.SerializerMethodField(read_only=True)
     engine = serializers.CharField(write_only=True)
+    status = serializers.SerializerMethodField()
     region = serializers.CharField(required=True, write_only=True)
     version = serializers.CharField(source="db.version", read_only=True)
     conection = serializers.SerializerMethodField(read_only=True)
@@ -44,12 +47,28 @@ class DBaaSSerializer(serializers.ModelSerializer):
             "size",
             "event",
             "engine",
+            "status",
             "region",
             "version",
             "conection",
             "created_at",
             "backups_enabled",
         )
+
+    def get_status(self, obj):
+        if not hasattr(self.root, "many"):
+            obj.virtance.pending()
+            if obj.virtance.event is None:
+                if obj.virtance.compute is not None:
+                    wvcomp = WebVirtCompute(obj.virtance.compute.token, obj.virtance.compute.hostname)
+                    res = wvcomp.status_virtance(obj.virtance.id)
+                    if res.get("detail"):
+                        virtance_error(obj.virtance.id, res.get("detail"), event="status")
+                    if res.get("status") == "running":
+                        obj.virtance.active()
+                    if res.get("status") == "shutoff":
+                        obj.virtance.inactive()
+        return obj.virtance.status
 
     def get_event(self, obj):
         if obj.event is None:
