@@ -3,7 +3,7 @@
         "model": "size.dbms",
         "pk": 1,
         "fields": {
-            "name": "PostreSQL 13",
+            "name": "PostgreSQL 13",
             "slug": "pgsql-13",
             "description": "Community Edition",
             "engine": "pgsql",
@@ -27,7 +27,7 @@
         "model": "size.dbms",
         "pk": 2,
         "fields": {
-            "name": "PostreSQL 14",
+            "name": "PostgreSQL 14",
             "slug": "pgsql-14",
             "description": "Community Edition",
             "engine": "pgsql",
@@ -51,7 +51,7 @@
         "model": "size.dbms",
         "pk": 3,
         "fields": {
-            "name": "PostreSQL 15",
+            "name": "PostgreSQL 15",
             "slug": "pgsql-15",
             "description": "Community Edition",
             "engine": "pgsql",
@@ -75,7 +75,7 @@
         "model": "size.dbms",
         "pk": 4,
         "fields": {
-            "name": "PostreSQL 16",
+            "name": "PostgreSQL 16",
             "slug": "pgsql-16",
             "description": "Community Edition",
             "engine": "pgsql",
@@ -99,7 +99,7 @@
         "model": "size.dbms",
         "pk": 5,
         "fields": {
-            "name": "PostreSQL 17",
+            "name": "PostgreSQL 17",
             "slug": "pgsql-17",
             "description": "Community Edition",
             "engine": "pgsql",
