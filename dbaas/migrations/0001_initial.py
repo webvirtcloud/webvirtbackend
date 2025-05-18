@@ -23,7 +23,7 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('uuid', models.UUIDField(default=uuid.uuid4, editable=False, unique=True)),
                 ('name', models.CharField(max_length=100)),
-                ('event', models.CharField(blank=True, choices=[('create', 'Create'), ('delete', 'Delete'), ('reboot', 'Reboot'), ('resize', 'Resize'), ('rename', 'Rename'), ('restore', 'Restore'), ('snapshot', 'Snapshot'), ('shutdown', 'Shutdown'), ('power_on', 'Power On'), ('power_off', 'Power Off'), ('power_cycle', 'Power Cycle'), ('password_reset', 'Password Reset'), ('enable_backups', 'Enable Backups'), ('disable_backups', 'Disable Backups')], default='create', max_length=40, null=True)),
+                ('event', models.CharField(blank=True, choices=[('create', 'Database is creating...'), ('delete', 'Database is deleting...'), ('reboot', 'Database is rebooting...'), ('resize', 'Database is resizing...'), ('rename', 'Database is renaming...'), ('restore', 'Database is restoring...'), ('snapshot', 'Database is taking a snapshot...'), ('shutdown', 'Database is shutting down...'), ('power_on', 'PDatabase is powering on...'), ('power_off', 'Database is powering off...'), ('power_cycle', 'Database is power cycling...'), ('password_reset', 'Reseting password...'), ('enable_backups', 'Backups are being enabled...'), ('disable_backups', 'Backups are being disabled...')], default='create', max_length=40, null=True)),
                 ('private_key', models.TextField()),
                 ('admin_secret', models.TextField()),
                 ('master_secret', models.TextField()),

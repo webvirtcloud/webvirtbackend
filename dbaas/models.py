@@ -21,20 +21,20 @@ class DBaaS(models.Model):
     ENABLE_BACKUPS = "enable_backups"
     DISABLE_BACKUPS = "disable_backups"
     EVENT_CHOICES = (
-        (CREATE, "Create"),
-        (DELETE, "Delete"),
-        (REBOOT, "Reboot"),
-        (RESIZE, "Resize"),
-        (RENAME, "Rename"),
-        (RESTORE, "Restore"),
-        (SNAPSHOT, "Snapshot"),
-        (SHUTDOWN, "Shutdown"),
-        (POWER_ON, "Power On"),
-        (POWER_OFF, "Power Off"),
-        (POWER_CYCLE, "Power Cycle"),
-        (PASSWORD_RESET, "Password Reset"),
-        (ENABLE_BACKUPS, "Enable Backups"),
-        (DISABLE_BACKUPS, "Disable Backups"),
+        (CREATE, "Database is creating..."),
+        (DELETE, "Database is deleting..."),
+        (REBOOT, "Database is rebooting..."),
+        (RESIZE, "Database is resizing..."),
+        (RENAME, "Database is renaming..."),
+        (RESTORE, "Database is restoring..."),
+        (SNAPSHOT, "Database is taking a snapshot..."),
+        (SHUTDOWN, "Database is shutting down..."),
+        (POWER_ON, "Database is powering on..."),
+        (POWER_OFF, "Database is powering off..."),
+        (POWER_CYCLE, "Database is power cycling..."),
+        (PASSWORD_RESET, "Reseting password..."),
+        (ENABLE_BACKUPS, "Backups are being enabled..."),
+        (DISABLE_BACKUPS, "Backups are being disabled..."),
     )
 
     uuid = models.UUIDField(unique=True, editable=False, default=uuid4)
