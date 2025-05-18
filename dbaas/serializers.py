@@ -55,6 +55,8 @@ class DBaaSSerializer(serializers.ModelSerializer):
         )
 
     def get_status(self, obj):
+        if obj.event is not None:
+            return obj.virtance.INACTIVE
         if not hasattr(self.root, "many"):
             obj.virtance.pending()
             if obj.virtance.event is None:
