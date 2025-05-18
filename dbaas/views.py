@@ -97,8 +97,8 @@ class DBaaSDataAPI(APIView):
 class DBaaSActionAPI(APIView):
     class_serializer = DBaaSActionSerializer
 
-    def get_queryset(self):
-        return DBaaS.objects.filter(~Q(event=DBaaS.DELETE), user=self.request.user, is_deleted=False)
+    def get_object(self):
+        return get_object_or_404(DBaaS, uuid=self.kwargs.get("uuid"), user=self.request.user, is_deleted=False)
 
     def post(self, request, *args, **kwargs):
         """
