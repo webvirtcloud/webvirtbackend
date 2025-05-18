@@ -77,6 +77,29 @@ class DBaaSDataAPI(APIView):
         serializer = self.class_serializer(self.get_object(), many=False)
         return Response({"database": serializer.data})
 
+    def delete(self, request, *args, **kwargs):
+        """
+        Delete The Database
+        ---
+        """
+        dbaas = self.get_object()
+
+        if dbaas.event is not None or dbaas.virtance.event is not None:
+            return error_message_response("The database already has event, please try again later.")
+
+        dbaas.event = DBaaS.DELETE
+        dbaas.save()
+
+        delete_dbaas.delay(dbaas.id)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class DBaaSActionAPI(APIView):
+    class_serializer = DBaaSActionSerializer
+
+    def get_queryset(self):
+        return DBaaS.objects.filter(~Q(event=DBaaS.DELETE), user=self.request.user, is_deleted=False)
+
     def post(self, request, *args, **kwargs):
         """
         Database Actions
@@ -126,26 +149,10 @@ class DBaaSDataAPI(APIView):
         if dbaas.event is not None or dbaas.virtance.event is not None:
             return error_message_response("The database already has event, please try again later.")
 
-        serializer = DBaaSActionSerializer(data=request.data, context={"dbaas": dbaas})
+        serializer = self.class_serializer(data=request.data, context={"dbaas": dbaas})
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
-
-    def delete(self, request, *args, **kwargs):
-        """
-        Delete The Database
-        ---
-        """
-        dbaas = self.get_object()
-
-        if dbaas.event is not None or dbaas.virtance.event is not None:
-            return error_message_response("The database already has event, please try again later.")
-
-        dbaas.event = DBaaS.DELETE
-        dbaas.save()
-
-        delete_dbaas.delay(dbaas.id)
-        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class DBaaSBackupsAPI(APIView):
