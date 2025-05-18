@@ -56,7 +56,7 @@ class DBaaSSerializer(serializers.ModelSerializer):
 
     def get_status(self, obj):
         if obj.event is not None:
-            return obj.virtance.INACTIVE
+            return obj.virtance.PENDING
         if not hasattr(self.root, "many"):
             obj.virtance.pending()
             if obj.virtance.event is None:
@@ -346,9 +346,8 @@ class DBaaSActionSerializer(serializers.Serializer):
             restore_dbaas.delay(dbaas.id, snapshot.id)
 
         if action == "enable_backups":
-            virtance.enable_backups()
-            virtance.active()
-            virtance.reset_event()
+            dbaas.virtance.enable_backups()
+            dbaas.reset_event()
 
         if action == "disable_backups":
             backups_delete.delay(dbaas.id)
