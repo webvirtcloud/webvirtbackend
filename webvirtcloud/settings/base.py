@@ -269,7 +269,7 @@ RECOVERY_ISO_NAME = os.environ.get("RECOVERY_ISO_NAME", "finnix-125.iso")
 # LBaaS settings
 LBAAS_SIZE_NAME = os.environ.get("LBAAS_SIZE_NAME", "lbaas-2vcpu-2gb-20gb")
 LBAAS_IPV4_ACCESS_LIST = os.environ.get("LBAAS_IPV4_ACCESS_LIST", [])
-LBAAS_TEMPLATE_NAME = os.environ.get("LBAAS_TEMPLATE_NAME", "debian-12-lbass-x64")
+LBAAS_TEMPLATE_NAME = os.environ.get("LBAAS_TEMPLATE_NAME", "debian-12-lbaas-x64")
 
 # DBaaS settings
 DBAAS_ADMIN_LOGIN = os.environ.get("DBAAS_ADMIN_LOGIN", "admin")
