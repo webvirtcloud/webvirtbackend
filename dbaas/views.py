@@ -112,7 +112,6 @@ class DBaaSActionAPI(APIView):
                   action:
                     - reboot
                     - resize
-                    - reboot
                     - rename
                     - restore
                     - snapshot

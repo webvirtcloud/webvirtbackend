@@ -243,7 +243,6 @@ class VirtanceActionAPI(APIView):
                   action:
                     - reboot
                     - resize
-                    - reboot
                     - rename
                     - rebuild
                     - restore
