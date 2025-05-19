@@ -273,8 +273,9 @@ def create_dbaas(dbaas_id):
 @app.task
 def update_admin_password_dbaas(dbaas_id, password):
     dbaas = DBaaS.objects.get(id=dbaas_id)
+    virtance = dbaas.virtance
     private_key = decrypt_data(dbaas.private_key)
-    ipv4_private = IPAddress.objects.get(virtance=dbaas.virtance, network__type=Network.PRIVATE, is_float=False)
+    ipv4_private = IPAddress.objects.get(virtance=virtance, network__type=Network.PRIVATE, is_float=False)
 
     if check_ssh_connect(ipv4_private.address, private_key=private_key):
         dbaas_vars = {
@@ -289,20 +290,21 @@ def update_admin_password_dbaas(dbaas_id, password):
             error_message = error
             if task:
                 error_message = f"Task: {task}. Error: {error}"
-            virtance_error(dbaas.virtance.id, error_message, event="update_admin_password")
+            virtance_error(virtance.id, error_message, event="update_admin_password")
         else:
             dbaas.admin_secret = encrypt_data(password)
             dbaas.save()
             dbaas.reset_event()
-            dbaas.virtance.reset_event()
+            virtance.reset_event()
 
 
 @app.task
 def delete_dbaas(dbaas_id):
     dbaas = DBaaS.objects.get(id=dbaas_id)
+    virtance = dbaas.virtance
 
     # Check if virtance has backups enabled
-    images = Image.objects.filter(source=dbaas.virtance, is_deleted=False)
+    images = Image.objects.filter(source=virtance, is_deleted=False)
     number_of_images = len(images)
     for image in images:
         image_delete(image.id)
@@ -310,7 +312,7 @@ def delete_dbaas(dbaas_id):
 
     # If there are no images left, delete the virtance
     if number_of_images == 0:
-        if delete_virtance(dbaas.virtance.id):
+        if delete_virtance(virtance.id):
             dbaas.reset_event()
             dbaas.delete()
 

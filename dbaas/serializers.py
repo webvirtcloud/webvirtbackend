@@ -16,11 +16,11 @@ from virtance.utils import decrypt_data, encrypt_data, make_passwd, make_ssh_pri
 from .models import DBaaS
 from .tasks import (
     action_dbaas,
-    backups_delete,
     create_dbaas,
     resize_dbaas,
     restore_dbaas,
     snapshot_dbaas,
+    backups_delete_dbaas,
     update_admin_password_dbaas,
 )
 
@@ -322,6 +322,7 @@ class DBaaSActionSerializer(serializers.Serializer):
             dbaas.name = name
             dbaas.save()
             dbaas.reset_event()
+            virtance.reset_event()
 
         if action == "resize":
             size = Size.objects.get(slug=size)
@@ -346,10 +347,11 @@ class DBaaSActionSerializer(serializers.Serializer):
             restore_dbaas.delay(dbaas.id, snapshot.id)
 
         if action == "enable_backups":
-            dbaas.virtance.enable_backups()
+            virtance.enable_backups()
+            virtance.reset_event()
             dbaas.reset_event()
 
         if action == "disable_backups":
-            backups_delete.delay(dbaas.id)
+            backups_delete_dbaas.delay(dbaas.id)
 
         return validated_data
